@@ -22,7 +22,7 @@ public class OAuthController {
     @Value("${oauth.naver.redirect-uri}")
     private String naverRedirectUri;
 
-    @Value("${oauth.naver.state}")
+    @Value("${oauth.state}")
     private String state;
 
     @Value("${oauth.kakao.client-id}")
@@ -30,6 +30,12 @@ public class OAuthController {
 
     @Value("${oauth.kakao.redirect-uri}")
     private String kakaoRedirectUri;
+
+    @Value("${oauth.google.client-id}")
+    private String googleClientId;
+
+    @Value("${oauth.google.redirect-uri}")
+    private String googleRedirectUri;
 
     @GetMapping("/naver")
     public String naverLogin() throws UnsupportedEncodingException {
@@ -45,6 +51,15 @@ public class OAuthController {
 
         String authUrl = "https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoClientId
                 + "&redirect_uri=" + kakaoRedirectUri + "&response_type=code&state=" + URLEncoder.encode(state, "UTF-8");
+
+        return "redirect:" + authUrl;  // 카카오 로그인 페이지로 리디렉션
+    }
+
+    @GetMapping("/google")
+    public String googleLogin() throws UnsupportedEncodingException {
+
+        String authUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
+                + "&redirect_uri=" + googleRedirectUri + "&scope=email%20profile&response_type=code&access_type=offline";
 
         return "redirect:" + authUrl;  // 카카오 로그인 페이지로 리디렉션
     }
