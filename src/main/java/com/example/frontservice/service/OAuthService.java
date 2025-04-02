@@ -1,8 +1,10 @@
 package com.example.frontservice.service;
 
 
+import com.example.frontservice.client.edge.AuthClient;
 import com.example.frontservice.client.social.*;
 import com.example.frontservice.dto.*;
+import com.example.frontservice.dto.oauth.*;
 import com.example.frontservice.util.CookieUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +24,8 @@ public class OAuthService {
     private final GoogleTokenClient googleTokenClient;
     private final KakaoProfileClient kakaoProfileClient;
     private final GoogleProfileClient googleProfileClient;
+
+    private final AuthClient authClient;
 
     @Value("${oauth.naver.client-id}")
     private String naverClientId;
@@ -59,6 +63,16 @@ public class OAuthService {
             System.out.println(resultInfo.getId() + " " + resultInfo.getNickname() + " " + resultInfo.getMobile());
 
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
+            LoginClientResponseDTO result = authClient.socialLogin(
+                    OAuthLoginRequestDTO.builder()
+                            .accessToken(type + ":" + responseDTO.getRefresh_token())
+                            .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                            .id(resultInfo.getId())
+                            .name(resultInfo.getName())
+                            .nickname(resultInfo.getNickname())
+                            .mobile(resultInfo.getMobile())
+                            .build()
+            );
 
             return UserLoginResponseDTO.builder()
                     .loggedIn(true)
@@ -72,8 +86,19 @@ public class OAuthService {
             CookieUtil.addCookie(response, "refreshToken",type + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
             CookieUtil.addCookie(response, "accessToken",type + ":" + responseDTO.getAccess_token(), 60*60 );
 
-            String resultInfo = kakaoProfileClient.getKakaoProfile(responseDTO.getAccess_token());
-            System.out.println(resultInfo);
+            KakaoUserInfoResponseDTO resultInfo = getKakaoUserInfo(responseDTO.getAccess_token());
+
+            System.out.println(resultInfo.getId() + " " + resultInfo.getNickname());
+
+            // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
+            LoginClientResponseDTO result = authClient.socialLogin(
+                    OAuthLoginRequestDTO.builder()
+                            .accessToken(type + ":" + responseDTO.getRefresh_token())
+                            .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                            .id(resultInfo.getId())
+                            .nickname(resultInfo.getNickname())
+                            .build()
+            );
 
             return UserLoginResponseDTO.builder()
                     .loggedIn(true)
@@ -86,8 +111,20 @@ public class OAuthService {
             CookieUtil.addCookie(response, "refreshToken",type + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
             CookieUtil.addCookie(response, "accessToken",type + ":" + responseDTO.getAccess_token(), 60*60 );
 
-            String resultInfo = googleProfileClient.getGoogleProfile(responseDTO.getAccess_token());
-            System.out.println(resultInfo);
+            GoogleUserInfoResponseDTO resultInfo = getGoogleUserInfo(responseDTO.getAccess_token());
+
+            System.out.println(resultInfo.getSub() + " " + resultInfo.getName() + " " + resultInfo.getEmail());
+
+            // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
+            LoginClientResponseDTO result = authClient.socialLogin(
+                    OAuthLoginRequestDTO.builder()
+                            .accessToken(type + ":" + responseDTO.getRefresh_token())
+                            .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                            .id(resultInfo.getSub())
+                            .name(resultInfo.getName())
+                            .email(resultInfo.getEmail())
+                            .build()
+            );
 
             return UserLoginResponseDTO.builder()
                     .loggedIn(true)
@@ -124,6 +161,42 @@ public class OAuthService {
                     .id(jsonNode.get("response").get("id").asText())
                     .name(jsonNode.get("response").get("name").asText())
                     .nickname(jsonNode.get("response").get("nickname").asText())
+                    .mobile(jsonNode.get("response").get("mobile").asText())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public KakaoUserInfoResponseDTO getKakaoUserInfo(String token) {
+        try {
+            System.out.println("getKakaoUserInfo in token :: "+token);
+            String result = kakaoProfileClient.getKakaoProfile("Bearer " + token);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(result);
+
+            return KakaoUserInfoResponseDTO.builder()
+                    .id(jsonNode.get("id").asText())
+                    .nickname(jsonNode.get("properties").get("nickname").asText())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public GoogleUserInfoResponseDTO getGoogleUserInfo(String token) {
+        try {
+            System.out.println("getGoogleUserInfo in token :: "+token);
+            String result = googleProfileClient.getGoogleProfile("Bearer " + token);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(result);
+
+            return GoogleUserInfoResponseDTO.builder()
+                    .sub(jsonNode.get("sub").asText())
+                    .name(jsonNode.get("name").asText())
+                    .email(jsonNode.get("email").asText())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

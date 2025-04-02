@@ -16,11 +16,11 @@ let setupAjax = () => {
     })
 }
 
-let getUserInfo = () => {
+let sendAccessToken = () => {
     return new Promise((resolve, reject)=>{
         $.ajax({
             type : 'GET',
-            url : '/user/info',
+            url : '/access-token',
             success : (response) => {
                 resolve(response);
             },

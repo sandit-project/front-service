@@ -1,6 +1,6 @@
 package com.example.frontservice.client.social;
 
-import com.example.frontservice.dto.KakaoTokenResponseDTO;
+import com.example.frontservice.dto.oauth.KakaoTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

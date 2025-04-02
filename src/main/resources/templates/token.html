@@ -11,13 +11,11 @@
 
     console.log(token);
     if (token) {
-        // edge로 받은 토큰들 전달하는 ajax코드 필요함
-
         // access token을 localStorage에 저장
         localStorage.setItem("accessToken", token);
         // 토큰 저장 후 대시보드 페이지로 이동
 
-        window.location.href = '/member';
+        window.location.href = '/';
     } else {
         console.error("access token이 전달되지 않았습니다.");
     }

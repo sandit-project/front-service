@@ -1,6 +1,6 @@
 package com.example.frontservice.client.social;
 
-import com.example.frontservice.dto.NaverTokenResponseDTO;
+import com.example.frontservice.dto.oauth.NaverTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
