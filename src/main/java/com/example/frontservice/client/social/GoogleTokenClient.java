@@ -1,9 +1,8 @@
 package com.example.frontservice.client.social;
 
-import com.example.frontservice.dto.GoogleTokenResponseDTO;
+import com.example.frontservice.dto.oauth.GoogleTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name="googleTokenClient", url="https://oauth2.googleapis.com/token")

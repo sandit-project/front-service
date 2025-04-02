@@ -1,9 +1,11 @@
 package com.example.frontservice.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SocialLoginRequestDTO {
+@Builder
+public class RefreshTokenResponseDTO {
+    private int status;
     private String accessToken;
-
 }

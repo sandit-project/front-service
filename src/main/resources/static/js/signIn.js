@@ -6,7 +6,7 @@ $(document).ready(()=>{
         let password = $('#password').val();
 
         let signInData = {
-            username : userId,
+            userId : userId,
             password : password
         }
 
@@ -18,7 +18,7 @@ $(document).ready(()=>{
             dataType: 'json',
             success: (response) => {
                alert('로그인이 성공했습니다.');
-               localStorage.setItem('accessToken',response.token);
+               localStorage.setItem('accessToken',response.accessToken);
                window.location.href = '/';
             },
             error : (error) => {

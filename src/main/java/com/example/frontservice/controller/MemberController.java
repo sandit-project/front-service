@@ -7,14 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/member")
 public class MemberController {
-    @GetMapping
-    public String menu(){
-        return "menu";
-    }
-    @GetMapping("/detail")
-    public String detail(){
-        return "detail";
-    }
+
     @GetMapping("/login")
     public String login() {
         return "sign-in";
