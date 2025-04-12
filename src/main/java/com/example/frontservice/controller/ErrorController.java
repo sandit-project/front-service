@@ -19,4 +19,16 @@ public class ErrorController {
     public String deleteAccessDenied() {
         return "access-denied";
     }
+    @GetMapping("/service-unavailable")
+    public String getServiceUnavailable() {
+        return "service-unavailable";
+    }
+    @PutMapping("/service-unavailable")
+    public String putServiceUnavailable() {
+        return "service-unavailable";
+    }
+    @DeleteMapping("/service-unavailable")
+    public String deleteServiceUnavailable() {
+        return "service-unavailable";
+    }
 }

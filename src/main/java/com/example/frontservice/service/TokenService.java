@@ -19,12 +19,17 @@ public class TokenService {
         if (refreshToken == null) {
             return null;
         }
-
-        return authClient.refresh(
+        
+        // oauth 실패시 토큰 재발행해서 전달하는 로직 추가로 필요함
+        RefreshTokenClientResponseDTO resultDTO = authClient.refresh(
                 RefreshTokenRequestDTO.builder()
                         .refreshToken(refreshToken)
-                        .build()
-        );
+                        .build());
+
+        if(resultDTO.getStatus() == 2){
+
+        }
+        return resultDTO;
     }
 
 }

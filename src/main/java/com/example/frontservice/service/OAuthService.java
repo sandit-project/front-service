@@ -51,88 +51,89 @@ public class OAuthService {
     @Value("${oauth.google.redirect-uri}")
     private String googleRedirectUri;
 
-    public UserLoginResponseDTO getAccessToken(String type, String code, String state, HttpServletResponse response) {
+    public OAuthLoginResponseDTO getAccessToken(String type, String code, String state, HttpServletResponse response) {
         if(type.equals("naver")){
             NaverTokenResponseDTO responseDTO = naverTokenClient.getAccessToken("authorization_code", naverClientId, naverClientSecret, code, state);
-
-            CookieUtil.addCookie(response, "refreshToken",type + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
-            CookieUtil.addCookie(response, "accessToken",type + ":" + responseDTO.getAccess_token(), 60*60 );
 
             NaverUserInfoResponseDTO resultInfo = getNaverUserInfo(responseDTO.getAccess_token());
 
             System.out.println(resultInfo.getId() + " " + resultInfo.getNickname() + " " + resultInfo.getMobile());
 
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
-            LoginClientResponseDTO result = authClient.socialLogin(
+            OAuthLoginResponseDTO resultDTO = authClient.socialLogin(
                     OAuthLoginRequestDTO.builder()
-                            .accessToken(type + ":" + responseDTO.getRefresh_token())
-                            .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                            .accessToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
+                            .refreshToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
                             .id(resultInfo.getId())
                             .name(resultInfo.getName())
                             .nickname(resultInfo.getNickname())
+                            .email("")
                             .mobile(resultInfo.getMobile())
                             .build()
             );
 
-            return UserLoginResponseDTO.builder()
-                    .loggedIn(true)
-                    .accessToken(type + ":" + responseDTO.getAccess_token())
-                    .refreshToken(type + ":" + responseDTO.getRefresh_token())
-                    .build();
+            if(resultDTO.isLoggedIn()){
+                CookieUtil.addCookie(response, "refreshToken",type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
+                CookieUtil.addCookie(response, "accessToken",type + ":" + resultInfo.getId() + ":" + responseDTO.getAccess_token(), 60*60 );
+            }
+
+            return resultDTO;
         }else if(type.equals("kakao")){
             String contentType = "application/x-www-form-urlencoded;charset=utf-8";
             KakaoTokenResponseDTO responseDTO = kakaoTokenClient.getTokens(contentType,"authorization_code",kakaoClientId,kakaoRedirectUri,code);
-
-            CookieUtil.addCookie(response, "refreshToken",type + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
-            CookieUtil.addCookie(response, "accessToken",type + ":" + responseDTO.getAccess_token(), 60*60 );
 
             KakaoUserInfoResponseDTO resultInfo = getKakaoUserInfo(responseDTO.getAccess_token());
 
             System.out.println(resultInfo.getId() + " " + resultInfo.getNickname());
 
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
-            LoginClientResponseDTO result = authClient.socialLogin(
+            OAuthLoginResponseDTO resultDTO = authClient.socialLogin(
                     OAuthLoginRequestDTO.builder()
-                            .accessToken(type + ":" + responseDTO.getRefresh_token())
-                            .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                            .accessToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
+                            .refreshToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
                             .id(resultInfo.getId())
+                            .name("")
                             .nickname(resultInfo.getNickname())
+                            .email("")
+                            .mobile("")
                             .build()
             );
 
-            return UserLoginResponseDTO.builder()
-                    .loggedIn(true)
-                    .accessToken(type + ":" + responseDTO.getAccess_token())
-                    .refreshToken(type + ":" + responseDTO.getRefresh_token())
-                    .build();
+            if(resultDTO.isLoggedIn()){
+                CookieUtil.addCookie(response, "refreshToken",type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
+                CookieUtil.addCookie(response, "accessToken",type + ":" + resultInfo.getId() + ":" + responseDTO.getAccess_token(), 60*60 );
+            }
+
+            return resultDTO;
         }else if (type.equals("google")) {
             GoogleTokenResponseDTO responseDTO = googleTokenClient.getTokens(code,googleClientId,googleClientSecret,googleRedirectUri,"authorization_code");
-
-            CookieUtil.addCookie(response, "refreshToken",type + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
-            CookieUtil.addCookie(response, "accessToken",type + ":" + responseDTO.getAccess_token(), 60*60 );
 
             GoogleUserInfoResponseDTO resultInfo = getGoogleUserInfo(responseDTO.getAccess_token());
 
             System.out.println(resultInfo.getSub() + " " + resultInfo.getName() + " " + resultInfo.getEmail());
 
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
-            LoginClientResponseDTO result = authClient.socialLogin(
+            OAuthLoginResponseDTO resultDTO = authClient.socialLogin(
                     OAuthLoginRequestDTO.builder()
-                            .accessToken(type + ":" + responseDTO.getRefresh_token())
-                            .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                            .accessToken(type + ":" + resultInfo.getSub() + ":" + responseDTO.getRefresh_token())
+                            .refreshToken(type + ":" + resultInfo.getSub() + ":" + responseDTO.getRefresh_token())
                             .id(resultInfo.getSub())
                             .name(resultInfo.getName())
+                            .nickname("")
                             .email(resultInfo.getEmail())
+                            .mobile("")
                             .build()
             );
 
-            return UserLoginResponseDTO.builder()
-                    .loggedIn(true)
-                    .accessToken(type + ":" + "testToken")
-                    .refreshToken(type + ":" + "testToken")
-                    .build();
+            if(resultDTO.isLoggedIn()){
+                CookieUtil.addCookie(response, "refreshToken",type + ":" + resultInfo.getSub() + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
+                CookieUtil.addCookie(response, "accessToken",type + ":" + resultInfo.getSub() + ":" + responseDTO.getAccess_token(), 60*60 );
+            }
+
+            return resultDTO;
+        }else{
+            return null;
         }
-        return null;
     }
 
 //    public UserLoginResponseDTO getReAccessToken(String type, String refreshToken, HttpServletResponse response) {

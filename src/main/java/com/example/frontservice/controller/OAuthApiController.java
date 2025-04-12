@@ -1,7 +1,6 @@
 package com.example.frontservice.controller;
 
-
-import com.example.frontservice.dto.UserLoginResponseDTO;
+import com.example.frontservice.dto.oauth.OAuthLoginResponseDTO;
 import com.example.frontservice.service.OAuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class OAuthApiController {
     private final OAuthService oAuthService;
 
     @GetMapping("/naver/callback")
-    public UserLoginResponseDTO naverCallback(
+    public OAuthLoginResponseDTO naverCallback(
             @RequestParam("code") String code,
             @RequestParam("state") String state,
             HttpServletResponse response
@@ -27,54 +26,57 @@ public class OAuthApiController {
         // 'code'는 네이버에서 받은 인증 코드입니다.
         System.out.println("naverCallback " + code + " " + state);
 
-        UserLoginResponseDTO responseDTO = oAuthService.getAccessToken("naver",code, state, response);
+        OAuthLoginResponseDTO responseDTO = oAuthService.getAccessToken("naver",code, state, response);
 
-        // token 받아오는거 까지 완료됨
-        // responseData 어디로 던져줄지 수정해야함
-        // openFeign쓰던지 기존에 빈페이지로 던져서 처리하던지
-        response.sendRedirect("http://localhost:9000/oauth/token");
+        System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
+
+        if(responseDTO.isLoggedIn()==false || responseDTO == null){
+            response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
+        }else{
+            response.sendRedirect("http://localhost:9000/oauth/token");
+        }
 
         return responseDTO;
-        // 사용자 정보를 사용하여 로그인 처리, 회원가입 등을 진행
-        // 예를 들어, 로그인 처리를 하고 메인 페이지로 리디렉션
     }
 
     @GetMapping("/kakao/callback")
-    public UserLoginResponseDTO kakaoCallback(
+    public OAuthLoginResponseDTO kakaoCallback(
             @RequestParam("code") String code,
             @RequestParam("state") String state,
             HttpServletResponse response
     ) throws IOException {
         System.out.println("kakaoCallback " + code + " " + state);
 
-        UserLoginResponseDTO responseDTO = oAuthService.getAccessToken("kakao",code, state, response);
+        OAuthLoginResponseDTO responseDTO = oAuthService.getAccessToken("kakao",code, state, response);
 
-        // token 받아오는거 까지 완료됨
-        // responseData 어디로 던져줄지 수정해야함
-        // openFeign쓰던지 기존에 빈페이지로 던져서 처리하던지
-        response.sendRedirect("http://localhost:9000/oauth/token");
+        System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
+
+        if(responseDTO.isLoggedIn()==false || responseDTO == null){
+            response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
+        }else{
+            response.sendRedirect("http://localhost:9000/oauth/token");
+        }
 
         return responseDTO;
-        // 사용자 정보를 사용하여 로그인 처리, 회원가입 등을 진행
-        // 예를 들어, 로그인 처리를 하고 메인 페이지로 리디렉션
     }
 
     @GetMapping("/google/callback")
-    public UserLoginResponseDTO googleCallback(
+    public OAuthLoginResponseDTO googleCallback(
             @RequestParam("code") String code,
             HttpServletResponse response
     ) throws IOException {
         System.out.println("googleCallback " + code );
 
-        UserLoginResponseDTO responseDTO = oAuthService.getAccessToken("google",code, "", response);
+        OAuthLoginResponseDTO responseDTO = oAuthService.getAccessToken("google",code, "", response);
 
-        // token 받아오는거 까지 완료됨
-        // responseData 어디로 던져줄지 수정해야함
-        // openFeign쓰던지 기존에 빈페이지로 던져서 처리하던지
-        response.sendRedirect("http://localhost:9000/oauth/token");
+        System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
+
+        if(responseDTO.isLoggedIn()==false || responseDTO == null){
+            response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
+        }else{
+            response.sendRedirect("http://localhost:9000/oauth/token");
+        }
 
         return responseDTO;
-        // 사용자 정보를 사용하여 로그인 처리, 회원가입 등을 진행
-        // 예를 들어, 로그인 처리를 하고 메인 페이지로 리디렉션
     }
 }
