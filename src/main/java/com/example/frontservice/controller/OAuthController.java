@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.UnsupportedEncodingException;
@@ -83,5 +84,16 @@ public class OAuthController {
             }
         }
         return "sign-in";
+    }
+
+    @GetMapping("/token/{message}/{type}")
+    public String tokenFailPage(
+            @PathVariable("message") String message,
+            @PathVariable("type") String type,
+            HttpServletRequest request
+    ){
+        request.setAttribute("message", message);
+        request.setAttribute("type", type);
+        return "token";
     }
 }
