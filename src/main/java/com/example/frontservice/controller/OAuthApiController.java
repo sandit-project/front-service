@@ -30,7 +30,7 @@ public class OAuthApiController {
 
         System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
 
-        if(responseDTO.isLoggedIn()==false || responseDTO == null){
+        if(responseDTO.isLoggedIn()==false){
             response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
         }else{
             response.sendRedirect("http://localhost:9000/oauth/token");

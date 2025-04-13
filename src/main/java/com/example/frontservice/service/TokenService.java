@@ -15,6 +15,7 @@ public class TokenService {
     private final AuthClient authClient;
 
     public RefreshTokenClientResponseDTO refreshToken(Cookie[] cookies) {
+        System.out.println("refresh token request excute!!");
         String refreshToken = CookieUtil.getCookieValue(cookies, "refreshToken");
         if (refreshToken == null) {
             return null;

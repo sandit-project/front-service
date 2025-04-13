@@ -16,17 +16,18 @@ let setupAjax = () => {
     })
 }
 
-let sendAccessToken = () => {
-    return new Promise((resolve, reject)=>{
+let getUserInfo = () => {
+    return new Promise((resolve,reject)=>{
         $.ajax({
-            type : 'GET',
-            url : '/access-token',
-            success : (response) => {
+            type: 'GET',
+            url: '/user/info',
+            success:(response)=>{
                 resolve(response);
             },
-            error : (xhr) => {
-                console.error('xhr :: ',xhr);
+            error: (xhr)=>{
+                console.log("xhr :: ",xhr);
                 if(xhr.status === 401){
+                    // 토큰 만료 에러 메세지에 따라 refreshToken 보냄
                     handleTokenExpiration();
                 }else{
                     reject(xhr);

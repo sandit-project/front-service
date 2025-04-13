@@ -18,6 +18,8 @@
             <li><a href="about_us.html">About Us</a></li>
             <li><a href="help.html">Help</a></li>
             <li><a href="#" class="order-now">Order Now</a></li>
+            <li><button class="order-now" id="logoutBtn">logout</button></li>
+            <li><button class="order-now" id="deleteBtn">deleteAcc</button></li>
         </ul>
     </nav>
 </header> <!-- 카테고리 내비게이션 -->
@@ -33,6 +35,12 @@
     </ul>
 </div> <!-- 메인 컨텐츠 -->
 <main> <!-- 첫 번째 버거 섹션 -->
+    <div>
+        <input id="hiddenUserId" type="hidden">
+        <input id="hiddenUserName" type="hidden">
+
+        <h1 id="welcome-message"></h1>
+    </div>
     <section class="menu-section"><h2>Burgers</h2>
         <div class="menu-items">
             <div class="menu-item"><h3>Pattie Burger</h3>

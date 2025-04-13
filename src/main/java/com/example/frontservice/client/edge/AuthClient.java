@@ -22,4 +22,6 @@ public interface AuthClient {
     @PostMapping("/refresh")
     RefreshTokenClientResponseDTO refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
 
+    @PostMapping("/user/info")
+    UserInfoResponseDTO getUserInfo(@RequestBody String token);
 }

@@ -1,10 +1,7 @@
 package com.example.frontservice.service;
 
 import com.example.frontservice.client.edge.AuthClient;
-import com.example.frontservice.dto.JoinClientResponseDTO;
-import com.example.frontservice.dto.JoinRequestDTO;
-import com.example.frontservice.dto.LoginClientResponseDTO;
-import com.example.frontservice.dto.LoginRequestDTO;
+import com.example.frontservice.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +16,9 @@ public class AuthService {
 
     public LoginClientResponseDTO login(LoginRequestDTO loginRequestDTO) {
         return authClient.login(loginRequestDTO);
+    }
+
+    public UserInfoResponseDTO getUserInfo(String token) {
+        return authClient.getUserInfo(token);
     }
 }
