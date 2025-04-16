@@ -3,6 +3,7 @@ package com.example.frontservice.controller;
 import ch.qos.logback.core.model.Model;
 import com.example.frontservice.dto.*;
 import com.example.frontservice.dto.oauth.GoogleUserInfoResponseDTO;
+import com.example.frontservice.dto.oauth.KakaoLogoutResponseDTO;
 import com.example.frontservice.dto.oauth.KakaoUserInfoResponseDTO;
 import com.example.frontservice.dto.oauth.NaverUserInfoResponseDTO;
 import com.example.frontservice.service.AuthService;
@@ -46,14 +47,30 @@ public class AuthApiController {
     }
 
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        CookieUtil.deleteCookie(request,response,"refreshToken");
-        // feign으로 로그아웃요청 보내서 redis 및 DB에 토큰 제거
+    public LogoutResponseDTO logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization").substring(7);
+        
+        LogoutResponseDTO resultDTO = authService.logout("Bearer " + token);
+        
+        if(resultDTO.isSuccessed()){
+            String[] splitArr = token.split(":");
+
+            if("kakao".equals(splitArr[0])){
+                // 카카오 로그아웃api로 로그아웃 진행
+                KakaoLogoutResponseDTO kakaoLogoutResponseDTO = oAuthService.kakaoLogout("Bearer " + splitArr[2]);
+                if(kakaoLogoutResponseDTO == null){
+                    resultDTO.setSuccessed(false);
+                }
+            }
+
+            CookieUtil.deleteCookie(request,response,"refreshToken");
+        }
+        return resultDTO;
     }
 
     @GetMapping("/user/info")
     public UserInfoResponseDTO getUserInfo(HttpServletRequest request) {
-        System.out.println("header is :: " + request.getHeader("Authorization").substring(7));
+        //System.out.println("header is :: " + request.getHeader("Authorization").substring(7));
         String[] splitArr = request.getHeader("Authorization").substring(7).split(":");
         if("naver".equals(splitArr[0])){
             NaverUserInfoResponseDTO responseDTO = oAuthService.getNaverUserInfo(splitArr[2]);

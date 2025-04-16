@@ -5,6 +5,7 @@ import com.example.frontservice.client.edge.AuthClient;
 import com.example.frontservice.client.social.*;
 import com.example.frontservice.dto.*;
 import com.example.frontservice.dto.oauth.*;
+import com.example.frontservice.type.Type;
 import com.example.frontservice.util.CookieUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static com.example.frontservice.type.Type.*;
+
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
@@ -20,10 +23,11 @@ public class OAuthService {
     private final NaverProfileClient naverProfileClient;
 
     private final KakaoTokenClient kakaoTokenClient;
-
     private final GoogleTokenClient googleTokenClient;
     private final KakaoProfileClient kakaoProfileClient;
     private final GoogleProfileClient googleProfileClient;
+
+    private final KakaoLogoutClient kakaoLogoutClient;
 
     private final AuthClient authClient;
 
@@ -136,19 +140,25 @@ public class OAuthService {
         }
     }
 
-//    public UserLoginResponseDTO getReAccessToken(String type, String refreshToken, HttpServletResponse response) {
-//
-//        NaverTokenResponseDTO responseDTO = naverTokenClient.getReAccessToken("refresh_token", naverClientId, naverClientSecret, refreshToken );
-//
-////        CookieUtil.addCookie(response, "refreshToken",type + ":" + responseDTO.getRefresh_token(), 7*24*60*60 );
-////        CookieUtil.addCookie(response, "accessToken",type + ":" + responseDTO.getAccess_token(), 60*60 );
-//
-//        return UserLoginResponseDTO.builder()
-//                .loggedIn(true)
-//                .accessToken(type + ":" + responseDTO.getAccess_token())
-//                .refreshToken(type + ":" + responseDTO.getRefresh_token())
-//                .build();
-//    }
+    public OAuthLoginResponseDTO getReAccessToken(String type, String userId, String refreshToken) {
+
+        if(type.equals("naver")){
+            return naverReAccessToken(userId, refreshToken);
+        }else if(type.equals("kakao")){
+            return kakaoReAccessToken(userId, refreshToken);
+        }else if(type.equals("google")){
+            return googleReAccessToken(userId, refreshToken);
+        }else{
+
+        }
+        NaverTokenResponseDTO responseDTO = naverTokenClient.getReAccessToken("refresh_token", naverClientId, naverClientSecret, refreshToken );
+
+        return OAuthLoginResponseDTO.builder()
+                .loggedIn(true)
+                .accessToken(type + ":" + responseDTO.getAccess_token())
+                .refreshToken(type + ":" + responseDTO.getRefresh_token())
+                .build();
+    }
 
     public NaverUserInfoResponseDTO getNaverUserInfo(String token) {
         try {
@@ -205,17 +215,60 @@ public class OAuthService {
         }
     }
 
-//    public Authentication getAuthentication(String token, String name) {
-//        // Claims에서 역할을 추출하고, GrantedAuthority로 변환
-//        List<GrantedAuthority> authorities = Collections.singletonList(
-//                // 권한은 리스트로 여러 개 넣어 줄 수도 있다.
-//                new SimpleGrantedAuthority(Role.ROLE_USER.name())
-//        );
-//
-//        // UserDetails 객체 생성
-//        UserDetails userDetails = new User(name,"",authorities);
-//
-//        // spring security에 인증객체 생성한거 등록 해줌 (컨버팅)
-//        return new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
-//    }
+    public KakaoLogoutResponseDTO kakaoLogout(String token){
+        return kakaoLogoutClient.logout(token);
+    }
+
+    private OAuthLoginResponseDTO naverReAccessToken(String userId, String refreshToken){
+        NaverTokenResponseDTO responseDTO = naverTokenClient.getReAccessToken("refresh_token", naverClientId, naverClientSecret, refreshToken );
+        if(responseDTO != null){
+            return OAuthLoginResponseDTO.builder()
+                    .loggedIn(true)
+                    .type(NAVER)
+                    .accessToken("naver:" + userId + ":" + responseDTO.getAccess_token())
+                    .refreshToken("naver:" + userId + ":" + responseDTO.getRefresh_token())
+                    .build();
+        }else{
+            return OAuthLoginResponseDTO.builder()
+                    .loggedIn(false)
+                    .type(NAVER)
+                    .message("Failed to get access token")
+                    .build();
+        }
+    }
+    private OAuthLoginResponseDTO kakaoReAccessToken(String userId, String refreshToken){
+        String contentType = "application/x-www-form-urlencoded;charset=utf-8";
+        KakaoTokenResponseDTO responseDTO = kakaoTokenClient.getReAccessToken(contentType, "refresh_token", kakaoClientId, refreshToken );
+        if(responseDTO != null){
+            return OAuthLoginResponseDTO.builder()
+                    .loggedIn(true)
+                    .type(KAKAO)
+                    .accessToken("kakao:" + userId + ":" + responseDTO.getAccess_token())
+                    .refreshToken("kakao:" + userId + ":" + responseDTO.getRefresh_token())
+                    .build();
+        }else{
+            return OAuthLoginResponseDTO.builder()
+                    .loggedIn(false)
+                    .type(KAKAO)
+                    .message("Failed to get access token")
+                    .build();
+        }
+    }
+    private OAuthLoginResponseDTO googleReAccessToken(String userId, String refreshToken){
+        GoogleTokenResponseDTO responseDTO = googleTokenClient.getReAccessToken(googleClientId,googleClientSecret,refreshToken,"refresh_token");
+        if(responseDTO != null){
+            return OAuthLoginResponseDTO.builder()
+                    .loggedIn(true)
+                    .type(GOOGLE)
+                    .accessToken("google:" + userId + ":" + responseDTO.getAccess_token())
+                    .refreshToken("google:" + userId + ":" + responseDTO.getRefresh_token())
+                    .build();
+        }else{
+            return OAuthLoginResponseDTO.builder()
+                    .loggedIn(false)
+                    .type(GOOGLE)
+                    .message("Failed to get access token")
+                    .build();
+        }
+    }
 }
