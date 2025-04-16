@@ -15,20 +15,18 @@ $(document).ready(()=>{
 });
 
 let logout = () => {
+    setupAjax();
     $.ajax({
         type: 'POST',
-        url: '/login',
-        data: JSON.stringify(signInData),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: (response) => {
-            alert('로그인이 성공했습니다.');
-            localStorage.setItem('accessToken',response.accessToken);
-            window.location.href = '/';
+        url: '/logout',
+        success: ()=>{
+            alert('로그아웃이 성공했습니다.');
+            localStorage.removeItem('accessToken');
+            window.location.href = '/member/login';
         },
-        error : (error) => {
-            console.error('log in error :: ',error);
-            alert('로그인 중 오류가 발생했습니다.');
+        error: (error)=>{
+            console.log('오류 발생 : ',error);
+            alert('로그아웃 중 오류가 발생했습니다.');
         }
     });
 }

@@ -21,4 +21,8 @@ public class AuthService {
     public UserInfoResponseDTO getUserInfo(String token) {
         return authClient.getUserInfo(token);
     }
+
+    public LogoutResponseDTO logout(String token) {
+        return authClient.logout(token);
+    }
 }

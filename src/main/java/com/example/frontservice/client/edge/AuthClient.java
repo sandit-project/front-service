@@ -3,9 +3,12 @@ package com.example.frontservice.client.edge;
 import com.example.frontservice.dto.*;
 import com.example.frontservice.dto.oauth.OAuthLoginRequestDTO;
 import com.example.frontservice.dto.oauth.OAuthLoginResponseDTO;
+import com.example.frontservice.dto.oauth.OAuthUpdateTokensDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "authClient", url = "${sandit.edge-service-url}/auths")
 public interface AuthClient {
@@ -22,6 +25,12 @@ public interface AuthClient {
     @PostMapping("/refresh")
     RefreshTokenClientResponseDTO refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
 
+    @PostMapping("/re/tokens")
+    RefreshTokenClientResponseDTO updateTokens(@RequestBody OAuthUpdateTokensDTO oAuthUpdateTokensDTO);
+
     @PostMapping("/user/info")
     UserInfoResponseDTO getUserInfo(@RequestBody String token);
+
+    @PostMapping("/logout")
+    LogoutResponseDTO logout(@RequestHeader("Authorization")String token);
 }
