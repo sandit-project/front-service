@@ -19,10 +19,14 @@ public class AuthService {
     }
 
     public UserInfoResponseDTO getUserInfo(String token) {
-        return authClient.getUserInfo(token);
+        return authClient.getUserInfo("Bearer " + token);
     }
 
     public LogoutResponseDTO logout(String token) {
         return authClient.logout(token);
+    }
+
+    public LogoutResponseDTO deleteAccount(String token) {
+        return authClient.deleteAccount(token);
     }
 }
