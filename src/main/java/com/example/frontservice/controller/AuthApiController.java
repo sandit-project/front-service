@@ -12,10 +12,10 @@ import com.example.frontservice.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import static com.example.frontservice.type.Role.ROLE_USER;
 
@@ -47,24 +47,28 @@ public class AuthApiController {
     }
 
     @PostMapping("/logout")
-    public LogoutResponseDTO logout(HttpServletRequest request, HttpServletResponse response) {
+    public LogoutResponseDTO logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = request.getHeader("Authorization").substring(7);
         
         LogoutResponseDTO resultDTO = authService.logout("Bearer " + token);
         
         if(resultDTO.isSuccessed()){
-            String[] splitArr = token.split(":");
-
-            if("kakao".equals(splitArr[0])){
-                // 카카오 로그아웃api로 로그아웃 진행
-                KakaoLogoutResponseDTO kakaoLogoutResponseDTO = oAuthService.kakaoLogout("Bearer " + splitArr[2]);
-                if(kakaoLogoutResponseDTO == null){
-                    resultDTO.setSuccessed(false);
-                }
-            }
-
             CookieUtil.deleteCookie(request,response,"refreshToken");
         }
+
+        return resultDTO;
+    }
+
+    @DeleteMapping("/user")
+    public LogoutResponseDTO deleteAccount(HttpServletRequest request, HttpServletResponse response){
+        String token = request.getHeader("Authorization").substring(7);
+
+        LogoutResponseDTO resultDTO = authService.deleteAccount("Bearer " + token);
+
+        if(resultDTO.isSuccessed()){
+            CookieUtil.deleteCookie(request,response,"refreshToken");
+        }
+
         return resultDTO;
     }
 

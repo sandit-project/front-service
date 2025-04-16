@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import static com.example.frontservice.type.Type.*;
 
 @Service
@@ -66,7 +69,7 @@ public class OAuthService {
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
             OAuthLoginResponseDTO resultDTO = authClient.socialLogin(
                     OAuthLoginRequestDTO.builder()
-                            .accessToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
+                            .accessToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getAccess_token())
                             .refreshToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
                             .id(resultInfo.getId())
                             .name(resultInfo.getName())
@@ -93,7 +96,7 @@ public class OAuthService {
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
             OAuthLoginResponseDTO resultDTO = authClient.socialLogin(
                     OAuthLoginRequestDTO.builder()
-                            .accessToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
+                            .accessToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getAccess_token())
                             .refreshToken(type + ":" + resultInfo.getId() + ":" + responseDTO.getRefresh_token())
                             .id(resultInfo.getId())
                             .name("")
@@ -119,7 +122,7 @@ public class OAuthService {
             // 토큰이랑 사용자 정보 받아와서 edge - auth로 전달 해야함
             OAuthLoginResponseDTO resultDTO = authClient.socialLogin(
                     OAuthLoginRequestDTO.builder()
-                            .accessToken(type + ":" + resultInfo.getSub() + ":" + responseDTO.getRefresh_token())
+                            .accessToken(type + ":" + resultInfo.getSub() + ":" + responseDTO.getAccess_token())
                             .refreshToken(type + ":" + resultInfo.getSub() + ":" + responseDTO.getRefresh_token())
                             .id(resultInfo.getSub())
                             .name(resultInfo.getName())
@@ -213,10 +216,6 @@ public class OAuthService {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public KakaoLogoutResponseDTO kakaoLogout(String token){
-        return kakaoLogoutClient.logout(token);
     }
 
     private OAuthLoginResponseDTO naverReAccessToken(String userId, String refreshToken){
