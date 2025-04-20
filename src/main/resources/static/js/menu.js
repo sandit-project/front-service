@@ -16,6 +16,10 @@ $(document).ready(()=>{
     $('#deleteBtn').on("click",()=>{
         deleteAccount();
     });
+
+    $('#profileBtn').on("click",()=>{
+        requestProfile();
+    });
 });
 
 let logout = () => {
@@ -48,6 +52,21 @@ let deleteAccount = () => {
         error: (error)=>{
             console.log('오류 발생 : ',error);
             alert('회원 탈퇴 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+let requestProfile = () => {
+    setupAjax();
+    $.ajax({
+        type: 'GET',
+        url: '/member/profile',
+        success: ()=>{
+            alert('회원 정보 로드에 성공했습니다.');
+        },
+        error: (error)=>{
+            console.log('오류 발생 : ',error);
+            alert('회원 정보 로드 중 오류가 발생했습니다.');
         }
     });
 }

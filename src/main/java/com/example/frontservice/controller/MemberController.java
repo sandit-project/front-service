@@ -16,4 +16,8 @@ public class MemberController {
     public String join() {
         return "sign-up";
     }
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }

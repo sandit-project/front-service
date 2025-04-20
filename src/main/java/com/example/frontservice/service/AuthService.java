@@ -29,4 +29,8 @@ public class AuthService {
     public LogoutResponseDTO deleteAccount(String token) {
         return authClient.deleteAccount(token);
     }
+
+    public ProfileResponseDTO getUserProfile(String token) {
+        return authClient.getUserProfile("Bearer " + token);
+    }
 }
