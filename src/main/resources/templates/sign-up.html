@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d78d965e5fda55ed5b58e6019e67e8b5&libraries=services"></script>
     <script th:src="@{/js/signUp.js}"></script>
     <link th:href="@{/css/signUp.css}" rel="stylesheet">
     <title>회원가입</title>
@@ -26,6 +28,30 @@
         <div class="form-group">
             <label for="user_name">이름</label>
             <input type="text" id="user_name" placeholder="이름을 입력하세요" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="text" id="email" placeholder="이메일을 입력하세요" required>
+            <button type="button" id="email-submit">인증하기</button>
+        </div>
+
+        <div class="form-group">
+            <label for="mainAddress">주소</label>
+            <input type="text" id="mainAddress" placeholder="주소를 입력하세요" required>
+            <button type="button" id="mainAddress-kakao">주소 찾기</button>
+            <p>아파트의 경우 동, 호수까지 입력해주세요</p>
+            <div id="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="subAddress1">서브 주소 1</label>
+            <input type="text" id="subAddress1" placeholder="주소를 입력하세요" required>
+        </div>
+
+        <div class="form-group">
+            <label for="subAddress2">서브 주소2</label>
+            <input type="text" id="subAddress2" placeholder="주소를 입력하세요" required>
         </div>
 
         <!-- 역할 선택 요소 추가 -->
