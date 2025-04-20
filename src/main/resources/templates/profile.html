@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/profile.js}"></script>
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <h1 id="welcome-message"></h1>
+    </div>
+</header>
+<main>
+    <div>
+        <input id="hiddenUserId" type="hidden">
+        <input id="hiddenUserName" type="hidden">
+        <input id="hiddenUserRole" type="hidden">
+    </div>
+    <div class="detail-container">
+        <div class="info-section">
+            <div class="user-profile">
+                <P>이름 : </P>
+                <P id="name"></P>
+            </div>
+            <div class="user-profile">
+                <P>이메일 : </P>
+                <P id="email"></P>
+            </div>
+            <div class="user-profile">
+                <P>연락처 : </P>
+                <P id="phone"></P>
+            </div>
+            <div class="user-profile">
+                <P>가입일 : </P>
+                <P id="createdDate"></P>
+            </div>
+            <div class="user-profile">
+                <P>가입경로 : </P>
+                <P id="type"></P>
+            </div>
+            <div class="user-profile">
+                <P>메인 주소 : </P>
+                <P id="mainAddress"></P>
+            </div>
+            <div class="user-profile">
+                <P>추가 주소 1 : </P>
+                <P id="subAddress1"></P>
+            </div>
+            <div class="user-profile">
+                <P>추가 주소 2 : </P>
+                <P id="subAddress2"></P>
+            </div>
+        </div>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2023 회사명. All rights reserved.</p>
+</footer>
+</body>
+</html>

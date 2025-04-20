@@ -63,13 +63,28 @@ public class AuthApiController {
     public LogoutResponseDTO deleteAccount(HttpServletRequest request, HttpServletResponse response){
         String token = request.getHeader("Authorization").substring(7);
 
-        LogoutResponseDTO resultDTO = authService.deleteAccount("Bearer " + token);
+        String[] splitArr = token.split(":");
 
-        if(resultDTO.isSuccessed()){
-            CookieUtil.deleteCookie(request,response,"refreshToken");
+        boolean resultDeleteOAuth=false;
+        LogoutResponseDTO resultDTO;
+
+        if("naver".equals(splitArr[0]) || "kakao".equals(splitArr[0]) || "google".equals(splitArr[0])){
+            resultDeleteOAuth = oAuthService.deleteOAuth(token);
         }
 
-        return resultDTO;
+        if(resultDeleteOAuth || !("naver".equals(splitArr[0]) || "kakao".equals(splitArr[0]) || "google".equals(splitArr[0]))){
+            resultDTO = authService.deleteAccount("Bearer " + token);
+
+            if(resultDTO.isSuccessed()){
+                CookieUtil.deleteCookie(request,response,"refreshToken");
+            }
+
+            return resultDTO;
+        }
+
+        return LogoutResponseDTO.builder()
+                .successed(false)
+                .build();
     }
 
     @GetMapping("/user/info")
@@ -101,5 +116,9 @@ public class AuthApiController {
             return authService.getUserInfo(splitArr[0]);
         }
     }
-
+    @GetMapping("/profile")
+    public ProfileResponseDTO getUserProfile(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        return authService.getUserProfile(token);
+    }
 }

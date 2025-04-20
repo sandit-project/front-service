@@ -34,4 +34,6 @@ public interface AuthClient {
     @DeleteMapping("/user")
     LogoutResponseDTO deleteAccount(@RequestHeader("Authorization")String token);
 
+    @PostMapping("/profile")
+    ProfileResponseDTO getUserProfile(@RequestHeader("Authorization")String token);
 }

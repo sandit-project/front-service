@@ -3,9 +3,7 @@ package com.example.frontservice.service;
 
 import com.example.frontservice.client.edge.AuthClient;
 import com.example.frontservice.client.social.*;
-import com.example.frontservice.dto.*;
 import com.example.frontservice.dto.oauth.*;
-import com.example.frontservice.type.Type;
 import com.example.frontservice.util.CookieUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,9 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import static com.example.frontservice.type.Type.*;
 
@@ -30,7 +25,8 @@ public class OAuthService {
     private final KakaoProfileClient kakaoProfileClient;
     private final GoogleProfileClient googleProfileClient;
 
-    private final KakaoLogoutClient kakaoLogoutClient;
+    private final KakaoRevokeClient kakaoRevokeClient;
+    private final GoogleRevokeClient googleRevokeClient;
 
     private final AuthClient authClient;
 
@@ -151,8 +147,6 @@ public class OAuthService {
             return kakaoReAccessToken(userId, refreshToken);
         }else if(type.equals("google")){
             return googleReAccessToken(userId, refreshToken);
-        }else{
-
         }
         NaverTokenResponseDTO responseDTO = naverTokenClient.getReAccessToken("refresh_token", naverClientId, naverClientSecret, refreshToken );
 
@@ -216,6 +210,23 @@ public class OAuthService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean deleteOAuth(String token){
+        String[] splitArr = token.split(":");
+
+        boolean result=false;
+
+        if("naver".equals(splitArr[0])){
+            result = "success".equals(naverTokenClient.deleteNaver("delete",naverClientId,naverClientSecret,splitArr[2]).getResult());
+        }else if("kakao".equals(splitArr[0])){
+            result = kakaoRevokeClient.logout("Bearer " + splitArr[2]) != null;
+        }else if("google".equals(splitArr[0])){
+            googleRevokeClient.revokeToken(splitArr[2]);
+            result = true;
+        }
+
+        return result;
     }
 
     private OAuthLoginResponseDTO naverReAccessToken(String userId, String refreshToken){
