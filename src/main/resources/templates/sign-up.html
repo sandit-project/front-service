@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d78d965e5fda55ed5b58e6019e67e8b5&libraries=services"></script>
+    <script th:src="@{/js/findAddress.js}"></script>
+    <script th:src="@{/js/emailVerify.js}"></script>
     <script th:src="@{/js/signUp.js}"></script>
     <link th:href="@{/css/signUp.css}" rel="stylesheet">
     <title>회원가입</title>
@@ -31,27 +32,56 @@
         </div>
 
         <div class="form-group">
+            <label for="phone">전화번호</label>
+            <input type="text" id="phone" placeholder="전화번호를 입력하세요" required>
+        </div>
+
+        <div class="form-group" id="agreement_phone">
+            <input type="checkbox" id="phoneyn" name="phoneyn">
+            <label for="phoneyn">이벤트 문자 수신에 동의합니다.</label>
+        </div>
+
+        <div class="form-group">
             <label for="email">이메일</label>
             <input type="text" id="email" placeholder="이메일을 입력하세요" required>
             <button type="button" id="email-submit">인증하기</button>
         </div>
 
+        <div class="form-group" id="agreement_email">
+            <input type="checkbox" id="emailyn" name="emailyn">
+            <label for="emailyn">이벤트 이메일 수신에 동의합니다.</label>
+        </div>
+
+        <div class="form-group" id="email-code-group" style="display:none;">
+            <label for="email_code">인증 코드</label>
+            <input type="text" id="email_code" placeholder="코드를 입력하세요">
+            <button type="button" id="email-verify">확인</button>
+            <span id="timer">03:00</span>
+        </div>
+
         <div class="form-group">
-            <label for="mainAddress">주소</label>
-            <input type="text" id="mainAddress" placeholder="주소를 입력하세요" required>
+            <label for="main_address_base">주소</label>
+            <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
+            <!-- zonecode 저장용 hidden field -->
+            <input type="hidden" id="postcode">
             <button type="button" id="mainAddress-kakao">주소 찾기</button>
             <p>아파트의 경우 동, 호수까지 입력해주세요</p>
             <div id="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <label for="main_address_detail">상세주소</label>
+            <input type="text" id="main_address_detail" placeholder="상세주소를 입력하세요">
+        </div>
+
+
+        <div class="form-group">
+            <label for="sub_address1">서브 주소 1</label>
+            <input type="text" id="sub_address1" placeholder="주소를 입력하세요" required>
         </div>
 
         <div class="form-group">
-            <label for="subAddress1">서브 주소 1</label>
-            <input type="text" id="subAddress1" placeholder="주소를 입력하세요" required>
-        </div>
-
-        <div class="form-group">
-            <label for="subAddress2">서브 주소2</label>
-            <input type="text" id="subAddress2" placeholder="주소를 입력하세요" required>
+            <label for="sub_address2">서브 주소2</label>
+            <input type="text" id="sub_address2" placeholder="주소를 입력하세요" required>
         </div>
 
         <!-- 역할 선택 요소 추가 -->
@@ -63,7 +93,7 @@
             </select>
         </div>
 
-        <input id="signup" type="submit" value="회원가입">
+        <button id="signup" type="button">회원가입</button>
     </div>
 </div>
 
