@@ -1,61 +1,72 @@
-$(document).ready(()=>{
+$(document).ready(() => {
+    $('#signup').on('click', async function(e) {
+        e.preventDefault();
+        const btn = $(this).prop('disabled', true);
 
-    $('#signup').on('click',()=>{
+        // 1) 폼 값 수집
+        const userId     = $('#user_id').val().trim();
+        const password   = $('#password').val().trim();
+        const userName   = $('#user_name').val().trim();
+        const email      = $('#email').val().trim();
+        const phone      = $('#phone').val().trim();
+        const baseAddress   = $('#main_address_base').val().trim();
+        const detailAddress = $('#main_address_detail').val().trim();
+        const mainAddress   = detailAddress ? `${baseAddress} ${detailAddress}` : baseAddress;
+        const subAddress1       = $('#sub_address1').val().trim();
+        const subAddress2       = $('#sub_address2').val().trim();
+        const role       = $('#role').val();
 
-        let userId = $('#user_id').val();
-        let password = $('#password').val();
-        let userName = $('#user_name').val();
-        let mainAddress = $('#main_address').val();
-        let subAddress1 = $('#sub_address1').val();
-        let subAddress2 = $('#sub_address2').val();
-        let role = $('#role').val();
-
-        let signUpData = {
-            userId : userId,
-            password : password,
-            userName : userName,
-            mainAddress : mainAddress,
-            subAddress1 : subAddress1,
-            subAddress2 : subAddress2,
-            role : role
+        if (!userId || !password || !userName || !mainAddress) {
+            alert('필수 입력 항목을 모두 채워주세요.');
+            return btn.prop('disabled', false);
         }
 
-        //주소 -> 좌표로 변환
-        $.ajax({
-            type : 'POST',
-            url : '/join',
-            data : JSON.stringify(signUpData),
-            contentType : 'application/json; charset=utf-8',
-            dataType : 'json',
-            success : (response) => {
-                alert('회원가입이 성공했습니다.\n로그인 해주세요.');
-                if(response.successed){
-                    window.location.href = '/member/login';
-                }
-            },
-            error : (error) => {
-                console.error('signup error :: ',error);
-                alert('회원가입 중 오류가 발생했습니다.');
-            }
-        });
+        // 2) hidden에서 세팅된 좌표 읽기
+        const mainLat = parseFloat($('#latitude').val());
+        const mainLan = parseFloat($('#longitude').val());
+        if (isNaN(mainLat) || isNaN(mainLan)) {
+            alert('주소 찾기 후 회원가입해주세요.');
+            return btn.prop('disabled', false);
+        }
 
-        $.ajax({
-           type : 'POST',
-           url : '/join',
-           data : JSON.stringify(signUpData),
-           contentType : 'application/json; charset=utf-8',
-           dataType : 'json',
-           success : (response) => {
-                alert('회원가입이 성공했습니다.\n로그인 해주세요.');
-                if(response.successed){
-                    window.location.href = '/member/login';
-                }
-           },
-            error : (error) => {
-                console.error('signup error :: ',error);
-                alert('회원가입 중 오류가 발생했습니다.');
+        // 3) payload 구성
+        const payload = {
+            userId,
+            password,
+            userName,
+            email,
+            phone,
+            mainAddress: `${$('#main_address_base').val().trim()} ${$('#main_address_detail').val().trim()}`.trim(),
+            subAddress1: $('#sub_address1').val().trim(),
+            subAddress2: $('#sub_address2').val().trim(),
+            role: $('#role').val(),
+            mainLat: mainLat,
+            mainLan: mainLan,
+        };
+
+        console.log('회원가입 payload:', payload);
+
+        try {
+            // 4) 실제 가입 요청
+            const res = await $.ajax({
+                type: 'POST',
+                url: `http://localhost:9001/auths/join`,
+                data: JSON.stringify(payload),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json'
+            });
+
+            if (res.successed) {
+                alert('회원가입 성공!');
+                location.href = '/member/login';
+            } else {
+                alert('회원가입에 실패했습니다.');
             }
-        });
+        } catch (err) {
+            console.error('회원가입 요청 중 오류:', err);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            btn.prop('disabled', false);
+        }
     });
-
 });
