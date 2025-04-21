@@ -47,7 +47,7 @@ let handleTokenExpiration = () => {
            withCredentials : true
        },
         success : (response) => {
-           localStorage.setItem('accessToken',response.token);
+           localStorage.setItem('accessToken',response.accessToken);
         },
         error : (error) => {
            console.error('token error :: ',error);

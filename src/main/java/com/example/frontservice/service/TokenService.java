@@ -36,6 +36,9 @@ public class TokenService {
             if("naver".equals(splitArr[0]) || "kakao".equals(splitArr[0]) || "google".equals(splitArr[0])){
                 OAuthLoginResponseDTO responseDTO = oAuthService.getReAccessToken(splitArr[0], splitArr[1], splitArr[2]);
 
+                System.out.println("new accessToken :: " + responseDTO.getAccessToken());
+                System.out.println("new refreshToken :: " + responseDTO.getRefreshToken());
+
                 if(responseDTO.isLoggedIn()){
                     // auth-service에 갱신받은 토큰 전달
                     return authClient.updateTokens(
