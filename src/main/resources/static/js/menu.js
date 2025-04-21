@@ -2,6 +2,7 @@ $(document).ready(()=>{
     checkToken();
     setupAjax();
     getUserInfo().then((userInfo)=>{
+        console.log(userInfo);
         $('#welcome-message').text(userInfo.userName + '님 환영합니다!');
         $('#hiddenUserName').val(userInfo.userName);
         $('#hiddenUserId').val(userInfo.userId);
@@ -62,11 +63,10 @@ let requestProfile = () => {
         type: 'GET',
         url: '/member/profile',
         success: ()=>{
-            alert('회원 정보 로드에 성공했습니다.');
+            window.location.href = "/member/profile"
         },
         error: (error)=>{
             console.log('오류 발생 : ',error);
-            alert('회원 정보 로드 중 오류가 발생했습니다.');
         }
     });
 }

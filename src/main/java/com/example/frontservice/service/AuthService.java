@@ -33,4 +33,8 @@ public class AuthService {
     public ProfileResponseDTO getUserProfile(String token) {
         return authClient.getUserProfile("Bearer " + token);
     }
+
+    public boolean updateProfile(String token, UpdateProfileRequestDTO updateProfileRequestDTO) {
+        return authClient.updateProfile(token, updateProfileRequestDTO);
+    }
 }

@@ -36,4 +36,7 @@ public interface AuthClient {
 
     @PostMapping("/profile")
     ProfileResponseDTO getUserProfile(@RequestHeader("Authorization")String token);
+
+    @PutMapping("/profile")
+    boolean updateProfile(@RequestHeader("Authorization") String token, @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO);
 }

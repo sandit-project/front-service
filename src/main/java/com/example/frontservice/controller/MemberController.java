@@ -20,4 +20,8 @@ public class MemberController {
     public String profile() {
         return "profile";
     }
+    @GetMapping("/profile/update")
+    public String updateProfile() {
+        return "update-profile";
+    }
 }

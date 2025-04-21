@@ -9,13 +9,14 @@ import com.example.frontservice.dto.oauth.NaverUserInfoResponseDTO;
 import com.example.frontservice.service.AuthService;
 import com.example.frontservice.service.OAuthService;
 import com.example.frontservice.util.CookieUtil;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import static com.example.frontservice.type.Role.ROLE_USER;
 
@@ -88,37 +89,47 @@ public class AuthApiController {
     }
 
     @GetMapping("/user/info")
-    public UserInfoResponseDTO getUserInfo(HttpServletRequest request) {
+    public UserInfoResponseDTO getUserInfo(HttpServletRequest request,HttpServletResponse response) {
+        // auth-service로 요청보내서 가져오는걸로 해야함
+        // 바로 소셜로그인 api쓰면 토큰만료상태로 null값 나와서 에러남
+
         //System.out.println("header is :: " + request.getHeader("Authorization").substring(7));
-        String[] splitArr = request.getHeader("Authorization").substring(7).split(":");
-        if("naver".equals(splitArr[0])){
-            NaverUserInfoResponseDTO responseDTO = oAuthService.getNaverUserInfo(splitArr[2]);
-            return UserInfoResponseDTO.builder()
-                    .userId(responseDTO.getId())
-                    .userName(responseDTO.getName())
-                    .role(ROLE_USER)
-                    .build();
-        }else if("kakao".equals(splitArr[0])){
-            KakaoUserInfoResponseDTO responseDTO = oAuthService.getKakaoUserInfo(splitArr[2]);
-            return UserInfoResponseDTO.builder()
-                    .userId(responseDTO.getId())
-                    .userName(responseDTO.getNickname())
-                    .role(ROLE_USER)
-                    .build();
-        }else if("google".equals(splitArr[0])){
-            GoogleUserInfoResponseDTO responseDTO = oAuthService.getGoogleUserInfo(splitArr[2]);
-            return UserInfoResponseDTO.builder()
-                    .userId(responseDTO.getSub())
-                    .userName(responseDTO.getName())
-                    .role(ROLE_USER)
-                    .build();
-        }else{
-            return authService.getUserInfo(splitArr[0]);
-        }
-    }
-    @GetMapping("/profile")
-    public ProfileResponseDTO getUserProfile(HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
-        return authService.getUserProfile(token);
+        String[] splitArr = token.split(":");
+        UserInfoResponseDTO responseDTO = null;
+        try{
+            responseDTO = authService.getUserInfo(token);
+        }catch(FeignException e){
+            if (e.status() == 419) {
+                response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+            } else {
+                // 다른 상태코드 처리
+                System.out.println("다른 상태코드: " + e.status());
+            }
+        }
+        return responseDTO;
+    }
+
+    @GetMapping("/profile")
+    public ProfileResponseDTO getUserProfile(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization").substring(7);
+        ProfileResponseDTO responseDTO = null;
+        try{
+            responseDTO = authService.getUserProfile(token);
+        }catch(FeignException e){
+            if (e.status() == 419) {
+                response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+            } else {
+                // 다른 상태코드 처리
+                System.out.println("다른 상태코드: " + e.status());
+            }
+        }
+        return responseDTO;
+    }
+
+    @PutMapping("/profile")
+    public boolean updateProfile(HttpServletRequest request, @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO){
+        String token = request.getHeader("Authorization");
+        return authService.updateProfile(token, updateProfileRequestDTO);
     }
 }
