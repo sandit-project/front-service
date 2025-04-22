@@ -19,7 +19,9 @@ public class KakaoAddressService {
 
     public Map<String, Double> convertToCoordinates(String address) {
         // 1) Feign으로 호출 (Feign이 내부에서 URL 인코딩)
+        System.out.println(address);
         String result = geoClient.getAddress(address, "KakaoAK " + kakaoApiKey);
+        System.out.println(result);
 
         // 2) JSON 파싱
         JSONObject root = new JSONObject(result);

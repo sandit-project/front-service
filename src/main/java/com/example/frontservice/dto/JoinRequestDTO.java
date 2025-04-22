@@ -13,8 +13,14 @@ public class JoinRequestDTO {
     private String phone;
     private String phoneyn;
     private String mainAddress;
+    private String mainLat;
+    private String mainLan;
     private String subAddress1;
+    private String sub1Lat;
+    private String sub1Lan;
     private String subAddress2;
+    private String sub2Lat;
+    private String sub2Lan;
     private Role role;
 
 }

@@ -28,18 +28,19 @@ import static com.example.frontservice.type.Role.ROLE_USER;
 public class AuthApiController {
     private final AuthService authService;
     private final OAuthService oAuthService;
-    private final AuthClient authClient;
 
     @GetMapping("/auths/email/{email}/authcode")
     public ResponseEntity<String> sendCode(@PathVariable String email) {
-        String result = authClient.sendEmailCode(email);
-        return ResponseEntity.ok(result);
+        String code = authService.sendEmailCode(email);
+        return ResponseEntity.ok(code);
     }
 
     @PostMapping("/auths/email/{email}/authcode")
-    public ResponseEntity<String> verifyCode(@PathVariable String email,
-                                             @RequestBody Map<String,String> body) {
-        String token = authClient.verifyEmailCode(email, body);
+    public ResponseEntity<String> verifyCode(
+            @PathVariable String email,
+            @RequestBody Map<String, String> body
+    ) {
+        String token = authService.verifyEmailCode(email, body.get("code"));
         if (token == null || token.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
@@ -48,6 +49,7 @@ public class AuthApiController {
 
     @PostMapping("/join")
     public JoinResponseDTO join(@RequestBody JoinRequestDTO joinRequestDTO) {
+        System.out.println(joinRequestDTO.getMainLat()+joinRequestDTO.getMainLan());
         return authService.join(joinRequestDTO).toJoinResponseDTO();
     }
 
