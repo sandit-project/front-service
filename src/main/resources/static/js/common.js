@@ -48,6 +48,7 @@ let handleTokenExpiration = () => {
        },
         success : (response) => {
            localStorage.setItem('accessToken',response.accessToken);
+            location.reload();
         },
         error : (error) => {
            console.error('token error :: ',error);

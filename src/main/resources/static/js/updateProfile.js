@@ -18,9 +18,9 @@ let requestProfileApi = () => {
             $('#user_name').val(response.userName);
             $('#user_email').val(response.email);
             $('#user_phone').val(response.phone);
-            $('#main_address').val(response.mainAddress);
-            $('#sub_address1').val(response.subAddress1);
-            $('#sub_address2').val(response.subAddress2);
+            $('#main_address_base').val(response.mainAddress);
+            $('#sub1_address_base').val(response.subAddress1);
+            $('#sub2_address_base').val(response.subAddress2);
 
             alert('프로필 요청이 성공했습니다.');
             console.log(response);
@@ -39,14 +39,32 @@ let requestProfileApi = () => {
 let requestProfileUpdate = () => {
     setupAjax();
 
-    let userName = $('#user_name').val();
-    let userEmail = $('#user_email').val();
-    let userEmailyn = $('#user_emailyn').val() === "on";
-    let userPhone = $('#user_phone').val();
-    let userPhoneyn = $('#user_phoneyn').val() === "on";
-    let mainAddress = $('#main_address').val();
-    let subAddress1 = $('#sub_address1').val();
-    let subAddress2 = $('#sub_address2').val();
+    const userName = $('#user_name').val();
+    const userEmail = $('#user_email').val();
+    const userEmailyn = $('#user_emailyn').val() === "on";
+    const userPhone = $('#user_phone').val();
+    const userPhoneyn = $('#user_phoneyn').val() === "on";
+    const baseMainAddress   = $('#main_address_base').val().trim();
+    const detailMainAddress = $('#main_address_detail').val().trim();
+    const mainAddress   = detailMainAddress ? `${baseMainAddress} ${detailMainAddress}` : baseMainAddress;
+    const baseSub1Address   = $('#sub1_address_base').val().trim();
+    const detailSub1Address = $('#sub1_address_detail').val().trim();
+    const subAddress1   = detailSub1Address ? `${baseSub1Address} ${detailSub1Address}` : baseSub1Address;
+    const baseSub2Address   = $('#sub2_address_base').val().trim();
+    const detailSub2Address = $('#sub2_address_detail').val().trim();
+    const subAddress2   = detailSub2Address ? `${baseSub2Address} ${detailSub2Address}` : baseSub2Address;
+
+    if (!userName || !mainAddress) {
+        alert('필수 입력 항목을 모두 채워주세요.');
+    }
+
+    // 2) hidden에서 세팅된 좌표 읽기
+    const mainLat = parseFloat($('#main_latitude').val());
+    const mainLan = parseFloat($('#main_longitude').val());
+    const sub1Lat = parseFloat($('#sub1_latitude').val());
+    const sub1Lan = parseFloat($('#sub1_longitude').val());
+    const sub2Lat = parseFloat($('#sub2_latitude').val());
+    const sub2Lan = parseFloat($('#sub2_longitude').val());
 
     let updateProfileData = {
         userName : userName,

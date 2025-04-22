@@ -14,8 +14,6 @@ $(document).ready(() => {
         const baseAddress   = $('#main_address_base').val().trim();
         const detailAddress = $('#main_address_detail').val().trim();
         const mainAddress   = detailAddress ? `${baseAddress} ${detailAddress}` : baseAddress;
-        const subAddress1       = $('#sub_address1').val().trim();
-        const subAddress2       = $('#sub_address2').val().trim();
         const role       = $('#role').val();
 
         if (!userId || !password || !userName || !mainAddress) {
@@ -24,8 +22,8 @@ $(document).ready(() => {
         }
 
         // 2) hidden에서 세팅된 좌표 읽기
-        const mainLat = parseFloat($('#latitude').val());
-        const mainLan = parseFloat($('#longitude').val());
+        const mainLat = parseFloat($('#main_latitude').val());
+        const mainLan = parseFloat($('#main_longitude').val());
         if (isNaN(mainLat) || isNaN(mainLan)) {
             alert('주소 찾기 후 회원가입해주세요.');
             return btn.prop('disabled', false);
@@ -39,8 +37,6 @@ $(document).ready(() => {
             email,
             phone,
             mainAddress: `${$('#main_address_base').val().trim()} ${$('#main_address_detail').val().trim()}`.trim(),
-            subAddress1: $('#sub_address1').val().trim(),
-            subAddress2: $('#sub_address2').val().trim(),
             role: $('#role').val(),
             mainLat: mainLat,
             mainLan: mainLan,

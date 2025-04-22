@@ -63,25 +63,14 @@
             <label for="main_address_base">주소</label>
             <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
             <!-- zonecode 저장용 hidden field -->
-            <input type="hidden" id="postcode">
+            <input type="hidden" id="main_postcode">
             <button type="button" id="mainAddress-kakao">주소 찾기</button>
             <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-            <div id="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-            <input type="hidden" id="latitude" name="latitude">
-            <input type="hidden" id="longitude" name="longitude">
+            <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
+            <input type="hidden" id="main_latitude" name="latitude">
+            <input type="hidden" id="main_longitude" name="longitude">
             <label for="main_address_detail">상세주소</label>
             <input type="text" id="main_address_detail" placeholder="상세주소를 입력하세요">
-        </div>
-
-
-        <div class="form-group">
-            <label for="sub_address1">서브 주소 1</label>
-            <input type="text" id="sub_address1" placeholder="주소를 입력하세요" required>
-        </div>
-
-        <div class="form-group">
-            <label for="sub_address2">서브 주소2</label>
-            <input type="text" id="sub_address2" placeholder="주소를 입력하세요" required>
         </div>
 
         <!-- 역할 선택 요소 추가 -->

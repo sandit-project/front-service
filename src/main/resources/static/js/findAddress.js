@@ -1,9 +1,18 @@
-function execDaumPostcode() {
+function execDaumPostcode(addressType) {
     new daum.Postcode({
         oncomplete: async function(data) {
             // 1) 화면에 표시
-            $('#postcode').val(data.zonecode);
-            $('#main_address_base').val(data.address);
+            if(addressType === "main"){
+                $('#main_postcode').val(data.zonecode);
+                $('#main_address_base').val(data.address);
+            }else if(addressType === "sub1"){
+                $('#sub1_postcode').val(data.zonecode);
+                $('#sub1_address_base').val(data.address);
+            }else if(addressType === "sub2"){
+                $('#sub2_postcode').val(data.zonecode);
+                $('#sub2_address_base').val(data.address);
+            }
+
 
             // 2) 백엔드에 좌표 요청
             try {
@@ -16,8 +25,16 @@ function execDaumPostcode() {
 
                 // 3) 받아온 lat/lng를 hidden 필드에 세팅
                 if (coords.lat != null && coords.lng != null) {
-                    $('#latitude').val(coords.lat);
-                    $('#longitude').val(coords.lng);
+                    if(addressType === "main"){
+                        $('#main_latitude').val(coords.lat);
+                        $('#main_longitude').val(coords.lng);
+                    }else if(addressType === "sub1"){
+                        $('#sub1_latitude').val(coords.lat);
+                        $('#sub1_longitude').val(coords.lng);
+                    }else if(addressType === "sub2"){
+                        $('#sub2_latitude').val(coords.lat);
+                        $('#sub2_longitude').val(coords.lng);
+                    }
                 } else {
                     console.warn('좌표 변환 결과가 비어있습니다.', coords);
                 }
@@ -31,5 +48,13 @@ function execDaumPostcode() {
 
 $(document).ready(() => {
     // "우편번호" 입력란이나 "주소 찾기" 버튼 클릭 시 팝업 띄우기
-    $('#postcode, #mainAddress-kakao').on('click', execDaumPostcode);
+    $('#main_postcode, #mainAddress-kakao').on('click', ()=>{
+        execDaumPostcode("main");
+    });
+    $('#sub1_postcode, #subAddress1-kakao').on('click', ()=>{
+        execDaumPostcode("sub1");
+    });
+    $('#sub2_postcode, #subAddress2-kakao').on('click', ()=>{
+        execDaumPostcode("sub2");
+    });
 });
