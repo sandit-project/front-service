@@ -1,12 +1,11 @@
 package com.example.frontservice.dto;
 
-import com.example.frontservice.type.Role;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class JoinRequestDTO {
-    private String userId;
-    private String password;
+@Builder
+public class UpdateProfileRequestDTO {
     private String userName;
     private String email;
     private String emailyn;
@@ -15,6 +14,10 @@ public class JoinRequestDTO {
     private String mainAddress;
     private String mainLat;
     private String mainLan;
-    private Role role;
-
+    private String subLat1;
+    private String subLan1;
+    private String subLat2;
+    private String subLan2;
+    private String subAddress1;
+    private String subAddress2;
 }

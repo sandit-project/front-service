@@ -71,3 +71,7 @@ select {
     border-radius: 5px;
     box-sizing: border-box;
 }
+
+#agreement_phone, #agreement_email {
+    display: flex;
+}

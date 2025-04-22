@@ -40,6 +40,10 @@ main {
 .info-section {
     flex: 1 1 400px;
     padding: 20px;
+    display: block;
+}
+.user-profile >p{
+    display: inline-block;
 }
 .product-title {
     font-size: 2rem;
