@@ -16,13 +16,12 @@ let requestProfileApi = () => {
         success: (response) => {
             $('#welcome-message').text(response.userName + '님 환영합니다!');
             $('#user_name').val(response.userName);
-            $('#user_email').val(response.email);
-            $('#user_phone').val(response.phone);
+            $('#email').val(response.email);
+            $('#phone').val(response.phone);
             $('#main_address_base').val(response.mainAddress);
             $('#sub1_address_base').val(response.subAddress1);
             $('#sub2_address_base').val(response.subAddress2);
 
-            alert('프로필 요청이 성공했습니다.');
             console.log(response);
         },
         error : (error) => {
@@ -40,10 +39,10 @@ let requestProfileUpdate = () => {
     setupAjax();
 
     const userName = $('#user_name').val();
-    const userEmail = $('#user_email').val();
-    const userEmailyn = $('#user_emailyn').val() === "on";
-    const userPhone = $('#user_phone').val();
-    const userPhoneyn = $('#user_phoneyn').val() === "on";
+    const email = $('#email').val();
+    const emailyn = $('#emailyn').val() === "on";
+    const phone = $('#phone').val();
+    const phoneyn = $('#phoneyn').val() === "on";
     const baseMainAddress   = $('#main_address_base').val().trim();
     const detailMainAddress = $('#main_address_detail').val().trim();
     const mainAddress   = detailMainAddress ? `${baseMainAddress} ${detailMainAddress}` : baseMainAddress;
@@ -68,10 +67,10 @@ let requestProfileUpdate = () => {
 
     let updateProfileData = {
         userName : userName,
-        email : userEmail,
-        emailyn : userEmailyn? "y" : "n" ,
-        phone : userPhone,
-        phoneyn : userPhoneyn? "y" : "n" ,
+        email : email,
+        emailyn : emailyn? "y" : "n" ,
+        phone : phone,
+        phoneyn : phoneyn? "y" : "n" ,
         mainAddress : mainAddress,
         subAddress1 : subAddress1,
         subAddress2 : subAddress2

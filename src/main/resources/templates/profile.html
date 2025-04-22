@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e0a9cdd5535d7bb018489c5662b3b5ae"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/profile.js}"></script>
+    <script th:src="@{/js/kakaoMobility.js}"></script>
     <link th:href="@{/css/profile.css}" rel="stylesheet">
 </head>
 <body>
@@ -65,6 +67,9 @@
         <div class="info-section">
             <div class="delivery-info">
                 <p>배달 현황 나올 예정입니다</p>
+                <div>
+                    <div id="map" style="width:350px;height:350px;"></div>
+                </div>
             </div>
             <div class="order-info">
                 <p>주문 내역 나올 예정입니다</p>
