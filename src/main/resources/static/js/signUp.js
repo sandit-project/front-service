@@ -8,6 +8,8 @@ $(document).ready(() => {
         const password   = $('#password').val().trim();
         const userName   = $('#user_name').val().trim();
         const email      = $('#email').val().trim();
+        const emailAgree = $('#emailyn').is(':checked') ? 'Y' : 'N';
+        const phoneAgree = $('#phoneyn').is(':checked') ? 'Y' : 'N';
         const phone      = $('#phone').val().trim();
         const baseAddress   = $('#main_address_base').val().trim();
         const detailAddress = $('#main_address_detail').val().trim();
@@ -42,6 +44,8 @@ $(document).ready(() => {
             role: $('#role').val(),
             mainLat: mainLat,
             mainLan: mainLan,
+            phoneyn: phoneAgree,
+            emailyn: emailAgree
         };
 
         console.log('회원가입 payload:', payload);
@@ -50,13 +54,15 @@ $(document).ready(() => {
             // 4) 실제 가입 요청
             const res = await $.ajax({
                 type: 'POST',
-                url: `http://localhost:9001/auths/join`,
+                url: '/join',
                 data: JSON.stringify(payload),
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json'
             });
 
-            if (res.successed) {
+            console.log(res);
+
+            if (res.success) {
                 alert('회원가입 성공!');
                 location.href = '/member/login';
             } else {

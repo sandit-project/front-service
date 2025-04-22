@@ -1,11 +1,6 @@
 package com.example.frontservice.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.example.frontservice.dto.*;
-import com.example.frontservice.dto.oauth.GoogleUserInfoResponseDTO;
-import com.example.frontservice.dto.oauth.KakaoLogoutResponseDTO;
-import com.example.frontservice.dto.oauth.KakaoUserInfoResponseDTO;
-import com.example.frontservice.dto.oauth.NaverUserInfoResponseDTO;
 import com.example.frontservice.service.AuthService;
 import com.example.frontservice.service.OAuthService;
 import com.example.frontservice.util.CookieUtil;
@@ -14,11 +9,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-
-import static com.example.frontservice.type.Role.ROLE_USER;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +21,27 @@ public class AuthApiController {
     private final AuthService authService;
     private final OAuthService oAuthService;
 
+    @GetMapping("/auths/email/{email}/authcode")
+    public ResponseEntity<String> sendCode(@PathVariable String email) {
+        String code = authService.sendEmailCode(email);
+        return ResponseEntity.ok(code);
+    }
+
+    @PostMapping("/auths/email/{email}/authcode")
+    public ResponseEntity<String> verifyCode(
+            @PathVariable String email,
+            @RequestBody Map<String, String> body
+    ) {
+        String token = authService.verifyEmailCode(email, body.get("code"));
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body("");
+        }
+        return ResponseEntity.ok(token);
+    }
+
     @PostMapping("/join")
     public JoinResponseDTO join(@RequestBody JoinRequestDTO joinRequestDTO) {
+        System.out.println(joinRequestDTO.getMainLat()+joinRequestDTO.getMainLan());
         return authService.join(joinRequestDTO).toJoinResponseDTO();
     }
 

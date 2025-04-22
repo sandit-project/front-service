@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:9000")  // CORS 허용
+@CrossOrigin(origins="*")
 @RequiredArgsConstructor
 public class GeocodeController {
     private final KakaoAddressService kakaoAddressService;
