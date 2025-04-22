@@ -11,6 +11,9 @@ function execDaumPostcode(addressType) {
             }else if(addressType === "sub2"){
                 $('#sub2_postcode').val(data.zonecode);
                 $('#sub2_address_base').val(data.address);
+            }else if(addressType === "store"){
+                $('#store_postcode').val(data.zonecode);
+                $('#store_address_base').val(data.address);
             }
 
 
@@ -34,6 +37,9 @@ function execDaumPostcode(addressType) {
                     }else if(addressType === "sub2"){
                         $('#sub2_latitude').val(coords.lat);
                         $('#sub2_longitude').val(coords.lng);
+                    }else if(addressType === "store"){
+                        $('#store_latitude').val(coords.lat);
+                        $('#store_longitude').val(coords.lng);
                     }
                 } else {
                     console.warn('좌표 변환 결과가 비어있습니다.', coords);
@@ -56,5 +62,8 @@ $(document).ready(() => {
     });
     $('#sub2_postcode, #subAddress2-kakao').on('click', ()=>{
         execDaumPostcode("sub2");
+    });
+    $('#store_postcode, #store_address_base').on('click', ()=>{
+        execDaumPostcode("store");
     });
 });

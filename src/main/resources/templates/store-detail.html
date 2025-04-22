@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>지점 상세</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/storeDetail.js"></script>
+    <link href="/css/storeDetail.css" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+<div class="storeDetail-container">
+    <h2>지점 상세 정보</h2>
+    <form id="storeDetailForm">
+        <!-- uid를 숨겨놓기 -->
+        <input type="hidden" id="uid">
+
+        <div>
+            <label>지점명:</label>
+            <input type="text" id="store_name" required>
+        </div>
+        <div>
+            <label>주소:</label>
+            <input type="text" id="address" required>
+        </div>
+        <div>
+            <label>우편번호:</label>
+            <input type="text" id="postcode" required>
+        </div>
+        <div>
+            <label>상태:</label>
+            <select id="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <button type="submit">수정</button>
+            <button type="button" id="deleteBtn" class="btn-delete">삭제</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
