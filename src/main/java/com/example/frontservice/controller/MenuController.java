@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MenuController {
-    @GetMapping("/")
+    @GetMapping("/home")
     public String menu(
             HttpServletRequest request,
             HttpServletResponse response

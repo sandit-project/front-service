@@ -1,0 +1,111 @@
+/* cartList.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+}
+
+.cart-container {
+    width: 80%;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.cart-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cart-table th,
+.cart-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cart-table th {
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: 600;
+}
+
+.amount-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.update-btn,
+.delete-btn,
+.cart-actions button {
+    padding: 6px 12px;
+    margin: 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.update-btn:hover,
+.delete-btn:hover,
+.cart-actions button:hover {
+    background-color: #45a049;
+}
+
+.cart-summary {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.cart-actions {
+    text-align: right;
+}
+
+.cart-actions button {
+    background-color: #007BFF;
+}
+
+#clearCart {
+    background-color: #f0ad4e;
+}
+
+#checkout {
+    background-color: #5cb85c;
+}
+
+#deleteSelected {
+    background-color: #d9534f;
+}
+
+#deleteSelected:hover {
+    background-color: #c9302c;
+}
+
+#clearCart:hover {
+    background-color: #ec971f;
+}
+
+#checkout:hover {
+    background-color: #449d44;
+}

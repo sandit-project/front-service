@@ -1,13 +1,13 @@
 $(document).ready(()=>{
     checkToken();
     setupAjax();
-    // getUserInfo().then((userInfo)=>{
-    //     $('#welcome-message').text(userInfo.userName + '님 환영합니다!');
-    //     $('#hiddenUserName').val(userInfo.userName);
-    //     $('#hiddenUserId').val(userInfo.userId);
-    // }).catch((error)=>{
-    //     console.error('board list user info error : ',error);
-    // });
+    getUserInfo().then((userInfo)=>{
+        $('#welcome-message').text(userInfo.userName + '님 환영합니다!');
+        $('#hiddenUserName').val(userInfo.userName);
+        $('#hiddenUserId').val(userInfo.userId);
+    }).catch((error)=>{
+        console.error('board list user info error : ',error);
+    });
 
     $('#logoutBtn').on("click",()=>{
         logout();
