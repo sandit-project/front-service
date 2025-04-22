@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,15 @@ public class AuthApiController {
 
     @GetMapping("/auths/email/{email}/authcode")
     public ResponseEntity<String> sendCode(@PathVariable String email) {
-        String code = authService.sendEmailCode(email);
-        return ResponseEntity.ok(code);
+        try{
+            String code = authService.sendEmailCode(email);
+            return ResponseEntity.ok(code);
+        } catch (FeignException e){
+            if (e.status() == 400) {
+                return ResponseEntity.badRequest().body(e.contentUTF8());
+            }
+            return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).body("인증 코드 전송 중 오류가 발생했습니다.");
+        }
     }
 
     @PostMapping("/auths/email/{email}/authcode")
@@ -32,11 +40,23 @@ public class AuthApiController {
             @PathVariable String email,
             @RequestBody Map<String, String> body
     ) {
-        String token = authService.verifyEmailCode(email, body.get("code"));
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body("");
+        try {
+            String token = authService.verifyEmailCode(email, body.get("code"));
+            return ResponseEntity.ok(token);
+        } catch (FeignException e) {
+            if (e.status() == 404) {
+                return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body("");
+            }
+            if (e.status() == 400) {
+                return ResponseEntity
+                        .badRequest()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(e.contentUTF8());
+            }
+            return ResponseEntity
+                    .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    .body("인증 코드 검증 중 오류가 발생했습니다.");
         }
-        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/join")

@@ -39,8 +39,12 @@ $(document).ready(() => {
             $('#email-code-group').show();
             startTimer();
         } catch (err) {
-            console.error('전송 오류:', err.status, err.responseText);
-            alert('인증 코드 발송에 실패했습니다.');
+            if (err.status === 400) {
+                // 400번만 특별 처리
+                alert('이미 사용 중인 이메일입니다.');
+            } else {
+                alert('인증 코드 발송에 실패했습니다.');
+            }
         }
     });
 

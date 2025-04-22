@@ -65,8 +65,9 @@ $(document).ready(() => {
                 alert('회원가입에 실패했습니다.');
             }
         } catch (err) {
-            console.error('회원가입 요청 중 오류:', err);
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
+            const msg = err.responseJSON?.message || '오류가 발생했습니다.';
+            alert(msg);
+            console.error('회원가입 오류:', err);
         } finally {
             btn.prop('disabled', false);
         }
