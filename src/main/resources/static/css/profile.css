@@ -40,7 +40,9 @@ main {
 .info-section {
     flex: 1 1 400px;
     padding: 20px;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 .user-profile >p{
     display: inline-block;

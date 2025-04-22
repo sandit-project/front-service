@@ -34,8 +34,8 @@
                 <input type="text" id="user_name" placeholder="이름을 입력하세요" required>
             </div>
             <div class="user-profile">
-                <label for="user_email">이메일</label>
-                <input type="text" id="user_email" placeholder="이메일을 입력하세요" required>
+                <label for="email">이메일</label>
+                <input type="text" id="email" placeholder="이메일을 입력하세요" required>
                 <button type="button" id="email-submit">인증하기</button>
             </div>
             <div class="user-profile" id="email-code-group" style="display:none;">
@@ -45,56 +45,69 @@
                 <span id="timer">03:00</span>
             </div>
             <div class="user-profile">
-                <label for="user_emailyn">이메일 수신여부 </label>
-                <input type="checkbox" id="user_emailyn">
+                <label for="emailyn">이메일 수신여부 </label>
+                <input type="checkbox" id="emailyn">
             </div>
             <div class="user-profile">
-                <label for="user_phone">전화번호</label>
-                <input type="text" id="user_phone" placeholder="전화번호를 입력하세요" required>
+                <label for="phone">전화번호</label>
+                <input type="text" id="phone" placeholder="전화번호를 입력하세요" required>
             </div>
             <div class="user-profile">
-                <label for="user_phoneyn">연락처 수신여부 </label>
-                <input type="checkbox" id="user_phoneyn">
+                <label for="phoneyn">연락처 수신여부 </label>
+                <input type="checkbox" id="phoneyn">
             </div>
             <div class="user-profile">
-                <label for="main_address_base">현재 선택된 주소</label>
-                <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
-                <!-- zonecode 저장용 hidden field -->
-                <input type="hidden" id="main_postcode">
-                <button type="button" id="mainAddress-kakao">주소 찾기</button>
+                <div>
+                    <label for="main_address_base">현재 선택된 주소</label>
+                    <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
+                    <!-- zonecode 저장용 hidden field -->
+                    <input type="hidden" id="main_postcode">
+                    <button type="button" id="mainAddress-kakao">주소 찾기</button>
+                    <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
+                    <input type="hidden" id="main_latitude" name="latitude">
+                    <input type="hidden" id="main_longitude" name="longitude">
+                </div>
                 <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-                <input type="hidden" id="main_latitude" name="latitude">
-                <input type="hidden" id="main_longitude" name="longitude">
-                <label for="main_address_detail">상세주소</label>
-                <input type="text" id="main_address_detail" placeholder="상세주소를 입력하세요">
+                <div class="user-profile">
+                    <label for="main_address_detail">상세주소</label>
+                    <input type="text" id="main_address_detail" placeholder="상세주소를 입력하세요">
+                </div>
             </div>
             <div class="user-profile">
-                <label for="main_address_base">추가 주소 1</label>
-                <input type="text" id="sub_address1_base" placeholder="주소를 입력하세요" required>
-                <!-- zonecode 저장용 hidden field -->
-                <input type="hidden" id="sub1_postcode">
-                <button type="button" id="subAddress1-kakao">주소 찾기</button>
+                <div>
+                    <label for="main_address_base">추가 주소 1</label>
+                    <input type="text" id="sub1_address_base" placeholder="주소를 입력하세요" required>
+                    <!-- zonecode 저장용 hidden field -->
+                    <input type="hidden" id="sub1_postcode">
+                    <button type="button" id="subAddress1-kakao">주소 찾기</button>
+                    <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
+                    <input type="hidden" id="sub1_latitude" name="latitude">
+                    <input type="hidden" id="sub1_longitude" name="longitude">
+                </div>
                 <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-                <input type="hidden" id="sub1_latitude" name="latitude">
-                <input type="hidden" id="sub1_longitude" name="longitude">
-                <label for="sub1_address_detail">상세주소</label>
-                <input type="text" id="sub1_address_detail" placeholder="상세주소를 입력하세요">
+                <div class="user-profile">
+                    <label for="sub1_address_detail">상세주소</label>
+                    <input type="text" id="sub1_address_detail" placeholder="상세주소를 입력하세요">
+                </div>
             </div>
             <div class="user-profile">
-                <label for="main_address_base">추가 주소 2</label>
-                <input type="text" id="sub2_address_base" placeholder="주소를 입력하세요" required>
-                <!-- zonecode 저장용 hidden field -->
-                <input type="hidden" id="sub2_postcode">
-                <button type="button" id="subAddress2-kakao">주소 찾기</button>
+                <div>
+                    <label for="main_address_base">추가 주소 2</label>
+                    <input type="text" id="sub2_address_base" placeholder="주소를 입력하세요" required>
+                    <!-- zonecode 저장용 hidden field -->
+                    <input type="hidden" id="sub2_postcode">
+                    <button type="button" id="subAddress2-kakao">주소 찾기</button>
+                    <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
+                    <input type="hidden" id="sub2_latitude" name="latitude">
+                    <input type="hidden" id="sub2_longitude" name="longitude">
+                </div>
                 <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-                <input type="hidden" id="sub2_latitude" name="latitude">
-                <input type="hidden" id="sub2_longitude" name="longitude">
-                <label for="sub2_address_detail">상세주소</label>
-                <input type="text" id="sub2_address_detail" placeholder="상세주소를 입력하세요">
+                <div class="user-profile">
+                    <label for="sub2_address_detail">상세주소</label>
+                    <input type="text" id="sub2_address_detail" placeholder="상세주소를 입력하세요">
+                </div>
             </div>
+
         </div>
     </div>
 </main>

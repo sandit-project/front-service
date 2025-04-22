@@ -12,12 +12,12 @@ public class UpdateProfileRequestDTO {
     private String phone;
     private String phoneyn;
     private String mainAddress;
+    private String subAddress1;
+    private String subAddress2;
     private String mainLat;
     private String mainLan;
     private String subLat1;
     private String subLan1;
     private String subLat2;
     private String subLan2;
-    private String subAddress1;
-    private String subAddress2;
 }

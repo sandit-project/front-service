@@ -33,7 +33,6 @@ let requestProfileApi = () => {
             $('#sub_address1').text(response.subAddress1);
             $('#sub_address2').text(response.subAddress2);
 
-            alert('프로필 요청이 성공했습니다.');
             console.log(response);
         },
         error : (error) => {
