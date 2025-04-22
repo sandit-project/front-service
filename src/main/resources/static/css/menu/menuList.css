@@ -1,0 +1,121 @@
+/* 전체 레이아웃 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f8f8f8;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #007bff;
+    color: white;
+}
+
+thead th {
+    padding: 10px;
+    text-align: center;
+}
+
+tbody tr {
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+}
+
+/* 이미지 스타일 */
+img {
+    border-radius: 5px;
+    max-height: 50px;
+}
+
+/* 리스트 스타일 (재료, 야채 등) */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 공통 버튼 스타일 */
+.btn, button, a {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* 수정 버튼 */
+.edit-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #218838;
+}
+
+/* 삭제 버튼 */
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* 일반 버튼 */
+button:not(.delete-btn):not(.edit-btn) {
+    background-color: #007bff;
+    color: white;
+}
+
+button:not(.delete-btn):not(.edit-btn):hover {
+    background-color: #0056b3;
+}
+
+/* 버튼 간격 */
+button + button,
+a + a {
+    margin-left: 10px;
+}
+
+/* 반응형 대응 */
+@media (max-width: 600px) {
+    table {
+        font-size: 12px;
+    }
+
+    .btn, button, a {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
