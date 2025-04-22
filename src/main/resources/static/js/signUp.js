@@ -54,7 +54,7 @@ $(document).ready(() => {
             // 4) 실제 가입 요청
             const res = await $.ajax({
                 type: 'POST',
-                url: `http://localhost:9001/auths/join`,
+                url: '/join',
                 data: JSON.stringify(payload),
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json'

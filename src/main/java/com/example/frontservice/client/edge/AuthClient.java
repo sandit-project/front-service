@@ -7,6 +7,8 @@ import com.example.frontservice.dto.oauth.OAuthUpdateTokensDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @FeignClient(name = "authClient", url = "${sandit.edge-service-url}/auths")
 public interface AuthClient {
 
@@ -33,5 +35,12 @@ public interface AuthClient {
 
     @DeleteMapping("/user")
     LogoutResponseDTO deleteAccount(@RequestHeader("Authorization")String token);
+
+    @GetMapping("/email/{email}/authcode")
+    String sendEmailCode(@PathVariable("email") String email);
+
+    @PostMapping("/email/{email}/authcode")
+    String verifyEmailCode(@PathVariable("email") String email,
+                           @RequestBody Map<String,String> body);
 
 }

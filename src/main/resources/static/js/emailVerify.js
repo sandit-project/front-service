@@ -32,7 +32,7 @@ $(document).ready(() => {
         try {
             await $.ajax({
                 type: 'GET',
-                url: `http://localhost:9001/auths/email/${email}/authcode`,
+                url: `/auths/email/${email}/authcode`,
                 dataType: 'text'
             });
             alert('인증 코드가 발송되었습니다!');
@@ -56,7 +56,7 @@ $(document).ready(() => {
         try {
             const token = await $.ajax({
                 type: 'POST',
-                url: `http://localhost:9001/auths/email/${email}/authcode`,
+                url: `/auths/email/${email}/authcode`,
                 data: JSON.stringify({ email: rawEmail, code }),
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'text'

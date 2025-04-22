@@ -1,6 +1,7 @@
 package com.example.frontservice.controller;
 
 import ch.qos.logback.core.model.Model;
+import com.example.frontservice.client.edge.AuthClient;
 import com.example.frontservice.dto.*;
 import com.example.frontservice.dto.oauth.GoogleUserInfoResponseDTO;
 import com.example.frontservice.dto.oauth.KakaoLogoutResponseDTO;
@@ -12,10 +13,13 @@ import com.example.frontservice.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import static com.example.frontservice.type.Role.ROLE_USER;
 
@@ -24,6 +28,23 @@ import static com.example.frontservice.type.Role.ROLE_USER;
 public class AuthApiController {
     private final AuthService authService;
     private final OAuthService oAuthService;
+    private final AuthClient authClient;
+
+    @GetMapping("/auths/email/{email}/authcode")
+    public ResponseEntity<String> sendCode(@PathVariable String email) {
+        String result = authClient.sendEmailCode(email);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/auths/email/{email}/authcode")
+    public ResponseEntity<String> verifyCode(@PathVariable String email,
+                                             @RequestBody Map<String,String> body) {
+        String token = authClient.verifyEmailCode(email, body);
+        if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
+        return ResponseEntity.ok(token);
+    }
 
     @PostMapping("/join")
     public JoinResponseDTO join(@RequestBody JoinRequestDTO joinRequestDTO) {
