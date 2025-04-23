@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
 
     // 메뉴 수정 정보를 불러옵니다.
     const menuName = window.location.pathname.split('/').pop();

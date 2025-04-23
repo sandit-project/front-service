@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    // checkToken();
-    // setupAjax();
+    checkToken();
+    setupAjax();
 
     $("#submitBtn").on("click", function () {
         let fileInput = $("#img")[0].files[0];

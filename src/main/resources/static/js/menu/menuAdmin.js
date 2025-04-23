@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
     // 빵, 재료, 치즈, 소스 옵션 로딩
     loadIngredientOptions("bread");
     loadIngredientOptions("cheese");

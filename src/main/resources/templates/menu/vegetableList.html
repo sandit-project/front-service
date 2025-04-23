@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script th:src="@{/js/common.js}"></script>
-    <script th:src="@{/js/vegetableList.js}"></script>
-    <link th:href="@{/css/commonList.css}" rel="stylesheet">
+    <script th:src="@{/js/menu/vegetableList.js}"></script>
+    <link th:href="@{/css/menu/commonList.css}" rel="stylesheet">
     <title>야채 목록</title>
 </head>
 <body>
@@ -25,20 +25,20 @@
     </tr>
     </thead>
     <tbody id="vegetableTableBody">
-    <tr th:each="vegetable : ${vegetables}">
-        <td th:text="${vegetable.uid}"></td>
-        <td th:text="${vegetable.vegetableName}"></td>
-        <td th:text="${vegetable.calorie}"></td>
-        <td th:text="${vegetable.price}"></td>
-        <td><img th:src="${vegetable.img}" alt="야채 이미지" width="50"></td>
-        <td th:text="${vegetable.status}"></td>
-        <td>
-            <a th:href="@{/vegetables/edit(vegetableName=${vegetable.vegetableName})}">수정</a>
-        </td>
-        <td>
-            <button class="delete-btn" th:data-vegetablename="${vegetable.vegetableName}">삭제</button>
-        </td>
-    </tr>
+<!--    <tr th:each="vegetable : ${vegetables}">-->
+<!--        <td th:text="${vegetable.uid}"></td>-->
+<!--        <td th:text="${vegetable.vegetableName}"></td>-->
+<!--        <td th:text="${vegetable.calorie}"></td>-->
+<!--        <td th:text="${vegetable.price}"></td>-->
+<!--        <td><img th:src="${vegetable.img}" alt="야채 이미지" width="50"></td>-->
+<!--        <td th:text="${vegetable.status}"></td>-->
+<!--        <td>-->
+<!--            <a th:href="@{/vegetables/edit(vegetableName=${vegetable.vegetableName})}">수정</a>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <button class="delete-btn" th:data-vegetablename="${vegetable.vegetableName}">삭제</button>-->
+<!--        </td>-->
+<!--    </tr>-->
     </tbody>
 </table>
 <br>

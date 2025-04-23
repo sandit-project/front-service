@@ -12,7 +12,7 @@ public class MenuForCustomerController {
 
     @GetMapping("/menus/name/{menuName}")
     public String showMenuDetail(@PathVariable String menuName) {
-        return "menuForCustomer"; // 화면만 반환 (HTML 처리)
+        return "menu/menuForCustomer"; // 화면만 반환 (HTML 처리)
     }
 
 
