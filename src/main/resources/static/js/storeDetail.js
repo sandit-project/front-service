@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
+
     const params = new URLSearchParams(window.location.search);
     const uid = params.get("uid");
 
@@ -11,6 +14,8 @@ $(document).ready(function () {
             $('#store_name').val(data.storeName);
             $('#address').val(data.storeAddress);
             $('#postcode').val(data.storePostcode);
+            $('#store_latitude').val(data.storeLatitude);
+            $('#store_longitude').val(data.storeLongitude);
             $('#status').val(data.storeStatus);
         },
         error: function () {
@@ -36,6 +41,8 @@ $(document).ready(function () {
             storeName: $('#store_name').val(),
             storeAddress: $('#address').val(),
             storePostcode: $('#postcode').val(),
+            storeLatitude : $('#store_latitude').val(),
+            storeLongitude : $('#store_longitude').val(),
             storeStatus: $('#status').val()
         };
 

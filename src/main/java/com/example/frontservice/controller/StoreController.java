@@ -16,7 +16,7 @@ public class StoreController {
        return "store-register";
     }
 
-    @GetMapping("/storelist")
+    @GetMapping("/list")
     public String storelist() {
         return "store-list";
     }

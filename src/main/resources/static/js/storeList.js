@@ -1,4 +1,7 @@
 $(document).ready(()=>{
+    checkToken();
+    setupAjax();
+
     //최초 페이지(1)는 lastUid가 null 이어야 함
     cursorMap.set(1,null);
     initStoreList();
