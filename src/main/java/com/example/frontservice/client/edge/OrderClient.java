@@ -21,4 +21,7 @@ public interface OrderClient {
 
     @PostMapping("/update-success")
     OrderResponseDTO updateOrderStatusSuccess(@RequestBody UpdateOrderStatusRequestDTO request);
+
+    @PostMapping("/update-fail")
+    OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
 }

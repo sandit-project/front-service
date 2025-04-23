@@ -3,7 +3,7 @@ let userUid;
 const MOCK_USER = {
     userUid:     1,
     userName:    '홍길동',
-    email:       'test@example.com',
+    email:       'jr0503@naver.com',
     phone:       '010-1234-1234',
     mainAddress: '서울시 강동구 풍성로 136-17',
     subAddress1: 'OO빌딩 3층'

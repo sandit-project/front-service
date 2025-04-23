@@ -20,11 +20,18 @@ public class OrderService {
         return orderClient.submitOrder(request);
     }
 
+    //주문 내역 확인
     public OrderDetailResponseDTO listByUser(Integer userUid) {
         return orderClient.getOrdersByUserUid(userUid);
     }
 
+    //결제 완료 상태로 상태 변환
     public OrderResponseDTO confirmSuccess(UpdateOrderStatusRequestDTO request) {
         return orderClient.updateOrderStatusSuccess(request);
+    }
+
+    //결제 실패 상태로 상태 변환
+    public OrderResponseDTO confirmFail(UpdateOrderStatusRequestDTO request) {
+        return orderClient.updateOrderStatusFail(request);
     }
 }
