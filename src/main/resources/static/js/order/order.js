@@ -52,7 +52,7 @@ async function renderCartItems(items) {
             <div class="cart-item" data-cart-item data-cart-uid="${item.uid}">
                 <input type="checkbox" class="cart-check" checked>
                 <span class="item-name">${item.menuName}</span>
-                <span class="item-price">${item.price}</span>원
+                <span class="item-price">${item.price}원</span>
                 <span class="item-calorie">${item.calorie} kcal</span>
                 <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
             </div>
@@ -289,13 +289,12 @@ function getSelectedCartItems() {
 
 // 수량 변경 이벤트
 $(document).on('change', '.item-amount', function () {
-    const $cartItem = $(this).closest('[data-cart-item]');
-    const cartUid = $cartItem.data('cart-uid');
-    const newAmount = parseInt($(this).val(), 10);
+    const $input = $(this);
+    const newAmount = parseInt($input.val(), 10);
 
     if (isNaN(newAmount) || newAmount < 1) {
         alert('수량은 1 이상이어야 합니다.');
-        $(this).val(1);
+        $input.val(1);
         return;
     }
 
@@ -313,6 +312,12 @@ $(document).on('change', '.item-amount', function () {
     //         alert('수량 변경 실패');
     //     }
     // });
+
+    const uid = $input.closest('[data-cart-item]').data('cart-uid');
+    const item = MOCK_CART_ITEMS.find(i => i.uid === uid);
+    if (item) item.amount = newAmount;
+
+    updateTotalPrice();
 });
 
 
@@ -426,19 +431,33 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 }
             });
         } else {
-            // 결제 실패 시 처리
+            // 결제 실패 or 취소 시 처리
+            const errorMsg = response.error_msg || '';
+            const isCancelled = errorMsg.includes('취소');
+
+            // 취소면 cancelled, 아니면 fail
+            const endpoint = isCancelled
+                ? '/orders/update-cancelled'
+                : '/orders/update-fail';
+
             $.ajax({
-                url: '/orders/update-fail',
+                url: endpoint,
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     merchantUid: response.merchant_uid
                 })
-            }).then(() => {
-                alert('결제 실패 처리 완료');
-            }).catch(error => {
-                console.error('상태 업데이트 실패', error);
-            });
+            })
+                .done(() => {
+                    alert(isCancelled
+                        ? '결제를 취소하였습니다.'
+                        : '결제 실패 처리 완료');
+                    // 필요 시 추가 UI 업데이트
+                })
+                .fail(err => {
+                    console.error('상태 업데이트 실패', err);
+                    alert('주문 상태 업데이트 중 오류가 발생했습니다.');
+                });
         }
     });
 }
@@ -494,8 +513,9 @@ function calculateTotal() {
     let total = 0;
     $('[data-cart-item]').each(function () {
         if ($(this).find('.cart-check').is(':checked')) {
-            const price = parseInt($(this).find('.item-price').text()) || 0;
-            total += price;
+            const price  = parseInt($(this).find('.item-price').text(), 10) || 0;
+            const amount = parseInt($(this).find('.item-amount').val(), 10)    || 0;
+            total += price * amount;
         }
     });
     return total;
@@ -504,7 +524,7 @@ function calculateTotal() {
 // 총 금액 표시 업데이트
 function updateTotalPrice() {
     const totalPrice = calculateTotal();
-    $('#totalPrice').text(`${totalPrice.toLocaleString('ko-KR')} 원`);
+    $('#totalPrice').text(`${totalPrice.toLocaleString('ko-KR')}원`);
 }
 
 // merchant_uid 생성

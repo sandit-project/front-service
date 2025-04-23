@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "orderClient", url = "${sandit.edge-service-url}/orders")
 public interface OrderClient {
 
+    //결제 사전 검증
     @PostMapping("/prepare")
     PreparePaymentResponseDTO preparePayment(@RequestBody PreparePaymentRequestDTO request);
 
@@ -24,4 +25,7 @@ public interface OrderClient {
 
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
+
+    @PostMapping("/update-cancelled")
+    OrderResponseDTO updateOrderStatusCancelled(@RequestBody UpdateOrderStatusRequestDTO request);
 }

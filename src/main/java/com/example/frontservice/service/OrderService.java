@@ -34,4 +34,9 @@ public class OrderService {
     public OrderResponseDTO confirmFail(UpdateOrderStatusRequestDTO request) {
         return orderClient.updateOrderStatusFail(request);
     }
+
+    //결제 취소 상태로 상태 변환
+    public OrderResponseDTO confirmCancelled(UpdateOrderStatusRequestDTO request) {
+        return orderClient.updateOrderStatusCancelled(request);
+    }
 }

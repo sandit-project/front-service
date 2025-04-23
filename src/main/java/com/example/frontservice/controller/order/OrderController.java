@@ -43,4 +43,10 @@ public class OrderController {
         log.info("update order fail::" + request.toString());
         return ResponseEntity.ok(orderService.confirmFail(request));
     }
+
+    @PostMapping("/orders/update-cancelled")
+    public ResponseEntity<OrderResponseDTO> updateOrderStatusCancelled(@RequestBody UpdateOrderStatusRequestDTO request) {
+        log.info("update order cancelled::" + request.toString());
+        return ResponseEntity.ok(orderService.confirmCancelled(request));
+    }
 }
