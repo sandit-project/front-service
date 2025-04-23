@@ -10,6 +10,8 @@ public interface MobilityClient {
     @GetMapping
     String getPath(
             @RequestHeader("Authorization") String authorization,
-            @RequestParam("origin") String origin
+            @RequestParam("origin") String origin,
+            @RequestParam("destination") String destination,
+            @RequestParam("priority") String priority
     );
 }

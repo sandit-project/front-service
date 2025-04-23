@@ -29,23 +29,15 @@ $(document).ready(()=>{
     placeMarker(store, '점포');
     placeMarker(customer, '배달지');
 
-    // 경로 API 호출
-    const MOBILITY_API_KEY = 'REST_API_KEY'; // REST 키
-    const url = 'https://apis-navi.kakaomobility.com/v1/directions';
-
     let pathCoords = [];  // 경로 좌표 배열
     let deliveryMarker;   // 배달원 마커
     let moveIndex = 0;    // 현재 위치 인덱스
 
-    // 엔드포인트로 요청 날려서 openFeign으로 카카오모빌리티에 요청날리는걸로 변경예정
-    fetch(`${url}?origin=${store.lng},${store.lat}&destination=${customer.lng},${customer.lat}&priority=RECOMMEND`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `KakaoAK ${MOBILITY_API_KEY}`
-        }
-    })
-        .then(res => res.json())
-        .then(data => {
+    $.ajax({
+        type: 'GET',
+        url: '/delivery?origin='+store.lng+','+store.lat+'&destination='+customer.lng+','+customer.lat,
+        dataType : 'json',
+        success:(data)=>{
             const roads = data.routes[0].sections[0].roads;
             pathCoords = roads.flatMap(road =>
                 road.vertexes.reduce((arr, val, idx, array) => {
@@ -76,7 +68,11 @@ $(document).ready(()=>{
             // 배달원 이동 시작
             moveIndex = 0;
             moveDeliveryMan();
-        });
+        },
+        error: (error)=>{
+            console.log("error :: ",error);
+        }
+    })
 
     // 배달원 위치 갱신
     function moveDeliveryMan() {
