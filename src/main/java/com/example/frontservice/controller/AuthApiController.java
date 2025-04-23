@@ -156,6 +156,7 @@ public class AuthApiController {
             } else {
                 // 다른 상태코드 처리
                 System.out.println("다른 상태코드: " + e.status());
+                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             }
         }
         return responseDTO;
