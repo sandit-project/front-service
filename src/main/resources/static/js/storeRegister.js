@@ -2,6 +2,8 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
+
+
     // 지점 등록 버튼 클릭 이벤트
     $('#storeRegister').click(async (event) => {
         event.preventDefault(); // 기본 동작 막기
@@ -14,6 +16,7 @@ $(document).ready(() => {
             const storeName = $('#store_name').val();
             const address = $('#store_address_base').val();
             const addressDetail = $('#store_address_detail').val();
+            const fullAddress = addressDetail? `${address} ${addressDetail}` : address ;
             const postcode = $('#store_postcode').val();
             const storeLatitude = $('#store_latitude').val();
             const storeLongitude = $('#store_longitude').val();
@@ -27,8 +30,7 @@ $(document).ready(() => {
             // 서버로 전송할 데이터 생성
             const formData = {
                 storeName,
-                storeAddress: address,
-                storeAddressDetail: addressDetail,
+                storeAddress: fullAddress,
                 storePostcode: postcode,
                 storeLatitude: storeLatitude,
                 storeLongitude: storeLongitude,
@@ -41,7 +43,7 @@ $(document).ready(() => {
             await sendDataToServer(formData);
 
             alert('지점가입이 성공했습니다.');
-            window.location.href = '/store/storelist'; // 페이지 이동
+            window.location.href = '/store/list'; // 페이지 이동
         } catch (error) {
             console.error('오류 발생: ', error);
             alert('처리 중 문제가 발생했습니다. 다시 시도해주세요.');
