@@ -9,6 +9,6 @@ public class MainViewController {
 
     @GetMapping("/admin")
     public String adminMainPage() {
-        return "main";
+        return "menu/main";
     }
 }

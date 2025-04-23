@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    // checkToken();
-    // setupAjax();
+    checkToken();
+    setupAjax();
 
     // 사이드 목록 불러오기
     function loadSides() {

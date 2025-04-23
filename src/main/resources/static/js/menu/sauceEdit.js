@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
     const sauceName = window.location.pathname.split('/').pop();
 
     $.ajax({

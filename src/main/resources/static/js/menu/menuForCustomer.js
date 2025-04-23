@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    checkToken();
+    setupAjax();
     const menuName = window.location.pathname.split('/').pop(); // URL에서 메뉴 이름 추출
 
     // 메뉴 상세 정보 Ajax 호출

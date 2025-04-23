@@ -8,16 +8,16 @@ public class MenuViewController {
 
     @GetMapping("/menus/admin")
     public String showMenuForm() {
-        return "menuAdmin"; // HTML 페이지 이름
+        return "menu/menuAdmin"; // HTML 페이지 이름
     }
 
     @GetMapping("/menus/list")
     public String showMenuList() {
-        return "menuList";
+        return "menu/menuList";
     }
 
     @GetMapping("/menus/edit/{menuName}")
     public String editMenu() {
-        return "menuEdit";
+        return "menu/menuEdit";
     }
 }

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
 
     function loadBreads() {
         $.ajax({

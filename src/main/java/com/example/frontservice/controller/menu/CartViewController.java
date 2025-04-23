@@ -9,7 +9,7 @@ public class CartViewController {
 
     @GetMapping("/cart")
     public String viewCart() {
-        return "cartList"; // cartList.html
+        return "menu/cartList"; // cartList.html
     }
 }
 

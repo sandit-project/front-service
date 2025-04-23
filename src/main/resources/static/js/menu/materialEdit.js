@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
     // URL에서 materialName을 가져오기 (예: /menus/materials/edit/햄)
     const materialName = window.location.pathname.split('/').pop();
 

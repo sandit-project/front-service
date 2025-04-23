@@ -1,8 +1,11 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
     // 메뉴 목록 Ajax로 불러오기
     $.ajax({
         type: "GET",
         url: "/menus",  // 이 엔드포인트는 MenuService에서 활성 상태 메뉴 반환해야 함
+
         success: function (menus) {
             const container = $(".menu-container");
 

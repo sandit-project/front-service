@@ -10,6 +10,6 @@ public class CustomCartViewController {
 
     @GetMapping("/customCart")
     public String showCustomCartForm() {
-        return "customCart";  // 재료 없이 뷰만 반환
+        return "menu/customCart";  // 재료 없이 뷰만 반환
     }
 }

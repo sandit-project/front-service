@@ -1,10 +1,13 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
     // 메뉴 목록을 Ajax로 로드
     function loadMenus() {
         $.ajax({
             url: "/menus", // 메뉴 데이터를 반환하는 API URL
             type: "GET",
             dataType: "json", // 서버에서 JSON 형식으로 응답 받음
+
             success: function (data) {
                 renderMenuList(data);
             },

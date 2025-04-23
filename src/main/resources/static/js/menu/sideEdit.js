@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    checkToken();
+    setupAjax();
     const sideName = window.location.pathname.split('/').pop();
 
     $.ajax({
