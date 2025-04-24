@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -15,5 +16,5 @@ public class StoreResponseDTO {
     private Double  storeLatitude;
     private Double  storeLongitude;
     private String  storeStatus;
-    private Instant storeCreatedDate;
+    private LocalDateTime storeCreatedDate;
 }

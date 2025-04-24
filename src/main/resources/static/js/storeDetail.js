@@ -10,28 +10,21 @@ $(document).ready(function () {
         url: `/stores/${uid}`,
         method: 'GET',
         success: function (data) {
+            console.log('지점 상세 조회 :',data);
             $('#uid').val(data.uid);
             $('#store_name').val(data.storeName);
             $('#address').val(data.storeAddress);
             $('#postcode').val(data.storePostcode);
             $('#store_latitude').val(data.storeLatitude);
             $('#store_longitude').val(data.storeLongitude);
-            $('#status').val(data.storeStatus);
+            $('#status').val(data.storeStatus)
         },
         error: function () {
             alert('지점 정보를 불러오는데 실패했습니다.');
         }
     });
 
-    // 주소 클릭 시 다음 주소 API 호출
-    $('#address').click(function () {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                $('#postcode').val(data.zonecode);
-                $('#address').val(data.roadAddress);
-            }
-        }).open();
-    });
+
 
     // 수정 요청
     $('#storeDetailForm').submit(function (e) {
@@ -53,7 +46,7 @@ $(document).ready(function () {
             data: JSON.stringify(formData),
             success: function () {
                 alert('수정 성공!');
-                window.location.href = '/store/storelist';
+                window.location.href = '/store/list';
             },
             error: function () {
                 alert('수정 실패!');
@@ -70,7 +63,7 @@ $(document).ready(function () {
             method: 'DELETE',
             success: function () {
                 alert('삭제 성공!');
-                window.location.href = '/store/storelist';
+                window.location.href = '/store/list';
             },
             error: function () {
                 alert('삭제 실패!');

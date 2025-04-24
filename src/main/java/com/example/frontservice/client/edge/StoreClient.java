@@ -37,4 +37,9 @@ public interface StoreClient {
                                        @RequestParam("storeStatus") String storeStatus,
                                        @RequestHeader("Authorization") String token);
 
+    @GetMapping("/stores/orders/list")
+    StoreOrderListResponseDTO getStoreOrderList(@RequestParam("limit") int limit,
+                                      @RequestParam("lastUid") Long lastUid,
+                                      @RequestHeader("Authorization") String token);
+
 }
