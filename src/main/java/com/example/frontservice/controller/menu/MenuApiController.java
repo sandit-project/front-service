@@ -4,12 +4,15 @@ import com.example.frontservice.dto.menu.*;
 import com.example.frontservice.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/menus")
 @RequiredArgsConstructor
@@ -67,23 +70,30 @@ public class MenuApiController {
     }
 
 
-    @PostMapping(value = "/breads", consumes = "multipart/form-data")
+    @PostMapping(value = "/breads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BreadResponseDTO> addBread(
             HttpServletRequest request,
-            @RequestPart("bread") BreadRequestDTO bread,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("bread") BreadRequestDTO breadRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        log.info("Received bread: {}", breadRequestDTO);
+        log.info("Received file: {}", file.getOriginalFilename());
+        System.out.println("Received bread data: " + breadRequestDTO);
+        System.out.println("Received file name: " + file.getOriginalFilename());
+
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addBread("Bearer " +token, bread, file));
+
+        return ResponseEntity.ok(menuService.addBread("Bearer " +token, breadRequestDTO, file));
     }
 
-    @PutMapping(value = "/breads/{breadName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/breads/{breadName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BreadResponseDTO> updateBread(
             HttpServletRequest request,
             @PathVariable String breadName,
-            @RequestPart("bread") BreadRequestDTO bread,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("bread") BreadRequestDTO breadRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateBread("Bearer " +token, breadName, bread, file));
+
+        return ResponseEntity.ok(menuService.updateBread("Bearer " +token, breadName, breadRequestDTO, file));
     }
 
 
@@ -111,23 +121,23 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getCheese("Bearer " +token, cheeseName));
     }
 
-    @PostMapping(value = "/cheeses", consumes = "multipart/form-data")
+    @PostMapping(value = "/cheeses", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CheeseResponseDTO> addCheese(
             HttpServletRequest request,
-            @RequestPart("cheese") CheeseRequestDTO cheese,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("cheese") CheeseRequestDTO cheeseRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addCheese("Bearer " +token, cheese, file));
+        return ResponseEntity.ok(menuService.addCheese("Bearer " +token, cheeseRequestDTO, file));
     }
 
-    @PutMapping(value = "/cheeses/{cheeseName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/cheeses/{cheeseName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CheeseResponseDTO> updateCheese(
             HttpServletRequest request,
             @PathVariable String cheeseName,
-            @RequestPart("cheese") CheeseRequestDTO cheese,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("cheese") CheeseRequestDTO cheeseRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateCheese("Bearer " +token, cheeseName, cheese, file));
+        return ResponseEntity.ok(menuService.updateCheese("Bearer " +token, cheeseName, cheeseRequestDTO, file));
     }
 
     @DeleteMapping("/cheeses/{cheeseName}")
@@ -149,23 +159,23 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getMaterial("Bearer " +token, materialName));
     }
 
-    @PostMapping(value = "/materials", consumes = "multipart/form-data")
+    @PostMapping(value = "/materials", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MaterialResponseDTO> addMaterial(
             HttpServletRequest request,
-            @RequestPart("material") MaterialRequestDTO material,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("material") MaterialRequestDTO materialRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addMaterial("Bearer " +token, material, file));
+        return ResponseEntity.ok(menuService.addMaterial("Bearer " +token, materialRequestDTO, file));
     }
 
-    @PutMapping(value = "/materials/{materialName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/materials/{materialName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MaterialResponseDTO> updateMaterial(
             HttpServletRequest request,
             @PathVariable String materialName,
-            @RequestPart("material") MaterialRequestDTO material,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("material") MaterialRequestDTO materialRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateMaterial("Bearer " +token, materialName, material, file));
+        return ResponseEntity.ok(menuService.updateMaterial("Bearer " +token, materialName, materialRequestDTO, file));
     }
 
     @DeleteMapping("/materials/{materialName}")
@@ -189,29 +199,29 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getVegetable("Bearer " +token, vegetableName));
     }
 
-    @PostMapping(value = "/vegetables", consumes = "multipart/form-data")
+    @PostMapping(value = "/vegetables", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VegetableResponseDTO> addVegetable(
             HttpServletRequest request,
-            @RequestPart("vegetable") VegetableRequestDTO vegetable,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("vegetable") VegetableRequestDTO vegetableRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addVegetable("Bearer " +token, vegetable, file));
+        return ResponseEntity.ok(menuService.addVegetable("Bearer " +token, vegetableRequestDTO, file));
     }
 
-    @PutMapping(value = "/vegetables/{vegetableName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/vegetables/{vegetableName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VegetableResponseDTO> updateVegetable(
             HttpServletRequest request,
             @PathVariable String vegetableName,
-            @RequestPart("vegetable") VegetableRequestDTO vegetable,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("vegetable") VegetableRequestDTO vegetableRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateVegetable("Bearer " +token, vegetableName, vegetable, file));
+        return ResponseEntity.ok(menuService.updateVegetable("Bearer " +token, vegetableName, vegetableRequestDTO, file));
     }
 
     @DeleteMapping("/vegetables/{vegetableName}")
     public ResponseEntity<Void> deleteVegetable(HttpServletRequest request, @PathVariable String vegetableName) {
         String token = extractToken(request);
-        menuService.deleteMaterial("Bearer " +token, vegetableName);
+        menuService.deleteVegetable("Bearer " +token, vegetableName);
         return ResponseEntity.noContent().build();
     }
 
@@ -228,23 +238,23 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getSauce("Bearer " +token, sauceName));
     }
 
-    @PostMapping(value = "/sauces", consumes = "multipart/form-data")
+    @PostMapping(value = "/sauces", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SauceResponseDTO> addSauce(
             HttpServletRequest request,
-            @RequestPart("sauce") SauceRequestDTO sauce,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("sauce") SauceRequestDTO sauceRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addSauce("Bearer " +token, sauce, file));
+        return ResponseEntity.ok(menuService.addSauce("Bearer " +token, sauceRequestDTO, file));
     }
 
-    @PutMapping(value = "/sauces/{sauceName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/sauces/{sauceName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SauceResponseDTO> updateSauce(
             HttpServletRequest request,
             @PathVariable String sauceName,
-            @RequestPart("sauce") SauceRequestDTO sauce,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("sauce") SauceRequestDTO sauceRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateSauce("Bearer " +token, sauceName, sauce, file));
+        return ResponseEntity.ok(menuService.updateSauce("Bearer " +token, sauceName, sauceRequestDTO, file));
     }
 
     @DeleteMapping("/sauces/{sauceName}")
@@ -267,23 +277,23 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getSide("Bearer " +token, sideName));
     }
 
-    @PostMapping(value = "/sides", consumes = "multipart/form-data")
+    @PostMapping(value = "/sides", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SideResponseDTO> addSide(
             HttpServletRequest request,
-            @RequestPart("side") SideRequestDTO side,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("side") SideRequestDTO sideRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addSide("Bearer " +token, side, file));
+        return ResponseEntity.ok(menuService.addSide("Bearer " +token, sideRequestDTO, file));
     }
 
-    @PutMapping(value = "/sides/{sideName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/sides/{sideName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SideResponseDTO> updateSide(
             HttpServletRequest request,
             @PathVariable String sideName,
-            @RequestPart("side") SideRequestDTO side,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("side") SideRequestDTO sideRequestDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateSide("Bearer " +token, sideName, side, file));
+        return ResponseEntity.ok(menuService.updateSide("Bearer " +token, sideName, sideRequestDTO, file));
     }
 
     @DeleteMapping("/sides/{sideName}")
@@ -398,13 +408,13 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getCustomCart("Bearer " +token, uid));
     }
 
-    @PostMapping("/custom-carts")
+    @PostMapping(value = "/custom-cart", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomCartResponseDTO> createCustomCart(
             HttpServletRequest request,
-            @RequestBody CustomCartRequestDTO dto) {
+            @RequestBody CustomCartRequestDTO customCartRequestDTO) {
         String token = extractToken(request);
-        System.out.println(dto.toString());
-        return ResponseEntity.ok(menuService.createCustomCart("Bearer " +token, dto));
+        System.out.println(customCartRequestDTO.toString());
+        return ResponseEntity.ok(menuService.createCustomCart("Bearer " +token, customCartRequestDTO));
     }
 
     @DeleteMapping("/custom-carts/{uid}")
@@ -436,23 +446,23 @@ public class MenuApiController {
         return ResponseEntity.ok(menuService.getMenu("Bearer " +token, menuName));
     }
 
-    @PostMapping(consumes = "multipart/form-data")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MenuResponseDTO> addMenu(
             HttpServletRequest request,
-            @RequestPart("menu") MenuRequestDTO menu,
+            @RequestPart("menu") MenuRequestDTO menuRequestDTO,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addMenu("Bearer " +token, menu, file));
+        return ResponseEntity.ok(menuService.addMenu("Bearer " +token, menuRequestDTO, file));
     }
 
-    @PutMapping(value = "/{menuName}", consumes = "multipart/form-data")
+    @PutMapping(value = "/{menuName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MenuResponseDTO> updateMenu(
             HttpServletRequest request,
             @PathVariable String menuName,
-            @RequestPart("menu") MenuRequestDTO menu,
+            @RequestPart("menu") MenuRequestDTO menuRequestDTO,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateMenu("Bearer " +token, menuName, menu, file));
+        return ResponseEntity.ok(menuService.updateMenu("Bearer " +token, menuName, menuRequestDTO, file));
     }
 
     @DeleteMapping("/{menuName}")

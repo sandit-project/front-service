@@ -23,12 +23,12 @@ public class MenuService {
         return menuClient.getBread(token, breadName);
     }
 
-    public BreadResponseDTO addBread(String token, BreadRequestDTO bread, MultipartFile file) {
-        return menuClient.addBread(token, bread, file);
+    public BreadResponseDTO addBread(String token, BreadRequestDTO breadRequestDTO, MultipartFile file) {
+        return menuClient.addBread(token, breadRequestDTO, file);
     }
 
-    public BreadResponseDTO updateBread(String token, String breadName, BreadRequestDTO bread, MultipartFile file) {
-        return menuClient.updateBread(token, breadName, bread, file);
+    public BreadResponseDTO updateBread(String token, String breadName, BreadRequestDTO breadRequestDTO, MultipartFile file) {
+        return menuClient.updateBread(token, breadName, breadRequestDTO, file);
     }
 
     public void deleteBread(String token, String breadName) {
@@ -44,12 +44,12 @@ public class MenuService {
         return menuClient.getCheese(token, cheeseName);
     }
 
-    public CheeseResponseDTO addCheese(String token, CheeseRequestDTO cheese, MultipartFile file) {
-        return menuClient.addCheese(token, cheese, file);
+    public CheeseResponseDTO addCheese(String token, CheeseRequestDTO cheeseRequestDTO, MultipartFile file) {
+        return menuClient.addCheese(token, cheeseRequestDTO, file);
     }
 
-    public CheeseResponseDTO updateCheese(String token, String cheeseName, CheeseRequestDTO cheese, MultipartFile file) {
-        return menuClient.updateCheese(token, cheeseName, cheese, file);
+    public CheeseResponseDTO updateCheese(String token, String cheeseName, CheeseRequestDTO cheeseRequestDTO, MultipartFile file) {
+        return menuClient.updateCheese(token, cheeseName, cheeseRequestDTO, file);
     }
 
     public void deleteCheese(String token, String cheeseName) {
@@ -65,12 +65,12 @@ public class MenuService {
         return menuClient.getMaterial(token, materialName);
     }
 
-    public MaterialResponseDTO addMaterial(String token, MaterialRequestDTO material, MultipartFile file) {
-        return menuClient.addMaterial(token, material, file);
+    public MaterialResponseDTO addMaterial(String token, MaterialRequestDTO materialRequestDTO, MultipartFile file) {
+        return menuClient.addMaterial(token, materialRequestDTO, file);
     }
 
-    public MaterialResponseDTO updateMaterial(String token, String materialName, MaterialRequestDTO material, MultipartFile file) {
-        return menuClient.updateMaterial(token, materialName, material, file);
+    public MaterialResponseDTO updateMaterial(String token, String materialName, MaterialRequestDTO materialRequestDTO, MultipartFile file) {
+        return menuClient.updateMaterial(token, materialName, materialRequestDTO, file);
     }
 
     public void deleteMaterial(String token, String materialName) {
@@ -86,12 +86,12 @@ public class MenuService {
         return menuClient.getSauce(token, sauceName);
     }
 
-    public SauceResponseDTO addSauce(String token, SauceRequestDTO sauce, MultipartFile file) {
-        return menuClient.addSauce(token, sauce, file);
+    public SauceResponseDTO addSauce(String token, SauceRequestDTO sauceRequestDTO, MultipartFile file) {
+        return menuClient.addSauce(token, sauceRequestDTO, file);
     }
 
-    public SauceResponseDTO updateSauce(String token, String sauceName, SauceRequestDTO sauce, MultipartFile file) {
-        return menuClient.updateSauce(token, sauceName, sauce, file);
+    public SauceResponseDTO updateSauce(String token, String sauceName, SauceRequestDTO sauceRequestDTO, MultipartFile file) {
+        return menuClient.updateSauce(token, sauceName, sauceRequestDTO, file);
     }
 
     public void deleteSauce(String token, String sauceName) {
@@ -107,12 +107,12 @@ public class MenuService {
         return menuClient.getVegetable(token, vegetableName);
     }
 
-    public VegetableResponseDTO addVegetable(String token, VegetableRequestDTO vegetable, MultipartFile file) {
-        return menuClient.addVegetable(token, vegetable, file);
+    public VegetableResponseDTO addVegetable(String token, VegetableRequestDTO vegetableRequestDTO, MultipartFile file) {
+        return menuClient.addVegetable(token, vegetableRequestDTO, file);
     }
 
-    public VegetableResponseDTO updateVegetable(String token, String vegetableName, VegetableRequestDTO vegetable, MultipartFile file) {
-        return menuClient.updateVegetable(token, vegetableName, vegetable, file);
+    public VegetableResponseDTO updateVegetable(String token, String vegetableName, VegetableRequestDTO vegetableRequestDTO, MultipartFile file) {
+        return menuClient.updateVegetable(token, vegetableName, vegetableRequestDTO, file);
     }
 
     public void deleteVegetable(String token, String vegetableName) {
@@ -128,12 +128,12 @@ public class MenuService {
         return menuClient.getSide(token, sideName);
     }
 
-    public SideResponseDTO addSide(String token, SideRequestDTO side, MultipartFile file) {
-        return menuClient.addSide(token, side, file);
+    public SideResponseDTO addSide(String token, SideRequestDTO sideRequestDTO, MultipartFile file) {
+        return menuClient.addSide(token, sideRequestDTO, file);
     }
 
-    public SideResponseDTO updateSide(String token, String sideName, SideRequestDTO side, MultipartFile file) {
-        return menuClient.updateSide(token, sideName, side, file);
+    public SideResponseDTO updateSide(String token, String sideName, SideRequestDTO sideRequestDTO, MultipartFile file) {
+        return menuClient.updateSide(token, sideName, sideRequestDTO, file);
     }
 
     public void deleteSide(String token, String sideName) {
@@ -203,8 +203,8 @@ public class MenuService {
         return menuClient.getCustomCart(token, uid);
     }
 
-    public CustomCartResponseDTO createCustomCart(String token, CustomCartRequestDTO dto) {
-        return menuClient.createCustomCart(token, dto);
+    public CustomCartResponseDTO createCustomCart(String token, CustomCartRequestDTO customCartRequestDTO) {
+        return menuClient.createCustomCart(token, customCartRequestDTO);
     }
 
     public void deleteCustomCart(String token, Long uid) {
