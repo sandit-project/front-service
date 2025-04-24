@@ -25,7 +25,4 @@ public interface OrderClient {
 
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
-
-    @PostMapping("/update-cancelled")
-    OrderResponseDTO updateOrderStatusCancelled(@RequestBody UpdateOrderStatusRequestDTO request);
 }

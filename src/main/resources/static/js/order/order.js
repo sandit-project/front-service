@@ -431,34 +431,23 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 }
             });
         } else {
-            // 결제 실패 or 취소 시 처리
-            const errorMsg = response.error_msg || '';
-            const isCancelled = errorMsg.includes('취소');
-
-            // 취소면 cancelled, 아니면 fail
-            const endpoint = isCancelled
-                ? '/orders/update-cancelled'
-                : '/orders/update-fail';
-
+            // 결제 실패 시
             $.ajax({
-                url: endpoint,
+                url: '/orders/update-fail',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     merchantUid: response.merchant_uid
                 })
             })
-                .done(() => {
-                    alert(isCancelled
-                        ? '결제를 취소하였습니다.'
-                        : '결제 실패 처리 완료');
-                    // 필요 시 추가 UI 업데이트
+                .done(function() {
+                    alert('결제 실패!');
                 })
-                .fail(err => {
+                .fail(function(err) {
                     console.error('상태 업데이트 실패', err);
                     alert('주문 상태 업데이트 중 오류가 발생했습니다.');
                 });
-        }
+        };
     });
 }
 
