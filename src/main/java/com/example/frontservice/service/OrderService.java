@@ -16,8 +16,8 @@ public class OrderService {
     }
 
     //주문
-    public OrderResponseDTO submit(OrderRequestDTO request) {
-        return orderClient.submitOrder(request);
+    public OrderResponseDTO submit(String token, OrderRequestDTO request) {
+        return orderClient.submitOrder(token, request);
     }
 
     //주문 내역 확인

@@ -1,13 +1,5 @@
 let userUid;
 
-const MOCK_USER = {
-    userUid:     1,
-    userName:    '홍길동',
-    email:       'jr0503@naver.com',
-    phone:       '010-1234-1234',
-    mainAddress: '서울시 강동구 풍성로 136-17',
-    subAddress1: 'OO빌딩 3층'
-};
 const MOCK_CART_ITEMS = [
     { uid: 1, menuName: '샌드위치 A', price: 100, amount: 1, calorie: 300 },
     { uid: 2, menuName: '샌드위치 B', price: 200, amount: 2, calorie: 150 }
@@ -28,10 +20,6 @@ function getCartItems() {
     //     method: 'GET',
     //     contentType: 'application/json'
     // });
-}
-
-function getUserInfo() {
-    return Promise.resolve(MOCK_USER);
 }
 
 //fillUserInfoForm 헬퍼 (폼에 값 채워넣기)
@@ -122,6 +110,8 @@ let merchantUid = null;
 $(document).ready(async () => {
     const IMP = window.IMP;
     IMP.init('imp54787882');
+    setupAjax();
+    checkToken();
 
     const user = await getUserInfo();
     userUid = user.userUid;
@@ -465,6 +455,7 @@ function sendOrderRequest(cartUids, buyer, paymentResponse, paymentSuccess, tota
         }));
 
         const storeUid = $('#storeSelect').val();
+
 
         $.ajax({
             type: 'POST',
