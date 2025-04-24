@@ -1,12 +1,14 @@
 package com.example.frontservice.dto.menu;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CartResponseDTO {
 
     private int totalQuantity;  // 총 수량

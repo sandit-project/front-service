@@ -13,11 +13,13 @@ $(document).ready(function () {
         let formData = new FormData();
         formData.append("file", fileInput); // 이미지 파일 추가
 
+        // breadData에 img 필드 추가
         let breadData = {
             breadName: $("#breadName").val(),
             calorie: parseFloat($("#calorie").val()),
             price: parseInt($("#price").val(), 10),
-            status: $("#status").val() === "active" ? "ACTIVE" : "DELETED"
+            status: $("#status").val() === "active" ? "ACTIVE" : "DELETED",
+            img: fileInput.name  // img 필드에 업로드된 파일의 이름을 추가
         };
 
         // ✅ JSON 데이터를 Blob으로 변환하여 FormData에 추가 (올바른 Content-Type 설정)
