@@ -1,18 +1,13 @@
 package com.example.frontservice.controller.menu;
 
-import com.example.frontservice.client.edge.MenuClient;
-import com.example.frontservice.dto.LogoutResponseDTO;
 import com.example.frontservice.dto.menu.*;
 import com.example.frontservice.service.MenuService;
-import com.example.frontservice.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController

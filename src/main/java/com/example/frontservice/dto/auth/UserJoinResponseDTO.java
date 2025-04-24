@@ -1,4 +1,4 @@
-package com.example.frontservice.dto;
+package com.example.frontservice.dto.auth;
 
 
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class JoinResponseDTO {
+public class UserJoinResponseDTO {
     private boolean isSuccess;
-    private String url;
 }

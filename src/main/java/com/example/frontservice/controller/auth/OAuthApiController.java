@@ -1,4 +1,4 @@
-package com.example.frontservice.controller;
+package com.example.frontservice.controller.auth;
 
 import com.example.frontservice.dto.oauth.OAuthLoginResponseDTO;
 import com.example.frontservice.service.OAuthService;

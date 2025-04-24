@@ -1,8 +1,8 @@
 package com.example.frontservice.service;
 
 import com.example.frontservice.client.edge.AuthClient;
-import com.example.frontservice.dto.RefreshTokenClientResponseDTO;
-import com.example.frontservice.dto.RefreshTokenRequestDTO;
+import com.example.frontservice.dto.auth.RefreshTokenClientResponseDTO;
+import com.example.frontservice.dto.auth.RefreshTokenRequestDTO;
 import com.example.frontservice.dto.oauth.OAuthUpdateTokensDTO;
 import com.example.frontservice.dto.oauth.OAuthLoginResponseDTO;
 import com.example.frontservice.util.CookieUtil;

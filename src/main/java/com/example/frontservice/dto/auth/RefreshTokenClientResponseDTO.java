@@ -1,4 +1,4 @@
-package com.example.frontservice.dto;
+package com.example.frontservice.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;
