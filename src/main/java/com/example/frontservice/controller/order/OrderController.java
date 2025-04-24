@@ -2,6 +2,7 @@ package com.example.frontservice.controller.order;
 
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,10 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<OrderResponseDTO> submit(@RequestBody OrderRequestDTO request) {
+    public ResponseEntity<OrderResponseDTO> submit(HttpServletRequest request, @RequestBody OrderRequestDTO requestdto) {
         log.info("submit order::" + request.toString());
-        return ResponseEntity.ok(orderService.submit(request));
+        String token = request.getHeader("Authorization");
+        return ResponseEntity.ok(orderService.submit(token,requestdto));
     }
 
     @GetMapping("/orders/user/{userUid}")
@@ -42,11 +44,5 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request) {
         log.info("update order fail::" + request.toString());
         return ResponseEntity.ok(orderService.confirmFail(request));
-    }
-
-    @PostMapping("/orders/update-cancelled")
-    public ResponseEntity<OrderResponseDTO> updateOrderStatusCancelled(@RequestBody UpdateOrderStatusRequestDTO request) {
-        log.info("update order cancelled::" + request.toString());
-        return ResponseEntity.ok(orderService.confirmCancelled(request));
     }
 }

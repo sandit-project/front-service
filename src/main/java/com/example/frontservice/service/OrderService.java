@@ -16,8 +16,8 @@ public class OrderService {
     }
 
     //주문
-    public OrderResponseDTO submit(OrderRequestDTO request) {
-        return orderClient.submitOrder(request);
+    public OrderResponseDTO submit(String token, OrderRequestDTO request) {
+        return orderClient.submitOrder(token, request);
     }
 
     //주문 내역 확인
@@ -35,8 +35,4 @@ public class OrderService {
         return orderClient.updateOrderStatusFail(request);
     }
 
-    //결제 취소 상태로 상태 변환
-    public OrderResponseDTO confirmCancelled(UpdateOrderStatusRequestDTO request) {
-        return orderClient.updateOrderStatusCancelled(request);
-    }
 }
