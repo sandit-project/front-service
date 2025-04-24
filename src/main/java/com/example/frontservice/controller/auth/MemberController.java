@@ -1,4 +1,4 @@
-package com.example.frontservice.controller;
+package com.example.frontservice.controller.auth;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,18 +10,18 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login() {
-        return "sign-in";
+        return "auth/sign-in";
     }
     @GetMapping("/join")
     public String join() {
-        return "sign-up";
+        return "auth/sign-up";
     }
     @GetMapping("/profile")
     public String profile() {
-        return "profile";
+        return "auth/profile";
     }
     @GetMapping("/profile/update")
     public String updateProfile() {
-        return "update-profile";
+        return "auth/update-profile";
     }
 }

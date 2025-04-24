@@ -16,14 +16,14 @@ public class MenuController {
     ){
         if(request.getCookies() == null || request.getCookies().length == 0) {
             System.out.println("Cookies is empty");
-            return "sign-in";
+            return "auth/sign-in";
         }else{
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
                     CookieUtil.deleteCookie(request, response, "accessToken");
                 }
             }
-            return "menu";
+            return "sample";
         }
     }
     @GetMapping("/detail")

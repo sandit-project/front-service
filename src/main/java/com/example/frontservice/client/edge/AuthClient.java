@@ -1,6 +1,6 @@
 package com.example.frontservice.client.edge;
 
-import com.example.frontservice.dto.*;
+import com.example.frontservice.dto.auth.*;
 import com.example.frontservice.dto.oauth.OAuthLoginRequestDTO;
 import com.example.frontservice.dto.oauth.OAuthLoginResponseDTO;
 import com.example.frontservice.dto.oauth.OAuthUpdateTokensDTO;
@@ -13,10 +13,10 @@ import java.util.Map;
 public interface AuthClient {
 
     @PostMapping("/join")
-    JoinClientResponseDTO join(@RequestBody JoinRequestDTO joinRequestDTO);
+    UserJoinResponseDTO join(@RequestBody UserJoinRequestDTO userJoinRequestDTO);
 
     @PostMapping("/login")
-    LoginClientResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO);
+    UserLoginResponseDTO login(@RequestBody UserLoginRequestDTO userLoginRequestDTO);
 
     @PostMapping("/login/oauth")
     OAuthLoginResponseDTO socialLogin(@RequestBody OAuthLoginRequestDTO oAuthLoginRequestDTO);

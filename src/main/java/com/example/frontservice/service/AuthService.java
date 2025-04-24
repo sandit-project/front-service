@@ -1,11 +1,9 @@
 package com.example.frontservice.service;
 
 import com.example.frontservice.client.edge.AuthClient;
-import com.example.frontservice.dto.*;
+import com.example.frontservice.dto.auth.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Map;
 
@@ -14,12 +12,12 @@ import java.util.Map;
 public class AuthService {
     private final AuthClient authClient;
 
-    public JoinClientResponseDTO join(JoinRequestDTO joinRequestDTO) {
-        return authClient.join(joinRequestDTO);
+    public UserJoinResponseDTO join(UserJoinRequestDTO userJoinRequestDTO) {
+        return authClient.join(userJoinRequestDTO);
     }
 
-    public LoginClientResponseDTO login(LoginRequestDTO loginRequestDTO) {
-        return authClient.login(loginRequestDTO);
+    public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
+        return authClient.login(userLoginRequestDTO);
     }
 
     public UserInfoResponseDTO getUserInfo(String token) {

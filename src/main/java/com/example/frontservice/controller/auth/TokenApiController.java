@@ -1,7 +1,7 @@
-package com.example.frontservice.controller;
+package com.example.frontservice.controller.auth;
 
-import com.example.frontservice.dto.RefreshTokenClientResponseDTO;
-import com.example.frontservice.dto.RefreshTokenResponseDTO;
+import com.example.frontservice.dto.auth.RefreshTokenClientResponseDTO;
+import com.example.frontservice.dto.auth.RefreshTokenResponseDTO;
 import com.example.frontservice.service.TokenService;
 import com.example.frontservice.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;

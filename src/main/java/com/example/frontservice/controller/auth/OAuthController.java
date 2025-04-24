@@ -1,4 +1,4 @@
-package com.example.frontservice.controller;
+package com.example.frontservice.controller.auth;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -75,15 +75,15 @@ public class OAuthController {
         System.out.println(Arrays.toString(cookies));
 
         if (cookies == null) {
-            return "sign-in";
+            return "auth/sign-in";
         }
         for (Cookie cookie : cookies) {
             if ("accessToken".equals(cookie.getName())) {
                 model.addAttribute("accessToken", cookie.getValue());
-                return "token";
+                return "auth/token";
             }
         }
-        return "sign-in";
+        return "auth/sign-in";
     }
 
     @GetMapping("/token/{message}/{type}")
@@ -94,6 +94,6 @@ public class OAuthController {
     ){
         request.setAttribute("message", message);
         request.setAttribute("type", type);
-        return "token";
+        return "auth/token";
     }
 }

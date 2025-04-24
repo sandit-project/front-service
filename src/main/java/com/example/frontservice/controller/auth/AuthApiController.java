@@ -1,6 +1,6 @@
-package com.example.frontservice.controller;
+package com.example.frontservice.controller.auth;
 
-import com.example.frontservice.dto.*;
+import com.example.frontservice.dto.auth.*;
 import com.example.frontservice.service.AuthService;
 import com.example.frontservice.service.OAuthService;
 import com.example.frontservice.util.CookieUtil;
@@ -60,17 +60,16 @@ public class AuthApiController {
     }
 
     @PostMapping("/join")
-    public JoinResponseDTO join(@RequestBody JoinRequestDTO joinRequestDTO) {
-        System.out.println(joinRequestDTO.getMainLat()+joinRequestDTO.getMainLan());
-        return authService.join(joinRequestDTO).toJoinResponseDTO();
+    public UserJoinResponseDTO join(@RequestBody UserJoinRequestDTO userJoinRequestDTO) {
+        return authService.join(userJoinRequestDTO);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(
+    public UserLoginResponseDTO login(
             HttpServletResponse response,
-            @RequestBody LoginRequestDTO loginRequestDTO
+            @RequestBody UserLoginRequestDTO userLoginRequestDTO
     ) {
-        LoginClientResponseDTO responseDTO = authService.login(loginRequestDTO);
+        UserLoginResponseDTO responseDTO = authService.login(userLoginRequestDTO);
 
         if(responseDTO != null && responseDTO.isLoggedIn()) {
             CookieUtil.addCookie(response,"refreshToken", responseDTO.getRefreshToken(), 7*24*60*60);
@@ -78,7 +77,7 @@ public class AuthApiController {
 
         assert responseDTO != null;
 
-        return responseDTO.toLoginResponseDTO();
+        return responseDTO;
     }
 
     @PostMapping("/logout")
@@ -123,7 +122,7 @@ public class AuthApiController {
     }
 
     @GetMapping("/user/info")
-    public UserInfoResponseDTO getUserInfo(HttpServletRequest request,HttpServletResponse response) {
+    public UserInfoResponseDTO getUserInfo(HttpServletRequest request, HttpServletResponse response) {
         // auth-service로 요청보내서 가져오는걸로 해야함
         // 바로 소셜로그인 api쓰면 토큰만료상태로 null값 나와서 에러남
 
