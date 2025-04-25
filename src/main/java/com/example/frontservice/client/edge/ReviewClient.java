@@ -6,17 +6,19 @@ import com.example.frontservice.dto.review.ReviewResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "reivewClient", url = "${sandit.edge-service-url}/reviews")
 public interface ReviewClient {
 
     @GetMapping
-    ReviewDetailResponseDTO getAllReview();
+    List<ReviewDetailResponseDTO> getAllReview();
 
     @GetMapping("/{uid}")
     ReviewDetailResponseDTO getReview(@PathVariable("uid") int uid);
 
     @GetMapping("/user/{userUid}")
-    ReviewDetailResponseDTO getReviewByUserUid(@PathVariable("userUid") Integer userUid);
+    List<ReviewDetailResponseDTO> getReviewByUserUid(@PathVariable("userUid") Integer userUid);
 
     @PostMapping
     ReviewResponseDTO writeReview(@RequestBody ReviewRequestDTO reviewRequestDTO);

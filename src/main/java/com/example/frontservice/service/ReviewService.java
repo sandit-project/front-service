@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewClient reviewClient;
 
-    public ReviewDetailResponseDTO getAllReview() {
+    public List<ReviewDetailResponseDTO> getAllReview() {
         return reviewClient.getAllReview();
     }
 
@@ -24,7 +26,7 @@ public class ReviewService {
         return reviewClient.getReview(uid);
     }
 
-    public ReviewDetailResponseDTO getReviewByUserUid(Integer userUid) {
+    public List<ReviewDetailResponseDTO> getReviewByUserUid(Integer userUid) {
         return reviewClient.getReviewByUserUid(userUid);
     }
 

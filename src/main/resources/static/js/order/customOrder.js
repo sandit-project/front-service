@@ -1,4 +1,6 @@
 $(document).ready(() => {
+    requestProfileApi();
+
     $('#previewButton').click(() => {
         const customData = getCustomOrderData(); // 현재 선택된 값 가져오기
 

@@ -20,7 +20,7 @@ public class CustomOrderService {
     }
 
     //최종 주문
-    public OrderResponseDTO submitFinalOrder(@RequestBody FinalCustomRequestDTO request) {
-        return customOrderClient.submitFinalOrder(request);
+    public OrderResponseDTO submitFinalOrder(String token, @RequestBody FinalCustomRequestDTO request) {
+        return customOrderClient.submitFinalOrder(token,request);
     }
 }

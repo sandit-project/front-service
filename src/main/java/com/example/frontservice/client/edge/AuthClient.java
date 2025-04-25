@@ -42,11 +42,4 @@ public interface AuthClient {
     @PutMapping("/profile")
     boolean updateProfile(@RequestHeader("Authorization") String token, @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO);
 
-    @GetMapping("/email/{email}/authcode")
-    String sendEmailCode(@PathVariable("email") String email);
-
-    @PostMapping("/email/{email}/authcode")
-    String verifyEmailCode(@PathVariable("email") String email,
-                           @RequestBody Map<String,String> body);
-
 }

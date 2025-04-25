@@ -1,100 +1,61 @@
-// 1) 모든 리뷰 조회
-async function fetchAllReviews() {
-    try {
-        const res = await fetch('/reviews');
-        if (!res.ok) throw new Error(res.statusText);
-        const data = await res.json();
-        const list = document.getElementById('reviewList');
-        list.innerHTML = '';
-        data.forEach(r => {
-            const li = document.createElement('li');
-            li.textContent = `UID:${r.uid} | User:${r.userUid} | Order:${r.orderUid} | Rate:${r.rate} | Title:${r.title}`;
-            list.appendChild(li);
+$(function() {
+    // common.js 초기화
+    setupAjax();
+    checkToken();
+
+    // 1) 회원 정보 불러와서 폼에 채우기
+    getUserInfo()
+        .then(function(userInfo) {
+            // userInfo 예시: { uid: 1, userName: '홍길동', socialUid: 123, ... }
+            $('#createUserUid').val(userInfo.uid);
+            $('#createSocialUid').val(userInfo.socialUid || '');
+            $('#createUserName').text(userInfo.userName);
+        })
+        .catch(function() {
+            $('#createResponse').text('❗ 회원 정보를 불러오는 데 실패했습니다.');
         });
-    } catch (e) {
-        alert('전체 조회 실패: ' + e.message);
-    }
-}
 
-// 2) UID로 리뷰 조회
-async function fetchReviewById() {
-    const uid = document.getElementById('uidInput').value;
-    try {
-        const res = await fetch(`/reviews/${uid}`);
-        if (!res.ok) throw new Error(res.statusText);
-        const r = await res.json();
-        document.getElementById('reviewDetail').textContent = JSON.stringify(r, null, 2);
-    } catch (e) {
-        alert('UID 조회 실패: ' + e.message);
-    }
-}
+    // 2) 리뷰 작성 이벤트
+    $('#createForm').on('submit', function(e) {
+        e.preventDefault();
 
-// 3) 사용자 UID로 리뷰 조회
-async function fetchReviewsByUser() {
-    const userUid = document.getElementById('userUidInput').value;
-    try {
-        const res = await fetch(`/reviews/user/${userUid}`);
-        if (!res.ok) throw new Error(res.statusText);
-        const data = await res.json();
-        const list = document.getElementById('userReviews');
-        list.innerHTML = '';
-        data.forEach(r => {
-            const li = document.createElement('li');
-            li.textContent = `UID:${r.uid} | Order:${r.orderUid} | Rate:${r.rate} | Title:${r.title}`;
-            list.appendChild(li);
-        });
-    } catch (e) {
-        alert('사용자별 조회 실패: ' + e.message);
-    }
-}
+        // payload 재구성 (userUid, socialUid는 이미 채워져 있음)
+        const payload = {
+            userUid:   parseInt($('#createUserUid').val(), 10),
+            socialUid: parseInt($('#createSocialUid').val(), 10),
+            orderUid:  parseInt($('#createOrderUid').val(), 10),
+            rate:      parseFloat($('#createRate').val()),
+            title:     $('#createTitle').val().trim(),
+            content:   $('#createContent').val().trim()
+        };
 
-// 4) 리뷰 작성
-async function createReview(event) {
-    event.preventDefault();
-    const body = {
-        userUid:    Number(document.getElementById('createUserUid').value),
-        socialUid:  document.getElementById('createSocialUid').value,
-        orderUid:   Number(document.getElementById('createOrderUid').value),
-        rate:       Number(document.getElementById('createRate').value),
-        title:      document.getElementById('createTitle').value,
-        content:    document.getElementById('createContent').value
-    };
-    try {
-        const res = await fetch('/reviews', {
+        // 유효성 검사
+        if (isNaN(payload.orderUid) || isNaN(payload.rate)) {
+            $('#createResponse').text('❗ 주문 UID 또는 평점을 올바르게 입력해주세요.');
+            return;
+        }
+
+        // AJAX POST
+        $.ajax({
+            url: '/reviews',
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) throw new Error(res.statusText);
-        const json = await res.json();
-        document.getElementById('createResponse').textContent = JSON.stringify(json, null, 2);
-        fetchAllReviews();
-    } catch (e) {
-        alert('작성 실패: ' + e.message);
-    }
-}
-
-// 5) 리뷰 삭제
-async function deleteReview() {
-    const uid   = document.getElementById('deleteUid').value;
-    const token = document.getElementById('deleteToken').value;
-    try {
-        const res = await fetch(`/reviews/${uid}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': token }
-        });
-        if (!res.ok) throw new Error(res.statusText);
-        const json = await res.json();
-        document.getElementById('deleteResponse').textContent = JSON.stringify(json, null, 2);
-        fetchAllReviews();
-    } catch (e) {
-        alert('삭제 실패: ' + e.message);
-    }
-}
-
-// 이벤트 리스너 바인딩
-document.getElementById('btnAll').addEventListener('click', fetchAllReviews);
-document.getElementById('btnById').addEventListener('click', fetchReviewById);
-document.getElementById('btnByUser').addEventListener('click', fetchReviewsByUser);
-document.getElementById('createForm').addEventListener('submit', createReview);
-document.getElementById('btnDelete').addEventListener('click', deleteReview);
+            contentType: 'application/json',
+            data: JSON.stringify(payload)
+        })
+            .done(function(res) {
+                $('#createResponse').text('✅ ' + JSON.stringify(res, null, 2));
+                $('#createForm')[0].reset();
+                // 사용자 이름은 초기화되지 않도록 재세팅
+                getUserInfo().then(ui => $('#createUserName').text(ui.userName));
+            })
+            .fail(function(xhr) {
+                if (xhr.status === 401) return; // 로그인/토큰 문제는 common.js에서 처리
+                let msg = `❌ (${xhr.status}) 서버 오류`;
+                try {
+                    const err = JSON.parse(xhr.responseText);
+                    msg = err.message || JSON.stringify(err);
+                } catch (ignored) {}
+                $('#createResponse').text(msg);
+            });
+    });
+});
