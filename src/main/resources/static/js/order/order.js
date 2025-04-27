@@ -1,14 +1,15 @@
 let userUid;
+let socialUid;
 
 const MOCK_CART_ITEMS = [
-    { uid: 1, menuName: '샌드위치 A', price: 100, amount: 1, calorie: 300 },
+    { uid: 6, menuName: '샌드위치 A', price: 100, amount: 1, calorie: 300 },
     { uid: 2, menuName: '샌드위치 B', price: 200, amount: 2, calorie: 150 }
 ];
 
 const MOCK_STORES = [
-    { uid: 1, storeName: '강동점' },
-    { uid: 2, storeName: '강남점' },
-    { uid: 3, storeName: '잠실점' }
+    { uid: 1, storeName: '강동점' , address: '서울시 강동구 천호동 24-2', lat: 37.1234, lan: 127.5678 },
+    { uid: 2, storeName: '강남점' , address: '서울시 강남구 역삼동 818-1',lat: 37.1234, lan: 127.5678 },
+    { uid: 3, storeName: '잠실점' , address: '서울시 송파구 신천동 7-28',lat: 37.1234, lan: 127.5678 }
 ];
 
 // 장바구니 항목 가져오기 (받아오는 주소에 맞춰서 수정 예정)
@@ -29,6 +30,11 @@ function fillUserInfoForm(user) {
     $('#email').val(user.email);
     $('#mainAddress').val(user.mainAddress);
     $('#subAddress1').val(user.subAddress1 || '');
+    $('#deliveryDestinationLat').val(user.mainLat);
+    $('#deliveryDestinationLan').val(user.mainLan);
+
+    userUid = user.uid;
+    socialUid = user.socialUid;
 }
 
 // 선택된 장바구니 항목 가져오기
@@ -105,18 +111,30 @@ function renderStoreDropdown() {
         });
 }
 
+function fetchProfileAndFillForm() {
+    return $.ajax({
+        type: 'GET',
+        url: '/profile'
+    }).then((response) => {
+        fillUserInfoForm(response);
+        userUid = response.userUid;
+        socialUid = response.socialUid;
+        return response;
+    }).catch((err) => {
+        console.error('프로필 정보 불러오기 실패:', err);
+    });
+}
+
 let merchantUid = null;
 
 $(document).ready(async () => {
     const IMP = window.IMP;
     IMP.init('imp54787882');
-    setupAjax();
-    checkToken();
 
-    const user = await getUserInfo();
-    userUid = user.userUid;
+    await requestProfileApi();
+
+    const user = await fetchProfileAndFillForm();
     const items = await getCartItems();
-    fillUserInfoForm(user);
 
     await renderCartItems(items);
     updateTotalPrice();
@@ -185,33 +203,11 @@ $(document).ready(async () => {
             return;
         }
 
-        // 커스텀 주문 옵션 데이터 수집 (만약 해당 영역이 있다면)
-        let customOrderRequestDTO = null;
-        if ($('#customOptions').length > 0 && $('#customOptions').is(':visible')) {
-            customOrderRequestDTO = {
-                bread: parseInt($('#bread').val()) || null,
-                material1: parseInt($('#material1').val()) || null,
-                material2: parseInt($('#material2').val()) || null,
-                material3: parseInt($('#material3').val()) || null,
-                vegetable1: parseInt($('#vegetable1').val()) || null,
-                vegetable2: parseInt($('#vegetable2').val()) || null,
-                vegetable3: parseInt($('#vegetable3').val()) || null,
-                vegetable4: parseInt($('#vegetable4').val()) || null,
-                vegetable5: parseInt($('#vegetable5').val()) || null,
-                vegetable6: parseInt($('#vegetable6').val()) || null,
-                vegetable7: parseInt($('#vegetable7').val()) || null,
-                vegetable8: parseInt($('#vegetable8').val()) || null,
-                sauce1: parseInt($('#sauce1').val()) || null,
-                sauce2: parseInt($('#sauce2').val()) || null,
-                sauce3: parseInt($('#sauce3').val()) || null
-            };
-        }
-
         try {
             await preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, reservationDate);
             console.log('사전 검증 성공');
 
-            requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate, customOrderRequestDTO);
+            requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate);
         } catch (err) {
             console.error('사전 검증 실패', err);
             alert('사전 검증 실패');
@@ -220,7 +216,7 @@ $(document).ready(async () => {
 });
 
 // 장바구니 렌더링
-async function renderCartItems() {
+async function renderCartItemsFromServer() {
     const $container = $('#cartContainer');
     $container.empty(); // 이전 내용 비우기
 
@@ -288,21 +284,6 @@ $(document).on('change', '.item-amount', function () {
         return;
     }
 
-    // $.ajax({
-    //     url: `/carts/${cartUid}/update-amount`,
-    //     method: 'PATCH',
-    //     contentType: 'application/json',
-    //     data: JSON.stringify({ amount: newAmount }),
-    //     success: function () {
-    //         console.log('수량 업데이트 성공');
-    //         updateTotalPrice(); // 수량 바뀌면 총 금액도 다시 계산
-    //     },
-    //     error: function (err) {
-    //         console.error('수량 업데이트 실패', err.responseText);
-    //         alert('수량 변경 실패');
-    //     }
-    // });
-
     const uid = $input.closest('[data-cart-item]').data('cart-uid');
     const item = MOCK_CART_ITEMS.find(i => i.uid === uid);
     if (item) item.amount = newAmount;
@@ -314,11 +295,13 @@ $(document).on('change', '.item-amount', function () {
 // 결제자 정보
 function getBuyerInfo() {
     return {
+        userUid: userUid,
+        socialUid: socialUid,
         name: $('#name').val(),
         phone: $('#phone').val(),
         email: $('#email').val(),
         mainAddress: $('#mainAddress').val(),
-        subAddress1: $('#sub_address_1').val(),
+        subAddress1: $('#subAddress1').val(),
         payMethod: $('#payMethod').val() || 'card'
     };
 }
@@ -341,7 +324,7 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
 }
 
 // 실제 결제 요청
-function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate, customOrderRequestDTO) {
+function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
     const IMP = window.IMP;
     const selectedItems = getSelectedCartItems();
     let menuName = '';
@@ -353,6 +336,9 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
     }
 
     console.log('선택된 아이템:', selectedItems);
+    const selectedStoreUid = parseInt($('#storeSelect').val(), 10);
+    const store = MOCK_STORES.find(s => s.uid === selectedStoreUid);
+
 
     IMP.request_pay({
         pg: 'html5_inicis',
@@ -378,42 +364,16 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 }),
                 success: function(updateRes) {
                     alert(updateRes.message || "결제 성공!");
-                    // 커스텀 옵션 데이터(customOrderRequestDTO)가 존재하면 최종 주문 연동 API 호출
-                    if (customOrderRequestDTO) {
-                        const finalOrderPayload = {
-                            orderRequestDTO: {
-                                userUid: buyer.userUid,
-                                storeUid: parseInt($('#storeSelect').val()),
-                                reservationDate: reservationDate,
-                                payment: buyer.payMethod,
-                                merchantUid: merchantUid,
-                                totalPrice: totalPrice,
-                                items: selectedItems.map(item => ({
-                                    cartUid: item.cartUid,
-                                    menuName: item.menuName,
-                                    amount: item.amount || 1,
-                                    price: item.price,
-                                    calorie: item.calorie
-                                }))
-                            },
-                            customOrderRequestDTO: customOrderRequestDTO
-                        };
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/orders/custom/final",
-                            contentType: "application/json",
-                            data: JSON.stringify(finalOrderPayload),
-                            success: function(finalRes) {
-                                alert(finalRes.message || "최종 주문 생성 완료!");
-                                window.location.reload();
-                            },
-                            error: function(error) {
-                                console.error("최종 주문 생성 실패:", error.responseText);
-                                alert("최종 주문 생성 실패: " + error.responseText);
-                            }
+                    // 여기서 주문 저장 요청 보냄
+                    sendOrderRequest(buyer, response, totalPrice, reservationDate)
+                        .then(() => {
+                            alert("주문 저장 완료!");
+                            window.location.reload(); // 성공하면 새로고침
+                        })
+                        .catch((err) => {
+                            console.error('주문 저장 실패:', err);
+                            alert('주문 저장 실패!');
                         });
-                    }
                 },
                 error: function(err) {
                     console.error('상태 업데이트 실패', err);
@@ -442,51 +402,48 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
 }
 
 // 결제 후 서버에 주문 전송
-function sendOrderRequest(cartUids, buyer, paymentResponse, paymentSuccess, totalPrice, reservationDate) {
-    return new Promise((resolve, reject) => {
-        const selectedItems = getSelectedCartItems();
-        const reservationDate = $('#reservationDate').val();
+function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
+    const selectedItems = getSelectedCartItems();
+    const store = MOCK_STORES.find(s => s.uid === parseInt($('#storeSelect').val()));
+    setupAjax();
 
-        const items = selectedItems.map(item => ({
-            cartUid: item.cartUid,  // 장바구니 ID
-            menuName: item.menuName,
-            price: item.price,
-            calorie: item.calorie,
-        }));
-
-        const storeUid = $('#storeSelect').val();
-
-
-        $.ajax({
-            type: 'POST',
-            url: '/orders',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                userUid: 1,
-                items: items,
-                payment: buyer.payMethod,
-                merchantUid: paymentResponse.merchant_uid,
-                paymentSuccess: paymentSuccess,
-                storeUid: storeUid,
-                buyerName: buyer.name,
-                buyerPhone: buyer.phone,
-                buyerEmail: buyer.email,
-                buyerAddr: buyer.mainAddress,
-                buyerAddrSub: buyer.subAddress1,
-                price: totalPrice,
-                reservationDate: reservationDate
-            }),
-            success: function(response) {
-                console.log('주문 저장 성공', response);
-                resolve(response);
-            },
-            error: function(xhr, status, error) {
-                console.error('주문 저장 실패', xhr.responseText);
-                reject(error);
-            }
-        });
+    return $.ajax({
+        type: 'POST',
+        url: '/orders',
+        contentType: 'application/json; charset=UTF-8',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        data: JSON.stringify({
+            userUid: buyer.userUid,
+            payment: buyer.payMethod,
+            items: selectedItems.map(item => ({
+                cartUid: item.cartUid,
+                menuName: item.menuName,
+                amount: item.amount || 1,
+                price: item.price,
+                calorie: item.calorie
+            })),
+            merchantUid: paymentResponse.merchant_uid,
+            paymentSuccess: true,
+            storeUid: store.uid,
+            addressStart: store.address,
+            addressStartLat: store.lat,
+            addressStartLan: store.lan,
+            reservationDate: reservationDate,
+            addressDestination: buyer.mainAddress,
+            addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
+            addressDestinationLan: parseFloat($('#deliveryDestinationLan').val()),
+            buyerName: buyer.name,
+            buyerPhone: buyer.phone,
+            buyerEmail: buyer.email,
+            buyerAddr: buyer.mainAddress,
+            buyerAddrSub: buyer.subAddress1,
+            price: totalPrice
+        })
     });
 }
+
 
 // 총 금액 계산
 function calculateTotal() {

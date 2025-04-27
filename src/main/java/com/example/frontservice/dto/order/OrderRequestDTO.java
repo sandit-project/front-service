@@ -20,4 +20,5 @@ public class OrderRequestDTO {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime reservationDate;
     private boolean paymentSuccess;
+    private DeliveryAddressDTO deliveryAddress;
 }

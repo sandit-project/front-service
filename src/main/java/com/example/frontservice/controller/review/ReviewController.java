@@ -23,7 +23,7 @@ public class ReviewController {
     @GetMapping
     public ResponseEntity<List<ReviewDetailResponseDTO>> getAllReviews() {
         log.info("getAllReviews");
-        return ResponseEntity.ok(Collections.singletonList(reviewService.getAllReview()));
+        return ResponseEntity.ok(reviewService.getAllReview());
     }
 
     @GetMapping("/{uid}")
@@ -33,7 +33,7 @@ public class ReviewController {
     }
 
     @GetMapping("/user/{userUid}")
-    public ResponseEntity<ReviewDetailResponseDTO> getReviewByUserUid(@PathVariable("userUid") Integer userUid) {
+    public ResponseEntity<List<ReviewDetailResponseDTO>> getReviewByUserUid(@PathVariable("userUid") Integer userUid) {
         log.info("getReviewByUserUid::" + userUid);
         return ResponseEntity.ok(reviewService.getReviewByUserUid(userUid));
     }

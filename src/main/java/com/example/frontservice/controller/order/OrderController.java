@@ -25,6 +25,12 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> submit(HttpServletRequest request, @RequestBody OrderRequestDTO requestdto) {
         log.info("submit order::" + request.toString());
         String token = request.getHeader("Authorization");
+
+        // Bearer 없으면 추가
+        if (token != null && !token.startsWith("Bearer ")) {
+            token = "Bearer " + token;
+        }
+
         return ResponseEntity.ok(orderService.submit(token,requestdto));
     }
 

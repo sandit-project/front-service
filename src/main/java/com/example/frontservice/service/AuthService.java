@@ -39,14 +39,4 @@ public class AuthService {
     public boolean updateProfile(String token, UpdateProfileRequestDTO updateProfileRequestDTO) {
         return authClient.updateProfile(token, updateProfileRequestDTO);
     }
-
-    public String sendEmailCode(String email) {
-        return authClient.sendEmailCode(email);
-    }
-
-    public String verifyEmailCode(String email, String code) {
-        Map<String,String> body = Map.of("email", email, "code", code);
-        return authClient.verifyEmailCode(email, body);
-
-    }
 }

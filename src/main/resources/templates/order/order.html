@@ -8,6 +8,8 @@
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link rel="stylesheet" th:href="@{/css/order/order.css}">
     <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/auth/profile.js}"></script>
+    <script th:src="@{/js/findAddress.js}"></script>
     <script th:src="@{/js/order/order.js}"></script>
 </head>
 <body>
@@ -27,9 +29,11 @@
             <input type="text" id="mainAddress">
         </label>
         <button type="button" onclick="execDaumPostcode()">주소 검색</button>
+        <input type="hidden" id="deliveryDestinationLat">
+        <input type="hidden" id="deliveryDestinationLan">
     </div>
     <br/>
-    <label>상세 주소: <input type="text" id="subAddress1"></label>
+<!--    <label>상세 주소: <input type="text" id="subAddress1"></label>-->
     <label>이메일: <input type="text" id="email"></label><br/>
     <label>전화번호: <input type="text" id="phone"></label><br/>
     <label>결제수단:
@@ -37,6 +41,7 @@
             <option value="card">카드</option>
         </select>
     </label>
+    <label>포인트: <input type="text" id="point"></label>
 
     <label>
         스토어:
@@ -46,6 +51,8 @@
             <option value="2">스토어 2</option>
         </select>
     </label>
+    <input type="hidden" id="store_latitude">
+    <input type="hidden" id="store_longitude"><br/>
 
     <label>예약 시간 (선택사항):
         <input type="datetime-local" id="reservationDate" name="reservationDate">

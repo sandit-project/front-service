@@ -4,6 +4,7 @@ import com.example.frontservice.dto.order.CustomOrderRequestDTO;
 import com.example.frontservice.dto.order.FinalCustomRequestDTO;
 import com.example.frontservice.dto.order.OrderResponseDTO;
 import com.example.frontservice.service.CustomOrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,9 @@ public class CustomOrderController {
     }
 
     @PostMapping("/orders/custom/final")
-    public ResponseEntity<OrderResponseDTO> submitFinalOrder(@RequestBody FinalCustomRequestDTO request) {
+    public ResponseEntity<OrderResponseDTO> submitFinalOrder(HttpServletRequest request, @RequestBody FinalCustomRequestDTO finalCustomRequestDTO) {
         log.info("submit Final custom order::" + request.toString());
-        return ResponseEntity.ok(customOrderService.submitFinalOrder(request));
+        String token = request.getHeader("Authorization");
+        return ResponseEntity.ok(customOrderService.submitFinalOrder(token,finalCustomRequestDTO));
     }
 }
