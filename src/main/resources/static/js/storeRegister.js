@@ -2,8 +2,6 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
-
-
     // 지점 등록 버튼 클릭 이벤트
     $('#storeRegister').click(async (event) => {
         event.preventDefault(); // 기본 동작 막기
@@ -14,6 +12,7 @@ $(document).ready(() => {
         try {
             // 입력 데이터 수집
             const storeName = $('#store_name').val();
+            const storeManagerUid = $('#store_manager_uid').val();
             const address = $('#store_address_base').val();
             const addressDetail = $('#store_address_detail').val();
             const fullAddress = addressDetail? `${address} ${addressDetail}` : address ;
@@ -30,6 +29,7 @@ $(document).ready(() => {
             // 서버로 전송할 데이터 생성
             const formData = {
                 storeName,
+                managerUid: storeManagerUid,
                 storeAddress: fullAddress,
                 storePostcode: postcode,
                 storeLatitude: storeLatitude,
@@ -63,4 +63,11 @@ $(document).ready(() => {
             dataType: 'json',
         });
     };
+
+    // 이전 화면
+    $('#prevBtn').click(()=> {
+
+        window.location.href = '/store/list';
+
+    });
 });

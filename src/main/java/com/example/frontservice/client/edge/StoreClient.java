@@ -13,9 +13,13 @@ public interface StoreClient {
                                       @RequestParam("lastUid") Long lastUid,
                                       @RequestHeader("Authorization") String token);
 
-    @GetMapping("/stores/{uid}")
-    StoreResponseDTO getStore(@PathVariable(name="uid") Long uid,
+    @GetMapping("/stores/{storeUid}")
+    StoreResponseDTO getStore(@PathVariable(name="storeUId") Long storeUid,
                               @RequestHeader("Authorization") String token);
+
+    @GetMapping("/stores/storeUid")
+    StoreUidResponseDTO getStoreUidByManager(@RequestParam("managerUid") Long managerUid,
+                                            @RequestHeader("Authoriztion") String token);
 
     @PostMapping("/stores")
     StoreResponseDTO addStore(@Valid @RequestBody StoreRequestDTO storeRequestDTO,
@@ -23,23 +27,23 @@ public interface StoreClient {
 
 
 
-    @PutMapping("/stores/{uid}")
-    StoreResponseDTO updateStore(@PathVariable(name="uid") Long uid,
+    @PutMapping("/stores/{storeUid}")
+    StoreResponseDTO updateStore(@PathVariable(name="storeUid") Long storeUid,
                                  @Valid @RequestBody StoreRequestDTO storeRequestDTO,
                                  @RequestHeader("Authorization") String token);
 
-    @DeleteMapping("/stores/{uid}")
-    StoreResponseDTO deleteStore(@PathVariable(name="uid") Long uid,
+    @DeleteMapping("/stores/{storeUid}")
+    StoreResponseDTO deleteStore(@PathVariable(name="storeUid") Long storeUid,
                                  @RequestHeader("Authorization") String token);
 
-    @PatchMapping("/stores/{uid}")
-    StoreResponseDTO updateStatusByUid(@PathVariable(name="uid") Long uid,
+    @PatchMapping("/stores/{storeUid}")
+    StoreResponseDTO updateStatusByUid(@PathVariable(name="storeUid") Long storeUid,
                                        @RequestParam("storeStatus") String storeStatus,
                                        @RequestHeader("Authorization") String token);
 
     @GetMapping("/stores/orders/list")
     StoreOrderListResponseDTO getStoreOrderList(@RequestParam("limit") int limit,
-                                      @RequestParam("lastUid") Long lastUid,
-                                      @RequestHeader("Authorization") String token);
+                                                @RequestParam("lastUid") Long lastUid,
+                                                @RequestHeader("Authorization") String token);
 
 }

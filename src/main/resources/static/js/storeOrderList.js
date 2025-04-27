@@ -1,7 +1,30 @@
-$(document).ready(()=>{
+$(document).ready(async ()=>{
+    // 1) 토큰 유효성 확인 및 AJAX 헤더 설정
     checkToken();
     setupAjax();
 
+    // 2) 로그인한 유저 정보 조회
+    let userInfo;
+    try {
+        userInfo = await getUserInfo();      // common.js 에 정의된 함수 호출
+    } catch (err) {
+        console.error('유저 정보 조회 실패:', err);
+        alert('유저 정보를 불러오지 못했습니다. 다시 로그인 해주세요.');
+        return;
+    }
+
+    const managerUid = userInfo.id;       // 여기에서 매니저 UID 획득
+    console.log('로그인한 매니저 UID:', managerUid);
+
+    // 3) 매니저 UID로 storeUid 조회
+    storeUid = await fetchStoreUidByManager(managerUid);
+    if (!storeUid) {
+        alert('지점 정보를 불러오는 데 실패했습니다.');
+        return;
+    }
+
+    // 4) 화면 헤더 업데이트
+    $('#welcome-message').text(`지점 ${storeUid} 주문 목록`);
     //최초 페이지(1)는 lastUid가 null 이어야 함
     cursorMap.set(1,null);
     initStoreOrderList();
@@ -11,6 +34,28 @@ $(document).ready(()=>{
 let cursorMap=new Map();//페이지번호 => lastUid 매핑
 let page= 1;
 let limit=10
+
+/**
+ * 매니저 UID로 storeUid를 조회
+ * GET /stores/storeUid?managerUid={managerUid}
+ */
+async function fetchStoreUidByManager(managerUid) {
+    try {
+        const resp = await fetch(`/stores/storeUid?managerUid=${managerUid}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!resp.ok) {
+            console.error(`storeUid 조회 실패: ${resp.status}`);
+            return null;
+        }
+        const json = await resp.json();
+        return json.storeUid;
+    } catch (e) {
+        console.error('storeUid 조회 중 예외:', e);
+        return null;
+    }
+}
 
 let initStoreOrderList=() =>{
     //최초 페이지 로드(page 1)
@@ -42,55 +87,46 @@ let initStoreOrderList=() =>{
     });
 };
 
-let loadStoreOders = ({ limit, lastUid }) => {
-    let url = `/stores/orders/list?limit=${limit}`;
-    if (lastUid !== null && lastUid !== undefined) {
-        url += `&lastUid=${lastUid}`;
-    }
+/**
+ * storeUid로 주문 목록을 불러와 렌더링
+ */
+async function loadStoreOrders({ limit, lastUid }) {
+    const params = new URLSearchParams({ limit });
+    if (lastUid != null) params.append('lastUid', lastUid);
 
-    // 주문 목록 로드
-    $.ajax({
-        type: 'GET',
-        url: `/stores/${storeUid}/orders/list`,
-        success: (orders) => {
-            const $tbody = $('#storeContent');
-            $tbody.empty();
+    try {
+        const resp = await fetch(`/stores/${storeUid}/orders/list?${params}`);
+        if (!resp.ok) throw new Error(`${resp.status}`);
+        const response = await resp.json();
 
-            if (!orders || orders.length === 0) {
+        const $tbody = $('#storeContent').empty();
+        if (!response.orders || response.orders.length === 0) {
+            $tbody.append(`
+        <tr>
+          <td colspan="8" style="text-align:center">주문 내역이 없습니다.</td>
+        </tr>
+      `);
+        } else {
+            response.orders.forEach(o => {
+                const created   = new Date(o.createdDate).toLocaleString();
+                const reserve   = o.reservationDate
+                    ? new Date(o.reservationDate).toLocaleString()
+                    : '-';
+                const itemsCnt  = o.items ? o.items.length : 0;
                 $tbody.append(`
-                  <tr>
-                    <td colspan="8" style="text-align: center;">주문 내역이 없습니다.</td>
-                  </tr>
-                `);
-            } else {
-                orders.forEach(o => {
-                    const created = new Date(o.createdDate).toLocaleString();
-                    const reservation = o.reservationDate
-                        ? new Date(o.reservationDate).toLocaleString()
-                        : '-';
-                    const itemsCount = o.items ? o.items.length : 0;
-
-                    $tbody.append(`
-                      <tr>
-                        <td>${o.uid}</td>
-                        <td>${o.userUid}</td>
-                        <td>${o.payment}</td>
-                        <td>${o.status}</td>
-                        <td>${created}</td>
-                        <td>${reservation}</td>
-                        <td>${itemsCount}</td>
-                        <td>
-                          <a href="/store/orders/detail?uid=${o.storeUid}">상세</a>
-                        </td>
-                      </tr>
-                    `);
-                });
-            }
-        },
-        error: (err) => {
-            console.error('주문 목록 조회 오류 ::', err);
+          <tr>
+            <td>${o.uid}</td>
+            <td>${o.userUid}</td>
+            <td>${o.payment}</td>
+            <td>${o.status}</td>
+            <td>${created}</td>
+            <td>${reserve}</td>
+            <td>${itemsCnt}</td>
+            <td><a href="/store/orders/detail?uid=${o.storeUid}">상세</a></td>
+          </tr>
+        `);
+            });
         }
-    });
 
     // 1페이지에서 초기화
     if (page === 1) {
@@ -109,6 +145,9 @@ let loadStoreOders = ({ limit, lastUid }) => {
 
     updatePaginationButtons(response);
 
+    }   catch (err){
+            console.log('주문 목록 조회 오류 ::', err);
+    }
 };
 
 //페이지 번호 생성

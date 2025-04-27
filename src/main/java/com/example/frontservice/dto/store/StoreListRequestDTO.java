@@ -1,7 +1,6 @@
 package com.example.frontservice.dto.store;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

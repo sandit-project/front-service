@@ -3,16 +3,17 @@ $(document).ready(function () {
     setupAjax();
 
     const params = new URLSearchParams(window.location.search);
-    const uid = params.get("uid");
+    const storeUid = params.get("storeUid");
 
     // 지점 상세 조회
     $.ajax({
-        url: `/stores/${uid}`,
+        url: `/stores/${storeUid}`,
         method: 'GET',
         success: function (data) {
             console.log('지점 상세 조회 :',data);
-            $('#uid').val(data.uid);
+            $('#store_uid').val(data.storeUid);
             $('#store_name').val(data.storeName);
+            $('#store_manager').val(data.managerUid)
             $('#address').val(data.storeAddress);
             $('#postcode').val(data.storePostcode);
             $('#store_latitude').val(data.storeLatitude);
@@ -40,7 +41,7 @@ $(document).ready(function () {
         };
 
         $.ajax({
-            url: `/stores/${uid}`,
+            url: `/stores/${storeUid}`,
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(formData),
@@ -59,7 +60,7 @@ $(document).ready(function () {
         if (!confirm('정말 삭제하시겠습니까?')) return;
 
         $.ajax({
-            url: `/stores/${uid}`,
+            url: `/stores/${storeUid}`,
             method: 'DELETE',
             success: function () {
                 alert('삭제 성공!');
@@ -69,5 +70,12 @@ $(document).ready(function () {
                 alert('삭제 실패!');
             }
         });
+    });
+
+    // 이전 화면
+    $('#prevBtn').click(()=> {
+
+        window.location.href = '/store/list';
+
     });
 });

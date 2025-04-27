@@ -16,13 +16,17 @@
     <h2>지점 상세 정보</h2>
     <form id="storeDetailForm">
         <!-- uid 및 위도 경도 숨겨놓기 -->
-        <input type="hidden" id="uid">
+        <input type="hidden" id="store_uid">
         <input type="hidden" id="store_latitude" >
         <input type="hidden" id="store_longitude" >
 
         <div>
             <label>지점명:</label>
             <input type="text" id="store_name" required>
+        </div>
+        <div>
+            <label>지점관리자:</label>
+            <input type="text" id="store_manager" required>
         </div>
         <div>
             <label>주소:</label>
@@ -42,6 +46,7 @@
         <div class="form-actions">
             <button type="submit">수정</button>
             <button type="button" id="deleteBtn" class="btn-delete">삭제</button>
+            <button type="button" id="prevBtn" class="btn-prev">이전 화면</button>
         </div>
     </form>
 </div>

@@ -14,11 +14,11 @@
     <!-- 공용 CSS 스타일 -->
     <link th:href="@{/css/storeList.css}" rel="stylesheet"/>
 
-    <title>지점 [[${uid}]] 주문 목록</title>
+    <title>지점 주문 목록</title>
 </head>
 <body>
 <div class="container">
-    <h1 id="welcome-message">지점 [[${uid}]] 주문 목록</h1>
+    <h1 id="welcome-message">지점 주문 목록</h1>
 
     <div id="board">
         <table>
@@ -39,6 +39,14 @@
             </tbody>
         </table>
     </div>
+    <!-- 페이징 영역 -->
+    <div id="pagination">
+        <button id="firstPage" class="btn">처음</button>
+        <button id="prevPage" class="btn" disabled>이전</button>
+        <span id="pageNumbers"></span>
+        <button id="nextPage" class="btn">다음</button>
+    </div>
 </div>
+
 </body>
 </html>

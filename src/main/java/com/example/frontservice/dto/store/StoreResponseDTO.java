@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class StoreResponseDTO {
-    private Long    uid;
+    private Long    storeUid;
     private String  storeName;
+    private int     managerUid;
     private String  storeAddress;
     private String  storePostcode;
     private Double  storeLatitude;

@@ -67,6 +67,12 @@ button:hover {
 .btn-delete:hover {
     background-color: #c82333;
 }
+.btn-prev {
+    background-color: #007bff;
+}
+.btn-prev:hover {
+    background-color: #0056b3;
+}
 
 .form-actions {
     display: flex;

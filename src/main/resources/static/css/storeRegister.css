@@ -42,8 +42,19 @@ input[type="password"] {
     box-sizing: border-box;
 }
 
+.button-container{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 input[type="submit"] {
-    width: 100%;
+    width: 30%;
     padding: 10px;
     background-color: #4CAF50;
     border: none;
@@ -56,6 +67,21 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #45a049;
+}
+
+.btn-prev {
+    width: 30%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.btn-prev:hover {
+    background-color: #0056b3;
 }
 
 .error-message {

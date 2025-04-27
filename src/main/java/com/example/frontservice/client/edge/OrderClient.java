@@ -1,8 +1,12 @@
 package com.example.frontservice.client.edge;
 
 import com.example.frontservice.dto.order.*;
+import com.example.frontservice.dto.store.StoreOrderListResponseDTO;
+import com.example.frontservice.dto.store.StoreOrderResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(name = "orderClient", url = "${sandit.edge-service-url}/orders")
 public interface OrderClient {
@@ -22,4 +26,14 @@ public interface OrderClient {
 
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
+
+    //지점 주문 요청
+    @GetMapping("/store/{storeUid}")
+    List<StoreOrderResponseDTO> getOrdersByStoreUid(@PathVariable("storeUid") Long storeUid,
+                                                    @RequestParam("limit") int limit,
+                                                    @RequestParam(value = "lastUid", required = false) int lastUid,
+                                                    @RequestHeader("Authorization") String token
+    );
+
+
 }

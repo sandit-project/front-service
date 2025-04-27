@@ -18,13 +18,16 @@
     <div>
 
         <div class="form-group">
-            <label for="store_name">지점이름</label>
+            <label for="store_name">지점 이름</label>
             <input type="text" id="store_name" placeholder="지점이름을 입력하세요" required>
+            <label for="store_name">지점 관리자</label>
+            <input type="text" id="store_manager_uid" placeholder="지점 관리자 UID를 입력하세요" required>
         </div>
 
         <div class="form-group">
             <label for="store_address_base">주소</label>
             <input type="text" id="store_address_base" placeholder="주소를 입력하세요" required >
+            <label for="store_address_base">상세주소</label>
             <input type="text" id="store_address_detail" placeholder="상세 주소를 입력하세요" required >
             <input type="hidden" id="store_latitude" name="latitude">
             <input type="hidden" id="store_longitude" name="longitude">
@@ -46,7 +49,10 @@
             </select>
         </div>
       -->
+    <div class="button-container">
         <input id="storeRegister" type="submit" value="지점 가입">
+        <button type="button" id="prevBtn" class="btn-prev">이전 화면</button>
+    </div>
 
     </div>
 </div>
