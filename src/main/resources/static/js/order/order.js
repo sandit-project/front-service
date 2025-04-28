@@ -2,8 +2,8 @@ let userUid;
 let socialUid;
 
 const MOCK_CART_ITEMS = [
-    { uid: 6, menuName: '샌드위치 A', price: 100, amount: 1, calorie: 300 },
-    { uid: 2, menuName: '샌드위치 B', price: 200, amount: 2, calorie: 150 }
+    { uid: 6, menuName: '샌드위치 A', unitPrice: 100, amount: 1, calorie: 300 },
+    { uid: 7, menuName: '샌드위치 B', unitPrice: 200, amount: 2, calorie: 150 }
 ];
 
 const MOCK_STORES = [
@@ -46,7 +46,7 @@ async function renderCartItems(items) {
             <div class="cart-item" data-cart-item data-cart-uid="${item.uid}">
                 <input type="checkbox" class="cart-check" checked>
                 <span class="item-name">${item.menuName}</span>
-                <span class="item-price">${item.price}원</span>
+                <span class="item-unitPrice">${item.unitPrice}원</span>
                 <span class="item-calorie">${item.calorie} kcal</span>
                 <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
             </div>
@@ -102,7 +102,7 @@ function renderStoreDropdown() {
             $storeSelect.append('<option value="">스토어 선택</option>');
 
             stores.forEach(store => {
-                const option = `<option value="${store.uid}">${store.storeName}</option>`;
+                const option = `<option value="${store.uid}" data-lat="${store.lat}" data-lan="${store.lan}">${store.storeName}</option>`;
                 $storeSelect.append(option);
             });
         })
@@ -117,8 +117,12 @@ function fetchProfileAndFillForm() {
         url: '/profile'
     }).then((response) => {
         fillUserInfoForm(response);
-        userUid = response.userUid;
-        socialUid = response.socialUid;
+        if (response.uid != null) {
+            userUid = response.uid;
+        }
+        if (response.userId != null) {
+            socialUid = response.socialUid;
+        }
         return response;
     }).catch((err) => {
         console.error('프로필 정보 불러오기 실패:', err);
@@ -130,8 +134,6 @@ let merchantUid = null;
 $(document).ready(async () => {
     const IMP = window.IMP;
     IMP.init('imp54787882');
-
-    await requestProfileApi();
 
     const user = await fetchProfileAndFillForm();
     const items = await getCartItems();
@@ -227,7 +229,7 @@ async function renderCartItemsFromServer() {
                 <div class="cart-item" data-cart-item data-cart-uid="${item.uid}">
                     <input type="checkbox" class="cart-check" checked>
                     <span class="item-name">${item.menuName}</span>
-                    <span class="item-price">${item.price}</span>원
+                    <span class="item-unitPrice">${item.unitPrice}</span>원
                     <span class="item-calorie">${item.calorie} kcal</span>
                     <input type="number" class="item-amount" value="${item.amount || 1}" min="1" style="width: 50px;">
                 </div>
@@ -260,13 +262,17 @@ function getSelectedCartItems() {
         const $item   = $(this);
         const $check  = $item.find('.cart-check');
         if ($check.is(':checked')) {
-            const cartUid  = $item.data('cart-uid');
+            const uid  = $item.data('cart-uid');
             const menuName = $item.find('.item-name').text().trim();
-            const price    = parseInt($item.find('.item-price').text(), 10)      || 0;
-            const amount   = parseInt($item.find('.item-amount').val(), 10)     || 0;
+            const rawText = $item.find('.item-unitPrice').text(); //"100원"
+            const numeric = rawText.replace(/\D/g, ''); //"100"
+            const unitPrice    = parseInt(numeric, 10) //100
+            const amount   = parseInt($item.find('.item-amount').val(), 10)
             const calorie  = parseInt($item.find('.item-calorie').text(), 10)   || 0;
 
-            selectedItems.push({ cartUid, menuName, price, amount, calorie });
+            if (!isNaN(unitPrice) && unitPrice  >= 1 && !isNaN(amount) && amount >= 1) {
+                selectedItems.push({ uid, menuName, unitPrice, amount, calorie });
+            }
         }
     });
     return selectedItems;
@@ -337,7 +343,14 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
 
     console.log('선택된 아이템:', selectedItems);
     const selectedStoreUid = parseInt($('#storeSelect').val(), 10);
-    const store = MOCK_STORES.find(s => s.uid === selectedStoreUid);
+    //const store = MOCK_STORES.find(s => s.uid === selectedStoreUid);
+    const selectedOption = $('#storeSelect option:selected');
+    const store = {
+        uid: parseInt(selectedOption.val(), 10),
+        address: selectedOption.text(),
+        lat: parseFloat(selectedOption.data('lat')),
+        lan: parseFloat(selectedOption.data('lan'))
+    };
 
 
     IMP.request_pay({
@@ -403,9 +416,44 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
 
 // 결제 후 서버에 주문 전송
 function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
-    const selectedItems = getSelectedCartItems();
+    let selectedItems = getSelectedCartItems()
+            .filter(item => item.unitPrice >= 1 && item.amount >= 1);
     const store = MOCK_STORES.find(s => s.uid === parseInt($('#storeSelect').val()));
+    checkToken();
     setupAjax();
+
+    if (!userUid && !socialUid) {
+        alert('회원 정보가 누락되었습니다. 다시 로그인해주세요.');
+        return;
+    }
+
+    const payload = {
+        userUid: buyer.userUid,
+        socialUid: buyer.socialUid,
+        payment: buyer.payMethod,
+        items: selectedItems.map(item => ({
+            uid: item.uid,
+            menuName: item.menuName,
+            amount: item.amount || 1,
+            unitPrice: item.unitPrice,
+            calorie: item.calorie
+        })),
+        merchantUid: paymentResponse.merchant_uid,
+        paymentSuccess: true,
+        storeUid: store.uid,
+        deliveryAddress: {
+            addressStart: store.address,
+            addressStartLat: store.lat,
+            addressStartLan: store.lan,
+            addressDestination: buyer.mainAddress,
+            addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
+            addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
+        },
+        reservationDate: reservationDate,
+        totalPrice: totalPrice
+    };
+
+    console.log('서버로 보내는 최종 payload:', payload);
 
     return $.ajax({
         type: 'POST',
@@ -414,33 +462,7 @@ function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         },
-        data: JSON.stringify({
-            userUid: buyer.userUid,
-            payment: buyer.payMethod,
-            items: selectedItems.map(item => ({
-                cartUid: item.cartUid,
-                menuName: item.menuName,
-                amount: item.amount || 1,
-                price: item.price,
-                calorie: item.calorie
-            })),
-            merchantUid: paymentResponse.merchant_uid,
-            paymentSuccess: true,
-            storeUid: store.uid,
-            addressStart: store.address,
-            addressStartLat: store.lat,
-            addressStartLan: store.lan,
-            reservationDate: reservationDate,
-            addressDestination: buyer.mainAddress,
-            addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
-            addressDestinationLan: parseFloat($('#deliveryDestinationLan').val()),
-            buyerName: buyer.name,
-            buyerPhone: buyer.phone,
-            buyerEmail: buyer.email,
-            buyerAddr: buyer.mainAddress,
-            buyerAddrSub: buyer.subAddress1,
-            price: totalPrice
-        })
+        data: JSON.stringify(payload)
     });
 }
 
@@ -450,9 +472,11 @@ function calculateTotal() {
     let total = 0;
     $('[data-cart-item]').each(function () {
         if ($(this).find('.cart-check').is(':checked')) {
-            const price  = parseInt($(this).find('.item-price').text(), 10) || 0;
+            const rawText = $(this).find('.item-unitPrice').text();
+            const numeric = rawText.replace(/\D/g, '');
+            const unitPrice   = parseInt(numeric, 10) || 0;
             const amount = parseInt($(this).find('.item-amount').val(), 10)    || 0;
-            total += price * amount;
+            total += unitPrice * amount;
         }
     });
     return total;

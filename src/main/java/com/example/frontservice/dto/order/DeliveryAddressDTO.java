@@ -7,9 +7,9 @@ import lombok.Getter;
 @Builder
 public class DeliveryAddressDTO {
     private String  addressStart;
-    private double  addressStartLat;
-    private double  addressStartLan;
+    private Double  addressStartLat;
+    private Double  addressStartLan;
     private String  addressDestination;
-    private double  addressDestinationLat;
-    private double  addressDestinationLan;
+    private Double  addressDestinationLat;
+    private Double  addressDestinationLan;
 }
