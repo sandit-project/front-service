@@ -1,3 +1,4 @@
+let storeInfo;
 $(document).ready(async ()=>{
     // 1) 토큰 유효성 확인 및 AJAX 헤더 설정
     checkToken();
@@ -17,14 +18,16 @@ $(document).ready(async ()=>{
     console.log('로그인한 매니저 UID:', managerUid);
 
     // 3) 매니저 UID로 storeUid 조회
-    storeUid = await fetchStoreUidByManager(managerUid);
-    if (!storeUid) {
+
+    storeInfo = await fetchStoreUidByManager(managerUid);
+    if (storeInfo==null) {
         alert('지점 정보를 불러오는 데 실패했습니다.');
         return;
     }
-
+    console.log("storeUid :"+storeInfo.storeUid);
     // 4) 화면 헤더 업데이트
-    $('#welcome-message').text(`지점 ${storeUid} 주문 목록`);
+    $('#welcome-message').text(`${storeInfo.storeName} 주문 목록`);
+
     //최초 페이지(1)는 lastUid가 null 이어야 함
     cursorMap.set(1,null);
     initStoreOrderList();
@@ -39,43 +42,42 @@ let limit=10
  * 매니저 UID로 storeUid를 조회
  * GET /stores/storeUid?managerUid={managerUid}
  */
-async function fetchStoreUidByManager(managerUid) {
-    try {
-        const resp = await fetch(`/stores/storeUid?managerUid=${managerUid}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+function fetchStoreUidByManager(managerUid) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: 'GET',
+            url: `/stores/storeUid?managerUid=${managerUid}`,
+            success: response => {
+                console.log(response);
+                resolve(response);
+            },
+            error: xhr => {
+                console.error('storeUid 조회 실패:', xhr.status);
+                reject(null);
+            }
         });
-        if (!resp.ok) {
-            console.error(`storeUid 조회 실패: ${resp.status}`);
-            return null;
-        }
-        const json = await resp.json();
-        return json.storeUid;
-    } catch (e) {
-        console.error('storeUid 조회 중 예외:', e);
-        return null;
-    }
+    });
 }
 
 let initStoreOrderList=() =>{
     //최초 페이지 로드(page 1)
-    loadStoreOders({ limit, lastUid: cursorMap.get(page)});
+    loadStoreOrders({ limit, lastUid: cursorMap.get(page)});
 
     $('#nextPage').click(() => {
         if ($('#nextPage').prop('disabled')) return;
         //다음 페이지 커서가 있다면 페이지 번호 증가 후 해당 커서로 로드
         if (cursorMap.has(page + 1)) {
             page++;
-            loadStoreOders({limit, lastUid: cursorMap.get(page)});
+            loadStoreOrders({limit, lastUid: cursorMap.get(page)});
         }
     });
 
 
     $('#prevPage').click(() => {
-        if ($('prevPage').prop('disabled')) return;
+        if ($('#prevPage').prop('disabled')) return;
         if(page>1){
             page--;
-            loadStoreOders({ limit, lastUid: cursorMap.get(page) });
+            loadStoreOrders({ limit, lastUid: cursorMap.get(page) });
         }
     });
 
@@ -83,7 +85,7 @@ let initStoreOrderList=() =>{
     $('#firstPage').click((event)=>{
         page=1;
         //1페이지는 항상 null
-        loadStoreOders({ limit, lastUid: cursorMap.get(1) });
+        loadStoreOrders({ limit, lastUid: cursorMap.get(1) });
     });
 };
 
@@ -92,10 +94,11 @@ let initStoreOrderList=() =>{
  */
 async function loadStoreOrders({ limit, lastUid }) {
     const params = new URLSearchParams({ limit });
-    if (lastUid != null) params.append('lastUid', lastUid);
+    if (lastUid != null) params.append('lastUid', lastUid)
+    else params.append('lastUid', 0);
 
     try {
-        const resp = await fetch(`/stores/${storeUid}/orders/list?${params}`);
+        const resp = await fetch(`/orders/store/${storeInfo.storeUid}?${params}`);
         if (!resp.ok) throw new Error(`${resp.status}`);
         const response = await resp.json();
 
@@ -122,7 +125,7 @@ async function loadStoreOrders({ limit, lastUid }) {
             <td>${created}</td>
             <td>${reserve}</td>
             <td>${itemsCnt}</td>
-            <td><a href="/store/orders/detail?uid=${o.storeUid}">상세</a></td>
+             <td><a href="/stores/${storeUid}/orders/detail?uid=${o.uid}">상세</a></td>
           </tr>
         `);
             });
@@ -131,13 +134,12 @@ async function loadStoreOrders({ limit, lastUid }) {
     // 1페이지에서 초기화
     if (page === 1) {
         cursorMap.clear();
-        cursorStack = [];
         cursorMap.set(1, null);
     }
 
     // 만약 현재 페이지의 데이터가 꽉 차 있고 다음 페이지 커서가 있다면,
     // 다음 페이지(lastUid)는 현재 응답의 nextCursor로 설정
-    if (response.nextCursor && response.storeList.length === limit) {
+    if (response.nextCursor && response.orders.length === limit) {
         if (!cursorMap.has(page + 1)) {
             cursorMap.set(page + 1, response.nextCursor);
         }
@@ -177,7 +179,7 @@ let updatePaginationButtons = (response) => {
         if (!cursorMap.has(targetPage)) return; //안전 검사
 
         page = targetPage;
-        loadStoreOders({ limit, lastUid: cursorMap.get(page) });
+        loadStoreOrders({ limit, lastUid: cursorMap.get(page) });
     });
 };
 

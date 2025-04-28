@@ -10,8 +10,12 @@ import java.util.List;
 @Getter
 @Builder
 public class StoreOrderResponseDTO {
-    private Long storeUid;
+    private Integer uid;
+    private Integer userUid;
+    private Integer storeUid;
+    private List<CartItemsDTO> items;
+    private String payment;
     private String status;
     private LocalDateTime createdDate;
-    private List<CartItemsDTO> items;
+    private LocalDateTime reservationDate;
 }

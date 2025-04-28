@@ -15,7 +15,7 @@ import java.util.List;
 public class StoreOrderService {
     private final OrderClient orderClient;
 
-    public List<StoreOrderResponseDTO> getAllOrders(Long storeUid, int limit, int lastUid,String token) {
+    public StoreOrderListResponseDTO getAllOrders(Long storeUid, int limit, int lastUid,String token) {
         return orderClient.getOrdersByStoreUid(storeUid,limit,lastUid,token);
     }
 
