@@ -3,6 +3,7 @@ package com.example.frontservice.controller.menu;
 import com.example.frontservice.dto.menu.*;
 import com.example.frontservice.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -20,18 +21,6 @@ public class MenuApiController {
 
     private final MenuService menuService;
 
-//    @PostMapping("/logout")
-//    public LogoutResponseDTO logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        String token = request.getHeader("Authorization").substring(7);
-//
-//        LogoutResponseDTO resultDTO = authService.logout("Bearer " + token);
-//
-//        if(resultDTO.isSuccessed()){
-//            CookieUtil.deleteCookie(request,response,"refreshToken");
-//        }
-//
-//        return resultDTO;
-//    }
 
     private String extractToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -45,15 +34,6 @@ public class MenuApiController {
         return authHeader.substring(7);
     }
 
-
-
-//    public String extractToken(HttpServletRequest request) {
-//        String header = request.getHeader("Authorization");
-//        if (header == null || !header.startsWith("Bearer ")) {
-//            throw new RuntimeException("Authorization header is missing or invalid");
-//        }
-//        return header;
-//    }
 
 
     // =================== 빵 ===================
@@ -73,17 +53,25 @@ public class MenuApiController {
     @PostMapping(value = "/breads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BreadResponseDTO> addBread(
             HttpServletRequest request,
-            @RequestPart("bread") BreadRequestDTO breadRequestDTO,
+            @RequestPart(value =  "bread") BreadRequestDTO breadRequestDTO,
             @RequestPart(value = "file", required = false) MultipartFile file) {
+
         log.info("Received bread: {}", breadRequestDTO);
-        log.info("Received file: {}", file.getOriginalFilename());
-        System.out.println("Received bread data: " + breadRequestDTO);
-        System.out.println("Received file name: " + file.getOriginalFilename());
+
+        // 파일이 null이 아닌 경우에만 파일명을 출력하도록 수정
+        if (file != null) {
+            log.info("Received file: {}", file.getOriginalFilename());
+            System.out.println("Received file name: " + file.getOriginalFilename());
+        } else {
+            log.info("No file received.");
+            System.out.println("No file received.");
+        }
 
         String token = extractToken(request);
 
-        return ResponseEntity.ok(menuService.addBread("Bearer " +token, breadRequestDTO, file));
+        return ResponseEntity.ok(menuService.addBread("Bearer " + token, breadRequestDTO, file));
     }
+
 
     @PutMapping(value = "/breads/{breadName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BreadResponseDTO> updateBread(

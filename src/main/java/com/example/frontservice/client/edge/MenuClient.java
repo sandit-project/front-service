@@ -1,9 +1,7 @@
 package com.example.frontservice.client.edge;
 
 import com.example.frontservice.config.FeignMultipartSupportConfig;
-import com.example.frontservice.config.feignClientConfiguration;
 import com.example.frontservice.dto.menu.*;
-import feign.Headers;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -25,7 +23,7 @@ public interface MenuClient {
     @PostMapping(value = "/breads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
     BreadResponseDTO addBread(@RequestHeader("Authorization") String token,
-                              @Valid @RequestPart("bread") BreadRequestDTO breadRequestDTO,
+                              @RequestPart(value = "bread") String breadRequestDTO,
                               @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/breads/{breadName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

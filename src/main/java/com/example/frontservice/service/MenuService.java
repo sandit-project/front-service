@@ -24,7 +24,10 @@ public class MenuService {
     }
 
     public BreadResponseDTO addBread(String token, BreadRequestDTO breadRequestDTO, MultipartFile file) {
-        return menuClient.addBread(token, breadRequestDTO, file);
+        System.out.println(breadRequestDTO.toString());
+        System.out.println(breadRequestDTO.getBreadName());
+        System.out.println(breadRequestDTO.getCalorie());
+        return menuClient.addBread(token, breadRequestDTO.toString(), file);
     }
 
     public BreadResponseDTO updateBread(String token, String breadName, BreadRequestDTO breadRequestDTO, MultipartFile file) {
