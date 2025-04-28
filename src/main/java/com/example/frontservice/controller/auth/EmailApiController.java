@@ -24,7 +24,21 @@ public class EmailApiController {
     @GetMapping("/auths/email/{email}/authcode")
     public ResponseEntity<String> sendCode(@PathVariable String email) throws IOException, MessagingException {
         emailService.sendEmailCode(email);
-        return ResponseEntity.ok("이메일을 확인하세요.");
+        try {
+            emailService.sendEmailCode(email);
+            return ResponseEntity.ok("이메일을 확인하세요.");
+        } catch (FeignException e) {
+            if (e.status() == 400) {
+                // auth-service가 [{"message":"이미 사용 중인 이메일입니다."}] 로 보냈다고 가정
+                return ResponseEntity
+                        .badRequest()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(e.contentUTF8());
+            }
+            return ResponseEntity
+                    .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    .body("인증 코드 전송 중 오류가 발생했습니다.");
+        }
     }
 
     @PostMapping("/auths/email/{email}/authcode")
