@@ -23,7 +23,7 @@ public interface MenuClient {
     @PostMapping(value = "/breads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
     BreadResponseDTO addBread(@RequestHeader("Authorization") String token,
-                              @RequestPart("bread") String breadRequestDTO,
+                              @RequestPart(value = "bread") String breadRequestDTO,
                               @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/breads/{breadName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

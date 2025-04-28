@@ -53,7 +53,7 @@ public class MenuApiController {
     @PostMapping(value = "/breads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BreadResponseDTO> addBread(
             HttpServletRequest request,
-            @ModelAttribute("bread") BreadRequestDTO breadRequestDTO,
+            @RequestPart(value =  "bread") BreadRequestDTO breadRequestDTO,
             @RequestPart(value = "file", required = false) MultipartFile file) {
 
         log.info("Received bread: {}", breadRequestDTO);
