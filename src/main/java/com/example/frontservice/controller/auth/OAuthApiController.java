@@ -4,6 +4,7 @@ import com.example.frontservice.dto.oauth.OAuthLoginResponseDTO;
 import com.example.frontservice.service.OAuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,9 @@ import java.io.IOException;
 @RequestMapping("/oauth")
 public class OAuthApiController {
     private final OAuthService oAuthService;
+
+    @Value("${sandit.token-redirect-url}")
+    private String redirectUrl;
 
     @GetMapping("/naver/callback")
     public OAuthLoginResponseDTO naverCallback(
@@ -31,9 +35,9 @@ public class OAuthApiController {
         System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
 
         if(responseDTO.isLoggedIn()==false){
-            response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
+            response.sendRedirect(redirectUrl + responseDTO.getMessage() + "/" + responseDTO.getType().name());
         }else{
-            response.sendRedirect("http://localhost:9000/oauth/token");
+            response.sendRedirect(redirectUrl);
         }
 
         return responseDTO;
@@ -52,9 +56,9 @@ public class OAuthApiController {
         System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
 
         if(responseDTO.isLoggedIn()==false || responseDTO == null){
-            response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
+            response.sendRedirect(redirectUrl + responseDTO.getMessage() + "/" + responseDTO.getType().name());
         }else{
-            response.sendRedirect("http://localhost:9000/oauth/token");
+            response.sendRedirect(redirectUrl);
         }
 
         return responseDTO;
@@ -72,9 +76,9 @@ public class OAuthApiController {
         System.out.println("result is :: " + responseDTO.isLoggedIn() + " " + responseDTO.getMessage());
 
         if(responseDTO.isLoggedIn()==false || responseDTO == null){
-            response.sendRedirect("http://localhost:9000/oauth/token/" + responseDTO.getMessage() + "/" + responseDTO.getType().name());
+            response.sendRedirect(redirectUrl + responseDTO.getMessage() + "/" + responseDTO.getType().name());
         }else{
-            response.sendRedirect("http://localhost:9000/oauth/token");
+            response.sendRedirect(redirectUrl);
         }
 
         return responseDTO;
