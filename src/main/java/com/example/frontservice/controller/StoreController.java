@@ -22,8 +22,8 @@ public class StoreController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam(name ="uid") Long uid, Model model) {
-        model.addAttribute("uid", uid); // ✅ 꼭 필요함
+    public String detail(@RequestParam(name ="storeUid") Long storeUid, Model model) {
+        model.addAttribute("storeUid", storeUid); // ✅ 꼭 필요함
         return "store-detail";
     }
     @GetMapping("/order")

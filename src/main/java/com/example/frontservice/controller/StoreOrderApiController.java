@@ -7,6 +7,7 @@ import com.example.frontservice.service.StoreOrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +19,8 @@ public class StoreOrderApiController {
 
     private final StoreOrderService storeOrderService;
 
-    @GetMapping("/stores/orders/list")
-    public List<StoreOrderResponseDTO> getAllOrdersByStoreUid(@RequestParam Long storeUid,
+    @GetMapping("/orders/store/{storeUid}")
+    public StoreOrderListResponseDTO getAllOrdersByStoreUid(  @PathVariable(name = "storeUid") Long storeUid,
                                                               @RequestParam(name = "limit", defaultValue = "10") int limit,
                                                               @RequestParam(name = "lastUid", required = false) int lastUid,
                                                               HttpServletRequest request) {
