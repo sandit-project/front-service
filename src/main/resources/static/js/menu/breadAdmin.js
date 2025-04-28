@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    checkToken();
-    setupAjax();
     $("#submitBtn").on("click", function () {
+        checkToken();
+        setupAjax();
 
         let fileInput = $("#img")[0].files[0];
 
@@ -13,13 +13,13 @@ $(document).ready(function () {
         let formData = new FormData();
         formData.append("file", fileInput); // 이미지 파일 추가
 
-        // breadData에 img 필드 추가
         let breadData = {
             breadName: $("#breadName").val(),
             calorie: parseFloat($("#calorie").val()),
             price: parseInt($("#price").val(), 10),
             status: $("#status").val() === "active" ? "ACTIVE" : "DELETED",
-            img: fileInput.name  // img 필드에 업로드된 파일의 이름을 추가
+            img: fileInput.name,  // img 필드에 업로드된 파일의 이름을 추가
+
         };
 
         // ✅ JSON 데이터를 Blob으로 변환하여 FormData에 추가 (올바른 Content-Type 설정)
@@ -36,7 +36,7 @@ $(document).ready(function () {
             contentType: false,
             success: function () {
                 alert("빵 정보가 등록되었습니다!");
-                window.location.href = "/breads/list";
+                //window.location.href = "/breads/list";
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
