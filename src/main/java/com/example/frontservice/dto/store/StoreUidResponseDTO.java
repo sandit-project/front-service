@@ -7,4 +7,5 @@ import lombok.Getter;
 @Builder
 public class StoreUidResponseDTO {
     private Long storeUid;
+    private String storeName;
 }

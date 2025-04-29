@@ -29,7 +29,7 @@ public interface OrderClient {
 
     //지점 주문 요청
     @GetMapping("/store/{storeUid}")
-    List<StoreOrderResponseDTO> getOrdersByStoreUid(@PathVariable("storeUid") Long storeUid,
+    StoreOrderListResponseDTO getOrdersByStoreUid(  @PathVariable("storeUid") Long storeUid,
                                                     @RequestParam("limit") int limit,
                                                     @RequestParam(value = "lastUid", required = false) int lastUid,
                                                     @RequestHeader("Authorization") String token

@@ -66,7 +66,7 @@ let loadStores = ({ limit, lastUid }) => {
 
                     $('#storeContent').append(`
                         <tr>
-                            <td>${store.uid}</td>
+                            <td>${store.storeUid}</td>
                             <td><a href="/store/detail?storeUid=${store.storeUid}">${store.storeName}</a></td>
                             <td>${store.managerUid}</td>
                             <td>${store.storeAddress}</td>
