@@ -57,13 +57,8 @@ async function renderCartItems(items) {
 
 // 주소 존재 여부 체크 API 호출
 function checkUserAddress(userUid) {
-    return true;
-    // return $.ajax({
-    //     url: `/users/${userUid}/check-address`,
-    //     method: 'GET'
-    // }).then(response => {
-    //     return response.hasAddress;
-    // });
+    const address = $('#mainAddress').val();
+    return Promise.resolve(!!address && address.trim() !== '');
 }
 
 //주소 검색 호출 함수

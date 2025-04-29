@@ -19,7 +19,7 @@ public interface OrderClient {
     OrderResponseDTO submitOrder(@RequestHeader("Authorization") String token, @RequestBody OrderRequestDTO request);
 
     @GetMapping("/user/{userUid}")
-    OrderDetailResponseDTO getOrdersByUserUid(@PathVariable Integer userUid);
+    List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token, @PathVariable Integer userUid);
 
     @PostMapping("/update-success")
     OrderResponseDTO updateOrderStatusSuccess(@RequestBody UpdateOrderStatusRequestDTO request);
