@@ -14,7 +14,7 @@ $(document).ready(function () {
 
                 data.forEach(vegetable => {
                     const row = `<tr>
-                        <td>${vegetable.uid}</td>
+                        
                         <td>${vegetable.vegetableName}</td>
                         <td>${vegetable.calorie}</td>
                         <td>${vegetable.price}</td>

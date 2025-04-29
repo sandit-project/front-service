@@ -92,9 +92,6 @@ public class MenuApiController {
         return ResponseEntity.noContent().build();
     }
 
-    // =================== 재료/치즈/야채/소스/사이드 ===================
-    // 위의 패턴과 똑같이 각각 add/update/delete 가져다 쓰면 됩니다.
-    // 필요한 경우 생략된 부분도 이어서 완성해드릴 수 있습니다.
 
     // =================== 치즈 ===================
     @GetMapping("/cheeses")

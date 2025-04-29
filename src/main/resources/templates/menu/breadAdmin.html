@@ -10,20 +10,24 @@
     <title>빵 정보 입력</title>
 </head>
 <body>
+
 <div class="container">
     <h1>빵 정보 입력</h1>
 
     <form id="breadForm" enctype="multipart/form-data">
+        <!-- 빵 이름 입력 -->
         <div class="form-group">
             <label for="breadName">빵 이름</label>
             <input type="text" id="breadName" name="breadName" placeholder="빵 이름을 입력하세요" required>
         </div>
 
+        <!-- 칼로리 입력 -->
         <div class="form-group">
             <label for="calorie">칼로리</label>
             <input type="number" id="calorie" name="calorie" placeholder="칼로리를 입력하세요" required>
         </div>
 
+        <!-- 가격 입력 -->
         <div class="form-group">
             <label for="price">가격</label>
             <input type="number" id="price" name="price" placeholder="가격을 입력하세요" required>
@@ -35,10 +39,10 @@
             <input type="file" id="img" name="file" accept="image/*" required>
         </div>
 
-
-        <!-- ✅ 업로드 후 URL을 저장할 hidden input -->
+        <!-- 이미지 URL을 위한 hidden input -->
         <input type="hidden" id="imgUrl" name="imgUrl">
 
+        <!-- 상태 선택 -->
         <div class="form-group">
             <label for="status">상태</label>
             <select id="status" name="status" required>
@@ -47,12 +51,14 @@
             </select>
         </div>
 
-        <div class="form-actions">
-            <button type="button" class="btn" id="submitBtn">등록하기</button>
-            <button type="button" class="btn cancel-btn" onclick="location.href='/breads/list'">목록으로 가기</button>
-            <button type="button" class="btn main-btn" onclick="location.href='/admin'">메인으로 가기</button>
+        <!-- 버튼 그룹 -->
+        <div class="button-group">
+            <button type="button" class="btn btn-primary" id="submitBtn">등록하기</button>
+            <button type="button" class="btn btn-secondary" onclick="location.href='/breads/list'">목록으로 가기</button>
+            <button type="button" class="btn btn-danger" onclick="location.href='/admin'">메인으로 가기</button>
         </div>
     </form>
 </div>
+
 </body>
 </html>

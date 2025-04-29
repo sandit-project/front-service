@@ -14,7 +14,7 @@ $(document).ready(function () {
 
                 data.forEach(material => {
                     const row = `<tr>
-                        <td>${material.uid}</td>
+                        
                         <td>${material.materialName}</td>
                         <td>${material.calorie}</td>
                         <td>${material.price}</td>

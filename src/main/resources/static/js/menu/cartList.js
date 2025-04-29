@@ -76,7 +76,6 @@ function loadCartItems() {
     }).fail(() => alert("장바구니 로딩 실패"));
 }
 
-
 function renderCartItems(items) {
     const $tbody = $("#cartTableBody").empty();
     let totalQuantity = 0;
@@ -86,7 +85,10 @@ function renderCartItems(items) {
         const rowHtml = `
             <tr data-id="${item.uid}">
                 <td><input type="checkbox" class="item-checkbox" value="${item.uid}"></td>
-                <td class="menu-name">${item.menuName}</td>
+                <td class="menu-name">
+                    <img src="${item.img}" alt="${item.menuName}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                    ${item.menuName}
+                </td>
                 <td>
                     <input type="number" min="1" value="${item.amount}" class="amount-input">
                     <button type="button" class="update-btn">변경</button>
