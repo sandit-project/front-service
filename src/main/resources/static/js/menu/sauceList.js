@@ -13,7 +13,7 @@ $(document).ready(function () {
 
                 data.forEach(sauce => {
                     const row = `<tr>
-                        <td>${sauce.uid}</td>
+                       
                         <td>${sauce.sauceName}</td>
                         <td>${sauce.calorie}</td>
                         <td>${sauce.price}</td>

@@ -16,7 +16,7 @@
   <form id="sideForm" enctype="multipart/form-data">
     <div class="form-group">
       <label for="sideName">사이드 이름</label>
-      <input type="text" id="sideName" name="sideName" placeholder="빵 이름을 입력하세요" required>
+      <input type="text" id="sideName" name="sideName" placeholder="사이드 이름을 입력하세요" required>
     </div>
 
     <div class="form-group">
@@ -47,10 +47,10 @@
       </select>
     </div>
 
-    <div class="form-actions">
-      <button type="button" class="btn" id="submitBtn">등록하기</button>
-      <button type="button" class="btn cancel-btn" onclick="location.href='/sides/list'">목록으로 가기</button>
-      <button type="button" class="btn main-btn" onclick="location.href='/admin'">메인으로 가기</button>
+    <div class="button-group">
+      <button type="button" class="btn btn-primary" id="submitBtn">등록하기</button>
+      <button type="button" class="btn btn-secondary" onclick="location.href='/sides/list'">목록으로 가기</button>
+      <button type="button" class="btn btn-danger" onclick="location.href='/admin'">메인으로 가기</button>
     </div>
   </form>
 </div>

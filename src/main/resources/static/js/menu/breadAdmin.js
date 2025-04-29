@@ -36,7 +36,7 @@ $(document).ready(function () {
             contentType: false,
             success: function () {
                 alert("빵 정보가 등록되었습니다!");
-                //window.location.href = "/breads/list";
+                window.location.href = "/breads/list";
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
