@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -35,9 +37,17 @@ public class OrderController {
     }
 
     @GetMapping("/orders/user/{userUid}")
-    public ResponseEntity<OrderDetailResponseDTO> listByUser(@PathVariable Integer userUid) {
+    public ResponseEntity<List<OrderDetailResponseDTO>> listByUser(HttpServletRequest request, @PathVariable Integer userUid) {
         log.info("listByUser userUid::" + userUid);
-        return ResponseEntity.ok(orderService.listByUser(userUid));
+
+        String token = request.getHeader("Authorization");
+
+        // Bearer 없으면 추가
+        if (token != null && !token.startsWith("Bearer ")) {
+            token = "Bearer " + token;
+        }
+
+        return ResponseEntity.ok(orderService.listByUser(token, userUid));
     }
 
     @PostMapping("/orders/update-success")

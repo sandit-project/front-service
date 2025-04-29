@@ -5,6 +5,8 @@ import com.example.frontservice.dto.order.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -21,8 +23,8 @@ public class OrderService {
     }
 
     //주문 내역 확인
-    public OrderDetailResponseDTO listByUser(Integer userUid) {
-        return orderClient.getOrdersByUserUid(userUid);
+    public List<OrderDetailResponseDTO> listByUser(String token, Integer userUid) {
+        return orderClient.getOrdersByUserUid(token, userUid);
     }
 
     //결제 완료 상태로 상태 변환

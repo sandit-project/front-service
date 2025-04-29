@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -19,5 +20,10 @@ public class OrderViewController {
     @GetMapping("/custom")
     public String customPage(Model model) {
         return "order/custom-order";
+    }
+
+    @GetMapping("/{userUid}")
+    public String orderDetailPage(@PathVariable("userUid") Integer userUid, Model model) {
+        return "order/order-detail";
     }
 }

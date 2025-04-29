@@ -23,4 +23,5 @@ public class OrderRequestDTO {
     private LocalDateTime reservationDate;
     private boolean paymentSuccess;
     private DeliveryAddressDTO deliveryAddress;
+    private int version;
 }
