@@ -16,6 +16,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
 public class OAuthApiController {
+
+
     private final OAuthService oAuthService;
 
     @Value("${sandit.token-redirect-url}")

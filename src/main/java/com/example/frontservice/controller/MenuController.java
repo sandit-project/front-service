@@ -23,7 +23,7 @@ public class MenuController {
                     CookieUtil.deleteCookie(request, response, "accessToken");
                 }
             }
-            return "sample";
+            return "menu";
         }
     }
     @GetMapping("/detail")

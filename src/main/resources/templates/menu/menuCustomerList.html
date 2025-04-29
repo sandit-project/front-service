@@ -3,6 +3,7 @@
 <head>
     <title>메뉴 보기</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/common.js}"></script>
@@ -11,9 +12,19 @@
 </head>
 <body>
 
-<!-- ✅ 네비게이션 메뉴 -->
+<!-- ✅ 헤더: 로그인 / 회원가입 영역 -->
+<header class="header">
+    <div class="header-left">
+        <a href="/" class="site-title">🥪 샌드위치 월드</a>
+    </div>
+    <div class="header-right">
+        <a href="/login" class="header-link">로그인</a>
+        <a href="/signup" class="header-link">회원가입</a>
+    </div>
+</header>
+
+<!-- ✅ 네비게이션 바 -->
 <nav class="navbar">
-    <div class="navbar-title">🥪 샌드위치 메뉴 둘러보기</div>
     <div class="navbar-links">
         <a href="/static" class="nav-link">홈</a>
         <a href="/admin" class="nav-link">관리자 페이지</a>
@@ -21,6 +32,7 @@
     </div>
 </nav>
 
+<!-- ✅ 메인 타이틀 -->
 <h1 class="main-heading">메뉴 둘러보기</h1>
 
 <!-- ✅ 메뉴 전체 컨테이너 -->
@@ -39,6 +51,18 @@
 
     <!-- ✅ 일반 메뉴는 JS에서 동적으로 삽입됨 -->
 </div>
+
+<!-- ✅ 푸터 추가 -->
+<footer class="footer">
+    <div class="footer-content">
+        © 2025 Sandwich World. All rights reserved.
+        <div class="footer-links">
+            <a href="/about" class="footer-link">회사소개</a>
+            <a href="/terms" class="footer-link">이용약관</a>
+            <a href="/privacy" class="footer-link">개인정보처리방침</a>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

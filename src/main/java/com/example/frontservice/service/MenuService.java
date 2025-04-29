@@ -23,14 +23,12 @@ public class MenuService {
         return menuClient.getBread(token, breadName);
     }
 
-    public BreadResponseDTO addBread(String token, BreadRequestDTO breadRequestDTO, MultipartFile file) {
-        System.out.println(breadRequestDTO.toString());
-        System.out.println(breadRequestDTO.getBreadName());
-        System.out.println(breadRequestDTO.getCalorie());
-        return menuClient.addBread(token, breadRequestDTO.toString(), file);
+    public BreadResponseDTO addBread(String token, String breadRequestDTO, MultipartFile file) {
+
+        return menuClient.addBread(token, breadRequestDTO, file);
     }
 
-    public BreadResponseDTO updateBread(String token, String breadName, BreadRequestDTO breadRequestDTO, MultipartFile file) {
+    public BreadResponseDTO updateBread(String token, String breadName, String breadRequestDTO, MultipartFile file) {
         return menuClient.updateBread(token, breadName, breadRequestDTO, file);
     }
 
@@ -47,11 +45,11 @@ public class MenuService {
         return menuClient.getCheese(token, cheeseName);
     }
 
-    public CheeseResponseDTO addCheese(String token, CheeseRequestDTO cheeseRequestDTO, MultipartFile file) {
+    public CheeseResponseDTO addCheese(String token, String cheeseRequestDTO, MultipartFile file) {
         return menuClient.addCheese(token, cheeseRequestDTO, file);
     }
 
-    public CheeseResponseDTO updateCheese(String token, String cheeseName, CheeseRequestDTO cheeseRequestDTO, MultipartFile file) {
+    public CheeseResponseDTO updateCheese(String token, String cheeseName, String cheeseRequestDTO, MultipartFile file) {
         return menuClient.updateCheese(token, cheeseName, cheeseRequestDTO, file);
     }
 
@@ -68,11 +66,11 @@ public class MenuService {
         return menuClient.getMaterial(token, materialName);
     }
 
-    public MaterialResponseDTO addMaterial(String token, MaterialRequestDTO materialRequestDTO, MultipartFile file) {
+    public MaterialResponseDTO addMaterial(String token, String materialRequestDTO, MultipartFile file) {
         return menuClient.addMaterial(token, materialRequestDTO, file);
     }
 
-    public MaterialResponseDTO updateMaterial(String token, String materialName, MaterialRequestDTO materialRequestDTO, MultipartFile file) {
+    public MaterialResponseDTO updateMaterial(String token, String materialName, String materialRequestDTO, MultipartFile file) {
         return menuClient.updateMaterial(token, materialName, materialRequestDTO, file);
     }
 
@@ -89,11 +87,11 @@ public class MenuService {
         return menuClient.getSauce(token, sauceName);
     }
 
-    public SauceResponseDTO addSauce(String token, SauceRequestDTO sauceRequestDTO, MultipartFile file) {
+    public SauceResponseDTO addSauce(String token, String sauceRequestDTO, MultipartFile file) {
         return menuClient.addSauce(token, sauceRequestDTO, file);
     }
 
-    public SauceResponseDTO updateSauce(String token, String sauceName, SauceRequestDTO sauceRequestDTO, MultipartFile file) {
+    public SauceResponseDTO updateSauce(String token, String sauceName, String sauceRequestDTO, MultipartFile file) {
         return menuClient.updateSauce(token, sauceName, sauceRequestDTO, file);
     }
 
@@ -110,11 +108,11 @@ public class MenuService {
         return menuClient.getVegetable(token, vegetableName);
     }
 
-    public VegetableResponseDTO addVegetable(String token, VegetableRequestDTO vegetableRequestDTO, MultipartFile file) {
+    public VegetableResponseDTO addVegetable(String token, String vegetableRequestDTO, MultipartFile file) {
         return menuClient.addVegetable(token, vegetableRequestDTO, file);
     }
 
-    public VegetableResponseDTO updateVegetable(String token, String vegetableName, VegetableRequestDTO vegetableRequestDTO, MultipartFile file) {
+    public VegetableResponseDTO updateVegetable(String token, String vegetableName, String vegetableRequestDTO, MultipartFile file) {
         return menuClient.updateVegetable(token, vegetableName, vegetableRequestDTO, file);
     }
 
@@ -131,11 +129,11 @@ public class MenuService {
         return menuClient.getSide(token, sideName);
     }
 
-    public SideResponseDTO addSide(String token, SideRequestDTO sideRequestDTO, MultipartFile file) {
+    public SideResponseDTO addSide(String token, String sideRequestDTO, MultipartFile file) {
         return menuClient.addSide(token, sideRequestDTO, file);
     }
 
-    public SideResponseDTO updateSide(String token, String sideName, SideRequestDTO sideRequestDTO, MultipartFile file) {
+    public SideResponseDTO updateSide(String token, String sideName, String sideRequestDTO, MultipartFile file) {
         return menuClient.updateSide(token, sideName, sideRequestDTO, file);
     }
 
@@ -206,7 +204,7 @@ public class MenuService {
         return menuClient.getCustomCart(token, uid);
     }
 
-    public CustomCartResponseDTO createCustomCart(String token, CustomCartRequestDTO customCartRequestDTO) {
+    public CustomCartResponseDTO createCustomCart(String token, String customCartRequestDTO) {
         return menuClient.createCustomCart(token, customCartRequestDTO);
     }
 
@@ -224,11 +222,11 @@ public class MenuService {
         return menuClient.getMenu(token, menuName);
     }
 
-    public MenuResponseDTO addMenu(String token, MenuRequestDTO menuRequestDTO, MultipartFile file) {
+    public MenuResponseDTO addMenu(String token, String menuRequestDTO, MultipartFile file) {
         return menuClient.addMenu(token, menuRequestDTO, file);
     }
 
-    public MenuResponseDTO updateMenu(String token, String menuName, MenuRequestDTO menuRequestDTO, MultipartFile file) {
+    public MenuResponseDTO updateMenu(String token, String menuName, String menuRequestDTO, MultipartFile file) {
         return menuClient.updateMenu(token, menuName, menuRequestDTO, file);
     }
 

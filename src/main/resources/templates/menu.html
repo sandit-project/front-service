@@ -7,20 +7,24 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu.js}"></script>
     <link th:href="@{/css/menu.css}" rel="stylesheet">
+    <title>Restaurant Menu</title>
 </head>
-<body> <!-- 헤더 -->
+<body>
+<!-- 헤더 -->
 <header>
-    <div class="logo">Restaurant Figma</div>
+    <div class="logo">Restaurant</div>
     <nav>
         <ul>
-            <li><a href="menu.html">Menu</a></li>
+            <li><a href="menu.html"></a></li>
             <li><a href="gallery.html">Gallery</a></li>
             <li><a href="about_us.html">About Us</a></li>
             <li><a href="help.html">Help</a></li>
             <li><a href="#" class="order-now">Order Now</a></li>
         </ul>
     </nav>
-</header> <!-- 카테고리 내비게이션 -->
+</header>
+
+<!-- 카테고리 내비게이션 -->
 <div class="categories">
     <ul>
         <li class="active">Burgers</li>
@@ -31,66 +35,74 @@
         <li>Desserts</li>
         <li>Starter</li>
     </ul>
-</div> <!-- 메인 컨텐츠 -->
-<main> <!-- 첫 번째 버거 섹션 -->
+</div>
+
+<!-- 메인 컨텐츠 -->
+<main>
     <div>
         <input id="hiddenUserId" type="hidden">
         <input id="hiddenUserName" type="hidden">
-
         <h1 id="welcome-message"></h1>
         <button class="order-now" id="logoutBtn">logout</button>
         <li><button class="order-now" id="deleteBtn">deleteAcc</button>
-        <button class="order-now" id="profileBtn">profile</button>
+            <button class="order-now" id="profileBtn">profile</button>
     </div>
-    <section class="menu-section"><h2>Burgers</h2>
+
+    <!-- 버거 섹션 -->
+    <section class="menu-section">
+        <h2>Burgers</h2>
         <div class="menu-items">
-            <div class="menu-item"><h3>Pattie Burger</h3>
+            <div class="menu-item">
+                <h3>Pattie Burger</h3>
                 <p class="price">$21</p>
-                <p class="description">cheese burger</p>
-                <div class="add-to-cart">$0
-                    <button>Add to Cart &gt;&gt;0</button>
+                <p class="description">Cheese burger</p>
+                <div class="add-to-cart">
+                    $0 <button>Add to Cart &gt;&gt;0</button>
                 </div>
             </div>
-            <div class="menu-item"><h3>Smoked Burger</h3>
+            <div class="menu-item">
+                <h3>Smoked Burger</h3>
                 <p class="price">$13</p>
                 <p class="description">Smoky touch</p>
-                <div class="add-to-cart">$0
-                    <button>Add to Cart &gt;&gt;0</button>
+                <div class="add-to-cart">
+                    $0 <button>Add to Cart &gt;&gt;0</button>
                 </div>
             </div>
-            <div class="menu-item"><h3>Mighty Burger</h3>
+            <div class="menu-item">
+                <h3>Mighty Burger</h3>
                 <p class="price">$23</p>
-                <p class="description">Delicioaso</p>
-                <div class="add-to-cart">$0
-                    <button>Add to Cart &gt;&gt;0</button>
+                <p class="description">Delicioso</p>
+                <div class="add-to-cart">
+                    $0 <button>Add to Cart &gt;&gt;0</button>
                 </div>
             </div>
         </div>
-    </section><!-- 두 번째 버거 섹션 -->
+    </section>
+
     <section class="menu-section">
         <div class="menu-items">
             <div class="menu-item">
-                <h3>Cruch Burger</h3>
+                <h3>Crunch Burger</h3>
                 <p class="price">$34</p>
-                <p class="description">more cruches</p>
-                <div class="add-to-cart">$0
-                    <button>Add to Cart &gt;&gt;0</button>
+                <p class="description">More crunches</p>
+                <div class="add-to-cart">
+                    $0 <button>Add to Cart &gt;&gt;0</button>
                 </div>
             </div>
             <div class="menu-item">
                 <h3>Saucy Burger</h3>
                 <p class="price">$17</p>
-                <p class="description">extra saucy</p>
-                <div class="add-to-cart">$0
-                    <button>Add to Cart &gt;&gt;0</button>
+                <p class="description">Extra saucy</p>
+                <div class="add-to-cart">
+                    $0 <button>Add to Cart &gt;&gt;0</button>
                 </div>
             </div>
             <div class="menu-item">
                 <h3>Zingrata Burger</h3>
                 <p class="price">$22</p>
-                <p class="description">kgkjhgkj kjhgkjhg</p>
-                <div class="add-to-cart">$0
-                    <button>Add to Cart &gt;&gt;0</button>
+                <p class="description">Deliciously unique</p>
+                <div class="add-to-cart">
+                    $0 <button>Add to Cart &gt;&gt;0</button>
                 </div>
             </div>
         </div>
@@ -103,9 +115,12 @@
     <section class="tagline">
         <p>Savor the artistry where every dish is a culinary masterpiece</p>
     </section>
-</main> <!-- 푸터 -->
+</main>
+
+<!-- 푸터 -->
 <footer>
-    <div class="footer-links"><h4>Useful Links</h4>
+    <div class="footer-links">
+        <h4>Useful Links</h4>
         <ul>
             <li><a href="about_us.html">About Us</a></li>
             <li><a href="gallery.html">Gallery</a></li>
@@ -117,12 +132,17 @@
             <li><a href="#">Contact Us</a></li>
         </ul>
     </div>
-    <div class="footer-contact"><p>example@gmail.com</p>
-        <p>+64 958 248 966</p></div>
-    <div class="footer-social"><p>Social media</p></div>
-    <div class="footer-bottom"><p>Reservations</p>
+    <div class="footer-contact">
+        <p>example@gmail.com</p>
+        <p>+64 958 248 966</p>
+    </div>
+    <div class="footer-social">
+        <p>Follow Us on Social Media</p>
+    </div>
+    <div class="footer-bottom">
         <p>&copy; 2023 OneKode | All rights reserved</p>
-        <p>Built on Bubble</p></div>
+        <p>Built on Bubble</p>
+    </div>
 </footer>
 </body>
 </html>

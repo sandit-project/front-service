@@ -2,7 +2,6 @@ package com.example.frontservice.client.edge;
 
 import com.example.frontservice.config.FeignMultipartSupportConfig;
 import com.example.frontservice.dto.menu.*;
-import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,7 @@ public interface MenuClient {
 
     BreadResponseDTO updateBread(@RequestHeader("Authorization") String token,
                                  @PathVariable("breadName") String breadName,
-                                 @RequestPart("bread") BreadRequestDTO breadRequestDTO,
+                                 @RequestPart("bread") String breadRequestDTO,
                                  @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/breads/{breadName}")
@@ -45,13 +44,13 @@ public interface MenuClient {
 
     @PostMapping(value = "/cheeses", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     CheeseResponseDTO addCheese(@RequestHeader("Authorization") String token,
-                                @RequestPart("cheese") CheeseRequestDTO cheeseRequestDTO,
+                                @RequestPart("cheese") String cheeseRequestDTO,
                                 @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/cheeses/{cheeseName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     CheeseResponseDTO updateCheese(@RequestHeader("Authorization") String token,
                                    @PathVariable("cheeseName") String cheeseName,
-                                   @RequestPart("cheese") CheeseRequestDTO cheeseRequestDTO,
+                                   @RequestPart("cheese") String cheeseRequestDTO,
                                    @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/cheeses/{cheeseName}")
@@ -66,13 +65,13 @@ public interface MenuClient {
 
     @PostMapping(value = "/materials", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     MaterialResponseDTO addMaterial(@RequestHeader("Authorization") String token,
-                                    @RequestPart("material") MaterialRequestDTO materialRequestDTO,
+                                    @RequestPart("material") String materialRequestDTO,
                                     @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/materials/{materialName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     MaterialResponseDTO updateMaterial(@RequestHeader("Authorization") String token,
                                        @PathVariable("materialName") String materialName,
-                                       @RequestPart("material") MaterialRequestDTO materialRequestDTO,
+                                       @RequestPart("material") String materialRequestDTO,
                                        @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/materials/{materialName}")
@@ -87,13 +86,13 @@ public interface MenuClient {
 
     @PostMapping(value = "/sauces", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     SauceResponseDTO addSauce(@RequestHeader("Authorization") String token,
-                              @RequestPart("sauce") SauceRequestDTO sauceRequestDTO,
+                              @RequestPart("sauce") String sauceRequestDTO,
                               @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/sauces/{sauceName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     SauceResponseDTO updateSauce(@RequestHeader("Authorization") String token,
                                  @PathVariable("sauceName") String sauceName,
-                                 @RequestPart("sauce") SauceRequestDTO sauceRequestDTO,
+                                 @RequestPart("sauce") String sauceRequestDTO,
                                  @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/sauces/{sauceName}")
@@ -108,13 +107,13 @@ public interface MenuClient {
 
     @PostMapping(value = "/vegetables", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     VegetableResponseDTO addVegetable(@RequestHeader("Authorization") String token,
-                                      @RequestPart("vegetable") VegetableRequestDTO vegetableRequestDTO,
+                                      @RequestPart("vegetable") String vegetableRequestDTO,
                                       @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/vegetables/{vegetableName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     VegetableResponseDTO updateVegetable(@RequestHeader("Authorization") String token,
                                          @PathVariable("vegetableName") String vegetableName,
-                                         @RequestPart("vegetable") VegetableRequestDTO vegetableRequestDTO,
+                                         @RequestPart("vegetable") String vegetableRequestDTO,
                                          @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/vegetables/{vegetableName}")
@@ -129,13 +128,13 @@ public interface MenuClient {
 
     @PostMapping(value = "/sides", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     SideResponseDTO addSide(@RequestHeader("Authorization") String token,
-                            @RequestPart("side") SideRequestDTO sideRequestDTO,
+                            @RequestPart("side") String sideRequestDTO,
                             @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/sides/{sideName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     SideResponseDTO updateSide(@RequestHeader("Authorization") String token,
                                @PathVariable("sideName") String sideName,
-                               @RequestPart("side") SideRequestDTO sideRequestDTO,
+                               @RequestPart("side") String sideRequestDTO,
                                @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/sides/{sideName}")
@@ -197,8 +196,8 @@ public interface MenuClient {
     @GetMapping("/custom-carts/{uid}")
     CustomCartResponseDTO getCustomCart(@RequestHeader("Authorization") String token, @PathVariable("uid") Long uid);
 
-    @PostMapping(value = "/custom-cart", consumes = MediaType.APPLICATION_JSON_VALUE)
-    CustomCartResponseDTO createCustomCart(@RequestHeader("Authorization") String token, @RequestBody CustomCartRequestDTO dto);
+    @PostMapping(value = "/custom-carts", consumes = MediaType.APPLICATION_JSON_VALUE)
+    CustomCartResponseDTO createCustomCart(@RequestHeader("Authorization") String token, @RequestBody String customCartRequestDTO);
 
     @DeleteMapping("/custom-carts/{uid}")
     void deleteCustomCart(@RequestHeader("Authorization") String token, @PathVariable("uid") Long uid);
@@ -212,13 +211,13 @@ public interface MenuClient {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     MenuResponseDTO addMenu(@RequestHeader("Authorization") String token,
-                            @RequestPart("menu") MenuRequestDTO menuRequestDTO,
+                            @RequestPart("menu") String menuRequestDTO,
                             @RequestPart(value = "file", required = false) MultipartFile file);
 
     @PutMapping(value = "/{menuName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     MenuResponseDTO updateMenu(@RequestHeader("Authorization") String token,
                                @PathVariable("menuName") String menuName,
-                               @RequestPart("menu") MenuRequestDTO menuRequestDTO,
+                               @RequestPart("menu") String menuRequestDTO,
                                @RequestPart(value = "file", required = false) MultipartFile file);
 
     @DeleteMapping("/{menuName}")
