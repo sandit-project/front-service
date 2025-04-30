@@ -1,5 +1,6 @@
 let userUid;
 let socialUid;
+let expectedVersion = null;
 
 const MOCK_CART_ITEMS = [
     { uid: 6, menuName: '샌드위치 A', unitPrice: 100, amount: 1, calorie: 300 },
@@ -12,16 +13,25 @@ const MOCK_STORES = [
     { uid: 3, storeName: '잠실점' , address: '서울시 송파구 신천동 7-28',lat: 37.1234, lan: 127.5678 }
 ];
 
-// 장바구니 항목 가져오기 (받아오는 주소에 맞춰서 수정 예정)
+// 장바구니 항목 가져오기
 function getCartItems() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        return Promise.reject('로그인 토큰이 없습니다');
+    }
 
-    return Promise.resolve(MOCK_CART_ITEMS);
-    // return $.ajax({
-    //     url: '/carts',
-    //     method: 'GET',
-    //     contentType: 'application/json'
-    // });
+    return $.ajax({
+        url: '/menus/cart',
+        method: 'GET',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
+        return response.cartItems || []; // 백엔드가 CartResponseDTO 형태 반환
+    });
 }
+
 
 //fillUserInfoForm 헬퍼 (폼에 값 채워넣기)
 function fillUserInfoForm(user) {
@@ -207,7 +217,7 @@ $(document).ready(async () => {
             requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate);
         } catch (err) {
             console.error('사전 검증 실패', err);
-            alert('사전 검증 실패');
+            alert('결제 실패했습니다! 다시 시도해주세요!');
         }
     });
 });
@@ -319,10 +329,23 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
             totalPrice: totalPrice,
             storeUid: storeUid,
             userUid: userUid,
-            reservationDate: reservationDate
+            reservationDate: reservationDate,
+            //expectedVersion: expectedVersion
         })
     });
 }
+
+// const prepareResponse = await preparePayment(
+//     merchantUid,
+//     menuName,
+//     totalPrice,
+//     storeUid,
+//     userUid,
+//     reservationDate
+// );
+//
+// expectedVersion = prepareResponse.version;
+
 
 // 실제 결제 요청
 function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
@@ -368,7 +391,8 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
-                    merchantUid: response.merchant_uid
+                    merchantUid: response.merchant_uid,
+                    //expectedVersion: expectedVersion
                 }),
                 success: function(updateRes) {
                     alert(updateRes.message || "결제 성공!");
