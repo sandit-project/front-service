@@ -1,5 +1,6 @@
 package com.example.frontservice.controller;
 
+import com.example.frontservice.dto.store.StoreOrderCountResponseDTO;
 import com.example.frontservice.dto.store.StoreOrderListRequestDTO;
 import com.example.frontservice.dto.store.StoreOrderListResponseDTO;
 import com.example.frontservice.dto.store.StoreOrderResponseDTO;
@@ -20,12 +21,17 @@ public class StoreOrderApiController {
     private final StoreOrderService storeOrderService;
 
     @GetMapping("/orders/store/{storeUid}")
-    public StoreOrderListResponseDTO getAllOrdersByStoreUid(  @PathVariable(name = "storeUid") Long storeUid,
+    public StoreOrderListResponseDTO getAllOrdersByStoreUid(  @PathVariable(name = "storeUid") Integer storeUid,
                                                               @RequestParam(name = "limit", defaultValue = "10") int limit,
-                                                              @RequestParam(name = "lastUid", required = false) int lastUid,
+                                                              @RequestParam(name = "lastUid", required = false) Integer lastUid,
                                                               HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
         return storeOrderService.getAllOrders(storeUid,limit,lastUid,token);
+    }
+
+    @GetMapping("orders/store/{storeUid}/count")
+    public StoreOrderCountResponseDTO countByStoreUid(@PathVariable(name = "storeUid") Integer storeUid) {
+        return storeOrderService.countByStoreUid(storeUid);
     }
 }

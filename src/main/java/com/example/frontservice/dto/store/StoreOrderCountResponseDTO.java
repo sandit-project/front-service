@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class StoreUidResponseDTO {
-    private Integer storeUid;
-    private String storeName;
+public class StoreOrderCountResponseDTO {
+    int orderCount;
 }

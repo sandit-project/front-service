@@ -12,13 +12,20 @@
     <script th:src="@{/js/storeOrderList.js}"></script>
 
     <!-- 공용 CSS 스타일 -->
-    <link th:href="@{/css/storeList.css}" rel="stylesheet"/>
+    <link th:href="@{/css/storeOrderList.css}" rel="stylesheet"/>
 
     <title>지점 주문 목록</title>
 </head>
 <body>
 <div class="container">
-    <h1 id="welcome-message">지점 주문 목록</h1>
+    <div class="header">
+        <h1 id="welcome-message">
+            <span id="welcome-text">지점 주문 목록</span>
+            <span id="order-count">(0)</span>
+        </h1>
+
+        <button id="refresh-btn" class="btn">🔄새로고침</button>
+    </div>
 
     <div id="board">
         <table>
