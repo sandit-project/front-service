@@ -2,8 +2,10 @@ package com.example.frontservice.client.edge;
 
 import com.example.frontservice.config.FeignMultipartSupportConfig;
 import com.example.frontservice.dto.menu.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -163,8 +165,8 @@ public interface MenuClient {
                               @RequestParam("menuId") Long menuId,
                               @RequestParam("amount") int amount);
 
-
-
+    @PostMapping("/cart/add/side")
+    CartResponseDTO addSideToCart(@RequestHeader("Authorization") String token, @RequestParam Long sideId, @RequestParam int amount);
 
 
 

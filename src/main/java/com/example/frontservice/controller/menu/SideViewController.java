@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class SideViewController {
 
+    //사이드 메뉴 주문 리스트
+    @GetMapping("/side")
+    public String side() {return "menu/sideMenuCustomerList"; }
+
+
     // ✅ 사이드 업로드 페이지로 이동
     @GetMapping("/sides/admin")
     public String index() {

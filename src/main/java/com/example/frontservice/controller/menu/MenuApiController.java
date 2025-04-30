@@ -377,6 +377,11 @@ public class MenuApiController {
         String token = extractToken(request);
         return ResponseEntity.ok(menuService.addToCart("Bearer " +token, menuId, amount));
     }
+    @PostMapping("/cart/add/side")
+    public ResponseEntity<CartResponseDTO> addSideToCart(HttpServletRequest request,@RequestParam Long sideId, @RequestParam int amount) {
+        String token = extractToken(request);
+        return ResponseEntity.ok(menuService.addSideToCart("Bearer " +token, sideId, amount));
+    }
 
     // =================== 커스텀 카트 ===================
     @GetMapping("/custom-carts")
@@ -456,6 +461,7 @@ public class MenuApiController {
         menuService.deleteMenu("Bearer " +token, menuName);
         return ResponseEntity.noContent().build();
     }
+
 
 
 }
