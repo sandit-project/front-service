@@ -25,6 +25,30 @@ h1 {
     color: #333;
 }
 
+/* 제목 가운데 정렬, 버튼은 오른쪽 고정 */
+.header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+#welcome-message {
+    display: inline-block; /* 텍스트 블록으로 인라인 중앙 정렬 보조 */
+}
+#order-count {
+    margin-left: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+#refresh-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
 #board {
     margin-top: 20px;
 }

@@ -19,19 +19,28 @@ $(document).ready(async ()=>{
 
     // 3) 매니저 UID로 storeUid 조회
 
+
     storeInfo = await fetchStoreUidByManager(managerUid);
+
     if (storeInfo==null) {
         alert('지점 정보를 불러오는 데 실패했습니다.');
         return;
     }
-    console.log("storeUid :"+storeInfo.storeUid);
     // 4) 화면 헤더 업데이트
-    $('#welcome-message').text(`${storeInfo.storeName} 주문 목록`);
+    $('#welcome-text').text(`${storeInfo.storeName} 주문 목록`);
+
+    // ** 총 주문 수 조회 **
+    await updateOrderCount();
+
+    // ** 새로고침 버튼 클릭 핸들러 **
+    $('#refresh-btn').click(async ()=>{
+        await updateOrderCount();
+        initStoreOrderList();
+    });
 
     //최초 페이지(1)는 lastUid가 null 이어야 함
     cursorMap.set(1,null);
     initStoreOrderList();
-
 });
 
 let cursorMap=new Map();//페이지번호 => lastUid 매핑
@@ -47,8 +56,9 @@ function fetchStoreUidByManager(managerUid) {
         $.ajax({
             type: 'GET',
             url: `/stores/storeUid?managerUid=${managerUid}`,
+            dataType: 'json',
             success: response => {
-                console.log(response);
+                console.log("로그인 한 매니저의 지점명,지점번호 :",response);
                 resolve(response);
             },
             error: xhr => {
@@ -59,6 +69,9 @@ function fetchStoreUidByManager(managerUid) {
     });
 }
 
+/**
+ * 초기 페이지 버튼&리스트 설정
+ */
 let initStoreOrderList=() =>{
     //최초 페이지 로드(page 1)
     loadStoreOrders({ limit, lastUid: cursorMap.get(page)});
@@ -90,69 +103,87 @@ let initStoreOrderList=() =>{
 };
 
 /**
- * storeUid로 주문 목록을 불러와 렌더링
+ * storeUid로 주문 목록을 불러와 렌더링(jQuery AJAX 사용)
  */
-async function loadStoreOrders({ limit, lastUid }) {
-    const params = new URLSearchParams({ limit });
-    if (lastUid != null) params.append('lastUid', lastUid)
-    else params.append('lastUid', 0);
+function loadStoreOrders({ limit, lastUid }) {
+    const last = lastUid != null ? lastUid : 0;
 
-    try {
-        const resp = await fetch(`/orders/store/${storeInfo.storeUid}?${params}`);
-        if (!resp.ok) throw new Error(`${resp.status}`);
-        const response = await resp.json();
+    // 기본 URL (limit만 붙임)
+    let url = `/orders/store/${storeInfo.storeUid}?limit=${encodeURIComponent(limit)}`;
 
-        const $tbody = $('#storeContent').empty();
-        if (!response.orders || response.orders.length === 0) {
-            $tbody.append(`
-        <tr>
-          <td colspan="8" style="text-align:center">주문 내역이 없습니다.</td>
-        </tr>
-      `);
-        } else {
-            response.orders.forEach(o => {
-                const created   = new Date(o.createdDate).toLocaleString();
-                const reserve   = o.reservationDate
-                    ? new Date(o.reservationDate).toLocaleString()
-                    : '-';
-                const itemsCnt  = o.items ? o.items.length : 0;
+    // 두 번째 페이지부터 lastUid 파라미터 추가
+    if (lastUid != null) {
+        url += `&lastUid=${encodeURIComponent(lastUid)}`;
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function (response) {
+
+            console.log("지점 주문 목록 :",response);
+            const orders = response.storeOrderLists || [];
+            const $tbody = $('#storeContent').empty();
+            if (orders.length === 0) {
                 $tbody.append(`
-          <tr>
-            <td>${o.uid}</td>
-            <td>${o.userUid}</td>
-            <td>${o.payment}</td>
-            <td>${o.status}</td>
-            <td>${created}</td>
-            <td>${reserve}</td>
-            <td>${itemsCnt}</td>
-             <td><a href="/stores/${storeUid}/orders/detail?uid=${o.uid}">상세</a></td>
-          </tr>
-        `);
+                    <tr>
+                      <td colspan="8" style="text-align:center">주문 내역이 없습니다.</td>
+                    </tr>
+                `);
+
+            } else {
+                orders.forEach(o => {
+                    const created = new Date(o.createdDate).toLocaleString();
+                    const reserve = o.reservationDate
+                        ? new Date(o.reservationDate).toLocaleString()
+                        : '-';
+                    const itemsCnt = o.items ? o.items.length : 0;
+                    $tbody.append(`
+                        <tr>
+                          <td>${o.uid}</td>
+                          <td>${o.userUid}</td>
+                          <td>${o.payment}</td>
+                          <td>${o.status}</td>
+                          <td>${created}</td>
+                          <td>${reserve}</td>
+                          <td>${itemsCnt}</td>
+                          <td><a href="/stores/${storeInfo.storeUid}/orders/detail?uid=${o.uid}">상세</a></td>
+                        </tr>
+                    `);
+                    updateOrderCount();
+                });
+            }
+
+            // 1페이지에서 초기화
+            if (page === 1) {
+                cursorMap.clear();
+                cursorMap.set(1, null);
+            }
+
+
+            // 다음 페이지(lastUid)는 현재 응답의 nextCursor로 설정
+            if (!response.lastPage && response.nextCursor != null && orders.length === limit) {
+                if (!cursorMap.has(page + 1)) {
+                    cursorMap.set(page + 1, response.nextCursor);
+                }
+            }
+
+            updatePaginationButtons({
+                lastPage: response.lastPage,
+                hasNext: response.nextCursor != null
             });
+
+        },
+        error: (xhr, status, error) => {
+            console.error('주문 목록 조회 오류 ::', error);
         }
+    });
+}
 
-    // 1페이지에서 초기화
-    if (page === 1) {
-        cursorMap.clear();
-        cursorMap.set(1, null);
-    }
-
-    // 만약 현재 페이지의 데이터가 꽉 차 있고 다음 페이지 커서가 있다면,
-    // 다음 페이지(lastUid)는 현재 응답의 nextCursor로 설정
-    if (response.nextCursor && response.orders.length === limit) {
-        if (!cursorMap.has(page + 1)) {
-            cursorMap.set(page + 1, response.nextCursor);
-        }
-    }
-
-    updatePaginationButtons(response);
-
-    }   catch (err){
-            console.log('주문 목록 조회 오류 ::', err);
-    }
-};
-
-//페이지 번호 생성
+/**
+ * 페이지 버튼 업데이트
+ */
 let updatePaginationButtons = (response) => {
     //첫 페이지에서는 이전 버튼 비활성화
     $('#prevPage').prop('disabled', page === 1);
@@ -182,7 +213,9 @@ let updatePaginationButtons = (response) => {
         loadStoreOrders({ limit, lastUid: cursorMap.get(page) });
     });
 };
-
+/**
+ * 로그아웃 처리
+ */
 let logout = () => {
     $.ajax({
         type: 'POST',
@@ -197,4 +230,22 @@ let logout = () => {
             alert('로그아웃 중 오류가 발생했습니다.');
         }
     });
+}
+
+/**
+ * 총 주문 수 조회
+ * GET /orders/store/{storeUid}/count
+ */
+async function updateOrderCount(){
+    try {
+        const response = await $.ajax({
+            type: 'GET',
+            url: `/orders/store/${storeInfo.storeUid}/count`,
+            dataType: 'json',
+        });
+        $('#order-count').text(`(${response.count})`);
+    } catch (err) {
+        console.error('주문 수 조회 실패 :',err)
+        $('#order-count').text('(?)');
+    }
 }

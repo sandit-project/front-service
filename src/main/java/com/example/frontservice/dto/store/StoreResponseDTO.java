@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class StoreResponseDTO {
-    private Long    storeUid;
+    private Integer    storeUid;
     private String  storeName;
     private int     managerUid;
     private String  storeAddress;

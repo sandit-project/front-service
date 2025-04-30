@@ -13,6 +13,7 @@ public class StoreOrderResponseDTO {
     private Integer uid;
     private Integer userUid;
     private Integer storeUid;
+    private String merchantUid;
     private List<CartItemsDTO> items;
     private String payment;
     private String status;
