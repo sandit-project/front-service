@@ -4,6 +4,9 @@ import com.example.frontservice.client.edge.MenuClient;
 import com.example.frontservice.dto.menu.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -164,6 +167,10 @@ public class MenuService {
 
     public CartResponseDTO addToCart(String token, Long menuId, int amount) {
         return menuClient.addToCart(token, menuId, amount);
+    }
+
+    public CartResponseDTO addSideToCart(String token,Long sideId,int amount){
+        return menuClient.addToCart(token, sideId, amount);
     }
 
 
