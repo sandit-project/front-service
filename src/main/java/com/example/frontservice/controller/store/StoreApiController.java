@@ -1,4 +1,4 @@
-package com.example.frontservice.controller;
+package com.example.frontservice.controller.store;
 
 import com.example.frontservice.dto.store.*;
 import com.example.frontservice.service.StoreService;
@@ -8,12 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/stores")
 @RequiredArgsConstructor
 public class StoreApiController {
 
     private final StoreService storeService;
 
-    @GetMapping("/stores/list")
+    @GetMapping("/list")
     StoreListResponseDTO getAllStores (@RequestParam(name = "limit", defaultValue = "10") int limit,
                                        @RequestParam(name = "lastUid", required = false) Long lastUid,
                                        HttpServletRequest request) {
@@ -23,28 +24,28 @@ public class StoreApiController {
         return storeService.getAllStores(storeListRequestDTO,token);
     }
 
-    @GetMapping("/stores/{storeUid}")
+    @GetMapping("/{storeUid}")
     StoreResponseDTO getStore (@PathVariable Long storeUid, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
         return storeService.getStore(storeUid,token);
     }
 
-    @GetMapping("/stores/storeUid")
+    @GetMapping("/storeUid")
     StoreUidResponseDTO getStoreUid (@RequestParam Long managerUid, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
         return storeService.getStoreUidByManager(managerUid,token);
     }
 
-    @PostMapping("/stores")
+    @PostMapping
     StoreResponseDTO addStore (@RequestBody StoreRequestDTO storeRequestDTO, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
         return storeService.addStore(storeRequestDTO, token);
     }
 
-    @PutMapping("/stores/{storeUid}")
+    @PutMapping("/{storeUid}")
     StoreResponseDTO updateStore(@PathVariable(name = "storeUid") Long uid,
                                  @Valid @RequestBody StoreRequestDTO storeRequestDTO,
                                  HttpServletRequest request){
@@ -53,7 +54,7 @@ public class StoreApiController {
         return storeService.updateStore(uid, storeRequestDTO,token);
     }
 
-    @PatchMapping("/stores/{storeUid}")
+    @PatchMapping("/{storeUid}")
     StoreResponseDTO updateStatusByUid(@PathVariable("storeUid") Long storeUid,
                                        @RequestParam("storeStatus") String storeStatus,
                                        HttpServletRequest request){
@@ -62,10 +63,17 @@ public class StoreApiController {
         return storeService.updateStatusByUid(storeUid,storeStatus,token);
     }
 
-    @DeleteMapping("/stores/{storeUid}")
+    @DeleteMapping("/{storeUid}")
     void deleteStore(@PathVariable("storeUid") Long storeUid, HttpServletRequest request){
         String token= request.getHeader("Authorization");
 
         storeService.deleteStore(storeUid,token);
+    }
+
+    @GetMapping("/orders/{action}")
+    public RemoteOrderResponseDTO remoteOrder(@PathVariable(name = "action") String action, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+
+        return storeService.remoteOrder(token, action);
     }
 }
