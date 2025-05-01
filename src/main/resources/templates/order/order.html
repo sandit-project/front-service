@@ -7,9 +7,12 @@
     <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link rel="stylesheet" th:href="@{/css/order/order.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
+<!--    <script th:src="@{/js/order/customOrder.js}"></script>-->
     <script th:src="@{/js/order/order.js}"></script>
 </head>
 <body>
@@ -55,7 +58,7 @@
     <input type="hidden" id="store_longitude"><br/>
 
     <label>예약 시간 (선택사항):
-        <input type="datetime-local" id="reservationDate" name="reservationDate">
+        <input type="datetime-local" id="reservationDate" name="reservationDate" placeholder="예약을 원하시면 입력해주세요.">
     </label><br/>
 
 </div>

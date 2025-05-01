@@ -19,7 +19,7 @@ public class OrderRequestDTO {
     private List<CartItemsDTO> items;
     private String payment;
     private String merchantUid;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime reservationDate;
     private boolean paymentSuccess;
     private DeliveryAddressDTO deliveryAddress;

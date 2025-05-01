@@ -52,16 +52,18 @@ $(document).ready(function () {
     });
 
     $("#checkout").click(function () {
-        const $btn = $(this).prop("disabled", true).text("처리 중...");
-        $.post("/menus/cart/order/checkout")
-            .done(() => {
-                alert("결제 완료!");
-                loadCartItems();
-            })
-            .fail(response => {
-                alert(response.responseText);
-            })
-            .always(() => $btn.prop("disabled", false).text("결제하기"));
+
+        window.location.href = "/order";
+        // const $btn = $(this).prop("disabled", true).text("처리 중...");
+        // $.post("/menus/cart/order/checkout")
+        //     .done(() => {
+        //         alert("결제 완료!");
+        //         loadCartItems();
+        //     })
+        //     .fail(response => {
+        //         alert(response.responseText);
+        //     })
+        //     .always(() => $btn.prop("disabled", false).text("결제하기"));
     });
 
     $("#backToHome").click(function () {
