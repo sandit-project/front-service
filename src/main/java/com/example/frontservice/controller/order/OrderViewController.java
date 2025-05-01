@@ -17,11 +17,6 @@ public class OrderViewController {
         return "order/order";
     }
 
-    @GetMapping("/custom")
-    public String customPage(Model model) {
-        return "order/custom-order";
-    }
-
     @GetMapping("/{userUid}")
     public String orderDetailPage(@PathVariable("userUid") Integer userUid, Model model) {
         return "order/order-detail";

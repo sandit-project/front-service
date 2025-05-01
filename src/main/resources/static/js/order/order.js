@@ -13,8 +13,11 @@ const MOCK_STORES = [
     { uid: 3, storeName: '잠실점' , address: '서울시 송파구 신천동 7-28',lat: 37.1234, lan: 127.5678 }
 ];
 
-// 장바구니 항목 가져오기
+// 장바구니 항목 가져오기 (받아오는 주소에 맞춰서 수정 예정)
 function getCartItems() {
+
+    //return Promise.resolve(MOCK_CART_ITEMS);
+
     const token = localStorage.getItem('accessToken');
     if (!token) {
         return Promise.reject('로그인 토큰이 없습니다');
@@ -31,7 +34,6 @@ function getCartItems() {
         return response.cartItems || []; // 백엔드가 CartResponseDTO 형태 반환
     });
 }
-
 
 //fillUserInfoForm 헬퍼 (폼에 값 채워넣기)
 function fillUserInfoForm(user) {
@@ -136,37 +138,65 @@ function fetchProfileAndFillForm() {
 
 let merchantUid = null;
 
+//예약 날짜 설정
+function initReservationPicker() {
+    flatpickr("#reservationDate", {
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "Y-m-d\\TH:i",
+        // ① 스텝: 5분 단위로 박히게
+        minuteIncrement: 5,
+        // ② 초기 minDate: 지금으로부터 1시간 뒤를 “5분 단위로 올림” 해서 설정
+        minDate: roundUpMinutes(new Date(Date.now() + 60*60*1000), 5),
+        // ③ 달력을 열 때마다 minDate 갱신
+        onOpen: (selDates, dateStr, inst) => {
+            inst.set('minDate', roundUpMinutes(new Date(Date.now() + 60*60*1000), 5));
+        },
+        onClose: (selDates, dateStr, inst) => {
+            inst.input.value = dateStr;
+        }
+    });
+}
+
+function roundUpMinutes(date, step) {
+    const ms  = 1000 * 60 * step;
+    return new Date(Math.ceil(date.getTime() / ms) * ms);
+}
+
+
 $(document).ready(async () => {
     const IMP = window.IMP;
     IMP.init('imp54787882');
 
     const user = await fetchProfileAndFillForm();
     const items = await getCartItems();
+    initReservationPicker();
 
     await renderCartItems(items);
     updateTotalPrice();
     renderStoreDropdown();
 
-    // 예약 시간 입력 필드가 비어있다면 현재 시간으로 채워준다.
-    const $reservationInput = $('#reservationDate');
-    if (!$reservationInput.val()) {
-        const now = new Date(); // 현재 시간
-        // 포맷팅: yyyy-MM-ddTHH:mm
-        const year = now.getFullYear();
-        const month = ('0' + (now.getMonth() + 1)).slice(-2);
-        const day = ('0' + now.getDate()).slice(-2);
-        const hours = ('0' + now.getHours()).slice(-2);
-        const minutes = ('0' + now.getMinutes()).slice(-2);
-        const formatted = `${year}-${month}-${day}T${hours}:${minutes}`;
-        $reservationInput.val(formatted);
-    }
-    console.log("예약 시간 값:", $reservationInput.val());
-
     $('#payButton').click(async () => {
         // 예약 시간 input의 값을 읽어오되, 값이 없으면 null로 처리
-        let reservationDate = $('#reservationDate').val();
-        if (!reservationDate || reservationDate.trim() === "") {
-            reservationDate = null;
+
+        // 1) flatpickr 에서 넘어오는 "YYYY-MM-DDTHH:mm" 문자열을 가져온다
+        const raw = $('#reservationDate').val();
+        let reservationDate = null;
+
+        if (raw && raw.trim() !== '') {
+            // 2) JS Date 로 변환해서 1시간 이상 차이가 나면 유효시간으로 본다
+            const selectedDate = new Date(raw);
+            const diff = selectedDate.getTime() - Date.now();
+            if (diff >= 60 * 60 * 1000) {
+                // 3) LocalDateTime 포맷(yyyy-MM-ddTHH:mm:ss) 으로 직접 포맷팅
+                const pad = v => String(v).padStart(2, '0');
+                const yyyy = selectedDate.getFullYear();
+                const MM   = pad(selectedDate.getMonth() + 1);
+                const dd   = pad(selectedDate.getDate());
+                const hh   = pad(selectedDate.getHours());
+                const mm   = pad(selectedDate.getMinutes());
+                reservationDate = `${yyyy}-${MM}-${dd}T${hh}:${mm}:00`;
+            }
         }
         console.log("전송될 예약 시간:", reservationDate);
 
@@ -399,12 +429,15 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                     // 여기서 주문 저장 요청 보냄
                     sendOrderRequest(buyer, response, totalPrice, reservationDate)
                         .then(() => {
+                            return clearCart(cartUids);
+                        })
+                        .then(() => {
                             alert("주문 저장 완료!");
                             window.location.reload(); // 성공하면 새로고침
                         })
                         .catch((err) => {
-                            console.error('주문 저장 실패:', err);
-                            alert('주문 저장 실패!');
+                            console.error('주문 저장 or 카트 삭제 실패:', err);
+                            alert('주문 저장 또는 카트 비우기 실패!');
                         });
                 },
                 error: function(err) {
@@ -474,7 +507,7 @@ function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
 
     console.log('서버로 보내는 최종 payload:', payload);
 
-    return $.ajax({
+    const orderRequest = $.ajax({
         type: 'POST',
         url: '/orders',
         contentType: 'application/json; charset=UTF-8',
@@ -483,6 +516,37 @@ function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
         },
         data: JSON.stringify(payload)
     });
+
+    //커스텀 주문이 있을 경우
+    return orderRequest.then(() => {
+        if (selectedItems.some(item => item.menuName === '커스텀 샌드위치')) {
+            return fetch('/orders/custom/final', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify({
+                    orderRequestDTO: payload,
+                    customOrderRequestDTO: {
+                        merchantUid: paymentResponse.merchant_uid
+                    }
+                })
+            })
+                .then(res => res.json())
+                .then(result => {
+                    console.log("커스텀 오더 최종 저장 결과:", result);
+                    if (!result.success) {
+                        console.warn("커스텀 오더 저장 실패:", result.message);
+                    }
+                })
+                .catch(err => {
+                    console.error("커스텀 오더 저장 에러:", err);
+                });
+        }
+    });
+
+
 }
 
 
@@ -515,11 +579,32 @@ function generateMerchantUid() {
 }
 
 // 장바구니 비우기
-function clearCart() {
-    $('[data-cart-item]').remove();
-    updateTotalPrice();
-    alert('장바구니를 비웠습니다.');
+function clearCart(selectedCartUids) {
+    if (!selectedCartUids || selectedCartUids.length === 0) return;
+
+    const param = selectedCartUids.map(id => `selectedIds=${id}`).join('&');
+    return $.ajax({
+        url: `/menus/cart/delete-selected?${param}`,
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    }).then(() => {
+        console.log('서버 카트 삭제 완료');
+        // 클라이언트 UI에서 요소 삭제
+        $('[data-cart-item]').each(function () {
+            const uid = $(this).data('cart-uid');
+            if (selectedCartUids.includes(uid)) {
+                $(this).remove();
+            }
+        });
+        updateTotalPrice();
+    }).catch((err) => {
+        console.error('카트 삭제 실패', err);
+        alert('카트 항목 삭제 중 오류 발생');
+    });
 }
+
 
 // 체크박스 변경시 금액 업데이트
 $(document).on('change', '.cart-check', function () {
