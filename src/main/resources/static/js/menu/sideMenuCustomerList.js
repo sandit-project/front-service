@@ -34,6 +34,7 @@ $(document).ready(function () {
     });
 
     // 주문 Ajax
+    // 주문 Ajax
     $(document).on("submit", ".add-cart-form", function (e) {
         e.preventDefault();
 
@@ -44,7 +45,11 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: "/menus/cart/add/side",
-            data: { sideId: sideId, amount: amount },
+            contentType: "application/json", // JSON으로 보내기
+            data: JSON.stringify({
+                uid: sideId,       // DTO 필드명과 맞춰야 함
+                amount: amount
+            }),
             success: function () {
                 window.location.href = "/cart";
             },
@@ -53,4 +58,5 @@ $(document).ready(function () {
             }
         });
     });
+
 });

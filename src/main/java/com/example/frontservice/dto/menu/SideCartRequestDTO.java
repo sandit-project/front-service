@@ -7,16 +7,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartItemsDTO {
+public class SideCartRequestDTO {
 
     private Long uid;
-    private String menuName;
+    private String sideName;
     private int amount;
     private Long totalPrice;
     private Double calorie;
     private Long unitPrice;  // ✅ 추가
-    private int version;
-    private String img;
 }
-
-

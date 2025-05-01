@@ -166,7 +166,8 @@ public interface MenuClient {
                               @RequestParam("amount") int amount);
 
     @PostMapping("/cart/add/side")
-    CartResponseDTO addSideToCart(@RequestHeader("Authorization") String token, @RequestParam Long sideId, @RequestParam int amount);
+    List<CartResponseDTO> addSideToCart(@RequestHeader("Authorization") String token,
+                                  @RequestBody SideCartRequestDTO dto);
 
 
 
