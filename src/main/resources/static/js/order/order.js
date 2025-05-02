@@ -381,6 +381,9 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
 function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
     const IMP = window.IMP;
     const selectedItems = getSelectedCartItems();
+    const customData = JSON.parse(localStorage.getItem('customSandwich') || 'null');
+    const isCustom = customData !== null;
+
     let menuName = '';
 
     if (selectedItems.length === 1) {
@@ -427,17 +430,22 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 success: function(updateRes) {
                     alert(updateRes.message || "결제 성공!");
                     // 여기서 주문 저장 요청 보냄
-                    sendOrderRequest(buyer, response, totalPrice, reservationDate)
-                        .then(() => {
-                            return clearCart(cartUids);
+                    sendGeneralOrderRequest(buyer, response, totalPrice, reservationDate)
+                        .then(orderUid => {
+                            if (isCustom) {
+                                return sendCustomOrderData(orderUid, response);
+                            } else {
+                                return orderUid;
+                            }
                         })
+                        .then(() => clearCart(cartUids))
                         .then(() => {
                             alert("주문 저장 완료!");
-                            window.location.reload(); // 성공하면 새로고침
+                            window.location.reload();
                         })
-                        .catch((err) => {
-                            console.error('주문 저장 or 카트 삭제 실패:', err);
-                            alert('주문 저장 또는 카트 비우기 실패!');
+                        .catch(err => {
+                            console.error('주문 저장 실패', err);
+                            alert('주문 처리 중 오류 발생!');
                         });
                 },
                 error: function(err) {
@@ -466,27 +474,18 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
     });
 }
 
-// 결제 후 서버에 주문 전송
-function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
-    let selectedItems = getSelectedCartItems()
-            .filter(item => item.unitPrice >= 1 && item.amount >= 1);
+function sendGeneralOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
+    const selectedItems = getSelectedCartItems();
     const store = MOCK_STORES.find(s => s.uid === parseInt($('#storeSelect').val()));
-    checkToken();
-    setupAjax();
 
-    if (!userUid && !socialUid) {
-        alert('회원 정보가 누락되었습니다. 다시 로그인해주세요.');
-        return;
-    }
-
-    const payload = {
+    const orderRequestDTO = {
         userUid: buyer.userUid,
         socialUid: buyer.socialUid,
         payment: buyer.payMethod,
         items: selectedItems.map(item => ({
             uid: item.uid,
             menuName: item.menuName,
-            amount: item.amount || 1,
+            amount: item.amount,
             unitPrice: item.unitPrice,
             calorie: item.calorie
         })),
@@ -501,53 +500,65 @@ function sendOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
             addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
             addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
         },
-        reservationDate: reservationDate,
-        totalPrice: totalPrice
+        reservationDate,
+        totalPrice
     };
 
-    console.log('서버로 보내는 최종 payload:', payload);
-
-    const orderRequest = $.ajax({
+    return $.ajax({
         type: 'POST',
         url: '/orders',
-        contentType: 'application/json; charset=UTF-8',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        data: JSON.stringify(orderRequestDTO)
+    }).then(res => {
+        console.log('서버 응답:', res);
+        return res.orderUid;
+    });
+}
+
+function sendCustomOrderData(orderUid, paymentResponse) {
+    const customData = JSON.parse(localStorage.getItem('customSandwich'));
+    if (!customData) return Promise.reject('커스텀 정보 없음');
+
+    const payload = {
+        orderRequestDTO: {
+            orderUid: orderUid,
+            userUid: userUid,
+            storeUid: parseInt($('#storeSelect').val(), 10),
+            merchantUid: paymentResponse.merchant_uid,
+            items: getSelectedCartItems(),
+            deliveryAddress: {
+                addressStart: $('#storeSelect option:selected').text(),
+                addressStartLat: parseFloat($('#storeSelect option:selected').data('lat')),
+                addressStartLan: parseFloat($('#storeSelect option:selected').data('lan')),
+                addressDestination: $('#mainAddress').val(),
+                addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
+                addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
+            },
+            payment: $('#payMethod').val() || 'card',
+            reservationDate: $('#reservationDate').val(),
+            paymentSuccess: true,
+            totalPrice: calculateTotal(),
+        },
+        customOrderRequestDTO: {
+            ...customData,
+            version: 0
+        }
+    };
+
+    return $.ajax({
+        type: 'POST',
+        url: '/orders/custom/final',
+        contentType: 'application/json',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         },
         data: JSON.stringify(payload)
     });
-
-    //커스텀 주문이 있을 경우
-    return orderRequest.then(() => {
-        if (selectedItems.some(item => item.menuName === '커스텀 샌드위치')) {
-            return fetch('/orders/custom/final', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                },
-                body: JSON.stringify({
-                    orderRequestDTO: payload,
-                    customOrderRequestDTO: {
-                        merchantUid: paymentResponse.merchant_uid
-                    }
-                })
-            })
-                .then(res => res.json())
-                .then(result => {
-                    console.log("커스텀 오더 최종 저장 결과:", result);
-                    if (!result.success) {
-                        console.warn("커스텀 오더 저장 실패:", result.message);
-                    }
-                })
-                .catch(err => {
-                    console.error("커스텀 오더 저장 에러:", err);
-                });
-        }
-    });
-
-
 }
+
 
 
 // 총 금액 계산

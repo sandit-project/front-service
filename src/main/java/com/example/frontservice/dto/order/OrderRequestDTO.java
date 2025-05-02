@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Builder
 public class OrderRequestDTO {
+    private Integer orderUid;
     private Integer userUid;
     private Integer socialUid;
     private Integer storeUid;

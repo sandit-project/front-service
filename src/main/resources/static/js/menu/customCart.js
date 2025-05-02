@@ -120,6 +120,7 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(customCartDTO),
             success: function () {
+                localStorage.setItem('customSandwich', JSON.stringify(customCartDTO));
                 alert('저장 완료!');
                 location.href = '/cart';
             },
