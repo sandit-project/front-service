@@ -36,10 +36,12 @@ public interface OrderClient {
     StoreOrderListResponseDTO getOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
                                                   @RequestParam(name = "limit") int limit,
                                                   @RequestParam(name = "lastUid", required = false) Integer lastUid,
+                                                  @RequestParam(name = "status", required = false) String status,
                                                   @RequestHeader("Authorization") String token
     );
-
+    // 지점 주문 총 갯수 요청
     @GetMapping("store/{storeUid}/count")
-    StoreOrderCountResponseDTO getCount(@PathVariable(name = "storeUid") Integer storeUid);
+    StoreOrderCountResponseDTO getCountOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
+                                                        @RequestHeader("Authorization") String token);
 
 }

@@ -21,7 +21,7 @@ public interface StoreClient {
     StoreUidResponseDTO getStoreUidByManager(@RequestParam("managerUid") Long managerUid,
                                             @RequestHeader("Authorization") String token);
 
-    @PostMapping("/")
+    @PostMapping
     StoreResponseDTO addStore(@Valid @RequestBody StoreRequestDTO storeRequestDTO,
                               @RequestHeader("Authorization") String token);
 
