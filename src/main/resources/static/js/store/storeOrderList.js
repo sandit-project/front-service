@@ -30,11 +30,11 @@ $(document).ready(async ()=>{
     $('#welcome-text').text(`${storeInfo.storeName} 주문 목록`);
 
     // ** 총 주문 수 조회 **
-    await updateOrderCount();
+    //await updateOrderCount();
 
     // ** 새로고침 버튼 클릭 핸들러 **
     $('#refresh-btn').click(async ()=>{
-        await updateOrderCount();
+        //await updateOrderCount();
         initStoreOrderList();
     });
 
@@ -119,7 +119,6 @@ function loadStoreOrders({ limit, lastUid }) {
     $.ajax({
         type: 'GET',
         url: url,
-        dataType: 'json',
         success: function (response) {
 
             console.log("지점 주문 목록 :",response);
@@ -133,25 +132,31 @@ function loadStoreOrders({ limit, lastUid }) {
                 `);
 
             } else {
-                orders.forEach(o => {
+                let displayOrderList = mergeOrderList(orders);
+
+                $('#order-count').text(`( ${displayOrderList.length} 건 )`);
+
+                displayOrderList.forEach(o => {
                     const created = new Date(o.createdDate).toLocaleString();
                     const reserve = o.reservationDate
                         ? new Date(o.reservationDate).toLocaleString()
                         : '-';
                     const itemsCnt = o.items ? o.items.length : 0;
+                    // items 정보 HTML 문자열로 변환
+                    const itemDetails = o.items.map(item => `${item.menuName} - ${item.amount} 개`).join("<br>");
+
                     $tbody.append(`
                         <tr>
-                          <td>${o.uid}</td>
+                          <td>${o.merchantUid}</td>
                           <td>${o.userUid}</td>
-                          <td>${o.payment}</td>
                           <td>${o.status}</td>
                           <td>${created}</td>
                           <td>${reserve}</td>
-                          <td>${itemsCnt}</td>
-                          <td><a href="/stores/${storeInfo.storeUid}/orders/detail?uid=${o.uid}">상세</a></td>
+                          <td>${itemDetails}</td>
+                          <td>${itemDetails}</td>
                         </tr>
                     `);
-                    updateOrderCount();
+                    //updateOrderCount();
                 });
             }
 
@@ -213,24 +218,6 @@ let updatePaginationButtons = (response) => {
         loadStoreOrders({ limit, lastUid: cursorMap.get(page) });
     });
 };
-/**
- * 로그아웃 처리
- */
-let logout = () => {
-    $.ajax({
-        type: 'POST',
-        url: '/logout',
-        success: () => {
-            alert('로그아웃이 성공했습니다.');
-            localStorage.removeItem('accessToken');
-            window.location.href = '/member/login'
-        },
-        error: (error) => {
-            console.log('오류발생 : ', error);
-            alert('로그아웃 중 오류가 발생했습니다.');
-        }
-    });
-}
 
 /**
  * 총 주문 수 조회
@@ -248,4 +235,80 @@ async function updateOrderCount(){
         console.error('주문 수 조회 실패 :',err)
         $('#order-count').text('(?)');
     }
+}
+
+// response 주문 정보 통합하는 함수
+let mergeOrderList = (input) => {
+    const merged = Object.values(
+        input.reduce((acc, order) => {
+            const { merchantUid, items, ...rest } = order;
+
+            if (!acc[merchantUid]) {
+                acc[merchantUid] = {
+                    merchantUid,
+                    ...rest,
+                    items: []
+                };
+            }
+
+            items.forEach(item => {
+                const existing = acc[merchantUid].items.find(i => i.menuName === item.menuName);
+                if (existing) {
+                    existing.amount += item.amount;
+                } else {
+                    acc[merchantUid].items.push({ ...item });
+                }
+            });
+
+            return acc;
+        }, {})
+    );
+
+    console.log("merged list",merged);
+    return merged;
+}
+
+// 주문 조작 함수
+let remoteOrder = (action) => {
+    checkToken();
+    setupAjax();
+
+    $.ajax({
+        type: 'GET',
+        url: '/stores/orders/' + action,
+        success: (response) => {
+            console.log(response);
+            alert(response.message);
+        },
+        error: (error) => {
+            console.log('오류발생 : ', error);
+            alert('요청 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+// 배달 시작 함수
+let startDelivery = () => {
+    // 배달원 정보 입력하는 창 추가로 필요함
+    
+    // 인풋 창에서 받아오는 정보 셋팅 필요함
+    let deliverymanType = "USER";
+    let deliverymanUid = "";
+
+    checkToken();
+    setupAjax();
+
+    // 임시 템플릿
+    $.ajax({
+        type: 'GET',
+        url: '/',
+        success: (response) => {
+            console.log(response);
+            alert(response.message);
+        },
+        error: (error) => {
+            console.log('오류발생 : ', error);
+            alert('요청 중 오류가 발생했습니다.');
+        }
+    });
 }

@@ -52,6 +52,7 @@ let loadStores = ({ limit, lastUid }) => {
         type: 'GET',
         url: url,
         success: (response) => {
+            console.log("response is ",response);
             $('#storeContent').empty();
 
             if (response.storeList.length === 0) {

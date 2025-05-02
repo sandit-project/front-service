@@ -1,163 +1,115 @@
-/* Reset */
-* {
+/* 🌾 기본 배경 및 폰트 */
+body {
+    font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f8f1e6, #e8dcc9);
+    color: #3b2a1a;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
-}
-
-/* Page Title */
 h1 {
     text-align: center;
-    font-size: 28px;
-    margin: 30px 0;
-    color: #333;
 }
 
-/* Cart Section */
+/* 🧾 컨테이너 */
 #cartContainer {
-    max-width: 800px;
-    margin: 0 auto 30px auto;
-    padding: 0 15px;
+    width: 85%;
+    margin: 40px auto;
+    background-color: #fffaf2;
+    padding: 30px;
+    border-radius: 18px;
+    border: 2px solid #b8926a;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    font-size: 17px;
 }
 
-.cart-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #fff;
-    margin-bottom: 10px;
-}
-
-.cart-item .cart-check {
-    margin-right: 10px;
-}
-
-.cart-item .item-name {
-    flex: 2;
-    font-size: 16px;
-    color: #333;
-}
-
-.cart-item .item-price,
-.cart-item .item-calorie,
-.cart-item .item-amount {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    color: #555;
-}
-
-.cart-item .item-amount {
-    width: 60px;
-    padding: 4px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-/* Buyer Info Section */
+/* 🧍 주문자 정보 폼 */
 .buyer-info {
-    max-width: 800px;
-    margin: 0 auto 30px auto;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    width: 85%;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #fffaf2;
+    border: 2px solid #b8926a;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    font-size: 16px;
 }
 
 .buyer-info label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    font-size: 14px;
-    color: #555;
+    display: block;
+    margin-bottom: 14px;
+    color: #4b2d1c;
+    font-weight: 600;
 }
 
-.buyer-info label input,
-.buyer-info label select {
-    flex: 1;
-    margin-left: 10px;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.buyer-info button {
-    margin-left: 10px;
-    padding: 8px 12px;
-    background-color: #e67e22;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.buyer-info button:hover {
-    background-color: #cf711f;
-}
-
-/* Summary Section */
-.summary {
-    max-width: 800px;
-    margin: 0 auto 40px auto;
-    padding: 0 15px;
-    text-align: right;
-}
-
-.summary p {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-#payButton {
-    background-color: #e67e22;
-    color: #fff;
-    border: none;
-    padding: 12px 25px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#payButton:hover {
-    background-color: #cf711f;
+.buyer-info input, .buyer-info select {
+    padding: 10px;
+    margin-top: 4px;
+    width: 300px;
+    border: 1px solid #d3b187;
+    border-radius: 8px;
+    background-color: #fef9f0;
+    color: #4b2d1c;
+    font-size: 15px;
 }
 
 .address-group {
     display: flex;
-    align-items: center;
     gap: 10px;
+    align-items: center;
 }
 
-.address-group label {
-    flex: 1;                /* input이 여유공간을 모두 차지 */
-    margin: 0;              /* label 기본 마진 없애기 */
+/* 📅 예약 시간 필드 */
+#reservationDate {
+    margin-top: 6px;
 }
 
-.address-group input {
-    width: 100%;            /* label 안에서 꽉 채우기 */
+/* 💰 요약 영역 */
+.summary {
+    width: 85%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fef9f0;
+    border-top: 2px solid #b8926a;
+    font-size: 18px;
+    font-weight: bold;
+    color: #5a3b26;
+    text-align: right;
 }
 
-.address-group button {
-    flex: 0 0 auto;         /* 버튼은 크기 고정 */
-    background-color: #e67e22;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
+/* 🔘 버튼 */
+button {
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #6a4e2e, #4a311f);
+    color: #fefaf6;
+    border: 2px solid #4a311f;
+    border-radius: 10px;
+    font-weight: bold;
+    font-family: 'Noto Sans KR', sans-serif;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 }
 
-.address-group button:hover {
-    background-color: #cf711c;
+button:hover {
+    background: linear-gradient(45deg, #4a311f, #2f1d12);
+    transform: scale(1.05);
+}
+
+/* 📱 반응형 */
+@media (max-width: 768px) {
+    #cartContainer, .buyer-info, .summary {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .buyer-info input, .buyer-info select {
+        width: 100%;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
 }
