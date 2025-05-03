@@ -16,15 +16,14 @@ import java.util.List;
 public class StoreOrderService {
     private final OrderClient orderClient;
 
-    public StoreOrderListResponseDTO getAllOrders(Integer storeUid, int limit, Integer lastUid,String token) {
-        StoreOrderListResponseDTO test =  orderClient.getOrdersByStoreUid(storeUid,limit,lastUid,token);
-        return test;
+    public StoreOrderListResponseDTO getOrdersByStoreUid(Integer storeUid, int limit, Integer lastUid,String status,String token) {
+        StoreOrderListResponseDTO storeOrderListResponseDTO =  orderClient.getOrdersByStoreUid(storeUid,limit,lastUid,status,token);
+        return storeOrderListResponseDTO;
     }
 
-    public StoreOrderCountResponseDTO countByStoreUid(Integer storeUid) {
-        return StoreOrderCountResponseDTO.builder()
-                .orderCount(storeUid)
-                .build();
+    public StoreOrderCountResponseDTO countByStoreUid(Integer storeUid,String token) {
+        StoreOrderCountResponseDTO storeOrderCountResponseDTO = orderClient.getCountOrdersByStoreUid(storeUid,token);
+        return storeOrderCountResponseDTO;
     }
 
 }

@@ -25,44 +25,58 @@
         </h1>
         <div class="btn-group">
             <button id="refresh-btn" class="btn">🔄새로고침</button>
-            <button id="confirm-btn" class="btn" onClick={remoteOrder("confirm")}>수락</button>
+           <!-- <button id="confirm-btn" class="btn" onClick={remoteOrder("confirm")}>수락</button>
             <button id="cancel-btn" class="btn" onClick={remoteOrder("cancel")}>취소</button>
             <button id="cooking-btn" class="btn" onClick={remoteOrder("cooking")}>조리</button>
             <button id="delivering-btn" class="btn" onClick={startDelivery()}>배달 시작</button>
+            -->
         </div>
     </div>
 
     <div id="board">
-        <p>※ 주문 정보 조작은 최상단의 주문을 조작합니다!!</p>
+       <!-- <p>※ 주문 정보 조작은 최상단의 주문을 조작합니다!!</p>
 
         <p>※ 페이징 제거 or limit 크게 올려야함 -> 주문 정보 통합하는거 만들어놔서 10 개 가져와도 통합 하면 몇건 출력 안됩니다 </p>
         <p>※ 페이징 제거 하는거를 추천합니다 -> limit를 올린다고 해도 주문마다 주문하는 메뉴가지수가 달라서 가져올 때마다 출력하는 양이 달라집니다!!</p>
         <p>※ 주문 정보 DB에서 가져올때 쿼리 바꿔서 배송지 가져와주세요 -> join을 merchant_uid 기준으로 해서 가져오시면 됩니다</p>
         <p>※ 확인하시면 페이징 제거 내용에 p 태그 부터 여기까지 지워주세요!!</p>
+        -->
+        <!-- 상태 탭 -->
+        <ul id="status-tabs" class="tabs">
+            <li data-status="PAYMENT-COMPLETED" class="active">결제완료</li>
+            <li data-status="ORDER_ACCEPTED">주문수락</li>
+            <li data-status="COOKING">조리중</li>
+            <li data-status="DELIVERING">배달중</li>
+        </ul>
 
         <table>
             <thead>
             <tr>
                 <th>주문번호</th>
                 <th>고객번호</th>
-                <th>상태</th>
                 <th>주문일시</th>
                 <th>예약일시</th>
                 <th>내역</th>
                 <th>배송지</th>
+                <th>액션</th>
             </tr>
             </thead>
             <tbody id="storeContent">
             <!-- Ajax로 채워집니다 -->
+            <!-- 무한스크롤로 계속 append 됩니다-->
             </tbody>
         </table>
     </div>
-    <!-- 페이징 영역 -->
+    <!--기존 페이징 영역
     <div id="pagination">
         <button id="firstPage" class="btn">처음</button>
         <button id="prevPage" class="btn" disabled>이전</button>
         <span id="pageNumbers"></span>
         <button id="nextPage" class="btn">다음</button>
+    </div>-->
+    <!-- 로딩 중 표시 -->
+    <div id="loading" style="display:none; text-align: center; margin-top: 20px;">
+        로딩 중...
     </div>
 </div>
 

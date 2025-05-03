@@ -20,14 +20,17 @@ public class StoreOrderApiController {
     public StoreOrderListResponseDTO getAllOrdersByStoreUid(  @PathVariable(name = "storeUid") Integer storeUid,
                                                               @RequestParam(name = "limit", defaultValue = "10") int limit,
                                                               @RequestParam(name = "lastUid", required = false) Integer lastUid,
+                                                              @RequestParam(name = "status", required = false) String status,
                                                               HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
-        return storeOrderService.getAllOrders(storeUid,limit,lastUid,token);
+        return storeOrderService.getOrdersByStoreUid(storeUid,limit,lastUid,status,token);
     }
 
     @GetMapping("orders/store/{storeUid}/count")
-    public StoreOrderCountResponseDTO countByStoreUid(@PathVariable(name = "storeUid") Integer storeUid) {
-        return storeOrderService.countByStoreUid(storeUid);
+    public StoreOrderCountResponseDTO countByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
+                                                      HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return storeOrderService.countByStoreUid(storeUid,token);
     }
 }
