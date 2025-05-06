@@ -371,18 +371,6 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
     });
 }
 
-// const prepareResponse = await preparePayment(
-//     merchantUid,
-//     menuName,
-//     totalPrice,
-//     storeUid,
-//     userUid,
-//     reservationDate
-// );
-//
-// expectedVersion = prepareResponse.version;
-
-
 // 실제 결제 요청
 function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
     const IMP = window.IMP;
@@ -479,50 +467,6 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
         };
     });
 }
-
-// function sendGeneralOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
-//     const selectedItems = getSelectedCartItems();
-//     const store = MOCK_STORES.find(s => s.uid === parseInt($('#storeSelect').val()));
-//
-//     const orderRequestDTO = {
-//         userUid: buyer.userUid,
-//         socialUid: buyer.socialUid,
-//         payment: buyer.payMethod,
-//         items: selectedItems.map(item => ({
-//             uid: item.uid,
-//             menuName: item.menuName,
-//             amount: item.amount,
-//             unitPrice: item.unitPrice,
-//             calorie: item.calorie
-//         })),
-//         merchantUid: paymentResponse.merchant_uid,
-//         paymentSuccess: true,
-//         storeUid: store.uid,
-//         deliveryAddress: {
-//             addressStart: store.address,
-//             addressStartLat: store.lat,
-//             addressStartLan: store.lan,
-//             addressDestination: buyer.mainAddress,
-//             addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
-//             addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
-//         },
-//         reservationDate,
-//         totalPrice
-//     };
-//
-//     return $.ajax({
-//         type: 'POST',
-//         url: '/orders',
-//         contentType: 'application/json',
-//         headers: {
-//             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-//         },
-//         data: JSON.stringify(orderRequestDTO)
-//     }).then(res => {
-//         console.log('서버 응답:', res);
-//         return res.orderUid;
-//     });
-// }
 
 function sendGeneralOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
     const selectedItems = getSelectedCartItems();

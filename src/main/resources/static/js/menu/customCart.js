@@ -120,16 +120,14 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(customCartDTO),
             success: function (response) {
-                const newSandwich = JSON.parse(JSON.stringify({
+                const newSandwich = {
                     ...customCartDTO,
-                    uid: response.uid,// custom_cart 테이블 uid
-                    cartUid: response.cartUid
-                }));
-                console.log('✅ newSandwich (stringified):', JSON.stringify(newSandwich));
-
+                    uid: response.uid,
+                };
                 const existing = JSON.parse(localStorage.getItem('customSandwiches')) || [];
                 existing.push(newSandwich);
                 localStorage.setItem('customSandwiches', JSON.stringify(existing));
+                console.log(newSandwich);
                 alert('저장 완료!');
                 location.href = '/cart';
             },
