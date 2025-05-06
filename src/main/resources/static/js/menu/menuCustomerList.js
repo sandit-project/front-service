@@ -1,6 +1,42 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+    getUserInfo().then((userInfo)=>{
+        console.log(userInfo);
+
+        $('#hiddenId').val(userInfo.id);
+        // $('#hiddenType').val(userInfo.type);
+        $('#hiddenUserRole').val(userInfo.role);
+
+        const rightMenu = $('.header-right').empty();
+
+        if(userInfo != null){
+            rightMenu.append(`
+                <a href="/member/profile" class="header-link">프로필</a>
+                <a href="/cart" class="header-link">장바구니</a>
+            `);
+            if(userInfo.role === "ROLE_ADMIN"){
+                $('.dropdown-admin').css('display', 'block');
+                $('.dropdown-delivery').css('display', 'none');
+            }else if(userInfo.role === "ROLE_DELIVERY"){
+                $('.dropdown-delivery').css('display', 'block');
+                $('.dropdown-admin').css('display', 'none');
+            }else{
+                $('.dropdown-admin').css('display', 'none');
+                $('.dropdown-delivery').css('display', 'none');
+            }
+        }else{
+            rightMenu.append(`
+                <a href="/member/login" class="header-link">로그인</a>
+                <a href="/member/join" class="header-link">회원가입</a>
+                <a href="/cart" class="header-link">장바구니</a>
+            `);
+        }
+
+    }).catch((error)=>{
+        console.error('board list user info error : ',error);
+    });
+
     // 메뉴 목록 Ajax로 불러오기
     $.ajax({
         type: "GET",

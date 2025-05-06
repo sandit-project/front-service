@@ -40,7 +40,7 @@ public class StoreService {
         return storeClient.updateStatusByUid(storeUid,storeStatus,token);
     }
 
-    public RemoteOrderResponseDTO remoteOrder(String token, String action) {
-        return storeClient.remoteOrder(token, action);
+    public RemoteOrderResponseDTO remoteOrder(String token, String action, RemoteOrderRequestDTO remoteOrderRequestDTO) {
+        return storeClient.remoteOrder(token, action, remoteOrderRequestDTO);
     }
 }

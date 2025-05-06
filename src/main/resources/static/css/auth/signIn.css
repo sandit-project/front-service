@@ -1,102 +1,133 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+/* 기본 설정 */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
+/* 로그인 박스 */
 .login-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 350px;
-}
-
-h2 {
+    background-color: #fff8f0;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.2);
+    width: 100%;
+    max-width: 400px;
     text-align: center;
-    margin-bottom: 20px;
-    color: #333;
 }
 
+/* 타이틀 */
+.login-container h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #5a3b26;
+}
+
+/* 입력 그룹 */
 .form-group {
-    margin-bottom: 15px;
+    text-align: left;
+    margin-bottom: 20px;
 }
 
-label {
-    font-weight: bold;
+.form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    color: #4d3321;
+    font-weight: 600;
 }
 
-input[type="text"],
-input[type="password"] {
+.form-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #d2b48c;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.2s ease-in-out;
 }
 
-input[type="submit"] {
+.form-group input:focus {
+    outline: none;
+    border-color: #a0522d;
+}
+
+/* 로그인 버튼 */
+#signin {
     width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-}
-
-input[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-.error-message {
-    color: red;
-    font-size: 0.9em;
-    margin-top: 5px;
-}
-
-.signup-link {
-    text-align: center;
+    padding: 12px;
     margin-top: 10px;
-    font-size: 0.9em;
+    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#signin:hover {
+    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+}
+
+/* 회원가입 링크 */
+.signup-link {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #5a3b26;
 }
 
 .signup-link a {
-    color: #4CAF50;
+    color: #a0522d;
     text-decoration: none;
+    font-weight: 600;
 }
 
 .signup-link a:hover {
     text-decoration: underline;
 }
 
-.oauth-btn{
-    width: 350px;
-    padding: 10px 0px;
-    margin-top: 15px;
+/* OAuth 버튼 */
+.oauth-btn {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.oauth-btn a{
-    text-decoration: none;
-    width: 100%;
+.oauth-btn .btn {
+    display: block;
+    text-align: center;
     padding: 10px;
-    background-color: #4CAF50;
-    border: none;
-    color: white;
+    border-radius: 10px;
     font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
 }
 
-.oauth-btn a:hover{
-    text-decoration: none;
+.oauth-btn .btn:hover {
+    opacity: 0.85;
+}
+
+/* 각 플랫폼별 색상 */
+.oauth-btn .btn:nth-child(1) {
+    background-color: #03c75a; /* Naver */
+}
+
+.oauth-btn .btn:nth-child(2) {
+    background-color: #fee500; /* Kakao */
+    color: #381e1f;
+}
+
+.oauth-btn .btn:nth-child(3) {
+    background-color: #4285f4; /* Google */
 }
