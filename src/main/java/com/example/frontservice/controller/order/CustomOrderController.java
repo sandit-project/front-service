@@ -21,12 +21,6 @@ public class CustomOrderController {
 
     private final CustomOrderService customOrderService;
 
-    @PostMapping("/orders/custom")
-    public ResponseEntity<OrderResponseDTO> submitOrder(@RequestBody CustomOrderRequestDTO request) {
-        log.info("submit custom order::" + request.toString());
-        return ResponseEntity.ok(customOrderService.submitOrder(request));
-    }
-
     @PostMapping("/orders/custom/final")
     public ResponseEntity<OrderResponseDTO> submitFinalOrder(HttpServletRequest request, @RequestBody FinalCustomRequestDTO finalCustomRequestDTO) {
         log.info("submit Final custom order::" + request.toString());

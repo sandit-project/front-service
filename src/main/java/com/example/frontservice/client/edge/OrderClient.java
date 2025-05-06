@@ -3,14 +3,11 @@ package com.example.frontservice.client.edge;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.dto.store.StoreOrderCountResponseDTO;
 import com.example.frontservice.dto.store.StoreOrderListResponseDTO;
-import com.example.frontservice.dto.store.StoreOrderResponseDTO;
+import com.example.frontservice.type.OrderStatus;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @FeignClient(name = "orderClient", url = "${sandit.edge-service-url}/orders")
 public interface OrderClient {
@@ -24,6 +21,10 @@ public interface OrderClient {
 
     @GetMapping("/user/{userUid}")
     List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token, @PathVariable Integer userUid);
+
+    @PutMapping("/{merchantUid}/status")
+    OrderStatusChangeResponseDTO changeOrderStatus(@PathVariable("merchantUid") String merchantUid,
+                                                   @RequestParam("newStatus") OrderStatus newStatus);
 
     @PostMapping("/update-success")
     OrderResponseDTO updateOrderStatusSuccess(@RequestBody UpdateOrderStatusRequestDTO request);

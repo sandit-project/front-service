@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "customOrderClient", url = "${sandit.edge-service-url}/orders/custom")
 public interface CustomOrderClient {
 
-    @PostMapping
-    OrderResponseDTO submitOrder(@RequestBody CustomOrderRequestDTO request);
-
     @PostMapping("/final")
     OrderResponseDTO submitFinalOrder(@RequestHeader("Authorization") String token, @RequestBody FinalCustomRequestDTO request);
 }

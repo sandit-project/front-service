@@ -119,8 +119,17 @@ $(document).ready(function () {
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(customCartDTO),
-            success: function () {
-                localStorage.setItem('customSandwich', JSON.stringify(customCartDTO));
+            success: function (response) {
+                const newSandwich = JSON.parse(JSON.stringify({
+                    ...customCartDTO,
+                    uid: response.uid,// custom_cart 테이블 uid
+                    cartUid: response.cartUid
+                }));
+                console.log('✅ newSandwich (stringified):', JSON.stringify(newSandwich));
+
+                const existing = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+                existing.push(newSandwich);
+                localStorage.setItem('customSandwiches', JSON.stringify(existing));
                 alert('저장 완료!');
                 location.href = '/cart';
             },

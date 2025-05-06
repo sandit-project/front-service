@@ -1,9 +1,12 @@
 package com.example.frontservice.dto.order;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class CustomOrderRequestDTO {
+    private Integer uid;
     private Integer bread;
     private Integer material1;
     private Integer material2;

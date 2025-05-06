@@ -2,6 +2,7 @@ package com.example.frontservice.controller.order;
 
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.service.OrderService;
+import com.example.frontservice.type.OrderStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,18 @@ public class OrderController {
 
         return ResponseEntity.ok(orderService.listByUser(token, userUid));
     }
+
+    
+    //상태 변경
+    @PutMapping("/orders/{merchantUid}/status")
+    public ResponseEntity<OrderStatusChangeResponseDTO> changeStatus(
+            @PathVariable String merchantUid,
+            @RequestParam OrderStatus newStatus
+    ) {
+        log.info("changeStatus merchantUid={}, newStatus={}", merchantUid, newStatus);
+        return ResponseEntity.ok(orderService.changeStatus(merchantUid, newStatus));
+    }
+
 
     @PostMapping("/orders/update-success")
     public ResponseEntity<OrderResponseDTO> success(@RequestBody UpdateOrderStatusRequestDTO request) {
