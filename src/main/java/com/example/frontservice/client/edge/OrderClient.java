@@ -1,5 +1,6 @@
 package com.example.frontservice.client.edge;
 
+import com.example.frontservice.dto.delivery.DeliveryOrderResponseDTO;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.dto.store.StoreOrderCountResponseDTO;
 import com.example.frontservice.dto.store.StoreOrderListResponseDTO;
@@ -45,4 +46,9 @@ public interface OrderClient {
     StoreOrderCountResponseDTO getCountOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
                                                         @RequestHeader("Authorization") String token);
 
+    @GetMapping("status/cooking")
+    List<DeliveryOrderResponseDTO> getCookingOrders(@RequestHeader("Authorization") String token);
+
+    @GetMapping("status/delivering")
+    List<DeliveryOrderResponseDTO> getDeliveringOrders(@RequestHeader("Authorization") String token);
 }

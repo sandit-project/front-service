@@ -46,6 +46,8 @@ public interface StoreClient {
                                                 @RequestParam("lastUid") Long lastUid,
                                                 @RequestHeader("Authorization") String token);
 
-    @GetMapping("/orders/{action}")
-    RemoteOrderResponseDTO remoteOrder(@RequestHeader("Authorization") String token, @PathVariable(name="action") String action);
+    @PutMapping("/orders/{action}")
+    RemoteOrderResponseDTO remoteOrder(@RequestHeader("Authorization") String token,
+                                       @PathVariable(name="action") String action,
+                                       @RequestBody RemoteOrderRequestDTO remoteOrderRequestDTO);
 }

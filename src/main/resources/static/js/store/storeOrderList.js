@@ -49,12 +49,13 @@ $(document).ready(async ()=>{
     });
 
     // 상태 탭 클릭 핸들러
-    $('#status-tab li').click(()=>{
-        $('#status-tab li').removeClass('active');
+    $('#status-tabs li').click(function (){
+        $('#status-tabs li').removeClass('active');
         $(this).addClass('active');
         statusFilter = $(this).data('status');
         lastCursor = null;
         hasMore = true;
+        console.log(statusFilter);
         $('#storeContent').empty();
         loadMore();
     })
@@ -110,20 +111,20 @@ $(document).ready(async ()=>{
                         const itemDetails = o.items.map(item => `${item.menuName} - ${item.amount} 개`).join("<br>");
 
                         $tbody.append(`
-                        <tr>
-                          <td>${o.merchantUid}</td>
-                          <td>${o.userUid}</td>
-                          <td>${created}</td>
-                          <td>${reserve}</td>
-                          <td>${itemDetails}</td>
-                          <td>${itemDetails}</td> <!--배송지 주소입력 -->
-                          <td>
-                <button onclick="changeStatus('${o.merchantUid}','ORDER_CONFIRMED')">수락</button>
-                <button onclick="changeStatus('${o.merchantUid}','ORDER_CANCELLED')">취소</button>
-                <button onclick="changeStatus('${o.merchantUid}','ORDER_COOKING')">조리</button>
-            </td>
-                        </tr>
-                    `);
+                            <tr>
+                              <td>${o.merchantUid}</td>
+                              <td>${o.userUid}</td>
+                              <td>${created}</td>
+                              <td>${reserve}</td>
+                              <td>${itemDetails}</td>
+                              <td>${itemDetails}</td> <!--배송지 주소입력 -->
+                              <td>
+                                <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">수락</button>
+                                <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">취소</button>
+                                <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">조리</button>
+                              </td>
+                            </tr>
+                        `);
 
                     });
                 }
@@ -262,13 +263,26 @@ let mergeOrderList = (input) => {
 }
 
 // 주문 조작 함수
-let remoteOrder = (action) => {
+let remoteOrder = (action,merchantUid,status,createdDate,reservationDate) => {
     checkToken();
     setupAjax();
 
+    // 문자열 "null" 또는 undefined를 진짜 null로 보정
+    reservationDate = (reservationDate === "null" || reservationDate === undefined) ? null : reservationDate;
+
+    let remoteOrderDate = {
+        merchantUid : merchantUid,
+        status : status,
+        createdDate : createdDate,
+        reservationDate : reservationDate
+    };
+
     $.ajax({
-        type: 'GET',
+        type: 'PUT',
         url: '/stores/orders/' + action,
+        data : JSON.stringify(remoteOrderDate),
+        contentType : 'application/json; charset=utf-8',
+        dataType : 'json',
         success: (response) => {
             console.log(response);
             alert(response.message);
