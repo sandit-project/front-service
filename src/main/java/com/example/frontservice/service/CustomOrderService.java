@@ -14,11 +14,6 @@ public class CustomOrderService {
 
     private final CustomOrderClient customOrderClient;
 
-    //커스텀 주문 생성
-    public OrderResponseDTO submitOrder(@RequestBody CustomOrderRequestDTO request) {
-        return customOrderClient.submitOrder(request);
-    }
-
     //최종 주문
     public OrderResponseDTO submitFinalOrder(String token, @RequestBody FinalCustomRequestDTO request) {
         return customOrderClient.submitFinalOrder(token,request);

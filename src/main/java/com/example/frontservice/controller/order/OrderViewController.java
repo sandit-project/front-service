@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OrderViewController {
 
     @GetMapping
-    public String orderPage(Model model) {
+    public String orderPage() {
         return "order/order";
     }
 
     @GetMapping("/{userUid}")
-    public String orderDetailPage(@PathVariable("userUid") Integer userUid, Model model) {
+    public String orderDetailPage(@PathVariable("userUid") Integer userUid) {
         return "order/order-detail";
     }
 }

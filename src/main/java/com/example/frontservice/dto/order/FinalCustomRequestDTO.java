@@ -4,11 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Builder
 @ToString
 public class FinalCustomRequestDTO {
-    //private Integer customOptionUid;
     private OrderRequestDTO orderRequestDTO;
-    private CustomOrderRequestDTO customOrderRequestDTO;
+    private List<CustomOrderRequestDTO> customOrderRequestDTO;
 }

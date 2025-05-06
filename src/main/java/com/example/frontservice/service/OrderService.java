@@ -2,6 +2,7 @@ package com.example.frontservice.service;
 
 import com.example.frontservice.client.edge.OrderClient;
 import com.example.frontservice.dto.order.*;
+import com.example.frontservice.type.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,12 @@ public class OrderService {
     public List<OrderDetailResponseDTO> listByUser(String token, Integer userUid) {
         return orderClient.getOrdersByUserUid(token, userUid);
     }
+
+    //상태 변경
+    public OrderStatusChangeResponseDTO changeStatus(String merchantUid, OrderStatus newStatus) {
+        return orderClient.changeOrderStatus(merchantUid, newStatus);
+    }
+
 
     //결제 완료 상태로 상태 변환
     public OrderResponseDTO confirmSuccess(UpdateOrderStatusRequestDTO request) {

@@ -53,7 +53,19 @@ $(document).ready(function () {
 
     $("#checkout").click(function () {
 
-        window.location.href = "/order";
+        //선택한 카트만 주문으로 넘어가게 하기
+        const selectedIds = $(".item-checkbox:checked").map(function () {
+            return $(this).val();
+        }).get();
+
+        if (selectedIds.length === 0) {
+            alert("주문할 항목을 선택하세요.");
+            return;
+        }
+
+        const query = selectedIds.map(id => `selectedIds=${id}`).join('&');
+        window.location.href = `/order?${query}`;
+
         // const $btn = $(this).prop("disabled", true).text("처리 중...");
         // $.post("/menus/cart/order/checkout")
         //     .done(() => {

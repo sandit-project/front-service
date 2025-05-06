@@ -24,5 +24,7 @@ public class OrderRequestDTO {
     private LocalDateTime reservationDate;
     private boolean paymentSuccess;
     private DeliveryAddressDTO deliveryAddress;
+    private int totalPrice;
+    private double calorie;
     private int version;
 }
