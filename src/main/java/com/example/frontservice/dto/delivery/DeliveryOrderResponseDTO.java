@@ -1,5 +1,6 @@
 package com.example.frontservice.dto.delivery;
 
+import com.example.frontservice.type.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,21 +11,12 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class DeliveryOrderResponseDTO {
-    private Long uid;
-    private Long userUid;
-    private Long socialUid;
-    private Long storeUid;
     private String merchantUid;
-    private String menuName;
-    private Integer amount;
-    private Long price;
-    private String status;
-    private LocalDateTime createdDate;
-    private LocalDateTime reservationDate;
+    private OrderStatus status;
+    private Integer riderUserUid;
+    private Integer riderSocialUid;
     private String addressStart;
-    private Double addressStartLat;
-    private Double addressStartLan;
     private String addressDestination;
-    private Double addressDestinationLat;
-    private Double addressDestinationLan;
+    private LocalDateTime deliveryAcceptTime;
+    private LocalDateTime deliveredTime;
 }

@@ -21,18 +21,17 @@ public class DeliveryService {
     private String kakaoApiKey;
 
     private final MobilityClient mobilityClient;
-    private final OrderClient orderClient;
 
     public String getPath(String origin, String destination) {
         return mobilityClient.getPath("KakaoAK " + kakaoApiKey, origin, destination, "RECOMMEND");
     }
 
     public List<DeliveryOrderResponseDTO> getCookingOrders(String token) {
-        return orderClient.getCookingOrders(token);
+        return deliveryClient.getCookingOrders(token);
     }
 
     public List<DeliveryOrderResponseDTO> getDeliveringOrders(String token) {
-        return orderClient.getDeliveringOrders(token);
+        return deliveryClient.getDeliveringOrders(token);
     }
 
     public DeliveryResponseDTO startDelivery(String token, DeliveryStartRequestDTO deliveryStartRequestDTO) {
