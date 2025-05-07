@@ -61,7 +61,27 @@ header {
     transition: background-color 0.3s;
 }
 
+
+
 .update-btn:hover {
+    background-color: #6f3d28;
+}
+
+.delete-btn {
+    background-color: #8b5c32;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+    margin-right: 20px;
+}
+
+
+
+.delete-btn:hover {
     background-color: #6f3d28;
 }
 
