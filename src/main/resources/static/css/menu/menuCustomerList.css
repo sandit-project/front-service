@@ -230,6 +230,26 @@ body {
     background: linear-gradient(45deg, #7b3f1d, #5b3d28);
 }
 
+
+.order-btn {
+    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    transition: background 0.3s ease;
+    margin-top: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    align-self: center; /* ✨ 버튼을 중앙 정렬 */
+}
+
+.order-btn:hover {
+    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+}
+
 /* 🔵 푸터 */
 .footer {
     background-color: #efe0c8;
