@@ -27,8 +27,8 @@ $(document).ready(() => {
 
             if (userInfo.role === "ROLE_ADMIN") {
                 $('.dropdown-admin').css('display', 'block');
-                $('.dropdown-delivery').css('display', 'none');
-            } else if (userInfo.role === "ROLE_DELIVERY") {
+                $('.dropdown-delivery').css('display', 'block');
+            }else if(userInfo.role === "ROLE_DELIVERY"){
                 $('.dropdown-delivery').css('display', 'block');
                 $('.dropdown-admin').css('display', 'none');
             } else {
