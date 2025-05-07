@@ -717,62 +717,6 @@ function clearCustomCart(customIds) {
     return Promise.all(deletes);
 }
 
-// function clearAllCart(selectedCartUids) {
-//     const token = localStorage.getItem('accessToken');
-//     if (!token) return Promise.resolve();
-//
-//     const customList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
-//
-//     const numericIds = [];
-//     const customIds   = [];  // 서버 uid
-//
-//     selectedCartUids.forEach(id => {
-//         if (/^\d+$/.test(String(id))) {
-//             // 완제품
-//             numericIds.push(id);
-//         } else {
-//             // 커스텀: UUID가 아니라, localStorage의 서버 uid를 찾아서
-//             const record = customList.find(c => c.cartUid === id);
-//             if (record && record.uid) {
-//                 customIds.push(record.uid);
-//             }
-//         }
-//     });
-//
-//     // 1) 완제품 삭제
-//     const p1 = numericIds.length
-//         ? $.ajax({
-//             url: `/menus/cart/delete-selected?${numericIds.map(i => `selectedIds=${i}`).join('&')}`,
-//             method: 'POST',
-//             headers: { Authorization: `Bearer ${token}` }
-//         })
-//         : Promise.resolve();
-//
-//     // 2) 커스텀 삭제
-//     const p2 = customIds.length
-//         ? Promise.all(customIds.map(uid =>
-//             $.ajax({
-//                 url: `/menus/custom-carts/${uid}`,
-//                 method: 'DELETE',
-//                 headers: { Authorization: `Bearer ${token}` }
-//             }).catch(() => null)
-//         ))
-//         : Promise.resolve();
-//
-//     return Promise.all([p1, p2])
-//         .then(() => {
-//             // 화면에서도 모두 제거
-//             selectedCartUids.forEach(uid => {
-//                 $(`.cart-item[data-cart-uid="${uid}"]`).remove();
-//             });
-//             updateTotalPrice();
-//             // 로컬커스텀 카트 초기화
-//             localStorage.removeItem('customSandwiches');
-//         });
-// }
-
-
-
 // 체크박스 변경시 금액 업데이트
 $(document).on('change', '.cart-check', function () {
     updateTotalPrice();
