@@ -63,14 +63,38 @@ async function renderCartItems(items) {
         const cartUid = item.cartUid || item.uid;
 
         const itemHtml = `
-            <div class="cart-item" data-cart-item data-cart-uid="${cartUid}">
-                <input type="checkbox" class="cart-check" checked>
-                <span class="item-name">${item.menuName}</span>
-                <span class="item-unitPrice">${item.unitPrice}원</span>
-                <span class="item-calorie">${item.calorie} kcal</span>
-                <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
-            </div>
-        `;
+    <div class="cart-item" data-cart-item data-cart-uid="${item.uid}" 
+         style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #ccc;">
+        
+        <div style="margin-right: 15px;">
+            <input type="checkbox" class="cart-check" checked>
+        </div>
+        
+        <div style="margin-right: 15px; border-left: 1px solid #ddd; padding-left: 15px;">
+            <span class="item-name">${item.menuName}</span>
+        </div>
+        
+        <div style="margin-right: 15px; border-left: 1px solid #ddd; padding-left: 15px;">
+            <span class="item-unitPrice">${item.unitPrice}원</span>
+        </div>
+        
+        <div style="margin-right: 15px; border-left: 1px solid #ddd; padding-left: 15px;">
+            <span class="item-calorie">${item.calorie} kcal</span>
+        </div>
+        
+        <div style="margin-left: auto; display: flex; align-items: center; border-left: 1px solid #ddd; padding-left: 15px;">
+    <span class="amount-label" style="margin-right: 5px;">수량</span>
+    <input 
+        type="number" 
+        class="item-amount" 
+        value="${item.amount || 1}" 
+        min="1" 
+        style="width: 70px; height: 32px; border-radius: 6px; padding: 5px; border: 1px solid #ccc;">
+</div>
+
+    </div>
+`;
+
         $container.append(itemHtml);
     });
 }

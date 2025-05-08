@@ -12,13 +12,16 @@
 <body>
 
 <div class="container">
-    <!--<input id="hiddenUserId" type="hidden">-->
-    <input id="hiddenStoreName" type="hidden">
+    <div class="header">
+        <h1 id="welcome-message">지점 목록</h1>
+        <div id="order-count">주문 수: <span>10</span></div>
+    </div>
 
-    <h1 id="welcome-message">지점 목록</h1>
-    <div class="button-row">
-        <a th:href="@{/store/register}" class="btn">지점 등록</a>
-        <button onclick="logout();" class="btn logout-btn">로그아웃</button>
+    <div class="btn-group">
+        <button id="backToHome" class="btn" type="button" onclick="location.href='/'">메인 화면</button>
+        <a th:href="@{/store/register}" class="btn" style="text-decoration: none;">지점 등록</a>
+
+        <button onclick="logout();" class="btn">로그아웃</button>
     </div>
 
     <!-- 게시판 영역 -->
@@ -37,8 +40,6 @@
             </thead>
             <tbody id="storeContent">
             <!-- Ajax를 통해 게시글 데이터가 여기에 동적으로 추가됨 -->
-
-
             </tbody>
         </table>
     </div>

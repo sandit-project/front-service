@@ -24,13 +24,14 @@
             <span id="order-count">(0)</span>
         </h1>
         <div class="btn-group">
+            <button id="backToHome" class="btn" type="button" onclick="location.href='/'">메인 화면</button>
             <button id="refresh-btn" class="btn">🔄새로고침</button>
         </div>
     </div>
 
     <div id="board">
         <!-- 상태 탭 -->
-        <ul id="status-tabs" class="tabs">
+        <ul id="status-tabs" class="tabs" style="list-style: none; padding-left: 0;">
             <li data-status="PAYMENT_COMPLETED" class="active">배달 요청</li>
             <li data-status="ORDER_CONFIRMED">주문수락</li>
             <li data-status="ORDER_COOKING">조리중</li>

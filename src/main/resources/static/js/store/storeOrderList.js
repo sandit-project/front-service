@@ -35,6 +35,10 @@ $(document).ready(async ()=>{
     // ** 총 주문 수 조회 **
     await updateOrderCount();
 
+    // ** 메인화면 이동 **
+    $('#backToHome').click(function () {
+        window.location.href = "/";
+    });
     // ** 새로고침 버튼 클릭 핸들러 **
     $('#refresh-btn').click(async ()=>{
         await updateOrderCount();
@@ -48,6 +52,7 @@ $(document).ready(async ()=>{
         statusFilter = $(this).data('status');
         loadOrders();
     })
+
 
     //최초 주문 목록 로드
     loadOrders();
@@ -240,6 +245,7 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
             alert('요청 중 오류가 발생했습니다.');
         }
     });
+
 }
 
 

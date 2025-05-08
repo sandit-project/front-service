@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <script th:src="@{/js/chat/chat-room.js}"></script>
+    <link th:href="@{/css/chat/chat-room.css}" rel="stylesheet">
+
+
+</head>
+<body>
+<h2>채팅방</h2>
+
+<!--<div id="chatBox"></div>-->
+<!--<input id="messageInput" placeholder="메시지를 입력하세요" />-->
+<!--<button id="sendBtn">보내기</button>-->
+
+<div id="userInfo" style="margin-bottom: 10px; font-weight: bold;"></div>
+<div id="chatBox" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
+<input id="messageInput" type="text" placeholder="메시지를 입력하세요" />
+<button id="sendBtn">전송</button>
+
+
+</body>
+</html>
