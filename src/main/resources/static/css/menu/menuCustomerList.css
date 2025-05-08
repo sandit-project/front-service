@@ -83,7 +83,12 @@ body {
 }
 
 /* 🔵 드롭다운 */
-.dropdown {
+.management-section{
+    display: flex;
+    gap: 20px;
+}
+
+.dropdown-admin,.dropdown-delivery {
     position: relative;
     display: inline-block;
     align-self: center; /* 드롭다운 메뉴가 네비게이션 바 중앙에 위치하도록 설정 */
@@ -100,7 +105,7 @@ body {
     display: none;
     position: absolute;
     background-color: #fff8f0;
-    min-width: 160px;
+    min-width: 150px;
     box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
     z-index: 1;
     border-radius: 6px;
@@ -116,6 +121,7 @@ body {
     text-decoration: none;
     display: block;
     transition: background-color 0.3s;
+    text-align: center;
 }
 
 /* 메뉴 아이템 hover 시 배경 색상 변경 */
@@ -124,7 +130,8 @@ body {
 }
 
 /* 드롭다운 메뉴가 보일 때 */
-.dropdown:hover .dropdown-menu {
+.dropdown-admin:hover .dropdown-menu ,
+.dropdown-delivery:hover .dropdown-menu{
     display: block;
 }
 
@@ -220,6 +227,26 @@ body {
 }
 
 .add-to-cart-btn:hover {
+    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+}
+
+
+.order-btn {
+    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    transition: background 0.3s ease;
+    margin-top: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    align-self: center; /* ✨ 버튼을 중앙 정렬 */
+}
+
+.order-btn:hover {
     background: linear-gradient(45deg, #7b3f1d, #5b3d28);
 }
 

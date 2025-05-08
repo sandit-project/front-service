@@ -1,99 +1,106 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+/* 🔸 공통 리셋 */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    box-sizing: border-box;
 }
 
+/* 🔸 배경 및 폰트 스타일 */
+body {
+    font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
+    color: #3b2a1a;
+}
+
+/* 🔸 컨테이너 */
 .storeRegister-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 400px;
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px;
+    background: linear-gradient(145deg, #f9f3eb, #d8c1a5);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
 }
 
-h2 {
+/* 🔸 타이틀 */
+#title {
     text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    color: #5a3b26;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 🔸 폼 그룹 */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
+    font-weight: 600;
+    color: #4a2f1d;
 }
 
 input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
+input[type="submit"],
+select {
+    padding: 10px 14px;
+    border: 1px solid #c7b299;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #fffaf2;
+    transition: border-color 0.3s ease;
 }
 
-.button-container{
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 10%;
-    margin-right: 10%;
+input[type="text"]:focus,
+select:focus {
+    border-color: #a97b50;
+    outline: none;
+}
+
+/* 🔸 버튼 영역 */
+.button-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
 }
 
-input[type="submit"] {
-    width: 30%;
-    padding: 10px;
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-}
-
-input[type="submit"]:hover {
-    background-color: #45a049;
-}
-
+/* 🔸 등록 버튼 공통 */
+input[type="submit"],
 .btn-prev {
-    width: 30%;
-    padding: 10px;
-    background-color: #007bff;
+    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    color: #fff;
     border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
-    margin-top: 15px;
+    transition: background 0.3s ease;
 }
+
+input[type="submit"]:hover,
 .btn-prev:hover {
-    background-color: #0056b3;
+    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
 }
 
-.error-message {
-    color: red;
-    font-size: 0.9em;
-    margin-top: 5px;
-}
+/* 🔸 반응형 */
+@media (max-width: 600px) {
+    .storeRegister-container {
+        padding: 20px;
+    }
 
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
+    .button-container {
+        flex-direction: column;
+    }
+
+    input[type="submit"],
+    .btn-prev {
+        width: 100%;
+    }
 }

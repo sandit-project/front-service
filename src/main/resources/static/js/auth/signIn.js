@@ -19,7 +19,7 @@ $(document).ready(()=>{
             success: (response) => {
                alert('로그인이 성공했습니다.');
                localStorage.setItem('accessToken',response.accessToken);
-               window.location.href = '/home';
+               window.location.href = '/';
             },
             error : (error) => {
                 console.error('log in error :: ',error);

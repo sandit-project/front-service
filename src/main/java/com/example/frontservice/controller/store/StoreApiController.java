@@ -70,10 +70,12 @@ public class StoreApiController {
         storeService.deleteStore(storeUid,token);
     }
 
-    @GetMapping("/orders/{action}")
-    public RemoteOrderResponseDTO remoteOrder(@PathVariable(name = "action") String action, HttpServletRequest request) {
+    @PutMapping("/orders/{action}")
+    public RemoteOrderResponseDTO remoteOrder(@PathVariable(name = "action") String action,
+                                              HttpServletRequest request,
+                                              @RequestBody RemoteOrderRequestDTO remoteOrderRequestDTO) {
         String token = request.getHeader("Authorization");
 
-        return storeService.remoteOrder(token, action);
+        return storeService.remoteOrder(token, action, remoteOrderRequestDTO);
     }
 }

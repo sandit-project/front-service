@@ -55,17 +55,18 @@ let loadStores = ({ limit, lastUid }) => {
             console.log("response is ",response);
             $('#storeContent').empty();
 
-            if (response.storeList.length === 0) {
-                $('#storeContent').append(`<tr><td colspan="6" style="text-align: center;">지점이 존재하지 않습니다.</td></tr>`);
-            } else {
-                response.storeList.forEach((store) => {
-                    const dateObj = new Date(store.storeCreatedDate);
-                    const year = dateObj.getFullYear();
-                    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                    const day = String(dateObj.getDate()).padStart(2, '0');
-                    const formattedDate = `${year}년 ${month}월 ${day}일`;
+            if(response != null){
+                if (response.storeList.length === 0) {
+                    $('#storeContent').append(`<tr><td colspan="6" style="text-align: center;">지점이 존재하지 않습니다.</td></tr>`);
+                } else {
+                    response.storeList.forEach((store) => {
+                        const dateObj = new Date(store.storeCreatedDate);
+                        const year = dateObj.getFullYear();
+                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                        const day = String(dateObj.getDate()).padStart(2, '0');
+                        const formattedDate = `${year}년 ${month}월 ${day}일`;
 
-                    $('#storeContent').append(`
+                        $('#storeContent').append(`
                         <tr>
                             <td>${store.storeUid}</td>
                             <td><a href="/store/detail?storeUid=${store.storeUid}">${store.storeName}</a></td>
@@ -76,25 +77,30 @@ let loadStores = ({ limit, lastUid }) => {
                             <td>${store.storeStatus}</td>
                         </tr>
                     `);
-                });
+                    });
 
-                // 1페이지에서 초기화
-                if (page === 1) {
-                    cursorMap.clear();
-                    cursorStack = [];
-                    cursorMap.set(1, null);
-                }
+                    // 1페이지에서 초기화
+                    if (page === 1) {
+                        cursorMap.clear();
+                        cursorStack = [];
+                        cursorMap.set(1, null);
+                    }
 
-                // 만약 현재 페이지의 데이터가 꽉 차 있고 다음 페이지 커서가 있다면,
-                // 다음 페이지(lastUid)는 현재 응답의 nextCursor로 설정
-                if (response.nextCursor && response.storeList.length === limit) {
-                    if (!cursorMap.has(page + 1)) {
-                        cursorMap.set(page + 1, response.nextCursor);
+                    // 만약 현재 페이지의 데이터가 꽉 차 있고 다음 페이지 커서가 있다면,
+                    // 다음 페이지(lastUid)는 현재 응답의 nextCursor로 설정
+                    if (response.nextCursor && response.storeList.length === limit) {
+                        if (!cursorMap.has(page + 1)) {
+                            cursorMap.set(page + 1, response.nextCursor);
+                        }
                     }
                 }
+
+                updatePaginationButtons(response);
+            }else{
+                $('#storeContent').append(`<tr><td colspan="6" style="text-align: center;">지점이 존재하지 않습니다.</td></tr>`);
             }
 
-            updatePaginationButtons(response);
+
         },
         error: (error) => {
             console.error('지점 목록 조회 오류 :: ', error);

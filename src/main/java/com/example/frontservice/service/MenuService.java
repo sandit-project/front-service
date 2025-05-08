@@ -144,6 +144,9 @@ public class MenuService {
         menuClient.deleteSide(token, sideName);
     }
 
+
+
+
     // Cart
     public CartResponseDTO getCartItems(String token) {
         return menuClient.getCartItems(token);
@@ -176,7 +179,12 @@ public class MenuService {
             // 리스트가 비어있거나 null일 경우 처리 (예: 빈 CartResponseDTO 반환)
             return new CartResponseDTO();
         }
+
     }
+    public int getCartQuantity(String token) {
+        return menuClient.getCartQuantity("Bearer " + token);
+    }
+
 
 
 

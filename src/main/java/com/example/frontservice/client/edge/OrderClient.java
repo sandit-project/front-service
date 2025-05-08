@@ -1,5 +1,6 @@
 package com.example.frontservice.client.edge;
 
+import com.example.frontservice.dto.delivery.DeliveryOrderResponseDTO;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.dto.store.StoreOrderCountResponseDTO;
 import com.example.frontservice.dto.store.StoreOrderListResponseDTO;
@@ -32,15 +33,15 @@ public interface OrderClient {
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
 
-    //지점 주문 요청
+    //지점 주문 요청 (응답 타입을 리스트로 바로 받음)
     @GetMapping("/store/{storeUid}")
-    StoreOrderListResponseDTO getOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
-                                                  @RequestParam(name = "limit") int limit,
-                                                  @RequestParam(name = "lastUid", required = false) Integer lastUid,
+    StoreOrderListResponseDTO getOrdersByStoreUidAndStatus(@PathVariable(name = "storeUid") Integer storeUid,
+                                                  @RequestParam(name = "status", required = false) String status,
                                                   @RequestHeader("Authorization") String token
     );
-
+    // 지점 주문 총 갯수 요청
     @GetMapping("store/{storeUid}/count")
-    StoreOrderCountResponseDTO getCount(@PathVariable(name = "storeUid") Integer storeUid);
+    StoreOrderCountResponseDTO getCountOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
+                                                        @RequestHeader("Authorization") String token);
 
 }

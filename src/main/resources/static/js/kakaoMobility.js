@@ -35,7 +35,7 @@ $(document).ready(()=>{
 
     $.ajax({
         type: 'GET',
-        url: '/delivery?origin='+store.lng+','+store.lat+'&destination='+customer.lng+','+customer.lat,
+        url: '/api/delivery/path?origin='+store.lng+','+store.lat+'&destination='+customer.lng+','+customer.lat,
         dataType : 'json',
         success:(data)=>{
             const roads = data.routes[0].sections[0].roads;

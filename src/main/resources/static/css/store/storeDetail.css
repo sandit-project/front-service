@@ -1,81 +1,125 @@
-/* storeDetail.css - storeRegister.css 스타일 기반 */
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+/* 🔸 공통 리셋 */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.storeDetail-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 400px;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"],
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
     box-sizing: border-box;
 }
 
-button {
-    width: 48%;
+/* 🔸 페이지 배경 및 폰트 */
+body {
+    font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
+    color: #3b2a1a;
+}
+
+/* 🔸 지점 상세 컨테이너 */
+.storeDetail-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #fff8f0;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
+}
+
+.storeDetail-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #5a3b26;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 🔸 폼 레이블 및 입력 필드 */
+form div {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 16px;
+    color: #5a3b26;
+    margin-bottom: 8px;
+}
+
+input, select {
+    width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    font-size: 16px;
+    border: 1px solid #d2b48c;
+    border-radius: 8px;
+    background: #fffaf2;
+    color: #4a2f1d;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #a0522d;
+    background-color: #f9f3eb;
+}
+
+/* 🔸 버튼 스타일 */
+button {
+    padding: 12px 25px;
     border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
     cursor: pointer;
-    margin-top: 15px;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
 }
 
-button:hover {
-    background-color: #45a049;
+button[type="submit"] {
+    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    color: #fff;
 }
 
-.btn-delete {
-    background-color: #dc3545;
+button[type="submit"]:hover {
+    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
 }
 
-.btn-delete:hover {
-    background-color: #c82333;
-}
-.btn-prev {
-    background-color: #007bff;
-}
-.btn-prev:hover {
-    background-color: #0056b3;
+button.btn-delete {
+    background-color: #c34d4d;
+    color: #fff;
 }
 
+button.btn-delete:hover {
+    background-color: #9c3b3b;
+}
+
+button.btn-prev {
+    background-color: #5a3b26;
+    color: #fff;
+}
+
+button.btn-prev:hover {
+    background-color: #3d2d1d;
+}
+
+/* 🔸 폼 액션 버튼 그룹 */
 .form-actions {
     display: flex;
     justify-content: space-between;
-    gap: 4%;
+    align-items: center;
+}
+
+/* 🔸 숨겨진 필드 스타일 */
+input[type="hidden"] {
+    display: none;
+}
+
+/* 🔸 반응형 디자인 */
+@media (max-width: 768px) {
+    .storeDetail-container {
+        padding: 20px;
+    }
+
+    .storeDetail-container h2 {
+        font-size: 24px;
+    }
+
+    button {
+        font-size: 14px;
+    }
 }

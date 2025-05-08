@@ -1,82 +1,226 @@
+/* 🔵 Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
+    font-family: 'Poppins', 'Noto Sans KR', 'Permanent Marker', sans-serif;
+    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
+    color: #3b2a1a;
 }
+
+/* 🔵 헤더 */
 header {
-    background: #e67e22;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
+    display: flex;
+    justify-content: space-between; /* 왼쪽과 오른쪽에 아이템을 배치 */
+    align-items: center;
+    padding: 25px 5%;
+    background: #efe0c8;
+    border-bottom: 2px solid #d2b48c;
 }
+
+/* 🔵 welcome-message */
 .header-container {
+    flex-grow: 1; /* 나머지 공간을 차지 */
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 🔵 header-logo */
+.header-logo {
+    position: absolute; /* absolute로 위치를 고정 */
+    left: 50%;
+    transform: translateX(-50%); /* 정확히 가운데로 이동 */
+}
+
+.site-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #5a3b26;
+    text-decoration: none;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔵 오른쪽 버튼 */
+.group-btn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.update-btn {
+    background-color: #8b5c32;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+
+
+.update-btn:hover {
+    background-color: #6f3d28;
+}
+
+.delete-btn {
+    background-color: #8b5c32;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+    margin-right: 20px;
+}
+
+
+
+.delete-btn:hover {
+    background-color: #6f3d28;
+}
+
+/* 🔵 메인 컨텐츠 */
+main {
+    padding: 30px 5%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
 }
-main {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
+
 .detail-container {
     display: flex;
-    flex-wrap: wrap;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
+    gap: 40px;
+    justify-content: space-between;
+    margin-bottom: 40px;
 }
-.image-section {
-    flex: 1 1 400px;
-    padding: 20px;
-}
-.image-section img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
+
+/* 🔵 프로필 정보 섹션 */
 .info-section {
-    flex: 1 1 400px;
+    background: #f9f3eb;
+    border-radius: 10px;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 48%;
 }
-.user-profile >p{
-    display: inline-block;
+
+.user-profile {
+    margin-bottom: 12px;
 }
-.product-title {
-    font-size: 2rem;
-    margin-bottom: 10px;
+
+.user-profile p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #4a2f1d;
 }
-.price {
-    font-size: 1.5rem;
-    color: #e67e22;
-    margin-bottom: 20px;
+
+.user-profile #user_name,
+.user-profile #user_point,
+.user-profile #user_email,
+.user-profile #user_phone,
+.user-profile #created_date,
+.user-profile #user_type,
+.user-profile #main_address,
+.user-profile #sub_address1,
+.user-profile #sub_address2 {
+    font-size: 16px;
+    color: #7c5e45;
+    font-weight: 400;
 }
-.description {
-    font-size: 1rem;
-    margin-bottom: 20px;
+
+/* 🔵 지도 섹션 */
+#map {
+    margin-top: 20px;
+    width: 100%;
+    height: 350px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-.buy-btn {
-    background: #e67e22;
-    color: #fff;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-.buy-btn:hover {
-    background: #e67e22;
-}
-footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
+
+/* 🔵 주문 정보 섹션 */
+.order-info {
+    background: #f9f3eb;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-top: 40px;
+}
+
+.order-info p {
+    font-size: 16px;
+    color: #7c5e45;
+}
+
+/* 🔵 푸터 */
+footer {
+    background-color: #efe0c8;
+    padding: 25px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #7b6149;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: #7b6149;
+    text-decoration: none;
+    transition: text-decoration 0.3s;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* 🔵 반응형 */
+@media (max-width: 1024px) {
+    .detail-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .info-section {
+        width: 100%;
+    }
+
+    .order-info {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .site-title {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .update-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .detail-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .info-section,
+    .order-info {
+        width: 100%;
+    }
+
+    .user-profile p {
+        font-size: 14px;
+    }
 }

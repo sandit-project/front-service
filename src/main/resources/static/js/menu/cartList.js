@@ -97,22 +97,21 @@ function renderCartItems(cartItems) {
 
     cartItems.forEach(item => {
         const rowHtml = `
-            <tr data-id="${item.uid}">
-                <td><input type="checkbox" class="item-checkbox" value="${item.uid}"></td>
-                <td class="menu-name">
-                    <img src="${item.img}" alt="${item.menuName}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                  
-                    ${item.menuName}
-                </td>
-                <td>
-                    <input type="number" min="1" value="${item.amount}" class="amount-input">
-                    <button type="button" class="update-btn">변경</button>
-                </td>
-                <td class="item-price">${item.unitPrice.toLocaleString()}</td>
-                <td class="total-cell">${(item.unitPrice * item.amount).toLocaleString()}</td>
-                <td><button type="button" class="delete-btn">삭제</button></td>
-            </tr>
-        `;
+    <tr data-id="${item.uid}">
+        <td><input type="checkbox" class="item-checkbox" value="${item.uid}" checked></td>
+        <td class="menu-name" style="display: flex; align-items: center; gap: 10px;">
+            <img src="${item.img}" alt="${item.menuName}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
+            <span>${item.menuName}</span>
+        </td>
+        <td>
+            <input type="number" min="1" value="${item.amount}" class="amount-input">
+            <button type="button" class="update-btn">변경</button>
+        </td>
+        <td class="item-price">${item.unitPrice.toLocaleString()}</td>
+        <td class="total-cell">${(item.unitPrice * item.amount).toLocaleString()}</td>
+        <td><button type="button" class="delete-btn">삭제</button></td>
+    </tr>
+`;
 
         $tbody.append(rowHtml);
         totalQuantity += item.amount;
@@ -122,6 +121,7 @@ function renderCartItems(cartItems) {
     $("#totalQuantity").text(totalQuantity);
     $("#totalPrice").text(totalPrice.toLocaleString());
 }
+
 
 function updateCartItemAmount(id, newAmount) {
     $.ajax({
