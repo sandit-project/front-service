@@ -193,9 +193,6 @@ function initReservationPicker() {
         onOpen: (selDates, dateStr, inst) => {
             inst.set('minDate', roundUpMinutes(new Date(Date.now() + 60*60*1000), 5));
         },
-        // onClose: (selDates, dateStr, inst) => {
-        //     inst.input.value = dateStr;
-        // }
     });
 }
 
