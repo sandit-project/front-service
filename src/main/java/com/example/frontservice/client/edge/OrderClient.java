@@ -44,9 +44,4 @@ public interface OrderClient {
     StoreOrderCountResponseDTO getCountOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
                                                         @RequestHeader("Authorization") String token);
 
-    @GetMapping("status/cooking")
-    List<DeliveryOrderResponseDTO> getCookingOrders(@RequestHeader("Authorization") String token);
-
-    @GetMapping("status/delivering")
-    List<DeliveryOrderResponseDTO> getDeliveringOrders(@RequestHeader("Authorization") String token);
 }

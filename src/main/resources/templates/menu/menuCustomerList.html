@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SweetAlert2 CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu/menuCustomerList.js}"></script>
     <link rel="stylesheet" th:href="@{/css/menu/menuCustomerList.css}">
@@ -43,11 +47,14 @@
         <div class="dropdown-admin">
             <a href="#" class="nav-link dropdown-toggle">ADMIN</a>
             <div class="dropdown-menu">
-                <a href="/admin/menu" class="dropdown-item">메뉴 관리 페이지</a>
+                <a href="/admin" class="dropdown-item">메뉴 관리 페이지</a>
                 <a href="/store/list" class="dropdown-item">지점 관리 페이지</a>
                 <a href="/store/order" class="dropdown-item">주문 관리 페이지</a>
+
             </div>
         </div>
+
+    </div>
     </div>
 </nav>
 

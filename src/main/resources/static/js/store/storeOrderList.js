@@ -210,18 +210,19 @@ let mergeOrderList = (input) => {
 }
 
 // 주문 조작 함수
-let remoteOrder = (action,merchantUid,status,createdDate,reservationDate) => {
+let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) => {
     checkToken();
     setupAjax();
-
-    // 문자열 "null" 또는 undefined를 진짜 null로 보정
-    reservationDate = (reservationDate === "null" || reservationDate === undefined) ? null : reservationDate;
 
     let remoteOrderDate = {
         merchantUid : merchantUid,
         status : status,
-        createdDate : createdDate,
-        reservationDate : reservationDate
+        riderUserUid : null,
+        riderSocialUid : null,
+        addressStart : "testStartAddress",
+        addressDestination : "testDestinationAddress",
+        deliveryAcceptTime : null,
+        deliveredTime : null
     };
 
     $.ajax({
@@ -240,33 +241,5 @@ let remoteOrder = (action,merchantUid,status,createdDate,reservationDate) => {
         }
     });
 }
-
-// 배달 시작 함수
-let startDelivery = () => {
-    // 배달원 정보 입력하는 창 추가로 필요함
-
-    // 인풋 창에서 받아오는 정보 셋팅 필요함
-    let deliverymanType = "USER";
-    let deliverymanUid = "";
-
-    checkToken();
-    setupAjax();
-
-    // 임시 템플릿
-    $.ajax({
-        type: 'GET',
-        url: '/',
-        success: (response) => {
-            console.log(response);
-            alert(response.message);
-        },
-        error: (error) => {
-            console.log('오류발생 : ', error);
-            alert('요청 중 오류가 발생했습니다.');
-        }
-    });
-}
-
-
 
 

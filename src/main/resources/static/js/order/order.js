@@ -61,14 +61,38 @@ async function renderCartItems(items) {
     $container.empty();
     items.forEach(item => {
         const itemHtml = `
-            <div class="cart-item" data-cart-item data-cart-uid="${item.uid}">
-                <input type="checkbox" class="cart-check" checked>
-                <span class="item-name">${item.menuName}</span>
-                <span class="item-unitPrice">${item.unitPrice}원</span>
-                <span class="item-calorie">${item.calorie} kcal</span>
-                <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
-            </div>
-        `;
+    <div class="cart-item" data-cart-item data-cart-uid="${item.uid}" 
+         style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #ccc;">
+        
+        <div style="margin-right: 15px;">
+            <input type="checkbox" class="cart-check" checked>
+        </div>
+        
+        <div style="margin-right: 15px; border-left: 1px solid #ddd; padding-left: 15px; display: flex; gap: 10px;">
+    <span class="item-name">${item.menuName}</span>
+    <span class="item-unitPrice">${item.unitPrice}원</span>
+</div>
+
+        
+        <div style="margin-right: 15px; border-left: 1px solid #ddd; padding-left: 15px;">
+            <span class="item-calorie">${item.calorie} kcal</span>
+        </div>
+      <div style="margin-left: auto; display: flex; align-items: center; border-left: 1px solid #ddd; padding-left: 15px;">
+    <span class="amount-label" style="margin-right: 5px;">수량</span>
+    <input 
+        type="number" 
+        class="item-amount" 
+        value="${item.amount || 1}" 
+        min="1" 
+        style="width: 70px; height: 32px; border-radius: 6px; padding: 5px 5px 5px 10px; border: 1px solid #ccc; font-size: 16px;">
+</div>
+
+
+    </div>
+`;
+
+
+
         $container.append(itemHtml);
     });
 }
@@ -272,8 +296,11 @@ async function renderCartItemsFromServer() {
                     <span class="item-name">${item.menuName}</span>
                     <span class="item-unitPrice">${item.unitPrice}</span>원
                     <span class="item-calorie">${item.calorie} kcal</span>
-                    <input type="number" class="item-amount" value="${item.amount || 1}" min="1" style="width: 50px;">
+             <p>수량</p>
+            <input type="number" class="item-amount" value="${item.amount || 1}" min="1" style="width: 50px;">
+        
                 </div>
+                
             `;
             $container.append(itemHtml);
         });
@@ -281,6 +308,7 @@ async function renderCartItemsFromServer() {
         console.error('장바구니 불러오기 실패', error);
     }
 }
+
 
 // 선택한 카트 항목들 cartUid 가져오기
 function getSelectedCartUids() {

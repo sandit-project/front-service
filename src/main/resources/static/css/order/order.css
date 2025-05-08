@@ -1,14 +1,19 @@
 /* 🌾 기본 배경 및 폰트 */
 body {
-    font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #e8dcc9);
-    color: #3b2a1a;
+    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f6efe3, #e1d4be);
+    color: #3a2a1a;
     margin: 0;
     padding: 0;
 }
 
+/* 제목 스타일 */
 h1 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 2.5em;
+    color: #5e3e23;
     text-align: center;
+    margin-bottom: 30px;
 }
 
 /* 🧾 컨테이너 */
@@ -31,21 +36,24 @@ h1 {
     background-color: #fffaf2;
     border: 2px solid #b8926a;
     border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    font-size: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
-.buyer-info label {
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
     display: block;
-    margin-bottom: 14px;
+    margin-bottom: 8px;
     color: #4b2d1c;
     font-weight: 600;
 }
 
-.buyer-info input, .buyer-info select {
-    padding: 10px;
-    margin-top: 4px;
-    width: 300px;
+.form-group input, .form-group select {
+    width: 33.33%; /* 3분의 1로 설정 */
+    padding: 12px;
+    margin-top: 6px;
     border: 1px solid #d3b187;
     border-radius: 8px;
     background-color: #fef9f0;
@@ -79,22 +87,46 @@ h1 {
 
 /* 🔘 버튼 */
 button {
-    padding: 12px 24px;
-    background: linear-gradient(45deg, #6a4e2e, #4a311f);
-    color: #fefaf6;
-    border: 2px solid #4a311f;
+    padding: 12px 30px;
+    border: 2px solid transparent;
     border-radius: 10px;
     font-weight: bold;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans', sans-serif;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.05);
+    font-size: 16px;
 }
 
-button:hover {
-    background: linear-gradient(45deg, #4a311f, #2f1d12);
-    transform: scale(1.05);
+/* 🟤 주요 버튼 */
+.btn-primary {
+    background: linear-gradient(45deg, #d9a066, #c28a48);
+    color: #fffefc;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #c28a48, #a96f35);
+}
+
+/* 🟣 보조 버튼 */
+.btn-secondary {
+    background: linear-gradient(45deg, #b5a8e4, #9f90d0);
+    color: #fcfcfd;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(45deg, #9f90d0, #8c7ec0);
+}
+
+/* 🟡 예약/주의 버튼 */
+.btn-warning {
+    background: linear-gradient(45deg, #fdd085, #fbc16c);
+    color: #5a3b26;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(45deg, #fbc16c, #f8b24f);
 }
 
 /* 📱 반응형 */
@@ -104,7 +136,7 @@ button:hover {
         padding: 20px;
     }
 
-    .buyer-info input, .buyer-info select {
+    .form-group input, .form-group select {
         width: 100%;
     }
 

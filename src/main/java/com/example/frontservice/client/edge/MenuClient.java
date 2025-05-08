@@ -169,6 +169,9 @@ public interface MenuClient {
     List<CartResponseDTO> addSideToCart(@RequestHeader("Authorization") String token,
                                   @RequestBody SideCartRequestDTO dto);
 
+    @GetMapping("/cart/quantity")
+    Integer getCartQuantity(@RequestHeader("Authorization") String token);
+
 
 
     // --- Ingredient List ---
