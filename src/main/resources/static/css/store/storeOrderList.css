@@ -66,9 +66,13 @@ body {
 
 /* 🔸 상태 탭 */
 #status-tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
+    list-style: none;         /* ● 제거 */
+    display: flex;            /* 가로 정렬 */
+    gap: 12px;                /* 탭 사이 간격 */
+    padding: 0;
+    margin: 0;
+    justify-content: center;  /* 중앙 정렬 */
+    background-color: #fdf6ee;
 }
 
 #status-tabs li {
@@ -78,6 +82,10 @@ body {
     cursor: pointer;
     border-radius: 10px;
     transition: background 0.3s ease;
+    text-decoration: none;
+    background-color: #f5e6d3;
+    border: 1px solid #d2b48c;
+    list-style-type: none;  /* 브라우저 기본 ● 제거 */
 }
 
 #status-tabs li.active {
@@ -87,6 +95,8 @@ body {
 
 #status-tabs li:hover {
     background-color: #fcebd5;
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(85, 54, 25, 0.2);
 }
 
 /* 🔸 주문 목록 테이블 */

@@ -11,6 +11,11 @@ $(document).ready(async ()=>{
         $('#hiddenId').val(userInfo.id);
         $('#hiddenType').val(userInfo.type);
         $('#hiddenUserRole').val(userInfo.role);
+
+        if(userInfo.role === "ROLE_DELIVERY"){
+            // 웹소켓에 위치 전달 하는 함수
+            // sendDeliveryManLocation(userInfo.id, userInfo.type);
+        }
     }).catch((error)=>{
         console.error('board list user info error : ',error);
     });
@@ -84,7 +89,7 @@ $(document).ready(async ()=>{
             deliveredTime: new Date().toISOString().slice(0, 19)
         };
 
-        startDelivery(deliveryInfo);
+        endDelivery(deliveryInfo);
     });
 
 });
@@ -166,7 +171,7 @@ let requestDeliveringOrder = () => {
                     $tbody.append(`
                         <tr>
                             <td>${index + 1}</td> <!-- 순번 -->
-                            <td>${o.merchant_uid}</td>
+                            <td>${o.merchantUid}</td>
                             <td>${o.addressStart}</td>
                             <td>${o.addressDestination}</td>
                             <td>
@@ -261,7 +266,7 @@ let endDelivery = (info) => {
     // 임시 템플릿
     $.ajax({
         type: 'POST',
-        url: '/api/delivery/start',
+        url: '/api/delivery/complete',
         data: JSON.stringify(deliveryInfo),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
@@ -275,3 +280,4 @@ let endDelivery = (info) => {
         }
     });
 }
+

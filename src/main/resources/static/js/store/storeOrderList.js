@@ -96,9 +96,9 @@ $(document).ready(async ()=>{
                         <td>${itemDetails}</td>
                         <td>${o.addressDestination || '-'}</td>
                         <td>
-                          <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">수락</button>
-                          <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">취소</button>
-                          <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">조리</button>
+                          <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">수락</button>
+                          <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">취소</button>
+                          <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">조리</button>
                         </td>
                     </tr>
                 `);
@@ -219,8 +219,8 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
         status : status,
         riderUserUid : null,
         riderSocialUid : null,
-        addressStart : "testStartAddress",
-        addressDestination : "testDestinationAddress",
+        addressStart : addressStart,
+        addressDestination : addressDestination,
         deliveryAcceptTime : null,
         deliveredTime : null
     };
