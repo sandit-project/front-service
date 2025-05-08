@@ -33,11 +33,9 @@ public interface OrderClient {
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
 
-    //지점 주문 요청
+    //지점 주문 요청 (응답 타입을 리스트로 바로 받음)
     @GetMapping("/store/{storeUid}")
-    StoreOrderListResponseDTO getOrdersByStoreUid(@PathVariable(name = "storeUid") Integer storeUid,
-                                                  @RequestParam(name = "limit") int limit,
-                                                  @RequestParam(name = "lastUid", required = false) Integer lastUid,
+    StoreOrderListResponseDTO getOrdersByStoreUidAndStatus(@PathVariable(name = "storeUid") Integer storeUid,
                                                   @RequestParam(name = "status", required = false) String status,
                                                   @RequestHeader("Authorization") String token
     );

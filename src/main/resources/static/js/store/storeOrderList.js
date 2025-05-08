@@ -1,14 +1,10 @@
-
 let storeInfo;
 
 $(document).ready(async ()=>{
-    const limit=10
-    let lastCursor = null;
-    let isLoading = false;
-    let hasMore = true;
+
     let statusFilter = 'PAYMENT_COMPLETED'; // 기본 탭
 
-    // 1) 토큰 유효성 확인 및 AJAX 헤더 설정
+    // 토큰 유효성 확인 및 AJAX 헤더 설정
     checkToken();
     setupAjax();
 
@@ -25,7 +21,7 @@ $(document).ready(async ()=>{
     const managerUid = userInfo.id;       // 여기에서 매니저 UID 획득
     console.log('로그인한 매니저 UID:', managerUid);
 
-    // 3) 매니저 UID로 storeUid 조회 후 초기 로드 및 스크롤 이벤트 등록
+    //  매니저 UID로 storeUid 조회 후 초기 로드 및 스크롤 이벤트 등록
 
     storeInfo = await fetchStoreUidByManager(managerUid);
 
@@ -33,7 +29,7 @@ $(document).ready(async ()=>{
         alert('지점 정보를 불러오는 데 실패했습니다.');
         return;
     }
-    // 4) 화면 헤더 업데이트
+    // 화면 헤더 텍스트 업데이트
     $('#welcome-text').text(`${storeInfo.storeName} 주문 목록`);
 
     // ** 총 주문 수 조회 **
@@ -41,11 +37,8 @@ $(document).ready(async ()=>{
 
     // ** 새로고침 버튼 클릭 핸들러 **
     $('#refresh-btn').click(async ()=>{
-        lastCursor = null;
-        hasMore = true;
-        $('#storeContent').empty();
         await updateOrderCount();
-        loadMore();
+        loadOrders();
     });
 
     // 상태 탭 클릭 핸들러
@@ -53,122 +46,76 @@ $(document).ready(async ()=>{
         $('#status-tabs li').removeClass('active');
         $(this).addClass('active');
         statusFilter = $(this).data('status');
-        lastCursor = null;
-        hasMore = true;
-        console.log(statusFilter);
-        $('#storeContent').empty();
-        loadMore();
+        loadOrders();
     })
 
-    // 무한스크롤
-    $(window).on('scroll',()=>{
-        if ( !isLoading && hasMore
-         && $(window).scrollTop() + $(window).height() >= $(document).height() - 100)
-        {
-            loadMore();
-        }
-    });
+    //최초 주문 목록 로드
+    loadOrders();
 
-    //초기 1회 로드
-    loadMore();
+    //주문 목록 단일 로드 함수
+    async function loadOrders() {
+       try {
 
-    //커서 방식으로 데이터 가져오기
-    function loadMore() {
-        if (!hasMore) return;
-        isLoading = true;
+        $('#storeContent').empty();
         $('#loading').show();
 
-        const params = { limit: limit };
-        if (lastCursor) params.lastCursor = lastCursor;
-
-        $.ajax({
+        const response =await $.ajax({
             type: 'GET',
-            url: "/orders/store/" + storeInfo.storeUid + "?status=" + statusFilter,
-            success: function (response) {
+            url: `/orders/store/${storeInfo.storeUid}?status=${statusFilter}`,
+            dataType: 'json',
+        });
+        console.log("지점 주문 목록 ",response);
 
-                console.log("지점 주문 목록 :", response);
-                const orders = response.storeOrderLists || [];
-                const $tbody = $('#storeContent').empty();
-                if (orders.length === 0) {
-                    $tbody.append(`
+        const orders = Array.isArray(response)
+            ? response
+            :(response.storeOrderLists || []);
+
+        console.log("parsed orders",orders);
+        if (orders.length === 0) {
+            $('#storeContent').append(`
+                <tr>
+                    <td colspan="7" style="text-align:center">주문 내역이 없습니다.</td>
+                </tr>
+            `);
+        } else {
+            const displayOrderList = mergeOrderList(orders);
+            $('#order-count').text(`(${displayOrderList.length} 건)`);
+
+            displayOrderList.forEach(o=> {
+                const created = formatDate(o.createdDate);
+                const reserve = o.reservationDate ? formatDate(o.reservationDate) : '-';
+                const itemDetails = o.items.map(item =>
+                    `${item.menuName}-${item.amount}개`
+                ).join("<br>");
+                $('#storeContent').append(`
                     <tr>
-                      <td colspan="8" style="text-align:center">주문 내역이 없습니다.</td>
+                        <td>${o.merchantUid}</td>
+                        <td>${o.userUid}</td>
+                        <td>${created}</td>
+                        <td>${reserve}</td>
+                        <td>${itemDetails}</td>
+                        <td>${o.addressDestination || '-'}</td>
+                        <td>
+                          <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">수락</button>
+                          <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">취소</button>
+                          <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">조리</button>
+                        </td>
                     </tr>
                 `);
-
-                } else {
-                let displayOrderList = mergeOrderList(orders);
-
-                $('#order-count').text(`( ${displayOrderList.length} 건 )`);
-
-                  displayOrderList.forEach(o => {
-                        const created = new Date(o.createdDate).toLocaleString();
-                        const reserve = o.reservationDate
-                            ? new Date(o.reservationDate).toLocaleString()
-                            : '-';
-                        const itemsCnt = o.items ? o.items.length : 0;
-                        // items 정보 HTML 문자열로 변환
-                        const itemDetails = o.items.map(item => `${item.menuName} - ${item.amount} 개`).join("<br>");
-
-                        $tbody.append(`
-                            <tr>
-                              <td>${o.merchantUid}</td>
-                              <td>${o.userUid}</td>
-                              <td>${created}</td>
-                              <td>${reserve}</td>
-                              <td>${itemDetails}</td>
-                              <td>${itemDetails}</td> <!--배송지 주소입력 -->
-                              <td>
-                                <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">수락</button>
-                                <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">취소</button>
-                                <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">조리</button>
-                              </td>
-                            </tr>
-                        `);
-
-                    });
-                }
-            }
-        });
-    };
-
-    // 데이블에 행 추가
-    /**function appendOrders(orders) {
-        const $tbody = $('#storeContent');
-        if (orders.length === 0 && !$tbody.children().length) {
-            $tbody.append(`
-            <tr>
-          <td colspan="7" style="text-align:center">주문 내역이 없습니다.</td>
-        </tr>
-            `);
-            return;
+            });
         }
-        orders.forEach(o=>{
-            const row=`
-        <tr>
-            <td>${o.merchantUid}</td>
-            <td>${o.userUid}</td>
-            <td>${o.createdDate.replace('T','')}</td>
-            <td>${o.reservationDate ? o.reservationDate.replace('T',''):''}</td>
-            <td><button onclick="viewDetail(${o.uid})">내역</button></td>
-            <td>${o.items[0]?.deliveryAddress || ''}</td>
-            <td>
-                <button onclick="changeStatus('${o.merchantUid}','ORDER_CONFIRMED')">수락</button>
-                <button onclick="changeStatus('${o.merchantUid}','ORDER_CANCELLED')">취소</button>
-                <button onclick="changeStatus('${o.merchantUid}','ORDER_COOKING')">조리</button>
-            </td>
-         </tr>`;
-            $('#storeContent').append(row);
-        });
-    };
+     } catch (err){
+           console.error('주문 목록 조회 실패 :',err);
+           alert('주문 목록을 불러오는 중 오류가 발생했습니다.');
+     } finally {
+           $('#loading').hide();
+       }
 
-    window.viewDetail = (merchantUid) => {
-        location.href = `/orders/detail/${merchantUid}`;
-    };
-    */
+    }
 
-    //상태 변경 호출
-    window.changeStatus = (merchantUid, newStatus) => {
+
+//상태 변경 호출
+window.changeStatus = (merchantUid, newStatus) => {
         $.ajax({
             url: `orders/${merchantUid}/status`,
             method: 'PUT',
@@ -295,161 +242,4 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
     });
 }
 
-/**
- *  let cursorMap=new Map();//페이지번호 => lastUid 매핑
- *  let page= 1;
- */
-
-/**
- * 초기 페이지 버튼&리스트 설정
-
-let initStoreOrderList=() =>{
-    //최초 페이지 로드(page 1)
-    loadStoreOrders({ limit, lastUid: cursorMap.get(page)});
-
-    $('#nextPage').click(() => {
-        if ($('#nextPage').prop('disabled')) return;
-        //다음 페이지 커서가 있다면 페이지 번호 증가 후 해당 커서로 로드
-        if (cursorMap.has(page + 1)) {
-            page++;
-            loadStoreOrders({limit, lastUid: cursorMap.get(page)});
-        }
-    });
-
-
-    $('#prevPage').click(() => {
-        if ($('#prevPage').prop('disabled')) return;
-        if(page>1){
-            page--;
-            loadStoreOrders({ limit, lastUid: cursorMap.get(page) });
-        }
-    });
-
-
-    $('#firstPage').click((event)=>{
-        page=1;
-        //1페이지는 항상 null
-        loadStoreOrders({ limit, lastUid: cursorMap.get(1) });
-    });
-};
-*/
-
-/**
- * storeUid로 주문 목록을 불러와 렌더링(jQuery AJAX 사용)
-
-function loadStoreOrders({ limit, lastUid }) {
-    const last = lastUid != null ? lastUid : 0;
-
-    // 기본 URL (limit만 붙임)
-    let url = `/orders/store/${storeInfo.storeUid}?limit=${encodeURIComponent(limit)}`;
-
-    // 두 번째 페이지부터 lastUid 파라미터 추가
-    if (lastUid != null) {
-        url += `&lastUid=${encodeURIComponent(lastUid)}`;
-    }
-
-    $.ajax({
-        type: 'GET',
-        url: url,
-        success: function (response) {
-
-            console.log("지점 주문 목록 :",response);
-            const orders = response.storeOrderLists || [];
-            const $tbody = $('#storeContent').empty();
-            if (orders.length === 0) {
-                $tbody.append(`
-                    <tr>
-                      <td colspan="8" style="text-align:center">주문 내역이 없습니다.</td>
-                    </tr>
-                `);
-
-            } else {
-                let displayOrderList = mergeOrderList(orders);
-
-                $('#order-count').text(`( ${displayOrderList.length} 건 )`);
-
-                displayOrderList.forEach(o => {
-                    const created = new Date(o.createdDate).toLocaleString();
-                    const reserve = o.reservationDate
-                        ? new Date(o.reservationDate).toLocaleString()
-                        : '-';
-                    const itemsCnt = o.items ? o.items.length : 0;
-                    // items 정보 HTML 문자열로 변환
-                    const itemDetails = o.items.map(item => `${item.menuName} - ${item.amount} 개`).join("<br>");
-
-                    $tbody.append(`
-                        <tr>
-                          <td>${o.merchantUid}</td>
-                          <td>${o.userUid}</td>
-                          <td>${o.status}</td>
-                          <td>${created}</td>
-                          <td>${reserve}</td>
-                          <td>${itemDetails}</td>
-                          <td>${itemDetails}</td> <!--배송지 주소입력 -->
-                        </tr>
-                    `);
-                    //updateOrderCount();
-                });
-            }
-
-            // 1페이지에서 초기화
-            if (page === 1) {
-                cursorMap.clear();
-                cursorMap.set(1, null);
-            }
-
-
-            // 다음 페이지(lastUid)는 현재 응답의 nextCursor로 설정
-            if (!response.lastPage && response.nextCursor != null && orders.length === limit) {
-                if (!cursorMap.has(page + 1)) {
-                    cursorMap.set(page + 1, response.nextCursor);
-                }
-            }
-
-            updatePaginationButtons({
-                lastPage: response.lastPage,
-                hasNext: response.nextCursor != null
-            });
-
-        },
-        error: (xhr, status, error) => {
-            console.error('주문 목록 조회 오류 ::', error);
-        }
-    });
-}
-*/
-
-/**
- * 페이지 버튼 업데이트
-
-let updatePaginationButtons = (response) => {
-    //첫 페이지에서는 이전 버튼 비활성화
-    $('#prevPage').prop('disabled', page === 1);
-    // 다음 페이지 커서가 없다면 다음 버튼 비활성화
-    $('#nextPage').prop('disabled', !cursorMap.has(page+1));
-
-    const $pageNumbers = $('#pageNumbers');
-    $pageNumbers.empty();
-
-    // 지금까지 저장된 페이지 수만큼 번호 버튼 생성
-    const totalPages = cursorMap.size;
-    for (let i = 1; i <= totalPages; i++) {
-        const $btn = $(`<button class="btn page-btn" data-page="${i}">${i}</button>`);
-        if (i === page) {
-            $btn.css('background-color', '#999');
-        }
-        $pageNumbers.append($btn);
-    }
-
-    // 페이지 번호 버튼 클릭 시 해당 페이지의 lastUid를 이용해 로드
-    $('.page-btn').off('click').on('click', function () {
-        const targetPage = parseInt($(this).data("page"));
-        if (targetPage === page) return;
-        if (!cursorMap.has(targetPage)) return; //안전 검사
-
-        page = targetPage;
-        loadStoreOrders({ limit, lastUid: cursorMap.get(page) });
-    });
-};
-*/
 
