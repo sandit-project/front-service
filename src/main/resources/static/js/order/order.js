@@ -2,17 +2,6 @@ let userUid;
 let socialUid;
 let expectedVersion = null;
 
-const MOCK_CART_ITEMS = [
-    { uid: 6, menuName: '샌드위치 A', unitPrice: 100, amount: 1, calorie: 300 },
-    { uid: 7, menuName: '샌드위치 B', unitPrice: 200, amount: 2, calorie: 150 }
-];
-
-const MOCK_STORES = [
-    { uid: 1, storeName: '강동점' , address: '서울시 강동구 천호동 24-2', lat: 37.1234, lan: 127.5678 },
-    { uid: 2, storeName: '강남점' , address: '서울시 강남구 역삼동 818-1',lat: 37.1234, lan: 127.5678 },
-    { uid: 3, storeName: '잠실점' , address: '서울시 송파구 신천동 7-28',lat: 37.1234, lan: 127.5678 }
-];
-
 // 장바구니 항목 가져오기
 function getCartItems() {
     const token = localStorage.getItem('accessToken');
@@ -58,12 +47,25 @@ function fillUserInfoForm(user) {
 // 선택된 장바구니 항목 가져오기
 async function renderCartItems(items) {
     const $container = $('#cartContainer');
+    const customList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
     $container.empty();
     items.forEach(item => {
-        const cartUid = item.cartUid || item.uid;
+        //const cartUid = item.cartUid || item.uid;
+        const cartRowId  = item.uid;
+        const isCustom   = item.menuName === '커스텀 샌드위치';
+        const customUuid = isCustom ? item.cartUid : '';
+        const rec = customList.find(c => c.cartUid === customUuid);
+        const customId = rec ? rec.uid : '';
+        const cartUid = customUuid || cartRowId;
 
+            // <div class="cart-item" data-cart-item data-cart-uid="${cartUid}">
         const itemHtml = `
-            <div class="cart-item" data-cart-item data-cart-uid="${cartUid}">
+                <div class="cart-item" data-cart-item
+                     data-cart-uid="${cartUid}"
+                    data-cart-id="${cartRowId}"
+                    data-custom-uuid="${customUuid}"
+                    data-custom-id="${customId}"
+                    data-is-custom="${isCustom}">
                 <input type="checkbox" class="cart-check" checked>
                 <span class="item-name">${item.menuName}</span>
                 <span class="item-unitPrice">${item.unitPrice}원</span>
@@ -73,6 +75,31 @@ async function renderCartItems(items) {
         `;
         $container.append(itemHtml);
     });
+}
+
+// 순수 cart 테이블 PK만
+function getSelectedCartRowIds() {
+    return $('[data-cart-item]').filter((_,el) => {
+        return $(el).find('.cart-check').is(':checked') && !$(el).data('is-custom');
+    }).map((_,el) => Number($(el).data('cart-id'))).get();
+}
+
+// custom_cart PK만
+function getSelectedCustomIds() {
+    return $('[data-cart-item]').filter((_,el) => {
+        return $(el).find('.cart-check').is(':checked') && $(el).data('is-custom');
+    }).map((_,el) => Number($(el).data('custom-id'))).get();
+}
+
+// custom_cart_id 를 참조하는 cart 테이블의 PK만
+function getSelectedCustomCartRowIds() {
+    return $('[data-cart-item]')
+        .filter((_, el) => {
+            return $(el).find('.cart-check').is(':checked')
+                && $(el).data('is-custom');      // is-custom=true 인 항목
+        })
+        .map((_, el) => Number($(el).data('cart-id')))
+        .get();
 }
 
 // 주소 존재 여부 체크 API 호출
@@ -96,33 +123,36 @@ function execDaumPostcode() {
 
 
 // 스토어 리스트 가져오기
-function getStores() {
-    // return $.ajax({
-    //     url: '/stores',
-    //     method: 'GET',
-    //     contentType: 'application/json'
-    // }).promise();
-
-    return Promise.resolve(MOCK_STORES);
+function getStores(limit = 100) {
+    const token = localStorage.getItem('accessToken');
+    return $.ajax({
+        url: `/stores/list?limit=${limit}`,
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+    }).then(response => response.storeList);
 }
 
-// 드롭다운에 스토어 추가하기
 function renderStoreDropdown() {
     getStores()
         .then(stores => {
-            const $storeSelect = $('#storeSelect'); // 드롭다운 셀렉터
-            $storeSelect.empty(); // 기존 옵션 삭제
+            const $select = $('#storeSelect')
+                .empty()
+                .append('<option value="">스토어 선택</option>');
 
-            // 기본 옵션 추가
-            $storeSelect.append('<option value="">스토어 선택</option>');
-
-            stores.forEach(store => {
-                const option = `<option value="${store.uid}" data-lat="${store.lat}" data-lan="${store.lan}">${store.storeName}</option>`;
-                $storeSelect.append(option);
+            stores.forEach(s => {
+                $select.append(`
+          <option
+            value="${s.storeUid}"
+            data-lat="${s.storeLatitude}"
+            data-lan="${s.storeLongitude}">
+            ${s.storeName}
+          </option>
+        `);
             });
         })
-        .catch(error => {
-            console.error('스토어 목록 불러오기 실패', error);
+        .catch(err => {
+            console.error('스토어 목록 불러오기 실패', err);
+            alert('스토어 정보를 불러오는 중 오류가 발생했습니다.');
         });
 }
 
@@ -150,8 +180,11 @@ let merchantUid = null;
 function initReservationPicker() {
     flatpickr("#reservationDate", {
         enableTime: true,
-        time_24hr: true,
+        time_24hr: false,
+        altInput: true,
+        altFormat: "Y년 n월 j일 K h시 i분",
         dateFormat: "Y-m-d\\TH:i",
+        locale: "ko",
         // ① 스텝: 5분 단위로 박히게
         minuteIncrement: 5,
         // ② 초기 minDate: 지금으로부터 1시간 뒤를 “5분 단위로 올림” 해서 설정
@@ -160,9 +193,6 @@ function initReservationPicker() {
         onOpen: (selDates, dateStr, inst) => {
             inst.set('minDate', roundUpMinutes(new Date(Date.now() + 60*60*1000), 5));
         },
-        onClose: (selDates, dateStr, inst) => {
-            inst.input.value = dateStr;
-        }
     });
 }
 
@@ -177,7 +207,6 @@ $(document).ready(async () => {
     IMP.init('imp54787882');
 
     const user = await fetchProfileAndFillForm();
-    //const items = await getCartItems();
     const cartItems = await getCartItems();
     const customList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
 
@@ -188,7 +217,7 @@ $(document).ready(async () => {
                 parseInt(c.calorie) === item.calorie
             );
             if (match) {
-                item.cartUid = match.cartUid; // ✅ UUID 설정
+                item.cartUid = match.cartUid;
             }
         }
     });
@@ -197,6 +226,13 @@ $(document).ready(async () => {
     await renderCartItems(cartItems);
     updateTotalPrice();
     renderStoreDropdown();
+
+    // 선택 시 hidden input 에 세팅
+    $('#storeSelect').on('change', function() {
+        const $o = $(this).find('option:selected');
+        $('#storeLatitude').val($o.data('lat'));
+        $('#storeLongitude').val($o.data('lan'));
+    });
 
     $('#payButton').click(async () => {
         // 예약 시간 input의 값을 읽어오되, 값이 없으면 null로 처리
@@ -255,6 +291,8 @@ $(document).ready(async () => {
 
         merchantUid = generateMerchantUid();
         const storeUid = $('#storeSelect').val();
+        const storeLatitude  = $('#storeLatitude').val();
+        const storeLongitude = $('#storeLongitude').val();
         console.log("storeUid:", storeUid);
 
         if (!storeUid) {
@@ -394,7 +432,7 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
 function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
     const IMP = window.IMP;
     const selectedItems = getSelectedCartItems();
-    const customData = JSON.parse(localStorage.getItem('customSandwich') || 'null');
+    const customData = JSON.parse(localStorage.getItem('customSandwiches') || 'null');
     const isCustom = customData !== null;
 
     let menuName = '';
@@ -407,7 +445,16 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
 
     console.log('선택된 아이템:', selectedItems);
     const selectedStoreUid = parseInt($('#storeSelect').val(), 10);
-    const store = MOCK_STORES.find(s => s.uid === selectedStoreUid);
+    //const store = MOCK_STORES.find(s => s.uid === selectedStoreUid);
+    // 1) 선택된 스토어 ID
+    const storeUid = parseInt($('#storeSelect').val(), 10);
+    // 2) hidden에 세팅해 둔 위도/경도
+    const storeLatitude = parseFloat($('#storeLatitude').val());
+    const storeLongitude = parseFloat($('#storeLongitude').val());
+    // 3) (필요하면) 화면에 보이는 스토어 이름
+    const storeName = $('#storeSelect option:selected').text().trim();
+
+    console.log('storeUid:', storeUid, 'lat:', storeLatitude, 'lan:', storeLongitude);
 
     IMP.request_pay({
         pg: 'html5_inicis',
@@ -434,37 +481,29 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 }),
                 success: function(updateRes) {
                     alert(updateRes.message || "결제 성공!");
-                    //const allCartUids = getSelectedCartUids();   // 숫자ID + UUID 모두 여기 담김
-
                     sendGeneralOrderRequest(buyer, response, totalPrice, reservationDate)
-                        .then(({ customResults }) => sendCustomOrderData(customResults, response))
-                        .then(() => {
-                            // 2) 삭제할 ID 배열 미리 뽑아두기
-                            const allCartUids = getSelectedCartUids();                   // ["1","2","uuid-abc",…]
-                            const numericIds  = allCartUids.filter(id => /^\d+$/.test(id)).map(Number);
-                            const customList  = JSON.parse(localStorage.getItem('customSandwiches')) || [];
-                            const customIds   = allCartUids
-                                .filter(id => !/^\d+$/.test(id))
-                                .map(cartUid => {
-                                    const rec = customList.find(c => c.cartUid === cartUid);
-                                    return rec && rec.uid;    // custom_cart PK
-                                })
-                                .filter(Boolean);
-
-                            // 3) API 호출 → cart 테이블 먼저 지우고, custom_cart 지우기
-                            return Promise.all([
-                                clearCart(numericIds),
-                                clearCustomCart(customIds)
-                            ]).then(() => allCartUids);  // 다음 then()에 allCartUids 전달
+                        .then(({ customResults }) => {
+                            // customResults 가 하나도 없으면 sendCustomOrderData() 호출 안 함
+                            if (customResults && customResults.length) {
+                                return sendCustomOrderData(customResults, response);
+                            }
+                            return Promise.resolve();
                         })
-                        .then(allCartUids => {
-                            // 4) 화면에서도 삭제
-                            allCartUids.forEach(uid => {
+                        .then(() => {
+                            const cartIds   = getSelectedCartRowIds();  // 순수 cart PK
+                            const customCartIds = getSelectedCustomCartRowIds();
+                            const customIds = getSelectedCustomIds();   // custom_cart PK
+                            
+                            return clearCart([...cartIds, ...customCartIds])
+                                .then(() => customIds.length ? clearCustomCart(customIds) : Promise.resolve());
+                        })
+                        .then(() => {
+                            getSelectedCartUids().forEach(uid => {
                                 $(`.cart-item[data-cart-uid="${uid}"]`).remove();
                             });
                             updateTotalPrice();
                             localStorage.removeItem('customSandwiches');
-                            alert("주문 저장 및 카트 삭제 완료!");
+                            alert('주문 저장 및 카트 삭제 완료!');
                             window.location.reload();
                         })
                         .catch(err => {
@@ -499,74 +538,69 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
 }
 
 function sendGeneralOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
-    const selectedItems  = getSelectedCartItems();
-    const generalItems   = selectedItems.filter(i => !i.isCustom);
-    const customItems    = selectedItems.filter(i => i.isCustom);
-    const allCustoms     = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+    const items       = getSelectedCartItems();
+    const customList  = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+    let addressUsed   = false;
+    const generalUids = [];
+    const customResults = [];
 
-    let addressIncluded = false;
-
-    // 실제 AJAX 요청을 보내는 공통 함수
-    function makeOneRequest(item) {
-        const includeAddress = !addressIncluded;
-        if (includeAddress) addressIncluded = true;
-
+    // 모든 아이템을 하나씩 순회하면서
+    const promises = items.map(item => {
+        // 서버에 보낼 DTO 생성
         const dto = {
-            userUid: buyer.userUid,
-            socialUid: buyer.socialUid,
-            payment: buyer.payMethod,
-            items: [item],
-            merchantUid: paymentResponse.merchant_uid,
+            userUid:        buyer.userUid,
+            socialUid:      buyer.socialUid,
+            payment:        buyer.payMethod,
+            items:          [item],
+            merchantUid:    paymentResponse.merchant_uid,
             paymentSuccess: true,
-            storeUid: parseInt($('#storeSelect').val(), 10),
-            reservationDate,
-            totalPrice: item.unitPrice * item.amount
+            storeUid:       parseInt($('#storeSelect').val(), 10),
+            reservationDate: reservationDate,
+            totalPrice:     item.unitPrice * item.amount
         };
 
-        if (includeAddress) {
-            // 첫 호출에만 주소 붙이기
+        // deliveryAddress는 첫 번째 호출에만 한 번만 붙인다
+        if (!addressUsed) {
             dto.deliveryAddress = {
-                addressStart: $('#storeSelect option:selected').text(),
-                addressStartLat: parseFloat($('#storeSelect option:selected').data('lat')),
-                addressStartLan: parseFloat($('#storeSelect option:selected').data('lan')),
-                addressDestination: buyer.mainAddress,
+                addressStart:          $('#storeSelect option:selected').text().trim(),
+                addressStartLat:       parseFloat($('#storeLatitude').val()),
+                addressStartLan:       parseFloat($('#storeLongitude').val()),
+                addressDestination:    buyer.mainAddress,
                 addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
                 addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
             };
+            addressUsed = true;
         }
 
+        // 실제 AJAX 호출
         return $.ajax({
             type: 'POST',
             url: '/orders',
             contentType: 'application/json',
             headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
             data: JSON.stringify(dto)
-        }).then(res => res.orderUid);
-    }
+        }).then(orderUid => {
+            if (item.isCustom) {
+                // 커스텀 메뉴면 customResults에 필요한 정보 담아두고
+                const customData = customList.find(c => String(c.cartUid) === String(item.cartUid));
+                customResults.push({
+                    cartUid:    item.cartUid,
+                    orderUid,
+                    menuName:   item.menuName,
+                    unitPrice:  item.unitPrice,
+                    amount:     item.amount,
+                    calorie:    item.calorie,
+                    customData
+                });
+            } else {
+                // 일반 메뉴면 Uid만 모아두기
+                generalUids.push(orderUid);
+            }
+            return orderUid;
+        });
+    });
 
-    // 일반 메뉴는 그대로 요청
-    const generalPromises = generalItems.map(item =>
-        makeOneRequest(item)
-    );
-
-    // 커스텀 메뉴는 요청 후 customData를 붙여서 반환
-    const customPromises = customItems.map(item =>
-        makeOneRequest(item)
-            .then(orderUid => ({
-                cartUid:    item.cartUid,
-                menuName:   item.menuName,
-                orderUid,
-                unitPrice:  item.unitPrice,
-                amount:     item.amount,
-                calorie:    item.calorie,
-                customData: allCustoms.find(c => String(c.cartUid) === String(item.cartUid))
-            }))
-    );
-
-    return Promise.all([
-        Promise.all(generalPromises),
-        Promise.all(customPromises)
-    ]).then(([generalUids, customResults]) => ({
+    return Promise.all(promises).then(() => ({
         generalUids,
         customResults
     }));
@@ -574,7 +608,7 @@ function sendGeneralOrderRequest(buyer, paymentResponse, totalPrice, reservation
 
 let isSubmitting = false;
 
-function sendCustomOrderData(customItemsWithUid, paymentResponse) {
+function sendCustomOrderData(customItemsWithUid, paymentResponse, reservationDate) {
     if (isSubmitting) {
         console.warn("중복 전송 방지: 이미 요청 중");
         return;
@@ -589,8 +623,9 @@ function sendCustomOrderData(customItemsWithUid, paymentResponse) {
 
     const customOrderList = customItemsWithUid.map(item => {
         const customData = item.customData;
+        const id = (typeof item.orderUid === 'object') ? item.orderUid.orderUid : item.orderUid;
         return {
-            uid: item.orderUid,
+            uid: id,
             bread: convertToInt(customData.bread),
             material1: convertToInt(customData.material1),
             material2: convertToInt(customData.material2),
@@ -614,9 +649,9 @@ function sendCustomOrderData(customItemsWithUid, paymentResponse) {
     });
 
     const address = {
-        addressStart: $('#storeSelect option:selected').text(),
-        addressStartLat: parseFloat($('#storeSelect option:selected').data('lat')),
-        addressStartLan: parseFloat($('#storeSelect option:selected').data('lan')),
+        addressStart: $('#storeSelect option:selected').text().trim(),
+        addressStartLat:  parseFloat($('#storeLatitude').val()),
+        addressStartLan:  parseFloat($('#storeLongitude').val()),
         addressDestination: $('#mainAddress').val(),
         addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
         addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
@@ -629,16 +664,22 @@ function sendCustomOrderData(customItemsWithUid, paymentResponse) {
             merchantUid: paymentResponse.merchant_uid,
             deliveryAddress: address, // 주소는 여기만 포함
             payment: $('#payMethod').val() || 'card',
-            reservationDate: $('#reservationDate').val(),
+            //reservationDate: $('#reservationDate').val() || null,
+            reservationDate: reservationDate,
             paymentSuccess: true,
             totalPrice: calculateTotal(),
-            items: customItemsWithUid.map(item => ({
-                uid: item.orderUid,
-                menuName: item.menuName,
-                amount: item.amount,
-                unitPrice: item.unitPrice,
-                calorie: item.calorie
-            }))
+            items: customItemsWithUid.map(item => {
+               const id = typeof item.orderUid === 'object'
+                    ? item.orderUid.orderUid
+                    : item.orderUid;
+                return {
+                    uid: id,
+                    menuName: item.menuName,
+                    amount: item.amount,
+                    unitPrice: item.unitPrice,
+                    calorie: item.calorie
+                }
+            })
         },
         customOrderRequestDTO: customOrderList
     };
@@ -658,8 +699,6 @@ function sendCustomOrderData(customItemsWithUid, paymentResponse) {
         }
     });
 }
-
-
 
 // 총 금액 계산
 function calculateTotal() {
@@ -702,6 +741,7 @@ function clearCart(numericIds) {
     });
 }
 
+// 커스텀 카트 비우기
 function clearCustomCart(customIds) {
     const token = localStorage.getItem('accessToken');
     if (!customIds.length || !token) return Promise.resolve();

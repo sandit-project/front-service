@@ -12,6 +12,9 @@ import java.util.Map;
 @FeignClient(name = "authClient", url = "${sandit.edge-service-url}/auths")
 public interface AuthClient {
 
+    @GetMapping("/check-id")
+    Map<String, Boolean> checkUserId(@RequestParam("userId") String userId);
+
     @PostMapping("/join")
     UserJoinResponseDTO join(@RequestBody UserJoinRequestDTO userJoinRequestDTO);
 

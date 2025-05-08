@@ -23,7 +23,6 @@ public class EmailApiController {
 
     @GetMapping("/auths/email/{email}/authcode")
     public ResponseEntity<String> sendCode(@PathVariable String email) throws IOException, MessagingException {
-        emailService.sendEmailCode(email);
         try {
             emailService.sendEmailCode(email);
             return ResponseEntity.ok("이메일을 확인하세요.");
