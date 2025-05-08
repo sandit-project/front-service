@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -21,6 +22,14 @@ import java.util.Map;
 public class AuthApiController {
     private final AuthService authService;
     private final OAuthService oAuthService;
+
+    @GetMapping("/check-id")
+    public ResponseEntity<Map<String, Boolean>> checkUserId(
+            @RequestParam String userId
+    ) {
+        boolean exists = authService.existsByUserId(userId);
+        return ResponseEntity.ok(Collections.singletonMap("exists", exists));
+    }
 
     @PostMapping("/join")
     public UserJoinResponseDTO join(@RequestBody UserJoinRequestDTO userJoinRequestDTO) {

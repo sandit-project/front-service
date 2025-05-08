@@ -12,6 +12,11 @@ import java.util.Map;
 public class AuthService {
     private final AuthClient authClient;
 
+    public boolean existsByUserId(String userId) {
+        Map<String, Boolean> res = authClient.checkUserId(userId);
+        return Boolean.TRUE.equals(res.get("exists"));
+    }
+
     public UserJoinResponseDTO join(UserJoinRequestDTO userJoinRequestDTO) {
         return authClient.join(userJoinRequestDTO);
     }

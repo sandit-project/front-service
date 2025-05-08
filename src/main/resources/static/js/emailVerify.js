@@ -1,5 +1,7 @@
 $(document).ready(() => {
     let timerInterval;
+    let emailSent     = false;
+    let emailVerified = false;
 
     function formatTime(sec) {
         const m = String(Math.floor(sec / 60)).padStart(2, '0');
@@ -25,6 +27,7 @@ $(document).ready(() => {
 
     // 1) 코드 전송
     $('#email-submit').on('click', async () => {
+        if (emailSent) return;
         const rawEmail = $('#email').val().trim();
         if (!rawEmail) return alert('이메일을 입력해주세요!');
         const email = encodeURIComponent(rawEmail);
@@ -37,10 +40,10 @@ $(document).ready(() => {
             });
             alert('인증 코드가 발송되었습니다!');
             $('#email-code-group').show();
+            emailSent = true;
             startTimer();
         } catch (err) {
             if (err.status === 400) {
-                // 400번만 특별 처리
                 alert('이미 사용 중인 이메일입니다.');
             } else {
                 alert('인증 코드 발송에 실패했습니다.');
@@ -50,6 +53,7 @@ $(document).ready(() => {
 
     // 2) 코드 검증
     $('#email-verify').on('click', async () => {
+        if (emailVerified) return;
         const rawEmail = $('#email').val().trim();
         if (!rawEmail) return alert('이메일을 입력해주세요!');
         const email = encodeURIComponent(rawEmail);
@@ -77,7 +81,6 @@ $(document).ready(() => {
                 alert('인증 코드가 올바르지 않습니다.');
             }
         } catch (err) {
-            // 404 → 코드 불일치
             if (err.status === 404) {
                 alert('인증 코드가 올바르지 않습니다.');
             } else {
