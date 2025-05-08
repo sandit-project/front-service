@@ -385,6 +385,13 @@ public class MenuApiController {
         String token = extractToken(request);
         return ResponseEntity.ok(menuService.addSideToCart("Bearer " + token, dto));
     }
+//    @GetMapping("/cart/quantity")
+//    public ResponseEntity<Integer> getCartQuantity(HttpServletRequest request) {
+//        String token = extractToken(request); // 헤더에서 토큰 추출
+//        int quantity = menuService.getCartQuantity("Bearer " + token); // 사용자 기반 수량 계산
+//        return ResponseEntity.ok(quantity);
+//    }
+
 
 
 

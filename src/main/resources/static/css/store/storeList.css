@@ -1,114 +1,147 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+/* 🔸 공통 리셋 */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+/* 🔸 페이지 배경 및 폰트 */
+body {
+    font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
+    color: #3b2a1a;
+}
+
+/* 🔸 컨테이너 */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff8f0;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
+}
+
+/* 🔸 제목 */
+h1#welcome-message {
+    font-size: 32px;
+    font-weight: 700;
+    color: #5a3b26;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* 🔸 버튼 영역 */
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.button-row .btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.button-row .btn.logout-btn {
+    background-color: #c34d4d;
+    color: #fff;
+}
+
+.button-row .btn.logout-btn:hover {
+    background-color: #9c3b3b;
+}
+
+.button-row .btn {
+    background-color: #5a3b26;
+    color: #fff;
+}
+
+.button-row .btn:hover {
+    background-color: #3d2d1d;
+}
+
+/* 🔸 테이블 */
+#board table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#board table th, #board table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #d2b48c;
+    font-size: 16px;
+    color: #4a2f1d;
+}
+
+#board table th {
+    background-color: #d2b48c;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* 🔸 페이징 영역 */
+#pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-}
-
-.container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 1000px;
-    position: relative;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-#board {
     margin-top: 20px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 10px;
-    text-align: center;
-}
-
-th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-#pagination {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.btn {
-    padding: 10px 15px;
-    background-color: #4CAF50;
+#pagination button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    background-color: #5a3b26;
+    color: #fff;
     border: none;
-    color: white;
+    border-radius: 10px;
     cursor: pointer;
-    border-radius: 5px;
+    transition: background-color 0.3s ease;
     margin: 0 10px;
 }
 
-/* 로그아웃 버튼 스타일 */
-.logout-btn {
-    background-color: #dc3545; /* 붉은색 */
-}
-.button-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-/* 로그아웃 버튼을 우측 상단으로 이동 */
-/*.logout-btn-position {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-}*/
-
-/* 버튼 호버 효과 */
-.btn:hover {
-    background-color: #0056b3;
-}
-
-.logout-btn:hover {
-    background-color: #c82333; /* 호버 시 더 진한 붉은색 */
-}
-
-.btn:disabled {
-    background-color: #cccccc;
+#pagination button:disabled {
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
-.btn:hover:not(:disabled) {
-    background-color: #45a049;
+#pagination button:hover {
+    background-color: #3d2d1d;
 }
 
-#pageInfo {
-    font-size: 1.2em;
-    margin: 0 10px;
+/* 🔸 페이지 번호 */
+#pageNumbers {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 15px;
+    color: #5a3b26;
+}
+
+/* 🔸 반응형 디자인 */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1#welcome-message {
+        font-size: 24px;
+    }
+
+    #pagination button {
+        font-size: 14px;
+    }
+
+    #board table th, #board table td {
+        padding: 10px;
+        font-size: 14px;
+    }
 }

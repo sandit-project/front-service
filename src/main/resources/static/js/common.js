@@ -57,3 +57,15 @@ let handleTokenExpiration = () => {
         }
     });
 }
+// 날짜 문자열(dateStr)을 "YYYY. MM. DD. hh:mm:ss" 형식(ko-KR)으로 포맷
+let formatDate=(dateStr)=>{
+    if (!dateStr) return '-';
+       return new Date(dateStr).toLocaleString('ko-KR', {
+            year:   'numeric',
+            month:  '2-digit',
+            day:    '2-digit',
+            hour:   '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+       });
+}

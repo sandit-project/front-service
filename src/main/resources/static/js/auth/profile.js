@@ -59,3 +59,50 @@ let requestUpdateProfile = () => {
         }
     });
 }
+
+
+
+// 회원 탈퇴 버튼 (동적 요소 대응)
+$(document).on("click", "#deleteBtn", () => {
+    Swal.fire({
+        title: '정말 탈퇴하시겠습니까?',
+        text: '탈퇴하면 계정 정보가 모두 삭제됩니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: '네, 탈퇴할게요',
+        cancelButtonText: '취소'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteAccount();
+        }
+    });
+});
+
+function deleteAccount() {
+    setupAjax();
+    $.ajax({
+        type: 'DELETE',
+        url: '/user',
+        success: () => {
+            Swal.fire({
+                icon: 'success',
+                title: '탈퇴 완료',
+                text: '회원 탈퇴가 성공적으로 처리되었습니다.',
+                confirmButtonText: '확인'
+            }).then(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/member/login';
+            });
+        },
+        error: (error) => {
+            console.log('오류 발생 : ', error);
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '회원 탈퇴 중 오류가 발생했습니다.'
+            });
+        }
+    });
+}
