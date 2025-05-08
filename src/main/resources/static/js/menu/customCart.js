@@ -80,6 +80,7 @@ $(document).ready(function () {
         const vegetable1Id = getSelectValue("vegetable1");
         const sauce1Id = getSelectValue("sauce1");
         const cheeseId = getSelectValue("cheese");
+        const cartUid = crypto.randomUUID(); // localStorage에 저장된 커스텀 샌드위치의 클라이언트 전용 ID
 
         if (!breadId || !material1Id || !vegetable1Id || !sauce1Id || !cheeseId) {
             alert("모든 필수 항목을 선택해야 합니다.");
@@ -120,16 +121,18 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(customCartDTO),
             success: function (response) {
-                const newSandwich = JSON.parse(JSON.stringify({
+                const newSandwich = {
                     ...customCartDTO,
-                    uid: response.uid,// custom_cart 테이블 uid
-                    cartUid: response.cartUid
-                }));
-                console.log('✅ newSandwich (stringified):', JSON.stringify(newSandwich));
+                    uid: response.uid,
+                    cartUid: cartUid
+                };
+                console.log('[DEBUG] localStorage customSandwiches:', localStorage.getItem('customSandwiches'));
+                let existing = JSON.parse(localStorage.getItem('customSandwiches'));
+                if (!Array.isArray(existing)) existing = [];
 
-                const existing = JSON.parse(localStorage.getItem('customSandwiches')) || [];
                 existing.push(newSandwich);
                 localStorage.setItem('customSandwiches', JSON.stringify(existing));
+                console.log(newSandwich);
                 alert('저장 완료!');
                 location.href = '/cart';
             },
