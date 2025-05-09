@@ -143,34 +143,41 @@ public interface MenuClient {
     void deleteSide(@RequestHeader("Authorization") String token, @PathVariable String sideName);
 
     // --- Cart ---
-    @GetMapping("/cart")
-    CartResponseDTO getCartItems(@RequestHeader("Authorization") String token);
 
-    @PostMapping("/cart/update/{id}")
-    CartResponseDTO updateCartItem(@RequestHeader("Authorization") String token,
-                                   @PathVariable("id") Long id,
-                                   @RequestParam("amount") int amount);
+        @GetMapping("/cart")
+        CartResponseDTO getCartItems(@RequestHeader("Authorization") String token);
 
-    @PostMapping("/cart/delete/{id}")
-    CartResponseDTO deleteCartItem(@RequestHeader("Authorization") String token, @PathVariable("id") Long id);
+        @PostMapping("/cart/update/{id}")
+        CartResponseDTO updateCartItem(@RequestHeader("Authorization") String token,
+                                       @PathVariable("id") Long id,
+                                       @RequestParam("amount") int amount);
 
-    @PostMapping("/cart/delete-selected")
-    CartResponseDTO deleteSelectedItems(@RequestHeader("Authorization") String token, @RequestParam("selectedIds") List<Long> selectedIds);
+        @PostMapping("/cart/delete/{id}")
+        CartResponseDTO deleteCartItem(@RequestHeader("Authorization") String token,
+                                       @PathVariable("id") Long id);
 
-    @PostMapping("/cart/order/checkout")
-    CartResponseDTO checkout(@RequestHeader("Authorization") String token);
+        @PostMapping("/cart/delete-selected")
+        CartResponseDTO deleteSelectedItems(@RequestHeader("Authorization") String token,
+                                            @RequestParam("selectedIds") List<Long> selectedIds);
 
-    @PostMapping("/cart/add")
-    CartResponseDTO addToCart(@RequestHeader("Authorization") String token,
-                              @RequestParam("menuId") Long menuId,
-                              @RequestParam("amount") int amount);
+        @PostMapping("/cart/order/checkout")
+        CartResponseDTO checkout(@RequestHeader("Authorization") String token);
 
-    @PostMapping("/cart/add/side")
-    List<CartResponseDTO> addSideToCart(@RequestHeader("Authorization") String token,
-                                  @RequestBody SideCartRequestDTO dto);
+        // ✅ userUid 또는 socialUid 중 하나 받도록 수정
+        @PostMapping("/cart/add")
+        CartResponseDTO addToCart(@RequestHeader("Authorization") String token,
+                                  @RequestParam("menuId") Long menuId,
+                                  @RequestParam("amount") int amount,
+                                  @RequestParam(value = "userUid", required = false) Long userUid,
+                                  @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-    @GetMapping("/cart/quantity")
-    Integer getCartQuantity(@RequestHeader("Authorization") String token);
+        @PostMapping("/cart/add/side")
+        List<CartResponseDTO> addSideToCart(@RequestHeader("Authorization") String token,
+                                            @RequestBody SideCartRequestDTO dto);
+
+        @GetMapping("/cart/quantity")
+        Integer getCartQuantity(@RequestHeader("Authorization") String token);
+    
 
 
 

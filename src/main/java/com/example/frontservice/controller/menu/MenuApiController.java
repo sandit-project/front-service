@@ -373,10 +373,21 @@ public class MenuApiController {
     public ResponseEntity<CartResponseDTO> addToCart(
             HttpServletRequest request,
             @RequestParam Long menuId,
-            @RequestParam int amount) {
+            @RequestParam int amount,
+            @RequestParam(required = false) Long userUid,
+            @RequestParam(required = false) Long socialUid) {
+
         String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addToCart("Bearer " +token, menuId, amount));
+
+        // 둘 다 null일 경우 예외 처리
+        if (userUid == null && socialUid == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CartResponseDTO response = menuService.addToCart("Bearer " + token, menuId, amount, userUid, socialUid);
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/cart/add/side")
     public ResponseEntity<CartResponseDTO> addSideToCart(

@@ -168,22 +168,21 @@ public class MenuService {
         return menuClient.checkout(token);
     }
 
-    public CartResponseDTO addToCart(String token, Long menuId, int amount) {
-        return menuClient.addToCart(token, menuId, amount);
+    // ✅ userUid 또는 socialUid 중 하나를 받을 수 있도록 오버로딩 또는 분기처리
+    public CartResponseDTO addToCart(String token, Long menuId, int amount, Long userUid, Long socialUid) {
+        return menuClient.addToCart(token, menuId, amount, userUid, socialUid);
     }
+
     public CartResponseDTO addSideToCart(String token, SideCartRequestDTO dto) {
         List<CartResponseDTO> responseList = menuClient.addSideToCart(token, dto);
         if (responseList != null && !responseList.isEmpty()) {
             return responseList.get(0); // 첫 번째 요소 반환 (필요에 따라 다른 로직 적용 가능)
         } else {
-            // 리스트가 비어있거나 null일 경우 처리 (예: 빈 CartResponseDTO 반환)
             return new CartResponseDTO();
         }
+    }
 
-    }
-    public int getCartQuantity(String token) {
-        return menuClient.getCartQuantity("Bearer " + token);
-    }
+
 
 
 
