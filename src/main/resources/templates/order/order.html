@@ -10,13 +10,7 @@
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <!-- 스타일 및 폰트 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/order/order.css}">
-
-    <!-- 스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
@@ -74,17 +68,15 @@
         <label for="storeSelect">스토어</label>
         <select id="storeSelect" required>
             <option value="">스토어 선택</option>
-            <option value="1">스토어 1</option>
-            <option value="2">스토어 2</option>
         </select>
-        <input type="hidden" id="store_latitude">
-        <input type="hidden" id="store_longitude">
-    </div>
+    </label>
+    <input type="hidden" id="storeLatitude">
+    <input type="hidden" id="storeLongitude"><br/>
 
-    <div class="form-group">
-        <label for="reservationDate">예약 시간 (선택)</label>
-        <input type="datetime-local" id="reservationDate" name="reservationDate" placeholder="예약을 원하시면 입력해주세요.">
-    </div>
+    <p>예약은 현재시간 기준 1시간 이후부터 가능합니다.</p>
+    <label>예약 시간 (선택사항):
+        <input type="text" id="reservationDate" name="reservationDate" placeholder="예약을 원하시면 입력해주세요.">
+    </label><br/>
 </div>
 
 <div class="summary">

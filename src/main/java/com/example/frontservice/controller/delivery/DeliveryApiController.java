@@ -44,6 +44,7 @@ public class DeliveryApiController {
     public DeliveryResponseDTO startDelivery(HttpServletRequest request,
                                              @RequestBody DeliveryStartRequestDTO deliveryStartRequestDTO) {
         String token = request.getHeader("Authorization");
+        log.info("start dto is :: {}",deliveryStartRequestDTO.toString());
         return deliveryService.startDelivery(token,deliveryStartRequestDTO);
     }
 
@@ -51,6 +52,7 @@ public class DeliveryApiController {
     public DeliveryResponseDTO completeDelivery(HttpServletRequest request,
                                                 @RequestBody DeliveryCompleteRequestDTO deliveryCompleteRequestDTO) {
         String token = request.getHeader("Authorization");
+        log.info("end dto is :: {}",deliveryCompleteRequestDTO.toString());
         return deliveryService.completeDelivery(token,deliveryCompleteRequestDTO);
     }
 }
