@@ -5,7 +5,7 @@
     box-sizing: border-box;
 }
 
-/* 🔸 페이지 배경 및 폰트 */
+/* 🔸 페이지 전체 배경 */
 body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif;
     background: linear-gradient(135deg, #f8f1e6, #efe0c8);
@@ -14,88 +14,122 @@ body {
 
 /* 🔸 컨테이너 */
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 30px;
     background: #fff8f0;
-    border-radius: 15px;
+    border-radius: 20px;
     box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
 }
 
-/* 🔸 제목 */
-h1#welcome-message {
-    font-size: 32px;
-    font-weight: 700;
-    color: #5a3b26;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-/* 🔸 버튼 영역 */
-.button-row {
+/* 🔸 헤더 */
+.header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #d2b48c;
     margin-bottom: 20px;
 }
 
-.button-row .btn {
-    padding: 12px 20px;
-    font-size: 16px;
+#welcome-message {
+    font-size: 24px;
     font-weight: 700;
+    color: #5a3b26;
+}
+
+#order-count {
+    font-size: 16px;
+    color: #7b5c3a;
+}
+
+/* 🔸 버튼 그룹 */
+.btn-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn {
+    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    color: #fff;
     border: none;
+    padding: 10px 20px;
     border-radius: 10px;
+    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 10px;
+    transition: background 0.3s ease;
 }
 
-.button-row .btn.logout-btn {
-    background-color: #c34d4d;
-    color: #fff;
+.btn:hover {
+    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
 }
 
-.button-row .btn.logout-btn:hover {
-    background-color: #9c3b3b;
+/* 🔸 상태 탭 */
+#status-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
 }
 
-.button-row .btn {
-    background-color: #5a3b26;
-    color: #fff;
+#status-tabs li {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #4a2f1d;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.3s ease;
 }
 
-.button-row .btn:hover {
-    background-color: #3d2d1d;
+#status-tabs li.active {
+    background-color: #d2b48c;
+    color: white;
 }
 
-/* 🔸 테이블 */
-#board table {
+#status-tabs li:hover {
+    background-color: #fcebd5;
+}
+
+/* 🔸 주문 목록 테이블 */
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-#board table th, #board table td {
-    padding: 15px;
-    text-align: center;
+th, td {
+    padding: 12px;
+    text-align: left;
     border-bottom: 1px solid #d2b48c;
-    font-size: 16px;
+}
+
+th {
+    background-color: #f9f3eb;
+    color: #5a3b26;
+}
+
+td {
+    background-color: #fffaf2;
     color: #4a2f1d;
 }
 
-#board table th {
-    background-color: #d2b48c;
-    color: #fff;
+/* 🔸 로딩 표시 */
+#loading {
+    font-size: 18px;
     font-weight: 600;
+    color: #8b5c32;
+    margin-top: 20px;
 }
 
 /* 🔸 페이징 영역 */
 #pagination {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* 변경된 부분: 중앙 정렬 */
     align-items: center;
     margin-top: 20px;
 }
 
+/* 🔸 페이징 버튼 */
 #pagination button {
     padding: 12px 20px;
     font-size: 16px;
@@ -118,30 +152,48 @@ h1#welcome-message {
     background-color: #3d2d1d;
 }
 
-/* 🔸 페이지 번호 */
-#pageNumbers {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 15px;
-    color: #5a3b26;
-}
-
-/* 🔸 반응형 디자인 */
+/* 🔸 반응형 */
 @media (max-width: 768px) {
     .container {
         padding: 20px;
     }
 
-    h1#welcome-message {
-        font-size: 24px;
+    #welcome-message {
+        font-size: 20px;
     }
 
+    .btn-group {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    /* 페이징 버튼 크기 조정 */
     #pagination button {
         font-size: 14px;
     }
+}
 
-    #board table th, #board table td {
-        padding: 10px;
-        font-size: 14px;
+@media (max-width: 480px) {
+    #status-tabs {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #status-tabs li {
+        width: 100%;
+        text-align: center;
     }
 }

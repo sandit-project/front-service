@@ -31,7 +31,6 @@ $(document).ready(async ()=>{
     }
     // 화면 헤더 텍스트 업데이트
     $('#welcome-text').text(`${storeInfo.storeName} 주문 목록`);
-
     // ** 새로고침 버튼 클릭 핸들러 **
     $('#refresh-btn').click(async ()=>{
        loadOrders();
@@ -44,6 +43,7 @@ $(document).ready(async ()=>{
         statusFilter = $(this).data('status');
         loadOrders();
     })
+
 
     //최초 주문 목록 로드
     loadOrders();
@@ -195,6 +195,7 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
             alert('요청 중 오류가 발생했습니다.');
         }
     });
+
 }
 
 
