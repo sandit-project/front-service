@@ -1,4 +1,6 @@
-/* Reset 기본 설정 */
+/* orderDetail.css */
+
+/* ─── 기본 초기화 ───────────────────────────────────────────────────────── */
 * {
     margin: 0;
     padding: 0;
@@ -6,44 +8,41 @@
 }
 
 body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
+    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f6efe3, #e1d4be);
+    color: #3a2a1a;
 }
 
-/* 헤더 영역 */
+/* ─── 헤더 ─────────────────────────────────────────────────────────────── */
 header {
     text-align: center;
     padding: 30px 0;
-    background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
 }
-
 header h1 {
-    font-size: 28px;
-    color: #333;
+    font-size: 2.5em;
+    color: #5e3e23;
 }
 
-/* 메인 영역 */
+/* ─── 메인 컨테이너 ───────────────────────────────────────────────────── */
 main {
-    max-width: 1000px;
+    width: 85%;
     margin: 40px auto;
-    padding: 0 20px;
 }
 
-/* 주문 테이블 */
+/* ─── 주문 테이블 ─────────────────────────────────────────────────────── */
 #order-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #ffffff;
-    box-shadow: 0 0 8px rgba(0,0,0,0.05);
-    border-radius: 6px;
+    background-color: #fffaf2;
+    border: 2px solid #b8926a;
+    border-radius: 18px;
     overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 #order-table thead {
-    background-color: #e67e22;
-    color: #ffffff;
+    background: linear-gradient(45deg, #d9a066, #c28a48);
+    color: #fffefc;
 }
 
 #order-table thead th {
@@ -53,7 +52,8 @@ main {
 }
 
 #order-table tbody tr {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e7dfd0;
+    cursor: pointer;
 }
 
 #order-table tbody tr:last-child {
@@ -64,10 +64,113 @@ main {
     padding: 12px;
     font-size: 14px;
     text-align: center;
-    color: #555;
+    color: #3a2a1a;
 }
 
-/* 행 hover 효과 */
 #order-table tbody tr:hover {
-    background-color: #f9f9f9;
+    background-color: #fef9f0;
+}
+
+/* ─── 모달 백드롭 ────────────────────────────────────────────────────── */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* ─── 모달 ───────────────────────────────────────────────────────────── */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background: #fffaf2;
+    border: 2px solid #b8926a;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+}
+
+/* ─── 모달 콘텐츠 ───────────────────────────────────────────────────── */
+.modal-content {
+    padding: 30px;
+    font-size: 16px;
+    color: #3a2a1a;
+}
+
+.modal-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 모달 헤딩 아래 적당한 여백 */
+.modal-content h2 {
+    margin-bottom: 16px;
+}
+
+/* 레이블(p)마다 위아래 마진 */
+.modal-content p,
+.modal-content .modal-label {
+    margin: 8px 0;
+    font-weight: 500;
+    color: #5e3e23;
+}
+
+/* 아이템 리스트 들여쓰기, 불릿, 여백 */
+.order-item-list {
+    padding-left: 1.2em;
+    margin: 8px 0 16px;
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+.order-item-list li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #3a2a1a;
+    line-height: 1.4;
+}
+
+/* ─── 모달 닫기 버튼 ─────────────────────────────────────────────────── */
+.modal-close {
+    float: right;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #5e3e23;
+}
+
+/* ─── 모달 버튼 ───────────────────────────────────────────────────────── */
+.modal-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #fdd085, #fbc16c);
+    color: #5a3b26;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.modal-btn:hover {
+    background: linear-gradient(45deg, #fbc16c, #f8b24f);
+}
+
+/* ─── 반응형 ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    main {
+        width: 95%;
+    }
+    .modal-content {
+        padding: 20px;
+    }
+    .modal-btn {
+        padding: 10px 20px;
+    }
 }

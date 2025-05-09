@@ -33,6 +33,9 @@ public interface OrderClient {
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
 
+    @PostMapping("/payments/cancel")
+    CancelPaymentResponseDTO updateCancelStatus(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO request);
+
     //지점 주문 요청 (응답 타입을 리스트로 바로 받음)
     @GetMapping("/store/{storeUid}")
     StoreOrderListResponseDTO getOrdersByStoreUidAndStatus(@PathVariable(name = "storeUid") Integer storeUid,
