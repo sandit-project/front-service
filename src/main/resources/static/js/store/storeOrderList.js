@@ -31,18 +31,9 @@ $(document).ready(async ()=>{
     }
     // 화면 헤더 텍스트 업데이트
     $('#welcome-text').text(`${storeInfo.storeName} 주문 목록`);
-
-    // ** 총 주문 수 조회 **
-    await updateOrderCount();
-
-    // ** 메인화면 이동 **
-    $('#backToHome').click(function () {
-        window.location.href = "/";
-    });
     // ** 새로고침 버튼 클릭 핸들러 **
     $('#refresh-btn').click(async ()=>{
-        await updateOrderCount();
-        loadOrders();
+       loadOrders();
     });
 
     // 상태 탭 클릭 핸들러
@@ -101,9 +92,9 @@ $(document).ready(async ()=>{
                         <td>${itemDetails}</td>
                         <td>${o.addressDestination || '-'}</td>
                         <td>
-                          <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">수락</button>
-                          <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">취소</button>
-                          <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.createdDate}','${o.reservationDate}')">조리</button>
+                          <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">수락</button>
+                          <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">취소</button>
+                          <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">조리</button>
                         </td>
                     </tr>
                 `);
@@ -117,29 +108,6 @@ $(document).ready(async ()=>{
        }
 
     }
-
-
-//상태 변경 호출
-window.changeStatus = (merchantUid, newStatus) => {
-        $.ajax({
-            url: `orders/${merchantUid}/status`,
-            method: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify({status: newStatus}),
-            success:()=>{
-                alert('상태가 변경되었습니다.');
-                // 현재 탭 재 렌더링
-                lastCursor = null;
-                hasMore = true;
-                $('#storeContent').empty();
-                loadMore();
-            },
-            error: (xhr, status, error) => {
-                console.error('상태 변경 실패: ', status, error);
-                alert('상태 변경에 실패했습니다.');
-            }
-        });
-    };
 
 });
 
@@ -163,24 +131,6 @@ function fetchStoreUidByManager(managerUid) {
             }
         });
     });
-}
-
-/**
- * 총 주문 수 조회
- * GET /orders/store/{storeUid}/count
- */
-async function updateOrderCount(){
-    try {
-        const response = await $.ajax({
-            type: 'GET',
-            url: `/orders/store/${storeInfo.storeUid}/count`,
-            dataType: 'json',
-        });
-        $('#order-count').text(`(${response.count})`);
-    } catch (err) {
-        console.error('주문 수 조회 실패 :',err)
-        $('#order-count').text('(?)');
-    }
 }
 
 // response 주문 정보 통합하는 함수
@@ -224,8 +174,8 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
         status : status,
         riderUserUid : null,
         riderSocialUid : null,
-        addressStart : "testStartAddress",
-        addressDestination : "testDestinationAddress",
+        addressStart : addressStart,
+        addressDestination : addressDestination,
         deliveryAcceptTime : null,
         deliveredTime : null
     };

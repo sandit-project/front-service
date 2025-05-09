@@ -1,4 +1,31 @@
 $(document).ready(() => {
+
+    $('#id_validation').on('click', async () => {
+        const userId = $('#user_id').val().trim();
+        if (!userId) {
+            alert('아이디를 입력해주세요.');
+            return;
+        }
+
+        try {
+            const res = await $.ajax({
+                type: 'GET',
+                url: `/check-id?userId=${encodeURIComponent(userId)}`,
+                dataType: 'json'
+            });
+
+            if (res.exists) {
+                alert('이미 사용중인 아이디입니다.');
+            } else {
+                alert('사용 가능한 아이디입니다.');
+            }
+        } catch (err) {
+            const msg = err.responseJSON?.message || '아이디 검증 중 오류가 발생했습니다.';
+            alert(msg);
+            console.error('아이디 중복 체크 오류:', err);
+        }
+    });
+
     $('#signup').on('click', async function(e) {
         e.preventDefault();
         const btn = $(this).prop('disabled', true);
