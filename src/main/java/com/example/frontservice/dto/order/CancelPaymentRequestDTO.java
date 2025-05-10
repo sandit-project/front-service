@@ -7,4 +7,5 @@ import lombok.Getter;
 @Builder
 public class CancelPaymentRequestDTO {
     private String merchantUid;
+    private String reason;
 }

@@ -114,6 +114,7 @@ function renderOrders() {
 // 4) showModal 은 ordersGroup 배열만 받고, merchantUid는 내부 JS에서 필요 시 꺼내 쓰되 UI엔 노출 안 함
 function showModal(ordersGroup) {
     const first = ordersGroup[0];
+    const merchantUid = first.merchantUid;
     $('#modal-status').text(mapOrderStatus(first.status));
     $('#modal-store-name').text(storeMap[first.storeUid]||'-');
     const $list = $('#modal-items-list').empty();
@@ -128,35 +129,54 @@ function showModal(ordersGroup) {
         .reduce((s,i)=>s+i.unitPrice*i.amount,0);
     $('#modal-total-price').text(total.toLocaleString());
 
+    // 주문 취소 버튼 토글
     const canCancel = first.status === 'PAYMENT_COMPLETED';
     $('#cancel-order-btn')
         .prop('disabled', !canCancel)
         .toggleClass('disabled', !canCancel)
         .off('click')
-        .on('click', async () => {
-            if (!confirm('이 주문을 정말 취소하시겠습니까?')) return;
-
-            const merchantUid = first.merchantUid;
-            try {
-                const token = localStorage.getItem('accessToken');
-                await $.ajax({
-                    url: `/orders/payments/cancel`,
-                    type: 'POST',
-                    contentType: 'application/json',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    data: JSON.stringify({ merchantUid })
-                });
-                alert('결제 취소 및 상태 업데이트 완료');
-                $('#order-modal-backdrop, #order-modal').hide();
-                fetchOrders(); // 최신 상태 다시 불러오기
-            } catch (err) {
-                console.error('취소 실패', err);
-                alert('결제 취소 처리 중 오류가 발생했습니다.');
-            }
+        .on('click', () => {
+            // ① “주문 취소” 숨기고, 취소 사유 입력 섹션 보이기
+            $('#cancel-order-btn').hide();
+            $('#cancel-reason-section').show();
         });
 
+    // “뒤로” 버튼: 사유 입력 취소하고 원래 화면으로
+    $('#cancel-reason-back-btn').off('click').on('click', () => {
+        $('#cancel-reason-text').val('');
+        $('#cancel-reason-section').hide();
+        $('#cancel-order-btn').show();
+    });
 
-    // 모달 보이기
+    // “확인” 버튼: 실제 취소 요청
+    $('#confirm-cancel-btn').off('click').on('click', async () => {
+        const reason = $('#cancel-reason-text').val().trim();
+        if (!reason) {
+            alert('취소 사유를 입력해주세요.');
+            return;
+        }
+        try {
+            const token = localStorage.getItem('accessToken');
+            await $.ajax({
+                url: `/orders/payments/cancel`,
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { 'Authorization': `Bearer ${token}` },
+                data: JSON.stringify({
+                    merchantUid: merchantUid,
+                    reason: reason
+                })
+            });
+            alert('결제 취소 및 상태 업데이트 완료');
+            $('#order-modal-backdrop, #order-modal').hide();
+            fetchOrders();  // 최신 목록 다시 불러오기
+        } catch (err) {
+            console.error('취소 처리 중 오류', err);
+            alert('결제 취소 처리 중 오류가 발생했습니다.');
+        }
+    });
+
+    // 모달 띄우기
     $('#order-modal-backdrop, #order-modal').show();
 }
 

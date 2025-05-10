@@ -47,15 +47,15 @@ public class OrderService {
     }
 
     // 결제 취소
-    public CancelPaymentResponseDTO cancelPayment(String token, CancelPaymentRequestDTO request) {
-        CancelPaymentResponseDTO response = orderClient.updateCancelStatus(token, request);
+    public CancelPaymentResponseDTO cancelPayment(String token, CancelPaymentRequestDTO req) {
+        CancelPaymentResponseDTO resp = orderClient.cancelPayment(token, req);
 
-        // 실패한 경우 로그 남기기
-        if (!response.isSuccess()) {
-            log.warn("결제 취소 실패: {}", response.getMessage());
+        log.info("[cancelPayment] order-service 응답: {}", resp);
+
+        if (!resp.isSuccess()) {
+            log.warn("결제 취소 실패: {}", resp.getMessage());
         }
-
-        return response;
+        return resp;
     }
 
 }

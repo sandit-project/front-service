@@ -47,8 +47,22 @@
     <p class="modal-label">메뉴:</p>
     <ul id="modal-items-list" class="order-item-list"></ul>
     <p>총 금액: <span id="modal-total-price"></span>원</p>
+
     <button id="cancel-order-btn" class="modal-btn">주문 취소</button>
+
+    <div id="cancel-reason-section" style="display:none; margin-top:1em;">
+      <label for="cancel-reason-text">취소 사유:</label><br>
+      <textarea id="cancel-reason-text"
+                rows="3"
+                style="width:100%;"></textarea>
+      <div style="text-align:right; margin-top:0.5em;">
+        <button id="cancel-reason-back-btn" class="modal-btn">뒤로</button>
+        <button id="confirm-cancel-btn" class="modal-btn">확인</button>
+      </div>
+    </div>
+
   </div>
 </div>
+
 </body>
 </html>

@@ -78,23 +78,25 @@ public class OrderController {
     }
 
     @PostMapping("/orders/payments/cancel")
-    public ResponseEntity<CancelPaymentResponseDTO> proxyCancelPayment(
-            @RequestHeader(value="Authorization", required=false) String token,
+    public ResponseEntity<CancelPaymentResponseDTO> cancelPayment(
+            HttpServletRequest request,
             @RequestBody CancelPaymentRequestDTO req
     ) {
-        // Bearer 없이 넘어오면 붙여주기
+        String token = request.getHeader("Authorization");
+
         if (token != null && !token.startsWith("Bearer ")) {
             token = "Bearer " + token;
         }
         try {
             CancelPaymentResponseDTO resp = orderService.cancelPayment(token, req);
-            HttpStatus status = resp.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-            return ResponseEntity.status(status).body(resp);
+            log.info("cancel payment::" + resp.toString());
+            return ResponseEntity.status(resp.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                    .body(resp);
         } catch (FeignException fe) {
-            log.error("Feign 호출 실패로 결제 취소 불가 (merchantUid={}): {}", req.getMerchantUid(), fe.getMessage(), fe);
+            log.error("[cancelPayment] Feign 예외: status={}, body={}", fe.status(), fe.contentUTF8());
             CancelPaymentResponseDTO fallback = CancelPaymentResponseDTO.builder()
                     .success(false)
-                    .message("결제 취소 연동 중 서비스 장애가 발생했습니다.")
+                    .message("결제 취소 연동 중 장애가 발생했습니다.")
                     .build();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(fallback);
         }
