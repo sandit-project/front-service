@@ -1,4 +1,4 @@
-$(document).ready(()=>{
+let renderKakaomap = () => {
     // 지도 초기화
     const mapContainer = document.getElementById('map');
     const mapOption = {
@@ -74,9 +74,6 @@ $(document).ready(()=>{
         }
     })
 
-    // 배달원 위치 수신하는 함수
-    // receiveDeliveryManLocation();
-
     // 배달원 위치 갱신
     function moveDeliveryMan() {
         setInterval(function() {
@@ -86,4 +83,4 @@ $(document).ready(()=>{
             }
         }, 1000); // 1초마다 이동
     }
-});
+};

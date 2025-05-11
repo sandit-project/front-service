@@ -1,9 +1,14 @@
-let userInfo;
-
 $(document).ready(()=>{
     checkToken();
     setupAjax();
     requestProfileApi();
+    requestOrderList();
+
+    // 배달원 위치 수신하는 함수 (merchantUid를 경로에 전달해서 수신함)
+    receiveDeliveryManLocation();
+
+    // 카카오맵 렌더링 (위에서 받은 좌표 전달)
+    renderKakaomap();
 
     $('#updateProfileBtn').on("click",() => {
         requestUpdateProfile();
@@ -18,9 +23,9 @@ let requestProfileApi = () => {
         type: 'GET',
         url: '/profile',
         success: (response) => {
-            userInfo = response;
             $('#welcome-message').text(response.userName + '님 환영합니다!');
             $('#hiddenUserName').val(response.userName);
+            $('#hiddenUserUId').val(response.uid);
             $('#hiddenUserId').val(response.userId);
             $('#hiddenUserRole').val(response.role);
             $('#user_name').text(response.userName);
@@ -46,8 +51,17 @@ let requestProfileApi = () => {
     });
 }
 
-let requestUpdateProfile = () => {
+let requestOrderList = () => {
+    checkToken();
     setupAjax();
+
+    // 주문 목록 요청하는 함수
+}
+
+let requestUpdateProfile = () => {
+    checkToken();
+    setupAjax();
+
     $.ajax({
         type: 'GET',
         url: '/member/profile/update',
