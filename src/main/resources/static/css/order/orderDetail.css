@@ -78,6 +78,7 @@ main {
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
     z-index: 1000;
 }
 
@@ -98,9 +99,11 @@ main {
 
 /* ─── 모달 콘텐츠 ───────────────────────────────────────────────────── */
 .modal-content {
-    padding: 30px;
+    padding: 1.5rem;
     font-size: 16px;
     color: #3a2a1a;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .modal-btn.disabled {
@@ -189,28 +192,25 @@ main {
     color: #5e3e23;
 }
 
-#cancel-reason-text {
+/* 드롭다운 */
+#cancel-reason-select {
     width: 100%;
-    min-height: 80px;
-    padding: 10px;
-    border: 2px solid #d9a066;
-    border-radius: 8px;
-    resize: vertical;
-    font-size: 14px;
-    color: #3a2a1a;
-    background-color: #fffaf2;
-    margin-bottom: 12px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg…>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
 }
 
-/* 뒤로, 확인 버튼 컨테이너 */
-#cancel-reason-section > div {
-    text-align: right;
-}
-
-/* 뒤로 버튼, 확인 버튼 */
+/* 취소 사유 버튼들 (뒤로/확인) */
 #cancel-reason-back-btn,
 #confirm-cancel-btn {
-    margin-left: 8px;
+    margin-left: 0.5rem;    /* 공통 간격 */
     padding: 10px 24px;
     border-radius: 8px;
     border: none;
@@ -220,7 +220,6 @@ main {
     transition: background 0.3s ease;
 }
 
-/* 뒤로 버튼은 차분하게 */
 #cancel-reason-back-btn {
     background: #e7dfd0;
     color: #5e3e23;
@@ -229,13 +228,26 @@ main {
     background: #d9cbbd;
 }
 
-/* 확인 버튼은 강조색으로 */
 #confirm-cancel-btn {
     background: linear-gradient(45deg, #fdd085, #fbc16c);
     color: #5a3b26;
 }
 #confirm-cancel-btn:hover {
     background: linear-gradient(45deg, #fbc16c, #f8b24f);
+}
+
+/* 뒤로, 확인 버튼 컨테이너 */
+#cancel-reason-section > div {
+    text-align: right;
+}
+
+/* 뒤로 버튼은 차분하게 */
+#cancel-reason-back-btn {
+    background: #e7dfd0;
+    color: #5e3e23;
+}
+#cancel-reason-back-btn:hover {
+    background: #d9cbbd;
 }
 
 /* 모바일 대응: 버튼, 텍스트박스 크기 줄이기 */
@@ -250,5 +262,24 @@ main {
         padding: 8px 16px;
         font-size: 13px;
     }
+}
+/* 취소 사유 드롭다운 스타일 */
+#cancel-reason-select {
+    width: 100%;
+    padding: 0.5rem;            /* 위아래·좌우 여유 */
+    border: 1px solid #ccc;     /* 연한 회색 테두리 */
+    border-radius: 4px;         /* 모서리 둥글게 */
+    font-size: 1rem;            /* 본문 폰트 크기와 동일 */
+    margin-top: 0.5rem;         /* 레이블과 간격 */
+    appearance: none;           /* 기본 화살표 제거(필요 시 커스텀) */
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polyline points='4,6 8,10 12,6' stroke='%23666' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+}
+
+/* “뒤로”/“확인” 버튼 간격 */
+#cancel-reason-section .modal-btn {
+    margin-left: 0.5rem;
 }
 

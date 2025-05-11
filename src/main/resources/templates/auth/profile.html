@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
     <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/order/deliveringOrder.js}"></script>
     <script th:src="@{/js/delivery/deliveryLocation.js}"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/kakaoMobility.js}"></script>
@@ -81,8 +82,14 @@
                     <div id="map" style="width:350px;height:350px;"></div>
                 </div>
             </div>
-            <div class="order-info">
-                <p>주문 내역 나올 예정입니다</p>
+            <div class="order-info" id="order-info-box" style="cursor:pointer;">
+                <p>주문 내역:</p>
+                <div id="latest-order-box">
+                    <p id="order-store-name"></p>
+                    <p id="order-menu-info"></p>
+                    <p id="order-total-price"></p>
+                    <p id="order-created-at"></p>
+                </div>
             </div>
         </div>
     </div>

@@ -51,10 +51,13 @@
     <button id="cancel-order-btn" class="modal-btn">주문 취소</button>
 
     <div id="cancel-reason-section" style="display:none; margin-top:1em;">
-      <label for="cancel-reason-text">취소 사유:</label><br>
-      <textarea id="cancel-reason-text"
-                rows="3"
-                style="width:100%;"></textarea>
+      <label for="cancel-reason-select">취소 사유:</label><br>
+      <select id="cancel-reason-select" style="width:100%; padding:0.5em;">
+        <option value="">-- 사유 선택 --</option>
+        <option value="고객 변심">고객 변심</option>
+        <option value="배달 지연">배달 지연</option>
+        <option value="기타">기타</option>
+      </select>
       <div style="text-align:right; margin-top:0.5em;">
         <button id="cancel-reason-back-btn" class="modal-btn">뒤로</button>
         <button id="confirm-cancel-btn" class="modal-btn">확인</button>

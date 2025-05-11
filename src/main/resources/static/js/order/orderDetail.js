@@ -9,6 +9,14 @@ $(document).ready(async () => {
     try {
         const profile = await fetchProfile();
         userUid = profile.uid;
+        const pathUid = Number(window.location.pathname.split('/').pop());
+
+        // 주소창 uid가 로그인한 유저랑 다르면 리디렉션 or alert
+        if (pathUid !== userUid) {
+            alert('접근 권한이 없습니다.');
+            window.location.href = '/member/login';
+            return;
+        }
         await fetchStores();
         await fetchOrders();
         $('#order-table tbody').on('click','tr',function(){
@@ -143,16 +151,16 @@ function showModal(ordersGroup) {
 
     // “뒤로” 버튼: 사유 입력 취소하고 원래 화면으로
     $('#cancel-reason-back-btn').off('click').on('click', () => {
-        $('#cancel-reason-text').val('');
         $('#cancel-reason-section').hide();
+        $('#cancel-reason-select').hide();
         $('#cancel-order-btn').show();
     });
 
     // “확인” 버튼: 실제 취소 요청
     $('#confirm-cancel-btn').off('click').on('click', async () => {
-        const reason = $('#cancel-reason-text').val().trim();
+        const reason = $('#cancel-reason-select').val();
         if (!reason) {
-            alert('취소 사유를 입력해주세요.');
+            alert('취소 사유를 선택해주세요.');
             return;
         }
         try {
