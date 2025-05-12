@@ -2,10 +2,8 @@ package com.example.frontservice.client.edge;
 
 import com.example.frontservice.config.FeignMultipartSupportConfig;
 import com.example.frontservice.dto.menu.*;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -144,41 +142,48 @@ public interface MenuClient {
 
     // --- Cart ---
 
-        @GetMapping("/cart")
-        CartResponseDTO getCartItems(@RequestHeader("Authorization") String token);
+    @GetMapping("/cart")
+    CartResponseDTO getCartItems(@RequestHeader("Authorization") String token,
+                                 @RequestParam(value = "userUid", required = false) Long userUid,
+                                 @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-        @PostMapping("/cart/update/{id}")
-        CartResponseDTO updateCartItem(@RequestHeader("Authorization") String token,
-                                       @PathVariable("id") Long id,
-                                       @RequestParam("amount") int amount);
+    @PostMapping("/cart/update/{id}")
+    CartResponseDTO updateCartItem(@RequestHeader("Authorization") String token,
+                                   @PathVariable("id") Long id,
+                                   @RequestParam("amount") int amount,
+                                   @RequestParam(value = "userUid", required = false) Long userUid,
+                                   @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-        @PostMapping("/cart/delete/{id}")
-        CartResponseDTO deleteCartItem(@RequestHeader("Authorization") String token,
-                                       @PathVariable("id") Long id);
+    @PostMapping("/cart/delete/{id}")
+    CartResponseDTO deleteCartItem(@RequestHeader("Authorization") String token,
+                                   @PathVariable("id") Long id,
+                                   @RequestParam(value = "userUid", required = false) Long userUid,
+                                   @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-        @PostMapping("/cart/delete-selected")
-        CartResponseDTO deleteSelectedItems(@RequestHeader("Authorization") String token,
-                                            @RequestParam("selectedIds") List<Long> selectedIds);
+    @PostMapping("/cart/delete-selected")
+    CartResponseDTO deleteSelectedItems(@RequestHeader("Authorization") String token,
+                                        @RequestParam("selectedIds") List<Long> selectedIds,
+                                        @RequestParam(value = "userUid", required = false) Long userUid,
+                                        @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-        @PostMapping("/cart/order/checkout")
-        CartResponseDTO checkout(@RequestHeader("Authorization") String token);
+    @PostMapping("/cart/order/checkout")
+    CartResponseDTO checkout(@RequestHeader("Authorization") String token,
+                             @RequestParam(value = "userUid", required = false) Long userUid,
+                             @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-        // ✅ userUid 또는 socialUid 중 하나 받도록 수정
-        @PostMapping("/cart/add")
-        CartResponseDTO addToCart(@RequestHeader("Authorization") String token,
-                                  @RequestParam("menuId") Long menuId,
-                                  @RequestParam("amount") int amount,
-                                  @RequestParam(value = "userUid", required = false) Long userUid,
-                                  @RequestParam(value = "socialUid", required = false) Long socialUid);
+    @PostMapping("/cart/add")
+    CartResponseDTO addToCart(@RequestHeader("Authorization") String token,
+                              @RequestParam("menuId") Long menuId,
+                              @RequestParam("amount") int amount,
+                              @RequestParam(value = "userUid", required = false) Long userUid,
+                              @RequestParam(value = "socialUid", required = false) Long socialUid);
 
-        @PostMapping("/cart/add/side")
-        List<CartResponseDTO> addSideToCart(@RequestHeader("Authorization") String token,
-                                            @RequestBody SideCartRequestDTO dto);
-
-        @GetMapping("/cart/quantity")
-        Integer getCartQuantity(@RequestHeader("Authorization") String token);
-    
-
+    @PostMapping("/cart/add/side")
+    CartResponseDTO addSideToCart(@RequestHeader("Authorization") String token,
+                                        @RequestParam("sideId") Long sideId,
+                                        @RequestParam("amount") int amount,
+                                        @RequestParam(value = "userUid", required = false) Long userUid,
+                                        @RequestParam(value = "socialUid", required = false) Long socialUid);
 
 
     // --- Ingredient List ---
@@ -203,17 +208,29 @@ public interface MenuClient {
 
 
     // --- Custom Cart ---
+    // ✅ 전체 조회 - 사용자 식별자 포함
     @GetMapping("/custom-carts")
-    List<CustomCartResponseDTO> getAllCustomCarts(@RequestHeader("Authorization") String token);
+    List<CustomCartResponseDTO> getAllCustomCarts(
+            @RequestHeader("Authorization") String token);
 
+    // ✅ 단일 조회
     @GetMapping("/custom-carts/{uid}")
-    CustomCartResponseDTO getCustomCart(@RequestHeader("Authorization") String token, @PathVariable("uid") Long uid);
+    CustomCartResponseDTO getCustomCart(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("uid") Long uid);
 
+    // ✅ 커스텀 추가
     @PostMapping(value = "/custom-carts", consumes = MediaType.APPLICATION_JSON_VALUE)
-    CustomCartResponseDTO createCustomCart(@RequestHeader("Authorization") String token, @RequestBody String customCartRequestDTO);
+    CustomCartResponseDTO createCustomCart(
+            @RequestHeader("Authorization") String token,
+            @RequestBody String customCartRequestDTO);
 
+    // ✅ 커스텀 삭제
     @DeleteMapping("/custom-carts/{uid}")
-    void deleteCustomCart(@RequestHeader("Authorization") String token, @PathVariable("uid") Long uid);
+    void deleteCustomCart(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("uid") Long uid);
+
 
     // --- Menu ---
     @GetMapping

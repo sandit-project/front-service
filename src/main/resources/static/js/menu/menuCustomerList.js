@@ -1,50 +1,18 @@
+let globalUserInfo = null;
+
 $(document).ready(() => {
     checkToken();
     setupAjax();
 
-    // 사용자 정보 불러오기 및 UI 반영
+    // 사용자 정보 전역으로 불러오기
     getUserInfo().then((userInfo) => {
-        console.log(userInfo);
+        globalUserInfo = userInfo;
+        console.log('User Info:', userInfo);
 
-        // 사용자 정보가 정상적으로 로드되었을 때 처리
         if (userInfo) {
-            // 공통 숨은 필드 값 설정
-            $('#hiddenUserName').val(userInfo.userName);
-            $('#hiddenUserId').val(userInfo.userId);
-            $('#hiddenId').val(userInfo.id);
-            $('#hiddenUserRole').val(userInfo.role);
-            $('#hiddenSocialId').val(userInfo.socialUid);  // 소셜 UID
-            $('#hiddenType').val(userInfo.type);           // user or social
-
-            // 환영 메시지
-            $('#welcome-message').text(userInfo.userName + '님 환영합니다!');
-
-            // 헤더 메뉴 구성
-            const rightMenu = $('.header-right').empty();
-            if (userInfo) {
-                rightMenu.append(`
-                    <a href="#" class="header-link" id="logoutBtn">로그아웃</a>
-                    <a href="/member/profile" class="header-link">프로필</a>
-                    <a href="/cart" class="header-link">장바구니</a>
-                `);
-
-                if (userInfo.role === "ROLE_ADMIN") {
-                    $('.dropdown-admin').show();
-                    $('.dropdown-delivery').show();
-                } else if (userInfo.role === "ROLE_DELIVERY") {
-                    $('.dropdown-delivery').show();
-                    $('.dropdown-admin').hide();
-                } else {
-                    $('.dropdown-admin, .dropdown-delivery').hide();
-                }
-            }
+            initUserUI(userInfo);
         } else {
-            // 사용자 정보가 없을 경우
-            rightMenu.append(`
-                <a href="/member/login" class="header-link">로그인</a>
-                <a href="/member/join" class="header-link">회원가입</a>
-                <a href="/cart" class="header-link">장바구니</a>
-            `);
+            renderGuestUI();
         }
     }).catch((error) => {
         console.error('user info error:', error);
@@ -84,24 +52,26 @@ $(document).ready(() => {
     // 장바구니 담기
     $(document).on("submit", ".add-cart-form", function (e) {
         e.preventDefault();
+
+        if (!globalUserInfo) {
+            Swal.fire('로그인이 필요합니다', '', 'warning');
+            return;
+        }
+
         const form = $(this);
         const parent = form.closest(".menu-item");
         const menuId = parent.data("menu-id");
         const amount = form.find("input[name='amount']").val();
+        let userUid ;
+        let socialUid ;
+        let requestData = { menuId, amount ,userUid, socialUid};
 
-        // userInfo는 getUserInfo()에서 받아온 값이어야 한다.
-        const userUid = $('#hiddenUserId').val();
-        const socialUid = $('#hiddenSocialId').val();
-        const userType = $('#hiddenType').val();
-
-        let requestData = { menuId, amount };
-
-        if (userType === 'user') {
-            requestData.userUid = userUid;
-        } else if (userType === 'social') {
-            requestData.socialUid = socialUid;
+        if (globalUserInfo.type === 'user') {
+            requestData.userUid = globalUserInfo.id;
+        } else if (globalUserInfo.type === 'social') {
+            requestData.socialUid = globalUserInfo.id;
         }
-
+console.log(requestData);
         $.ajax({
             type: "POST",
             url: "/menus/cart/add",
@@ -130,21 +100,24 @@ $(document).ready(() => {
     $(document).on("click", ".order-btn", function (e) {
         e.preventDefault();
 
-        const form = $(this).closest("form");
-        const parent = form.closest(".menu-item");
-        const menuId = parent.data("menu-id");
-        const amount = 1;
+        if (!globalUserInfo || !globalUserInfo.type || !globalUserInfo.id) {
+            Swal.fire('로그인이 필요합니다', '', 'warning');
+            return;
+        }
 
-        const userUid = $('#hiddenUserId').val();
-        const socialUid = $('#hiddenSocialId').val();
-        const userType = $('#hiddenType').val();
+        const parent = $(this).closest(".menu-item");
+        const menuId = parent.data("menu-id");
+        const amount = parent.find("input[name='amount']").val();
 
         let requestData = { menuId, amount };
 
-        if (userType === 'user') {
-            requestData.userUid = userUid;
-        } else if (userType === 'social') {
-            requestData.socialUid = socialUid;
+        if (globalUserInfo.type === 'user') {
+            requestData.userUid = globalUserInfo.id;
+        } else if (globalUserInfo.type === 'social') {
+            requestData.socialUid = globalUserInfo.id;
+        } else {
+            Swal.fire('지원되지 않는 로그인 유형입니다.', '', 'error');
+            return;
         }
 
         $.ajax({
@@ -161,10 +134,21 @@ $(document).ready(() => {
                     cancelButtonText: '취소',
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        const userParams = (globalUserInfo.type === 'user')
+                            ? { userUid: globalUserInfo.id }
+                            : (globalUserInfo.type === 'social')
+                                ? { socialUid: globalUserInfo.id }
+                                : null;
+
+                        if (!userParams) {
+                            Swal.fire('로그인 정보를 확인할 수 없습니다.', '', 'error');
+                            return;
+                        }
+
                         const queryParams = new URLSearchParams({
                             menuId,
                             amount,
-                            ...(userType === 'user' ? { userUid } : { socialUid })
+                            ...userParams
                         }).toString();
 
                         window.location.href = `/order?${queryParams}`;
@@ -172,10 +156,11 @@ $(document).ready(() => {
                 });
             },
             error: function (xhr) {
-                alert("카트에 추가하는 데 실패했습니다.");
+                Swal.fire("카트에 추가하는 데 실패했습니다.", '', 'error');
             }
         });
     });
+
 
     // 로그아웃 처리
     $(document).on("click", "#logoutBtn", () => {
@@ -194,31 +179,64 @@ $(document).ready(() => {
             }
         });
     });
-
-    function logout() {
-        setupAjax();
-        $.ajax({
-            type: 'POST',
-            url: '/logout',
-            success: () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: '로그아웃 성공',
-                    text: '로그아웃이 완료되었습니다.',
-                    confirmButtonText: '확인'
-                }).then(() => {
-                    localStorage.removeItem('accessToken');
-                    window.location.href = '/member/login';
-                });
-            },
-            error: (error) => {
-                console.log('오류 발생 : ', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: '오류 발생',
-                    text: '로그아웃 중 오류가 발생했습니다.'
-                });
-            }
-        });
-    }
 });
+
+// 로그인 UI 구성
+function initUserUI(userInfo) {
+    $('#welcome-message').text(userInfo.userName + '님 환영합니다!');
+
+    const rightMenu = $('.header-right').empty();
+    rightMenu.append(`
+        <a href="#" class="header-link" id="logoutBtn">로그아웃</a>
+        <a href="/member/profile" class="header-link">프로필</a>
+        <a href="/cart" class="header-link">장바구니</a>
+    `);
+
+    if (userInfo.role === "ROLE_ADMIN") {
+        $('.dropdown-admin').show();
+        $('.dropdown-delivery').show();
+    } else if (userInfo.role === "ROLE_DELIVERY") {
+        $('.dropdown-delivery').show();
+        $('.dropdown-admin').hide();
+    } else {
+        $('.dropdown-admin, .dropdown-delivery').hide();
+    }
+}
+
+// 비로그인 UI 구성
+function renderGuestUI() {
+    const rightMenu = $('.header-right').empty();
+    rightMenu.append(`
+        <a href="/member/login" class="header-link">로그인</a>
+        <a href="/member/join" class="header-link">회원가입</a>
+        <a href="/cart" class="header-link">장바구니</a>
+    `);
+}
+
+// 로그아웃 처리
+function logout() {
+    setupAjax();
+    $.ajax({
+        type: 'POST',
+        url: '/logout',
+        success: () => {
+            Swal.fire({
+                icon: 'success',
+                title: '로그아웃 성공',
+                text: '로그아웃이 완료되었습니다.',
+                confirmButtonText: '확인'
+            }).then(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/member/login';
+            });
+        },
+        error: (error) => {
+            console.log('오류 발생 : ', error);
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '로그아웃 중 오류가 발생했습니다.'
+            });
+        }
+    });
+}

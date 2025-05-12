@@ -148,41 +148,45 @@ public class MenuService {
 
 
     // Cart
-    public CartResponseDTO getCartItems(String token) {
-        return menuClient.getCartItems(token);
+    public CartResponseDTO getCartItems(String token, Long userUid, Long socialUid) {
+        // userUid 또는 socialUid가 제공되면 이를 기준으로 장바구니 항목을 필터링
+        return menuClient.getCartItems(token, userUid, socialUid);
     }
 
-    public CartResponseDTO updateCartItem(String token, Long id, int amount) {
-        return menuClient.updateCartItem(token, id, amount);
+    public CartResponseDTO updateCartItem(String token, Long id, int amount, Long userUid, Long socialUid) {
+        // userUid 또는 socialUid를 사용해 장바구니 항목 수량 업데이트
+        return menuClient.updateCartItem(token, id, amount, userUid, socialUid);
     }
 
-    public CartResponseDTO deleteCartItem(String token, Long id) {
-        return menuClient.deleteCartItem(token, id);
+    public CartResponseDTO deleteCartItem(String token, Long id, Long userUid, Long socialUid) {
+        // 특정 장바구니 항목 삭제
+        return menuClient.deleteCartItem(token, id, userUid, socialUid);
     }
 
-    public CartResponseDTO deleteSelectedItems(String token, List<Long> selectedIds) {
-        return menuClient.deleteSelectedItems(token, selectedIds);
+    public CartResponseDTO deleteSelectedItems(String token, List<Long> selectedIds, Long userUid, Long socialUid) {
+        // 선택된 장바구니 항목들 삭제
+        return menuClient.deleteSelectedItems(token, selectedIds, userUid, socialUid);
     }
 
-    public CartResponseDTO checkout(String token) {
-        return menuClient.checkout(token);
+    public CartResponseDTO checkout(String token, Long userUid, Long socialUid) {
+        // 결제 처리 후 장바구니 비우기
+        return menuClient.checkout(token, userUid, socialUid);
     }
 
-    // ✅ userUid 또는 socialUid 중 하나를 받을 수 있도록 오버로딩 또는 분기처리
     public CartResponseDTO addToCart(String token, Long menuId, int amount, Long userUid, Long socialUid) {
+        // userUid와 socialUid를 받아서 장바구니에 메뉴 추가
         return menuClient.addToCart(token, menuId, amount, userUid, socialUid);
     }
 
-    public CartResponseDTO addSideToCart(String token, SideCartRequestDTO dto) {
-        List<CartResponseDTO> responseList = menuClient.addSideToCart(token, dto);
-        if (responseList != null && !responseList.isEmpty()) {
-            return responseList.get(0); // 첫 번째 요소 반환 (필요에 따라 다른 로직 적용 가능)
-        } else {
-            return new CartResponseDTO();
-        }
+    public CartResponseDTO addSideToCart(String token, Long sideId, int amount, Long userUid, Long socialUid) {
+        // 사이드 메뉴 추가
+        return menuClient.addSideToCart(token, sideId,amount, userUid, socialUid);
+//        if (responseList != null && !responseList.isEmpty()) {
+//            return responseList.get(0); // 첫 번째 요소 반환
+//        } else {
+//            return new CartResponseDTO(); // 비어 있으면 기본 응답 객체 반환
+//        }
     }
-
-
 
 
 
