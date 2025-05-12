@@ -69,3 +69,17 @@ let formatDate=(dateStr)=>{
             second: '2-digit'
        });
 }
+
+// 주문 결제 취소 요청을 서버에 전달. 실제 포트원 API 연동은 서버에서 처리되며, 프론트에서는 이 API만 호출하면 됨.
+let cancelOrder = (merchantUid, reason) => {
+    return $.ajax({
+        url: '/orders/payments/cancel',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ merchantUid, reason })
+    });
+}
+
+const SYSTEM_MESSAGES = {
+    CANCEL_DELAY_NOTICE: '결제 직후에는 취소가 제한됩니다. 결제 후 1분 뒤부터 취소가 가능합니다.',
+};

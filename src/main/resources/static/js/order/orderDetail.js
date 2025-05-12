@@ -6,6 +6,11 @@ $(document).ready(async () => {
     checkToken();
     setupAjax();
 
+    $('#logout-link').on('click', () => {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/member/login';
+    });
+
     try {
         const profile = await fetchProfile();
         userUid = profile.uid;
@@ -17,7 +22,6 @@ $(document).ready(async () => {
             window.location.href = '/member/login';
             return;
         }
-        await fetchStores();
         await fetchOrders();
         $('#order-table tbody').on('click','tr',function(){
             const idx = $(this).data('group-index');
@@ -34,39 +38,66 @@ $(document).ready(async () => {
         window.location.href = '/login';
     }
 });
-function fetchStores() {
-    return $.ajax({
-        type: 'GET',
-        url: `/stores/list?limit=1000`
-    }).then(response => {
-        response.storeList.forEach(store => {
-            storeMap[store.storeUid] = store.storeName;
-        });
-    });
-}
 
 function fetchProfile() {
     return $.ajax({ url: '/profile', type: 'GET' });
 }
 
-function fetchOrders() {
-    return $.ajax({
-        url: `/orders/user/${userUid}`,
-        type: 'GET',
-        contentType: 'application/json',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-    })
-        .then(response => {
-            ordersList = response;
-            renderOrders();
-        })
-        .catch(err => {
-            console.error('주문 목록 불러오기 실패', err);
-            alert('주문 목록을 가져오는 데 실패했습니다.');
+async function fetchOrders() {
+    try {
+        const response = await $.ajax({
+            url: `/orders/user/${userUid}?_=${Date.now()}`,
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            }
         });
+
+        ordersList = response;
+
+        // 스토어 정보 없으면 필요한 것만 요청
+        const uniqueStoreUids = [...new Set(ordersList.map(o => o.storeUid))];
+        const missing = uniqueStoreUids.filter(uid => !storeMap[uid]);
+
+        if (missing.length > 0) {
+            const storeResponse = await $.ajax({
+                url: `/stores/list?limit=1000&lastUid=0`,
+                type: 'GET',
+                contentType: 'application/json',
+            });
+
+            storeResponse.storeList.forEach(store => {
+                storeMap[store.storeUid] = store.storeName;
+            });
+        }
+
+        renderOrders();
+    } catch (err) {
+        console.error('주문 목록 불러오기 실패', err);
+        alert('주문 목록을 가져오는 데 실패했습니다.');
+    }
 }
+
+
+// function fetchOrders() {
+//     return $.ajax({
+//         url: `/orders/user/${userUid}?_=${Date.now()}`, // ← 캐시 방지 파라미터 추가
+//         type: 'GET',
+//         contentType: 'application/json',
+//         headers: {
+//             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+//         }
+//     }).then(response => {
+//             console.log('fetchOrders 응답:', response);
+//             ordersList = response;
+//             renderOrders();
+//         })
+//         .catch(err => {
+//             console.error('주문 목록 불러오기 실패', err);
+//             alert('주문 목록을 가져오는 데 실패했습니다.');
+//         });
+// }
 
 function renderOrders() {
     // 2-1) merchant_uid별 그룹핑
@@ -80,6 +111,13 @@ function renderOrders() {
         merchantUid: muid,
         orders
     }));
+
+    // 최신 주문이 위로 오도록 정렬 (createdDate 기준)
+    groupedData.sort((a, b) => {
+        const dateA = new Date(a.orders[0].createdDate);
+        const dateB = new Date(b.orders[0].createdDate);
+        return dateB - dateA; // 내림차순
+    });
 
     // 2-3) 테이블에 그리기: data-group-index 로만 식별
     const $tbody = $('#order-table tbody').empty();
@@ -164,25 +202,32 @@ function showModal(ordersGroup) {
             return;
         }
         try {
-            const token = localStorage.getItem('accessToken');
-            await $.ajax({
-                url: `/orders/payments/cancel`,
-                type: 'POST',
-                contentType: 'application/json',
-                headers: { 'Authorization': `Bearer ${token}` },
-                data: JSON.stringify({
-                    merchantUid: merchantUid,
-                    reason: reason
-                })
-            });
-            alert('결제 취소 및 상태 업데이트 완료');
+            $('#loading-spinner').show(); // 로딩 시작
+
+            await cancelOrder(merchantUid, reason);
+
+            // 상태가 바뀔 때까지 기다림 (최대 10초)
+            const cancelled = await waitUntilCancelled(merchantUid);
+            if (cancelled) {
+                alert('결제 취소 및 상태 업데이트 완료');
+            } else {
+                alert('취소 요청은 완료되었으나 상태 반영이 지연되고 있습니다.');
+            }
+
             $('#order-modal-backdrop, #order-modal').hide();
-            fetchOrders();  // 최신 목록 다시 불러오기
+            await fetchOrders();
         } catch (err) {
             console.error('취소 처리 중 오류', err);
-            alert('결제 취소 처리 중 오류가 발생했습니다.');
+            if (err?.responseJSON?.message?.includes("아직 취소 불가")) {
+                alert(SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE);
+            } else {
+                alert('결제 취소 처리 중 오류가 발생했습니다.');
+            }
+        } finally {
+            $('#loading-spinner').hide(); // 로딩 종료 (에러든 성공이든)
         }
     });
+
 
     // 모달 띄우기
     $('#order-modal-backdrop, #order-modal').show();
@@ -198,4 +243,28 @@ function mapOrderStatus(status) {
         case 'ORDER_DELIVERED': return '배달 완료';
         //default: return status;
     }
+}
+
+async function waitUntilCancelled(merchantUid, maxTries = 10, delayMs = 1000) {
+    for (let i = 0; i < maxTries; i++) {
+        try {
+            const response = await $.ajax({
+                url: `/orders/merchant/${merchantUid}`,
+                type: 'GET',
+                contentType: 'application/json'
+            });
+
+            if (Array.isArray(response) && response.length > 0) {
+                const status = response[0].status;
+                if (status === 'ORDER_CANCELLED') {
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.warn('상태 확인 중 오류:', e);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+    return false;
 }

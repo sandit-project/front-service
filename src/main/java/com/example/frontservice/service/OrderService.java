@@ -3,6 +3,7 @@ package com.example.frontservice.service;
 import com.example.frontservice.client.edge.OrderClient;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.type.OrderStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderClient orderClient;
+    private final PaymentService paymentService;
 
     //결제 사전 검증
     public PreparePaymentResponseDTO prepare(PreparePaymentRequestDTO request) {
@@ -31,8 +33,8 @@ public class OrderService {
     }
 
     //상태 변경
-    public OrderStatusChangeResponseDTO changeStatus(String merchantUid, OrderStatus newStatus) {
-        return orderClient.changeOrderStatus(merchantUid, newStatus);
+    public OrderStatusChangeResponseDTO changeStatus(String token, String merchantUid, OrderStatus newStatus) {
+        return orderClient.changeOrderStatus(token, merchantUid, newStatus);
     }
 
 
@@ -47,13 +49,27 @@ public class OrderService {
     }
 
     // 결제 취소
-    public CancelPaymentResponseDTO cancelPayment(String token, CancelPaymentRequestDTO req) {
-        CancelPaymentResponseDTO resp = orderClient.cancelPayment(token, req);
+    public CancelPaymentResponseDTO cancelPayment(
+            String token,
+            CancelPaymentRequestDTO req
+    ) {
+        // 1) merchantUid 로 imp_uid, amount 등을 조회
+        JsonNode info = paymentService.getPaymentInfo(req.getMerchantUid());
+        String impUid    = info.get("imp_uid").asText();
+        int    amount    = info.get("amount").asInt();
+        int    checksum  = amount; // 필요에 따라 달리 구성
 
-        log.info("[cancelPayment] order-service 응답: {}", resp);
+        // 2) 실제 환불 요청
+        CancelPaymentResponseDTO resp =
+                paymentService.cancelPayment(impUid, amount, req.getReason(), checksum);
 
-        if (!resp.isSuccess()) {
-            log.warn("결제 취소 실패: {}", resp.getMessage());
+        // 3) CANCELLED 상태로 주문 상태 변경
+        if (resp.isSuccess()) {
+            orderClient.changeOrderStatus(
+                    token,
+                    req.getMerchantUid(),
+                    OrderStatus.ORDER_CANCELLED
+            );
         }
         return resp;
     }
