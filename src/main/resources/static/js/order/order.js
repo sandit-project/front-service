@@ -14,7 +14,7 @@ function getCartItems() {
 
     return $.ajax({
         url: '/menus/cart',
-        method: 'GET',
+        type: 'GET',
         contentType: 'application/json',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -127,7 +127,7 @@ function getStores(limit = 100) {
     const token = localStorage.getItem('accessToken');
     return $.ajax({
         url: `/stores/list?limit=${limit}`,
-        method: 'GET',
+        type: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
     }).then(response => response.storeList);
 }
@@ -414,7 +414,7 @@ function getBuyerInfo() {
 function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, reservationDate) {
     return $.ajax({
         url: '/orders/prepare',
-        method: 'POST',
+        type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
             merchantUid: merchantUid,
@@ -472,7 +472,7 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
             // 결제 성공 시 업데이트 요청
             $.ajax({
                 url: '/orders/update-success',
-                method: 'POST',
+                type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
@@ -520,7 +520,7 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
             // 결제 실패 시
             $.ajax({
                 url: '/orders/update-fail',
-                method: 'POST',
+                type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     merchantUid: response.merchant_uid
@@ -736,7 +736,7 @@ function clearCart(numericIds) {
     const query = numericIds.map(id => `selectedIds=${id}`).join('&');
     return $.ajax({
         url: `/menus/cart/delete-selected?${query}`,
-        method: 'POST',
+        type: 'POST',
         headers: { Authorization: `Bearer ${token}` }
     });
 }
@@ -750,7 +750,7 @@ function clearCustomCart(customIds) {
     const deletes = customIds.map(uid =>
         $.ajax({
             url: `/menus/custom-carts/${uid}`,
-            method: 'DELETE',
+            type: 'DELETE',
             headers: { Authorization: `Bearer ${token}` }
         }).catch(() => null)
     );

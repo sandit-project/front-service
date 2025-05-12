@@ -26,8 +26,9 @@
       <th>지점명</th>
       <th>메뉴</th>
       <th>가격</th>
-      <th>수량</th>
+      <th>총 주문 수량</th>
       <th>주문 시간</th>
+      <th>예약 시간</th>
     </tr>
     </thead>
     <tbody>
@@ -35,5 +36,36 @@
     </tbody>
   </table>
 </main>
+<div id="order-modal-backdrop" class="modal-backdrop" style="display:none;"></div>
+
+<!-- 모달 본체 -->
+<div id="order-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="close-modal" class="modal-close">&times;</span>
+    <h2>주문 상세</h2>
+    <p>지점명: <span id="modal-store-name"></span></p>
+    <p class="modal-label">메뉴:</p>
+    <ul id="modal-items-list" class="order-item-list"></ul>
+    <p>총 금액: <span id="modal-total-price"></span>원</p>
+
+    <button id="cancel-order-btn" class="modal-btn">주문 취소</button>
+
+    <div id="cancel-reason-section" style="display:none; margin-top:1em;">
+      <label for="cancel-reason-select">취소 사유:</label><br>
+      <select id="cancel-reason-select" style="width:100%; padding:0.5em;">
+        <option value="">-- 사유 선택 --</option>
+        <option value="고객 변심">고객 변심</option>
+        <option value="배달 지연">배달 지연</option>
+        <option value="기타">기타</option>
+      </select>
+      <div style="text-align:right; margin-top:0.5em;">
+        <button id="cancel-reason-back-btn" class="modal-btn">뒤로</button>
+        <button id="confirm-cancel-btn" class="modal-btn">확인</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>

@@ -5,12 +5,17 @@
     <title>장바구니 주문</title>
 
     <!-- 외부 라이브러리 -->
+    <link rel="stylesheet" th:href="@{/css/order/order.css}">
+<!--    예약시간 css(삭제 금지)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+    <link rel="stylesheet" th:href="@{/css/order/order.css}">
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
@@ -85,6 +90,6 @@
     <button type="button" class="btn-warning" onclick="location.href='/cart'">장바구니</button>
     <button type="button" class="btn-primary" id="payButton">결제하기</button>
 </div>
-
+</div>
 </body>
 </html>

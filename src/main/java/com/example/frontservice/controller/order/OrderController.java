@@ -3,9 +3,11 @@ package com.example.frontservice.controller.order;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.service.OrderService;
 import com.example.frontservice.type.OrderStatus;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,4 +76,31 @@ public class OrderController {
         log.info("update order fail::" + request.toString());
         return ResponseEntity.ok(orderService.confirmFail(request));
     }
+
+    @PostMapping("/orders/payments/cancel")
+    public ResponseEntity<CancelPaymentResponseDTO> cancelPayment(
+            HttpServletRequest request,
+            @RequestBody CancelPaymentRequestDTO req
+    ) {
+        String token = request.getHeader("Authorization");
+
+        if (token != null && !token.startsWith("Bearer ")) {
+            token = "Bearer " + token;
+        }
+        try {
+            CancelPaymentResponseDTO resp = orderService.cancelPayment(token, req);
+            log.info("cancel payment::" + resp.toString());
+            return ResponseEntity.status(resp.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                    .body(resp);
+        } catch (FeignException fe) {
+            log.error("[cancelPayment] Feign 예외: status={}, body={}", fe.status(), fe.contentUTF8());
+            CancelPaymentResponseDTO fallback = CancelPaymentResponseDTO.builder()
+                    .success(false)
+                    .message("결제 취소 연동 중 장애가 발생했습니다.")
+                    .build();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(fallback);
+        }
+    }
+
+
 }
