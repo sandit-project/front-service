@@ -8,7 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CustomCartResponseDTO {
-
+    private Long userUid;
+    private Long socialUid;
     private Long uid;
     private Double calorie;
     private int price;

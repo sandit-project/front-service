@@ -25,28 +25,31 @@ if (!token) {
 }
 
 // ✅ WebSocket 연결 설정 (인증 토큰 포함)
-const socket = new SockJS(`/chat?token=${token}`);
+const socket = new SockJS('http://localhost:9006/chat');
 const stompClient = Stomp.over(socket);
+
+stompClient.connect(
+    { Authorization: `Bearer ${token}` },  // 헤더로 토큰 전달
+    () => {
+        stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
+            const message = JSON.parse(msg.body);
+            const isMine = message.sender === nickname;
+            const messageClass = isMine ? "my-message" : "other-message";
+            const messageHtml = `<div class="${messageClass}">
+          <b>${message.sender}</b>: ${message.message}
+      </div>`;
+            $('#chatBox').append(messageHtml);
+            $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+        });
+    }
+);
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("userInfo").innerText = `당신의 닉네임: ${nickname}`;
 });
 
-// WebSocket 연결 후 메시지 구독
-stompClient.connect({}, () => {
-    stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
-        const message = JSON.parse(msg.body);
-        const isMine = message.sender === nickname;
 
-        const messageClass = isMine ? "my-message" : "other-message";
-        const messageHtml = `<div class="${messageClass}">
-            <b>${message.sender}</b>: ${message.message}
-        </div>`;
 
-        $('#chatBox').append(messageHtml);
-        $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
-    });
-});
 
 // 메시지 전송 함수
 function sendMessage() {

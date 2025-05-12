@@ -10,7 +10,8 @@ import lombok.*;
 @Builder
 public class CustomCartRequestDTO {
 
-
+    private Long userUid;
+    private Long socialUid;
     private Long price;
 
 
