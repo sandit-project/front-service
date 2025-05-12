@@ -57,11 +57,17 @@ public class OrderController {
     //상태 변경
     @PutMapping("/orders/{merchantUid}/status")
     public ResponseEntity<OrderStatusChangeResponseDTO> changeStatus(
+            HttpServletRequest request,
             @PathVariable String merchantUid,
             @RequestParam OrderStatus newStatus
     ) {
-        log.info("changeStatus merchantUid={}, newStatus={}", merchantUid, newStatus);
-        return ResponseEntity.ok(orderService.changeStatus(merchantUid, newStatus));
+        String token = request.getHeader("Authorization");
+
+        if (token != null && !token.startsWith("Bearer ")) {
+            token = "Bearer " + token;
+        }
+        log.info("changeStatus token={}, merchantUid={}, newStatus={}", token, merchantUid, newStatus);
+        return ResponseEntity.ok(orderService.changeStatus(token, merchantUid, newStatus));
     }
 
 
@@ -78,28 +84,14 @@ public class OrderController {
     }
 
     @PostMapping("/orders/payments/cancel")
-    public ResponseEntity<CancelPaymentResponseDTO> cancelPayment(
-            HttpServletRequest request,
+    public CancelPaymentResponseDTO cancelPayment(
+            @RequestHeader("Authorization") String token,
             @RequestBody CancelPaymentRequestDTO req
     ) {
-        String token = request.getHeader("Authorization");
-
         if (token != null && !token.startsWith("Bearer ")) {
             token = "Bearer " + token;
         }
-        try {
-            CancelPaymentResponseDTO resp = orderService.cancelPayment(token, req);
-            log.info("cancel payment::" + resp.toString());
-            return ResponseEntity.status(resp.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
-                    .body(resp);
-        } catch (FeignException fe) {
-            log.error("[cancelPayment] Feign 예외: status={}, body={}", fe.status(), fe.contentUTF8());
-            CancelPaymentResponseDTO fallback = CancelPaymentResponseDTO.builder()
-                    .success(false)
-                    .message("결제 취소 연동 중 장애가 발생했습니다.")
-                    .build();
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(fallback);
-        }
+        return orderService.cancelPayment(token, req);
     }
 
 

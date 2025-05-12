@@ -24,7 +24,8 @@ public interface OrderClient {
     List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token, @PathVariable Integer userUid);
 
     @PutMapping("/{merchantUid}/status")
-    OrderStatusChangeResponseDTO changeOrderStatus(@PathVariable("merchantUid") String merchantUid,
+    OrderStatusChangeResponseDTO changeOrderStatus(@RequestHeader("Authorization") String token,
+                                                   @PathVariable("merchantUid") String merchantUid,
                                                    @RequestParam("newStatus") OrderStatus newStatus);
 
     @PostMapping("/update-success")
@@ -33,11 +34,12 @@ public interface OrderClient {
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
 
-    @PostMapping(value = "/payments/cancel", consumes = "application/json", produces = "application/json")
-    CancelPaymentResponseDTO cancelPayment(
-            @RequestHeader("Authorization") String token,
-            @RequestBody CancelPaymentRequestDTO request
+    @PostMapping(value = "/payments/cancel",
+            consumes = "application/json",
+            produces = "application/json")
+    List<CancelPaymentResponseDTO> cancelPayment(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO request
     );
+
 
     //지점 주문 요청 (응답 타입을 리스트로 바로 받음)
     @GetMapping("/store/{storeUid}")

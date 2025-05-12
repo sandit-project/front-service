@@ -283,3 +283,59 @@ main {
     margin-left: 0.5rem;
 }
 
+/* 상단 네비게이션 스타일 */
+.top-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 10px 5%;
+    background-color: #fef9f0;
+}
+.nav-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: #5e3e23;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.nav-link:hover {
+    background-color: rgba(210, 160, 100, 0.2);
+}
+/* ─── 로딩 스피너 ─────────────────────────────────────────────── */
+.loading-spinner-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #c28a48;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 0.9s linear infinite;
+}
+
+.spinner-text {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 500;
+}
+.loading-spinner-wrapper {
+    flex-direction: column;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
