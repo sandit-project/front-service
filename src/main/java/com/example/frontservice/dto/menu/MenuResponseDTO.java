@@ -3,6 +3,7 @@ package com.example.frontservice.dto.menu;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -73,7 +74,7 @@ public class MenuResponseDTO {
 
         private String img;
         private String status;
-        private Instant createdDate;
+        private LocalDateTime createdDate;
         private int version;
     }
 
