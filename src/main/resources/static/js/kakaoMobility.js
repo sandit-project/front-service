@@ -75,7 +75,7 @@ $(document).ready(()=>{
     })
 
     // 배달원 위치 수신하는 함수
-    // receiveDeliveryManLocation();
+     receiveDeliveryManLocation();
 
     // 배달원 위치 갱신
     function moveDeliveryMan() {
