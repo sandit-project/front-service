@@ -30,8 +30,8 @@ public class DeliveryService {
         return deliveryClient.getCookingOrders(token);
     }
 
-    public List<DeliveryOrderResponseDTO> getDeliveringOrders(String token) {
-        return deliveryClient.getDeliveringOrders(token);
+    public List<DeliveryOrderResponseDTO> getDeliveringOrders(String token,String type,Integer uid) {
+        return deliveryClient.getDeliveringOrders(token,type,uid);
     }
 
     public DeliveryResponseDTO startDelivery(String token, DeliveryStartRequestDTO deliveryStartRequestDTO) {
