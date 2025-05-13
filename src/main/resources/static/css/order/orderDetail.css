@@ -8,10 +8,55 @@
 }
 
 body {
-    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f6efe3, #e1d4be);
-    color: #3a2a1a;
+    background-color: #f9f1e7;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
 }
+
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background-color: #fffaf3;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #4d2c14;
+    margin-bottom: 24px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+thead {
+    background-color: #f4e9dc;
+    color: #4d2c14;
+}
+
+th, td {
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 1px solid #e0cbb4;
+}
+
+tbody tr:hover {
+    background-color: #fef6e9;
+    cursor: pointer;
+}
+
+td {
+    color: #4d2c14;
+}
+
+
 
 /* ─── 헤더 ─────────────────────────────────────────────────────────────── */
 header {

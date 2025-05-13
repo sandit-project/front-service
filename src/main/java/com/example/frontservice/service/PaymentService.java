@@ -77,7 +77,7 @@ public class PaymentService {
             json = resp.getBody();
         } catch (HttpClientErrorException ex) {
             return CancelPaymentResponseDTO.builder()
-                    .success(false)
+                    .isSuccess(false)
                     .message("결제 취소 연동 실패: " + ex.getStatusText())
                     .build();
         }
@@ -85,7 +85,7 @@ public class PaymentService {
         boolean ok = json.get("code").asInt() == 0;
         String msg = ok ? "결제 취소 성공" : json.get("message").asText();
         return CancelPaymentResponseDTO.builder()
-                .success(ok)
+                .isSuccess(ok)
                 .message(msg)
                 .build();
     }

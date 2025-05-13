@@ -13,6 +13,7 @@ import java.util.List;
 @FeignClient(name = "orderClient", url = "${sandit.edge-service-url}/orders")
 public interface OrderClient {
 
+
     //결제 사전 검증
     @PostMapping("/prepare")
     PreparePaymentResponseDTO preparePayment(@RequestBody PreparePaymentRequestDTO request);
@@ -39,6 +40,15 @@ public interface OrderClient {
             produces = "application/json")
     List<CancelPaymentResponseDTO> cancelPayment(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO request
     );
+
+    @PostMapping("/payments/init")
+    void initCancel(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO dto);
+
+    @PostMapping("/payments/confirm")
+    void confirmCancel(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO dto);
+
+    @PostMapping("/payments/compensate")
+    void compensateCancel(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO dto);
 
 
     //지점 주문 요청 (응답 타입을 리스트로 바로 받음)

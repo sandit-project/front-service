@@ -71,6 +71,7 @@ let formatDate=(dateStr)=>{
 }
 
 // 주문 결제 취소 요청을 서버에 전달. 실제 포트원 API 연동은 서버에서 처리되며, 프론트에서는 이 API만 호출하면 됨.
+//따로 빼기
 let cancelOrder = (merchantUid, reason) => {
     return $.ajax({
         url: '/orders/payments/cancel',
