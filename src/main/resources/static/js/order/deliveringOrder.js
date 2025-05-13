@@ -16,6 +16,7 @@ $(document).ready(async () => {
             .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))[0];
 
         if (delivering) {
+            console.log(delivering);
             const storeName = await fetchStoreName(delivering.storeUid);
             const menuName = delivering.items[0]?.menuName || '—';
             const menuText = delivering.items.length > 1

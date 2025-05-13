@@ -153,13 +153,16 @@ let requestDeliveringOrder = () => {
     checkToken();
     setupAjax();
 
+    const deliverymanType = $('#hiddenType').val();
+    const deliverymanUid = $('#hiddenId').val();
+
     if (!hasMore) return;
     isLoading = true;
     $('#loading').show();
 
     $.ajax({
         type: 'GET',
-        url: '/api/delivery/delivering',
+        url: '/api/delivery/delivering/' + deliverymanType + '/' + deliverymanUid,
         success: (response) => {
             console.log(response);
             const $tbody = $('#deliveryContent').empty();
