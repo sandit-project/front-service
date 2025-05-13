@@ -103,7 +103,13 @@ $(document).ready(function () {
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(customCartDTO),
-            success: () => {
+            success: (response) => {
+                console.log("서버 응답:", response);
+
+                customCartDTO.uid = response.uid;
+                const localList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+                localList.push(customCartDTO);
+                localStorage.setItem('customSandwiches', JSON.stringify(localList));
                 alert('저장 완료! 장바구니로 이동합니다.');
                 location.href = '/cart';
             },

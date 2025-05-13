@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CancelPaymentResponseDTO {
-    private boolean success;
+    private boolean isSuccess;
+    //boolean 변수 명 바꾸기
     private String message;
 }

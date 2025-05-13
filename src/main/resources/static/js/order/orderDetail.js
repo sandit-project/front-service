@@ -1,6 +1,10 @@
 const storeMap = {};
 let ordersList = [];
 let groupedData = [];
+let userUid = null;
+let userRole = null;
+let pathUid = null;
+let targetUid = null;
 
 $(document).ready(async () => {
     checkToken();
@@ -14,14 +18,20 @@ $(document).ready(async () => {
     try {
         const profile = await fetchProfile();
         userUid = profile.uid;
-        const pathUid = Number(window.location.pathname.split('/').pop());
+        userRole = profile.role;
+        pathUid = Number(window.location.pathname.split('/').pop());
+        const isAdmin = userRole === 'role_admin' || userRole === 'ROLE_ADMIN';
 
         // 주소창 uid가 로그인한 유저랑 다르면 리디렉션 or alert
-        if (pathUid !== userUid) {
+        if (!isAdmin && pathUid !== userUid) {
             alert('접근 권한이 없습니다.');
             window.location.href = '/member/login';
             return;
         }
+
+        // 조회 대상 UID: 일반 유저는 본인, 관리자는 pathUid
+        targetUid = isAdmin ? pathUid : userUid;
+
         await fetchOrders();
         $('#order-table tbody').on('click','tr',function(){
             const idx = $(this).data('group-index');
@@ -44,9 +54,11 @@ function fetchProfile() {
 }
 
 async function fetchOrders() {
+    console.log("▶️ 호출할 userUid:", userUid, "pathUid:", pathUid, "targetUid:", targetUid);
+    console.log("▶️ 호출 URL:", `/orders/user/${targetUid}`);
     try {
         const response = await $.ajax({
-            url: `/orders/user/${userUid}?_=${Date.now()}`,
+            url: `/orders/user/${targetUid}?_=${Date.now()}`,
             type: 'GET',
             contentType: 'application/json',
             headers: {

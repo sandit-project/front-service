@@ -1,5 +1,6 @@
 let userUid;
 let socialUid;
+let cartItems = [];
 let expectedVersion = null;
 
 // 장바구니 항목 가져오기
@@ -29,6 +30,15 @@ function getCartItems() {
     });
 }
 
+async function fetchCustomCart(customCartId) {
+    const token = localStorage.getItem('accessToken');
+    return $.ajax({
+        url: `/menus/custom-carts/${customCartId}`,
+        type: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
+    });
+}
+
 
 //fillUserInfoForm 헬퍼 (폼에 값 채워넣기)
 function fillUserInfoForm(user) {
@@ -47,41 +57,26 @@ function fillUserInfoForm(user) {
 // 선택된 장바구니 항목 가져오기
 async function renderCartItems(items) {
     const $container = $('#cartContainer');
-    const customList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
     $container.empty();
     items.forEach(item => {
-        //const cartUid = item.cartUid || item.uid;
-        const cartRowId  = item.uid;
         const isCustom   = item.menuName === '커스텀 샌드위치';
-        const customUuid = isCustom ? item.cartUid : '';
-        const rec = customList.find(c => c.cartUid === customUuid);
-        const customId = rec ? rec.uid : '';
-        const cartUid = customUuid || cartRowId;
-
-            // <div class="cart-item" data-cart-item data-cart-uid="${cartUid}">
+        const customId = isCustom ? item.customCartUid : null;
+        const cartUid = item.uid; // cart 테이블의 PK
         const itemHtml = `
                 <div class="cart-item" data-cart-item
                      data-cart-uid="${cartUid}"
-                    data-cart-id="${cartRowId}"
-                    data-custom-uuid="${customUuid}"
-                    data-custom-id="${customId}"
-                    data-is-custom="${isCustom}">
+                    data-custom-id="${customId ?? ''}"
+                    data-is-custom="${isCustom}"
+                    data-calorie="${item.calorie}">
                 <input type="checkbox" class="cart-check" checked>
                 <span class="item-name">${item.menuName}</span>
                 <span class="item-unitPrice">${item.unitPrice}원</span>
-                <span class="item-calorie">${item.calorie} kcal</span>
+                <span class="item-calorie">${item.calorie}kcal</span>
                 <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
             </div>
         `;
         $container.append(itemHtml);
     });
-}
-
-// 순수 cart 테이블 PK만
-function getSelectedCartRowIds() {
-    return $('[data-cart-item]').filter((_,el) => {
-        return $(el).find('.cart-check').is(':checked') && !$(el).data('is-custom');
-    }).map((_,el) => Number($(el).data('cart-id'))).get();
 }
 
 // custom_cart PK만
@@ -91,19 +86,8 @@ function getSelectedCustomIds() {
     }).map((_,el) => Number($(el).data('custom-id'))).get();
 }
 
-// custom_cart_id 를 참조하는 cart 테이블의 PK만
-function getSelectedCustomCartRowIds() {
-    return $('[data-cart-item]')
-        .filter((_, el) => {
-            return $(el).find('.cart-check').is(':checked')
-                && $(el).data('is-custom');      // is-custom=true 인 항목
-        })
-        .map((_, el) => Number($(el).data('cart-id')))
-        .get();
-}
-
 // 주소 존재 여부 체크 API 호출
-function checkUserAddress(userUid) {
+function checkUserAddress() {
     const address = $('#mainAddress').val();
     return Promise.resolve(!!address && address.trim() !== '');
 }
@@ -113,10 +97,18 @@ function execDaumPostcode() {
     new daum.Postcode({
         oncomplete: function(data) {
             // 도로명 주소 또는 지번 주소 넣기
-            var addr = data.roadAddress ? data.roadAddress : data.jibunAddress;
+            // var addr = data.roadAddress ? data.roadAddress : data.jibunAddress;
 
             // 주소 입력란에 넣어주기
-            document.getElementById('mainAddress').value = addr;
+            // document.getElementById('mainAddress').value = addr;
+            // 1) 주소 문자열
+            const addr = data.roadAddress || data.jibunAddress;
+            $('#mainAddress').val(addr);
+
+            // 2) 좌표 값까지 hidden input 에 세팅
+            // latitude = data.y, longitude = data.x
+            $('#deliveryDestinationLat').val(data.y);
+            $('#deliveryDestinationLan').val(data.x);
         }
     }).open();
 }
@@ -141,11 +133,7 @@ function renderStoreDropdown() {
 
             stores.forEach(s => {
                 $select.append(`
-          <option
-            value="${s.storeUid}"
-            data-lat="${s.storeLatitude}"
-            data-lan="${s.storeLongitude}">
-            ${s.storeName}
+          <option value="${s.storeUid}" data-lat="${s.storeLatitude}" data-lan="${s.storeLongitude}">${s.storeName}
           </option>
         `);
             });
@@ -203,24 +191,26 @@ function roundUpMinutes(date, step) {
 
 
 $(document).ready(async () => {
+    $('#logout-link').on('click', () => {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/member/login';
+    });
+
     const IMP = window.IMP;
     IMP.init('imp54787882');
 
     const user = await fetchProfileAndFillForm();
-    const cartItems = await getCartItems();
-    const customList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+    cartItems = await getCartItems();
+    console.log('[DEBUG] cartItems from 서버 →', cartItems);
 
-    cartItems.forEach(item => {
-        if (item.menuName === '커스텀 샌드위치') {
-            const match = customList.find(c =>
-                parseInt(c.price) === item.unitPrice &&
-                parseInt(c.calorie) === item.calorie
-            );
-            if (match) {
-                item.cartUid = match.cartUid;
-            }
-        }
-    });
+    // cartItems.forEach(item => {
+    //     if (item.menuName === '커스텀 샌드위치') {
+    //         const match = customList.find(c => String(c.uid) === String(item.cartUid));
+    //         if (match) {
+    //             item.cartUid = match.cartUid;
+    //         }
+    //     }
+    // });
     initReservationPicker();
 
     await renderCartItems(cartItems);
@@ -235,6 +225,7 @@ $(document).ready(async () => {
     });
 
     $('#payButton').click(async () => {
+        console.log('pay button clicked');
         // 예약 시간 input의 값을 읽어오되, 값이 없으면 null로 처리
 
         // 1) flatpickr 에서 넘어오는 "YYYY-MM-DDTHH:mm" 문자열을 가져온다
@@ -275,7 +266,8 @@ $(document).ready(async () => {
         const cartUids = getSelectedCartUids();
         const buyer = getBuyerInfo();
         const totalPrice = calculateTotal();
-        const selectedItems = getSelectedCartItems();
+        const selectedItems = await getSelectedCartItems();
+        console.log('[DEBUG] selectedItems 결과:', selectedItems);
 
         if (cartUids.length === 0) {
             alert('주문할 메뉴를 선택해주세요.');
@@ -327,52 +319,70 @@ function getSelectedCartUids() {
 }
 
 // 선택된 장바구니 항목 정보 가져오기
-function getSelectedCartItems() {
-    const selectedItems = [];
-    const customList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+async function getSelectedCartItems() {
+    const $items = $('[data-cart-item]');
 
-    $('[data-cart-item]').each(function () {
-        const $item = $(this);
-        const $check = $item.find('.cart-check');
-        if (!$check.is(':checked')) return;
+    // 각 엘리먼트에 대해 서버에서 한 건씩 custom-cart 조회하거나,
+    // 일반 메뉴면 바로 uid 꺼내고
+    const tasks = $items.map(async (_, el) => {
+        const $item     = $(el);
+        const checked   = $item.find('.cart-check').is(':checked');
+        if (!checked) return null;
 
-        let cartUid = $item.data('cart-uid');
-        const menuName = $item.find('.item-name').text().trim();
-        const isCustom = menuName === '커스텀 샌드위치';
-        const rawText = $item.find('.item-unitPrice').text();
-        const numeric = rawText.replace(/\D/g, '');
-        const unitPrice = parseInt(numeric, 10);
-        const amount = parseInt($item.find('.item-amount').val(), 10);
-        const calorie = parseInt($item.find('.item-calorie').text(), 10) || 0;
+        const cartUid   = $item.data('cart-uid');
+        const customId  = $item.data('custom-id');
+        const menuName  = $item.find('.item-name').text().trim();
+        const unitPrice = parseInt($item.find('.item-unitPrice').text().replace(/\D/g, ''), 10);
+        const amount    = parseInt($item.find('.item-amount').val(), 10) || 0;
+        const calorie = parseFloat($item.data('calorie')) || 0;
 
-        if (isNaN(unitPrice) || unitPrice < 1 || isNaN(amount) || amount < 1) return;
+        let uid, detail;
 
-        let uid;
-
-        if (isCustom) {
-            const match = customList.find(c => String(c.cartUid) === String(cartUid));
-            if (!match) {
-                console.warn(`customList에서 cartUid=${cartUid} 찾을 수 없음`);
-            } else {
-                uid = match.uid;  // 서버 전달용
-                // cartUid는 이미 위에서 정의되어 있으므로 그대로 유지
+        if (menuName === '커스텀 샌드위치') {
+            if (!customId) {
+                console.warn(`customId가 없습니다. cartUid=${cartUid} 건은 스킵합니다.`);
+                return null;
             }
+            detail = await fetchCustomCart(customId);
+            if (!detail?.uid) {
+                console.warn(`custom-cart 조회 실패: id=${customId}`);
+                return null;
+            }
+            uid = detail.uid;
         } else {
-            uid = cartUid; // 완제품이면 uid == cartUid
+            uid = cartUid;
         }
 
-        selectedItems.push({
+        return {
             uid,
-            cartUid,  // 이건 항상 cart 기준 값!
-            isCustom,
             menuName,
             unitPrice,
             amount,
-            calorie
-        });
-    });
+            ...detail,
+            calorie,
+            isCustom: !!detail,
+            bread: detail?.bread ?? null,
+            material: !!detail?.material ?? null,
+            material2: !!detail?.material2 ?? null,
+            material3: !!detail?.material3 ?? null,
+            cheese: !!detail?.cheese ?? null,
+            vegetable1: !!detail?.vegetable1 ?? null,
+            vegetable2: !!detail?.vegetable2 ?? null,
+            vegetable3: !!detail?.vegetable3 ?? null,
+            vegetable4: !!detail?.vegetable4 ?? null,
+            vegetable5: !!detail?.vegetable5 ?? null,
+            vegetable6: !!detail?.vegetable6 ?? null,
+            vegetable7: !!detail?.vegetable7 ?? null,
+            vegetable8: !!detail?.vegetable8 ?? null,
+            sauce1: !!detail?.sauce1 ?? null,
+            sauce2: !!detail?.sauce2 ?? null,
+            sauce3: !!detail?.sauce3 ?? null,
+        };
+    }).get();
 
-        return selectedItems;
+    // 모든 프로미스 끝날 때까지 기다린 다음, null 필터링
+    const results = await Promise.all(tasks);
+    return results.filter(item => item !== null);
 }
 
 
@@ -389,7 +399,7 @@ $(document).on('change', '.item-amount', function () {
     }
 
     const uid = $input.closest('[data-cart-item]').data('cart-uid');
-    const item = MOCK_CART_ITEMS.find(i => i.uid === uid);
+    const item = cartItems.find(i => i.uid === uid);
     if (item) item.amount = newAmount;
 
     updateTotalPrice();
@@ -429,11 +439,11 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
 }
 
 // 실제 결제 요청
-function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
+async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate) {
+    console.log('requestPayment 진입')
     const IMP = window.IMP;
-    const selectedItems = getSelectedCartItems();
-    const customData = JSON.parse(localStorage.getItem('customSandwiches') || 'null');
-    const isCustom = customData !== null;
+    const selectedItems = await getSelectedCartItems();
+    console.log('[DEBUG] selectedItems 결과:', selectedItems);
 
     let menuName = '';
 
@@ -444,8 +454,6 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
     }
 
     console.log('선택된 아이템:', selectedItems);
-    const selectedStoreUid = parseInt($('#storeSelect').val(), 10);
-    //const store = MOCK_STORES.find(s => s.uid === selectedStoreUid);
     // 1) 선택된 스토어 ID
     const storeUid = parseInt($('#storeSelect').val(), 10);
     // 2) hidden에 세팅해 둔 위도/경도
@@ -481,34 +489,24 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                 }),
                 success: function(updateRes) {
                     alert(updateRes.message || "결제 성공!");
-                    sendGeneralOrderRequest(buyer, response, totalPrice, reservationDate)
-                        .then(({ customResults }) => {
-                            // customResults 가 하나도 없으면 sendCustomOrderData() 호출 안 함
-                            if (customResults && customResults.length) {
-                                return sendCustomOrderData(customResults, response);
-                            }
-                            return Promise.resolve();
-                        })
+                    submitOrders(buyer, response, reservationDate)
                         .then(() => {
-                            const cartIds   = getSelectedCartRowIds();  // 순수 cart PK
-                            const customCartIds = getSelectedCustomCartRowIds();
-                            const customIds = getSelectedCustomIds();   // custom_cart PK
-                            
-                            return clearCart([...cartIds, ...customCartIds])
-                                .then(() => customIds.length ? clearCustomCart(customIds) : Promise.resolve());
+                            const allCartUids   = getSelectedCartUids();
+                            const allCustomIds  = getSelectedCustomIds();
+                            return clearCart(allCartUids)
+                                .then(() => clearCustomCart(allCustomIds));
                         })
                         .then(() => {
                             getSelectedCartUids().forEach(uid => {
                                 $(`.cart-item[data-cart-uid="${uid}"]`).remove();
                             });
                             updateTotalPrice();
-                            localStorage.removeItem('customSandwiches');
                             alert('주문 저장 및 카트 삭제 완료!');
                             window.location.reload();
                         })
                         .catch(err => {
-                            console.error('주문 저장 실패', err);
-                            alert('주문 처리 중 오류 발생!');
+                            console.error('주문 처리 오류', err);
+                            alert('주문 저장 중 오류가 발생했습니다.');
                         });
                 },
                 error: function(err) {
@@ -526,6 +524,9 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
                     merchantUid: response.merchant_uid
                 })
             })
+                //실패 구분하기
+                //포트원 승인되었으나 우리 DB 안 붙을 때
+                //그 때 따로 뺀 취소 함수 불러서 넣기 (커먼에 지금 빼놨던 거)
                 .done(function() {
                     alert('결제 실패!');
                 })
@@ -537,168 +538,143 @@ function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDat
     });
 }
 
-function sendGeneralOrderRequest(buyer, paymentResponse, totalPrice, reservationDate) {
-    const items       = getSelectedCartItems();
-    const customList  = JSON.parse(localStorage.getItem('customSandwiches')) || [];
-    let addressUsed   = false;
-    const generalUids = [];
-    const customResults = [];
+let isSubmitting = false;
 
-    // 모든 아이템을 하나씩 순회하면서
-    const promises = items.map(item => {
-        // 서버에 보낼 DTO 생성
-        const dto = {
-            userUid:        buyer.userUid,
-            socialUid:      buyer.socialUid,
-            payment:        buyer.payMethod,
-            items:          [item],
-            merchantUid:    paymentResponse.merchant_uid,
+async function submitOrders(buyer, paymentResponse, reservationDate) {
+    const token = localStorage.getItem('accessToken');
+    const items = await getSelectedCartItems();
+    const generalItems = items.filter(i => !i.isCustom);
+    const customItems = items.filter(i => i.isCustom);
+    const storeUid = parseInt($('#storeSelect').val(), 10);
+    const deliveryAddress = {
+        // 출발지는 가게 정보
+        addressStart:       $('#storeSelect option:selected').text().trim(),
+        addressStartLat:    parseFloat($('#storeLatitude').val()),
+        addressStartLan:    parseFloat($('#storeLongitude').val()),
+        // 도착지는 사용자 입력 주소
+        addressDestination: $('#mainAddress').val(),
+        addressDestinationLat:  parseFloat($('#deliveryDestinationLat').val()),
+        addressDestinationLan:  parseFloat($('#deliveryDestinationLan').val())
+    };
+
+    // 1) 일반 주문 먼저 저장
+    let generalOrderUids = [];
+    if (generalItems.length) {
+        const payload = {
+            merchantUid: paymentResponse.merchant_uid,
+            userUid: buyer.userUid,
+            socialUid: buyer.socialUid,
+            storeUid,
+            deliveryAddress,
+            payment: buyer.payMethod,
             paymentSuccess: true,
-            storeUid:       parseInt($('#storeSelect').val(), 10),
-            reservationDate: reservationDate,
-            totalPrice:     item.unitPrice * item.amount
+            reservationDate,
+            totalPrice: generalItems.reduce((s, i) => s + i.unitPrice * i.amount, 0),
+            items: generalItems.map(i => ({
+                uid: i.uid,
+                menuName: i.menuName,
+                amount: i.amount,
+                unitPrice: i.unitPrice,
+                calorie: i.calorie || 0,
+                //version: expectedVersion || 0
+            }))
         };
-
-        // deliveryAddress는 첫 번째 호출에만 한 번만 붙인다
-        if (!addressUsed) {
-            dto.deliveryAddress = {
-                addressStart:          $('#storeSelect option:selected').text().trim(),
-                addressStartLat:       parseFloat($('#storeLatitude').val()),
-                addressStartLan:       parseFloat($('#storeLongitude').val()),
-                addressDestination:    buyer.mainAddress,
-                addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
-                addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
-            };
-            addressUsed = true;
-        }
-
-        // 실제 AJAX 호출
-        return $.ajax({
+        // 응답에서 orderUids 가져오기
+        const resp = await $.ajax({
             type: 'POST',
             url: '/orders',
             contentType: 'application/json',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
-            data: JSON.stringify(dto)
-        }).then(orderUid => {
-            if (item.isCustom) {
-                // 커스텀 메뉴면 customResults에 필요한 정보 담아두고
-                const customData = customList.find(c => String(c.cartUid) === String(item.cartUid));
-                customResults.push({
-                    cartUid:    item.cartUid,
-                    orderUid,
-                    menuName:   item.menuName,
-                    unitPrice:  item.unitPrice,
-                    amount:     item.amount,
-                    calorie:    item.calorie,
-                    customData
-                });
-            } else {
-                // 일반 메뉴면 Uid만 모아두기
-                generalUids.push(orderUid);
-            }
-            return orderUid;
+            headers: {Authorization: `Bearer ${token}`},
+            data: JSON.stringify(payload)
         });
-    });
-
-    return Promise.all(promises).then(() => ({
-        generalUids,
-        customResults
-    }));
-}
-
-let isSubmitting = false;
-
-function sendCustomOrderData(customItemsWithUid, paymentResponse, reservationDate) {
-    if (isSubmitting) {
-        console.warn("중복 전송 방지: 이미 요청 중");
-        return;
+        generalOrderUids = resp.orderUids || [resp.orderUid];
     }
-    isSubmitting = true;
 
-    const convertToInt = (v) => {
-        if (v === "" || v === undefined || v === null) return null;
-        const n = parseInt(v, 10);
-        return isNaN(n) ? null : n;
-    };
-
-    const customOrderList = customItemsWithUid.map(item => {
-        const customData = item.customData;
-        const id = (typeof item.orderUid === 'object') ? item.orderUid.orderUid : item.orderUid;
-        return {
-            uid: id,
-            bread: convertToInt(customData.bread),
-            material1: convertToInt(customData.material1),
-            material2: convertToInt(customData.material2),
-            material3: convertToInt(customData.material3),
-            cheese: convertToInt(customData.cheese),
-            vegetable1: convertToInt(customData.vegetable1),
-            vegetable2: convertToInt(customData.vegetable2),
-            vegetable3: convertToInt(customData.vegetable3),
-            vegetable4: convertToInt(customData.vegetable4),
-            vegetable5: convertToInt(customData.vegetable5),
-            vegetable6: convertToInt(customData.vegetable6),
-            vegetable7: convertToInt(customData.vegetable7),
-            vegetable8: convertToInt(customData.vegetable8),
-            sauce1: convertToInt(customData.sauce1),
-            sauce2: convertToInt(customData.sauce2),
-            sauce3: convertToInt(customData.sauce3),
-            price: convertToInt(customData.price),
-            calorie: parseFloat(customData.calorie) || 0,
-            version: 0
-        };
-    });
-
-    const address = {
-        addressStart: $('#storeSelect option:selected').text().trim(),
-        addressStartLat:  parseFloat($('#storeLatitude').val()),
-        addressStartLan:  parseFloat($('#storeLongitude').val()),
-        addressDestination: $('#mainAddress').val(),
-        addressDestinationLat: parseFloat($('#deliveryDestinationLat').val()),
-        addressDestinationLan: parseFloat($('#deliveryDestinationLan').val())
-    };
-
-    const payload = {
-        orderRequestDTO: {
-            userUid: userUid,
-            storeUid: parseInt($('#storeSelect').val(), 10),
+    // 2) custom 주문 전에도 /orders 호출 → orderUid 얻기
+    let customOrderUids = [];
+    if (customItems.length) {
+        const customPayload = {
             merchantUid: paymentResponse.merchant_uid,
-            deliveryAddress: address, // 주소는 여기만 포함
-            payment: $('#payMethod').val() || 'card',
-            //reservationDate: $('#reservationDate').val() || null,
-            reservationDate: reservationDate,
+            userUid: buyer.userUid,
+            socialUid: buyer.socialUid,
+            storeUid,
+            deliveryAddress,
+            payment: buyer.payMethod,
             paymentSuccess: true,
-            totalPrice: calculateTotal(),
-            items: customItemsWithUid.map(item => {
-               const id = typeof item.orderUid === 'object'
-                    ? item.orderUid.orderUid
-                    : item.orderUid;
-                return {
-                    uid: id,
-                    menuName: item.menuName,
-                    amount: item.amount,
-                    unitPrice: item.unitPrice,
-                    calorie: item.calorie
-                }
+            reservationDate,
+            totalPrice: customItems.reduce((s, i) => s + i.unitPrice * i.amount, 0),
+            items: customItems.map(i => ({
+                uid: i.uid,         // 이건 custom-cart id → 서버는 무시
+                menuName: i.menuName,
+                amount: i.amount,
+                unitPrice: i.unitPrice,
+                calorie: i.calorie || 0,
+                //version: expectedVersion || 0
+            }))
+        };
+        const resp2 = await $.ajax({
+            type: 'POST',
+            url: '/orders',
+            contentType: 'application/json',
+            headers: {Authorization: `Bearer ${token}`},
+            data: JSON.stringify(customPayload)
+        });
+        customOrderUids = resp2.orderUids || [resp2.orderUid];
+    }
+
+    // 3) 방금 생성된 Order PK로 custom_order 저장
+    if (customItems.length) {
+        const customOrderList = customItems.map((i, idx) => ({
+            uid: customOrderUids[idx], // 여기 반드시 orders.uid
+            bread: i.breadId,
+            material1: i.material1Id,
+            material2: i.material2Id,
+            material3: i.material3Id,
+            cheese: i.cheeseId,
+            vegetable1: i.vegetable1Id,
+            vegetable2: i.vegetable2Id,
+            vegetable3: i.vegetable3Id,
+            vegetable4: i.vegetable4Id,
+            vegetable5: i.vegetable5Id,
+            vegetable6: i.vegetable6Id,
+            vegetable7: i.vegetable7Id,
+            vegetable8: i.vegetable8Id,
+            sauce1: i.sauce1Id,
+            sauce2: i.sauce2Id,
+            sauce3: i.sauce3Id,
+            // version: 0
+        }));
+
+        await $.ajax({
+            type: 'POST',
+            url: '/orders/custom/final',
+            contentType: 'application/json',
+            headers: {Authorization: `Bearer ${token}`},
+            data: JSON.stringify({
+                orderRequestDTO: {
+                    merchantUid: paymentResponse.merchant_uid,
+                    userUid: buyer.userUid,
+                    socialUid: buyer.socialUid,
+                    storeUid,
+                    deliveryAddress,
+                    payment: buyer.payMethod,
+                    paymentSuccess: true,
+                    reservationDate,
+                    totalPrice: customItems.reduce((s, i) => s + i.unitPrice * i.amount, 0),
+                    items: customItems.map(i => ({
+                        uid: i.uid,
+                        menuName: i.menuName,
+                        amount: i.amount,
+                        unitPrice: i.unitPrice,
+                        calorie: i.calorie || 0
+                    }))
+                },
+                customOrderRequestDTO: customOrderList
             })
-        },
-        customOrderRequestDTO: customOrderList
-    };
-
-    console.log('[sendCustomOrderData] payload:', JSON.stringify(payload, null, 2));
-
-    return $.ajax({
-        type: 'POST',
-        url: '/orders/custom/final',
-        contentType: 'application/json',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        data: JSON.stringify(payload),
-        complete: function () {
-            isSubmitting = false;
-        }
-    });
+        });
+    }
 }
+
 
 // 총 금액 계산
 function calculateTotal() {
