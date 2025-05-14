@@ -48,11 +48,21 @@ public class OrderService {
         return orderClient.updateOrderStatusFail(request);
     }
 
-    // 결제 취소
+    // 결제 취소 (필터 걸기)
     public CancelPaymentResponseDTO cancelPayment(
             String token,
             CancelPaymentRequestDTO req
     ) {
+
+        List<OrderDetailResponseDTO> orders = orderClient.getOrdersByMerchantUid(token, req.getMerchantUid());
+        if (orders.isEmpty()) {
+            throw new IllegalArgumentException("해당 주문을 찾을 수 없습니다.");
+        }
+
+        OrderStatus status = OrderStatus.valueOf(orders.get(0).getStatus());
+        if (status != OrderStatus.PAYMENT_COMPLETED) {
+            throw new IllegalStateException("현재 상태에서는 결제 취소가 불가능합니다.");
+        }
 
         // 1) 준비 단계: 이전 상태 저장 & DB 상태 → CANCELLED
         orderClient.initCancel(token, req);
@@ -62,7 +72,7 @@ public class OrderService {
         int amount    = info.get("amount").asInt();
         int checksum  = amount;
         CancelPaymentResponseDTO resp =
-        paymentService.cancelPayment(impUid, amount, req.getReason(), checksum);
+        paymentService.cancelPayment(impUid, req.getMerchantUid(), amount, req.getReason(), checksum);
         // 3) 결과에 따라 확정 or 보상 트랜잭션
         if (resp.isSuccess()) {
             orderClient.confirmCancel(token, req);
@@ -70,26 +80,19 @@ public class OrderService {
                 orderClient.compensateCancel(token, req);
             }
             return resp;
-        // 1) merchantUid 로 imp_uid, amount 등을 조회
-        // 필터 걸기
-//        JsonNode info = paymentService.getPaymentInfo(req.getMerchantUid());
-//        String impUid    = info.get("imp_uid").asText();
-//        int    amount    = info.get("amount").asInt();
-//        int    checksum  = amount; // 필요에 따라 달리 구성
-//
-//        // 2) 실제 환불 요청
-//        CancelPaymentResponseDTO resp =
-//                paymentService.cancelPayment(impUid, amount, req.getReason(), checksum);
-//
-//        // 3) CANCELLED 상태로 주문 상태 변경
-//        if (resp.isSuccess()) {
-//            orderClient.changeOrderStatus(
-//                    token,
-//                    req.getMerchantUid(),
-//                    OrderStatus.ORDER_CANCELLED
-//            );
-//        }
-//        return resp;
     }
+
+//    public void initCancel(String token, CancelPaymentRequestDTO dto) {
+//        orderClient.initCancel(token, dto);
+//    }
+//
+//    public void confirmCancel(String token, CancelPaymentRequestDTO dto) {
+//        orderClient.confirmCancel(token, dto);
+//    }
+//
+//    public void compensateCancel(String token, CancelPaymentRequestDTO dto) {
+//        orderClient.compensateCancel(token, dto);
+//    }
+
 
 }

@@ -45,10 +45,12 @@ public class PaymentService {
                 JsonNode.class,
                 merchantUid
         );
+        log.info("결제 정보 조회 결과: {}", response.getBody());
         return response.getBody().get("response");
     }
 
     public CancelPaymentResponseDTO cancelPayment(String impUid,
+                                                  String merchantUid,
                                                   int amount,
                                                   String reason,
                                                   int checksum) {
@@ -60,11 +62,14 @@ public class PaymentService {
 
         Map<String,Object> body = new LinkedHashMap<>();
         body.put("imp_uid", impUid);
+        body.put("merchant_uid",   merchantUid);
         body.put("amount", amount);
         body.put("checksum", checksum);
         if (reason != null && !reason.isBlank()) {
             body.put("reason", reason);
         }
+
+        log.info("imp_uid={}, merchant_uid={}, amount={}, reason={}", impUid, merchantUid, amount, reason);
 
         HttpEntity<Map<String,Object>> request = new HttpEntity<>(body, headers);
         JsonNode json;
