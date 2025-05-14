@@ -28,8 +28,8 @@ public class OrderService {
     }
 
     //주문 내역 확인
-    public List<OrderDetailResponseDTO> listByUser(String token, Integer userUid) {
-        return orderClient.getOrdersByUserUid(token, userUid);
+    public List<OrderDetailResponseDTO> listByUser(String token, String userType, Integer userUid) {
+        return orderClient.getOrdersByUserUid(token, userType, userUid);
     }
 
     //상태 변경
