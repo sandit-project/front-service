@@ -39,18 +39,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.submit(token,requestdto));
     }
 
-    @GetMapping("/orders/user/{userUid}")
-    public ResponseEntity<List<OrderDetailResponseDTO>> listByUser(HttpServletRequest request, @PathVariable Integer userUid) {
-        log.info("listByUser userUid::" + userUid);
+    @GetMapping("/orders/user/{userType}/{userUid}")
+    public ResponseEntity<List<OrderDetailResponseDTO>> listByUser(HttpServletRequest request,
+                                                                   @PathVariable String userType,
+                                                                   @PathVariable Integer userUid) {
+        log.info("listByUser pathVar:: {},{}", userType, userUid);
 
         String token = request.getHeader("Authorization");
 
-        // Bearer 없으면 추가
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
-
-        return ResponseEntity.ok(orderService.listByUser(token, userUid));
+        return ResponseEntity.ok(orderService.listByUser(token, userType, userUid));
     }
 
     
