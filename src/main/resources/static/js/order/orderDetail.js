@@ -9,6 +9,7 @@ let targetUid = null;
 $(document).ready(async () => {
     checkToken();
     setupAjax();
+    //여기에서 다 걸러지니까 본인인증할 필요는 X
 
     $('#logout-link').on('click', () => {
         localStorage.removeItem('accessToken');
@@ -54,6 +55,8 @@ function fetchProfile() {
 }
 
 async function fetchOrders() {
+    setupAjax();
+    checkToken();
     console.log("▶️ 호출할 userUid:", userUid, "pathUid:", pathUid, "targetUid:", targetUid);
     console.log("▶️ 호출 URL:", `/orders/user/${targetUid}`);
     try {
@@ -61,9 +64,7 @@ async function fetchOrders() {
             url: `/orders/user/${targetUid}?_=${Date.now()}`,
             type: 'GET',
             contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
+
         });
 
         ordersList = response;
@@ -90,26 +91,6 @@ async function fetchOrders() {
         alert('주문 목록을 가져오는 데 실패했습니다.');
     }
 }
-
-
-// function fetchOrders() {
-//     return $.ajax({
-//         url: `/orders/user/${userUid}?_=${Date.now()}`, // ← 캐시 방지 파라미터 추가
-//         type: 'GET',
-//         contentType: 'application/json',
-//         headers: {
-//             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-//         }
-//     }).then(response => {
-//             console.log('fetchOrders 응답:', response);
-//             ordersList = response;
-//             renderOrders();
-//         })
-//         .catch(err => {
-//             console.error('주문 목록 불러오기 실패', err);
-//             alert('주문 목록을 가져오는 데 실패했습니다.');
-//         });
-// }
 
 function renderOrders() {
     // 2-1) merchant_uid별 그룹핑
@@ -177,10 +158,17 @@ function showModal(ordersGroup) {
     $('#modal-store-name').text(storeMap[first.storeUid]||'-');
     const $list = $('#modal-items-list').empty();
     ordersGroup.forEach(o =>
-        o.items.forEach(it=>
-            $list.append(`<li>${it.menuName} : ${it.amount}개 (${it.unitPrice.toLocaleString()}원)</li>`)
-        )
+        o.items.forEach(it => {
+            const itemHtml = `
+          <div class="kiosk-item">
+            <div class="menu-name">${it.menuName}</div>
+            <div class="menu-detail">${it.amount}개 · ${it.unitPrice.toLocaleString()}원</div>
+          </div>
+        `;
+            $list.append(itemHtml);
+        })
     );
+
 
     const total = ordersGroup
         .flatMap(o => o.items)
@@ -213,30 +201,19 @@ function showModal(ordersGroup) {
             alert('취소 사유를 선택해주세요.');
             return;
         }
+
         try {
             $('#loading-spinner').show(); // 로딩 시작
 
-            await cancelOrder(merchantUid, reason);
+            console.log('merchantUid::', merchantUid);
+            const result = await cancelOrder(merchantUid, reason);
 
-            // 상태가 바뀔 때까지 기다림 (최대 10초)
-            const cancelled = await waitUntilCancelled(merchantUid);
-            if (cancelled) {
-                alert('결제 취소 및 상태 업데이트 완료');
-            } else {
-                alert('취소 요청은 완료되었으나 상태 반영이 지연되고 있습니다.');
-            }
-
-            $('#order-modal-backdrop, #order-modal').hide();
-            await fetchOrders();
-        } catch (err) {
-            console.error('취소 처리 중 오류', err);
-            if (err?.responseJSON?.message?.includes("아직 취소 불가")) {
-                alert(SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE);
-            } else {
-                alert('결제 취소 처리 중 오류가 발생했습니다.');
+            if (result.isSuccess) {
+                $('#order-modal-backdrop, #order-modal').hide();
+                await fetchOrders();
             }
         } finally {
-            $('#loading-spinner').hide(); // 로딩 종료 (에러든 성공이든)
+            $('#loading-spinner').hide();
         }
     });
 
@@ -253,30 +230,5 @@ function mapOrderStatus(status) {
         case 'ORDER_COOKING': return '조리 중';
         case 'ORDER_DELIVERING': return '배달 중';
         case 'ORDER_DELIVERED': return '배달 완료';
-        //default: return status;
     }
-}
-
-async function waitUntilCancelled(merchantUid, maxTries = 10, delayMs = 1000) {
-    for (let i = 0; i < maxTries; i++) {
-        try {
-            const response = await $.ajax({
-                url: `/orders/merchant/${merchantUid}`,
-                type: 'GET',
-                contentType: 'application/json'
-            });
-
-            if (Array.isArray(response) && response.length > 0) {
-                const status = response[0].status;
-                if (status === 'ORDER_CANCELLED') {
-                    return true;
-                }
-            }
-        } catch (e) {
-            console.warn('상태 확인 중 오류:', e);
-        }
-
-        await new Promise(resolve => setTimeout(resolve, delayMs));
-    }
-    return false;
 }

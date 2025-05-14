@@ -3,11 +3,9 @@ package com.example.frontservice.controller.order;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.service.OrderService;
 import com.example.frontservice.type.OrderStatus;
-import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,11 +29,6 @@ public class OrderController {
         log.info("submit order::" + request.toString());
         String token = request.getHeader("Authorization");
 
-        // Bearer 없으면 추가
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
-
         return ResponseEntity.ok(orderService.submit(token,requestdto));
     }
 
@@ -45,29 +38,7 @@ public class OrderController {
 
         String token = request.getHeader("Authorization");
 
-        // Bearer 없으면 추가
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
-
         return ResponseEntity.ok(orderService.listByUser(token, userUid));
-    }
-
-    
-    //상태 변경
-    @PutMapping("/orders/{merchantUid}/status")
-    public ResponseEntity<OrderStatusChangeResponseDTO> changeStatus(
-            HttpServletRequest request,
-            @PathVariable String merchantUid,
-            @RequestParam OrderStatus newStatus
-    ) {
-        String token = request.getHeader("Authorization");
-
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
-        log.info("changeStatus token={}, merchantUid={}, newStatus={}", token, merchantUid, newStatus);
-        return ResponseEntity.ok(orderService.changeStatus(token, merchantUid, newStatus));
     }
 
 
@@ -85,14 +56,12 @@ public class OrderController {
 
     @PostMapping("/orders/payments/cancel")
     public CancelPaymentResponseDTO cancelPayment(
-            @RequestHeader("Authorization") String token,
+            HttpServletRequest request,
             @RequestBody CancelPaymentRequestDTO req
     ) {
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
+        String token = request.getHeader("Authorization");
+
         return orderService.cancelPayment(token, req);
     }
-
 
 }
