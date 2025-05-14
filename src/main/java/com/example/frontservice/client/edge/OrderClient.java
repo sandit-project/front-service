@@ -26,6 +26,13 @@ public interface OrderClient {
                                                     @PathVariable(name = "userType") String userType,
                                                     @PathVariable(name = "userUid") Integer userUid);
 
+    @GetMapping("/merchant/{merchantUid}")
+    List<OrderDetailResponseDTO> getOrdersByMerchantUid(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("merchantUid") String merchantUid
+    );
+
+
     @PutMapping("/{merchantUid}/status")
     OrderStatusChangeResponseDTO changeOrderStatus(@RequestHeader("Authorization") String token,
                                                    @PathVariable("merchantUid") String merchantUid,

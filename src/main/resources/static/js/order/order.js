@@ -5,10 +5,8 @@ let expectedVersion = null;
 
 // 장바구니 항목 가져오기
 function getCartItems() {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-        return Promise.reject('로그인 토큰이 없습니다');
-    }
+    setupAjax();
+    checkToken();
 
     const urlParams = new URLSearchParams(window.location.search);
     const selectedIds = urlParams.getAll('selectedIds');
@@ -17,9 +15,6 @@ function getCartItems() {
         url: '/menus/cart',
         type: 'GET',
         contentType: 'application/json',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
     }).then(response => {
         const allItems = response.cartItems || [];
         if (selectedIds.length === 0) {
@@ -31,11 +26,12 @@ function getCartItems() {
 }
 
 async function fetchCustomCart(customCartId) {
+    setupAjax();
+    checkToken();
     const token = localStorage.getItem('accessToken');
     return $.ajax({
         url: `/menus/custom-carts/${customCartId}`,
-        type: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+        type: 'GET'
     });
 }
 
@@ -96,17 +92,11 @@ function checkUserAddress() {
 function execDaumPostcode() {
     new daum.Postcode({
         oncomplete: function(data) {
-            // 도로명 주소 또는 지번 주소 넣기
-            // var addr = data.roadAddress ? data.roadAddress : data.jibunAddress;
-
-            // 주소 입력란에 넣어주기
-            // document.getElementById('mainAddress').value = addr;
             // 1) 주소 문자열
             const addr = data.roadAddress || data.jibunAddress;
             $('#mainAddress').val(addr);
 
             // 2) 좌표 값까지 hidden input 에 세팅
-            // latitude = data.y, longitude = data.x
             $('#deliveryDestinationLat').val(data.y);
             $('#deliveryDestinationLan').val(data.x);
         }
@@ -116,11 +106,12 @@ function execDaumPostcode() {
 
 // 스토어 리스트 가져오기
 function getStores(limit = 100) {
-    const token = localStorage.getItem('accessToken');
+    setupAjax();
+    checkToken();
     return $.ajax({
         url: `/stores/list?limit=${limit}`,
+        dataType: 'json',
         type: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` }
     }).then(response => response.storeList);
 }
 
@@ -145,6 +136,8 @@ function renderStoreDropdown() {
 }
 
 function fetchProfileAndFillForm() {
+    setupAjax();
+    checkToken();
     return $.ajax({
         type: 'GET',
         url: '/profile'
@@ -203,14 +196,6 @@ $(document).ready(async () => {
     cartItems = await getCartItems();
     console.log('[DEBUG] cartItems from 서버 →', cartItems);
 
-    // cartItems.forEach(item => {
-    //     if (item.menuName === '커스텀 샌드위치') {
-    //         const match = customList.find(c => String(c.uid) === String(item.cartUid));
-    //         if (match) {
-    //             item.cartUid = match.cartUid;
-    //         }
-    //     }
-    // });
     initReservationPicker();
 
     await renderCartItems(cartItems);
@@ -433,7 +418,6 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
             storeUid: storeUid,
             userUid: userUid,
             reservationDate: reservationDate,
-            //expectedVersion: expectedVersion
         })
     });
 }
@@ -471,11 +455,12 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         name: menuName,
         amount: totalPrice,
         buyer_name: buyer.name,
-        buyer_phone: buyer.phone,
+        buyer_tel: buyer.phone,
         buyer_email: buyer.email,
         buyer_addr: buyer.mainAddress,
         buyer_addr_sub: buyer.subAddress1,
     }, function (response) {
+        console.log(response);
         if (response.success) {
             // 결제 성공 시 업데이트 요청
             $.ajax({
@@ -538,10 +523,9 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
     });
 }
 
-let isSubmitting = false;
-
 async function submitOrders(buyer, paymentResponse, reservationDate) {
-    const token = localStorage.getItem('accessToken');
+    setupAjax();
+    checkToken();
     const items = await getSelectedCartItems();
     const generalItems = items.filter(i => !i.isCustom);
     const customItems = items.filter(i => i.isCustom);
@@ -584,7 +568,6 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
             type: 'POST',
             url: '/orders',
             contentType: 'application/json',
-            headers: {Authorization: `Bearer ${token}`},
             data: JSON.stringify(payload)
         });
         generalOrderUids = resp.orderUids || [resp.orderUid];
@@ -616,7 +599,6 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
             type: 'POST',
             url: '/orders',
             contentType: 'application/json',
-            headers: {Authorization: `Bearer ${token}`},
             data: JSON.stringify(customPayload)
         });
         customOrderUids = resp2.orderUids || [resp2.orderUid];
@@ -649,7 +631,6 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
             type: 'POST',
             url: '/orders/custom/final',
             contentType: 'application/json',
-            headers: {Authorization: `Bearer ${token}`},
             data: JSON.stringify({
                 orderRequestDTO: {
                     merchantUid: paymentResponse.merchant_uid,
@@ -706,6 +687,8 @@ function generateMerchantUid() {
 
 // 장바구니 비우기
 function clearCart(numericIds) {
+    setupAjax();
+    checkToken();
     const token = localStorage.getItem('accessToken');
     if (!numericIds.length || !token) return Promise.resolve();
 
@@ -713,12 +696,13 @@ function clearCart(numericIds) {
     return $.ajax({
         url: `/menus/cart/delete-selected?${query}`,
         type: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
     });
 }
 
 // 커스텀 카트 비우기
 function clearCustomCart(customIds) {
+    setupAjax();
+    checkToken();
     const token = localStorage.getItem('accessToken');
     if (!customIds.length || !token) return Promise.resolve();
 
@@ -727,7 +711,6 @@ function clearCustomCart(customIds) {
         $.ajax({
             url: `/menus/custom-carts/${uid}`,
             type: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` }
         }).catch(() => null)
     );
     return Promise.all(deletes);

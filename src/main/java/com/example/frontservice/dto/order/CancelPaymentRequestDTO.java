@@ -1,5 +1,6 @@
 package com.example.frontservice.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
