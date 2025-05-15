@@ -2,13 +2,10 @@ $(document).ready(async ()=>{
     checkToken();
     setupAjax();
 
-    await requestDeliveringOrder();
-
-    // 배달원 위치 수신하는 함수 (merchantUid를 경로에 전달해서 수신함)
-    receiveDeliveryManLocation();
+    const resultList = await requestDeliveringOrder();
 
     // 카카오맵 렌더링 (위에서 받은 좌표 전달)
-    renderKakaomap();
+    renderKakaomap(resultList[0]);
 
     $('#updateProfileBtn').on("click",() => {
         window.location.href = "/member/profile/update"
@@ -29,28 +26,26 @@ let requestDeliveringOrder = async () => {
         });
 
         const orders = await fetchOrders(userUid,userType);
-        const delivering = orders
-            .filter(o => o.status === 'ORDER_DELIVERING')
-            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))[0];
 
-        if (delivering) {
-            console.log(delivering);
-            const storeName = await fetchStoreName(delivering.storeUid);
-            const menuName = delivering.items[0]?.menuName || '—';
-            const menuText = delivering.items.length > 1
-                ? `메뉴: ${menuName} 외 ${delivering.items.length - 1}건`
+        if (orders) {
+            const mergedOrders = await mergeOrderList(orders);
+            const storeName = await fetchStoreName(mergedOrders[0].storeUid);
+            const menuName = mergedOrders[0].items[0]?.menuName || '—';
+            const menuText = mergedOrders[0].items.length > 1
+                ? `메뉴: ${menuName} 외 ${mergedOrders[0].items.length - 1}건`
                 : `메뉴: ${menuName}`;
-            const totalPrice = delivering.items.reduce((sum, item) => sum + item.unitPrice * item.amount, 0);
-            const createdAt = formatDate(delivering.createdDate);
+            const totalPrice = mergedOrders[0].items.reduce((sum, item) => sum + item.price * item.amount, 0);
+            const createdAt = formatDate(mergedOrders[0].createdDate);
 
             $('#order-store-name').text(`가게: ${storeName}`);
             $('#order-menu-info').text(menuText);
             $('#order-total-price').text(`총 가격: ${totalPrice.toLocaleString()}원`);
             $('#order-created-at').text(`주문 시간: ${createdAt}`);
+
+            return mergedOrders;
         } else {
             $('#latest-order-box').html('<p>현재 배달 중인 주문이 없습니다.</p>');
         }
-
     } catch (err) {
         console.error('주문 불러오기 실패', err);
     }
@@ -102,11 +97,51 @@ function fetchOrders(userUid, userType) {
     console.log(userUid,userType);
 
     return $.ajax({
-        url: `/orders/user/${userType}/${userUid}`,
+        url: `/orders/user/delivering/${userType}/${userUid}`,
         type: 'GET',
         contentType: 'application/json',
     });
 }
+
+// response 주문 정보 통합하는 함수
+let mergeOrderList = (orders) => {
+    const grouped = {};
+
+    for (const order of orders) {
+        const {
+            merchantUid,
+            menuName,
+            amount,
+            price,
+            uid,
+            ...rest
+        } = order;
+
+        if (!grouped[merchantUid]) {
+            grouped[merchantUid] = {
+                merchantUid,
+                ...rest,
+                items: []
+            };
+        }
+
+        const itemList = grouped[merchantUid].items;
+
+        // 같은 menuName 있는지 확인하고 합산
+        const existing = itemList.find(i => i.menuName === menuName);
+        if (existing) {
+            existing.amount += amount;
+        } else {
+            itemList.push({ uid, menuName, amount, price });
+        }
+    }
+
+    console.log("merged list", Object.values(grouped));
+    return Object.values(grouped);
+};
+
+
+
 
 // 매장 이름 불러오기
 function fetchStoreName(storeUid) {

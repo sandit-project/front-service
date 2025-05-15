@@ -1,8 +1,8 @@
 package com.example.frontservice.controller.order;
 
+import com.example.frontservice.dto.delivery.DeliveryUserResponseDTO;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.service.OrderService;
-import com.example.frontservice.type.OrderStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,17 @@ public class OrderController {
         String token = request.getHeader("Authorization");
 
         return ResponseEntity.ok(orderService.listByUser(token, userType, userUid));
+    }
+
+    @GetMapping("/orders/user/delivering/{userType}/{userUid}")
+    public ResponseEntity<List<DeliveryUserResponseDTO>> deliveringListByUser(HttpServletRequest request,
+                                                                              @PathVariable String userType,
+                                                                              @PathVariable Integer userUid) {
+        log.info("deliveringListByUser pathVar:: {},{}", userType, userUid);
+
+        String token = request.getHeader("Authorization");
+
+        return ResponseEntity.ok(orderService.deliveringListByUser(token, userType, userUid));
     }
 
 

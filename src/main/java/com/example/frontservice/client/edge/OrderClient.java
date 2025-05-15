@@ -1,6 +1,6 @@
 package com.example.frontservice.client.edge;
 
-import com.example.frontservice.dto.delivery.DeliveryOrderResponseDTO;
+import com.example.frontservice.dto.delivery.DeliveryUserResponseDTO;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.dto.store.StoreOrderCountResponseDTO;
 import com.example.frontservice.dto.store.StoreOrderListResponseDTO;
@@ -25,6 +25,11 @@ public interface OrderClient {
     List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token,
                                                     @PathVariable(name = "userType") String userType,
                                                     @PathVariable(name = "userUid") Integer userUid);
+
+    @GetMapping("/user/delivering/{userType}/{userUid}")
+    List<DeliveryUserResponseDTO> getDeliveringOrdersByUserUid(@RequestHeader("Authorization") String token,
+                                                               @PathVariable(name = "userType") String userType,
+                                                               @PathVariable(name = "userUid") Integer userUid);
 
     @GetMapping("/merchant/{merchantUid}")
     List<OrderDetailResponseDTO> getOrdersByMerchantUid(

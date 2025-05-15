@@ -283,3 +283,63 @@ let endDelivery = (info) => {
     });
 }
 
+let sendDeliveryManLocation = async (uid, type) => {
+    const socket = new SockJS(WEBSOCKET_URL);
+    const stompClient = Stomp.over(socket);
+
+    const deliveryList = await requestDeliveringList(type, uid);
+
+    console.log(deliveryList);
+
+    stompClient.connect({}, () => {
+        console.log("STOMP 연결됨");
+
+        // 5초마다 위치 전송
+        setInterval(() => {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const payload = {
+                        merchantUid: deliveryList[0].merchantUid,
+                        riderUserUid: type === "user" ? uid : null,
+                        riderSocialUid: type === "social" ? uid : null,
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                        accuracy: pos.coords.accuracy // 정확도도 같이 보내고 싶다면
+                    };
+
+                    // 서버에 위치 정보 전송
+                    stompClient.send("/app/delivery/update-location", {}, JSON.stringify(payload));
+                },
+                (error) => {
+                    console.error("위치 정보 가져오기 실패:", error);
+                },
+                {
+                    enableHighAccuracy: true, // 🔸GPS 우선 사용
+                    timeout: 10000,           // 최대 10초 대기
+                    maximumAge: 0             // 캐시된 위치 안 씀
+                }
+            );
+        }, 5000);
+
+    });
+
+    stompClient.onWebSocketError = (error) => {
+        console.error("WebSocket 에러:", error);
+    };
+
+    stompClient.onStompError = (frame) => {
+        console.error("STOMP 에러:", frame);
+    };
+};
+
+// 배달원이 수행중인 목록 요청 하는 함수
+let requestDeliveringList = (type, uid) => {
+    checkToken();
+    setupAjax();
+
+    return $.ajax({
+        type: 'GET',
+        url: `/api/delivery/delivering/${type}/${uid}`
+    });
+}
+

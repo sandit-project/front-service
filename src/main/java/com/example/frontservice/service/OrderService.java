@@ -1,6 +1,7 @@
 package com.example.frontservice.service;
 
 import com.example.frontservice.client.edge.OrderClient;
+import com.example.frontservice.dto.delivery.DeliveryUserResponseDTO;
 import com.example.frontservice.dto.order.*;
 import com.example.frontservice.type.OrderStatus;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,6 +31,11 @@ public class OrderService {
     //주문 내역 확인
     public List<OrderDetailResponseDTO> listByUser(String token, String userType, Integer userUid) {
         return orderClient.getOrdersByUserUid(token, userType, userUid);
+    }
+
+    //배달중 주문 내역 확인
+    public List<DeliveryUserResponseDTO> deliveringListByUser(String token, String userType, Integer userUid) {
+        return orderClient.getDeliveringOrdersByUserUid(token, userType, userUid);
     }
 
     //상태 변경
