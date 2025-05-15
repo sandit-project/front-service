@@ -36,11 +36,6 @@ public interface StoreClient {
     StoreResponseDTO deleteStore(@PathVariable(name="storeUid") Long storeUid,
                                  @RequestHeader("Authorization") String token);
 
-    @PatchMapping("/{storeUid}")
-    StoreResponseDTO updateStatusByUid(@PathVariable(name="storeUid") Long storeUid,
-                                       @RequestParam("storeStatus") String storeStatus,
-                                       @RequestHeader("Authorization") String token);
-
     @GetMapping("/orders/list")
     StoreOrderListResponseDTO getStoreOrderList(@RequestParam("limit") int limit,
                                                 @RequestParam("lastUid") Long lastUid,

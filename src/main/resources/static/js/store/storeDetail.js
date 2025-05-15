@@ -33,6 +33,7 @@ $(document).ready(function () {
 
         const formData = {
             storeName: $('#store_name').val(),
+            userUid: $('#store_manager').val(),
             storeAddress: $('#address').val(),
             storePostcode: $('#postcode').val(),
             storeLatitude : $('#store_latitude').val(),

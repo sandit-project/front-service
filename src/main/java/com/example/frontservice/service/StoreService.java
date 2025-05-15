@@ -36,10 +36,6 @@ public class StoreService {
         storeClient.deleteStore(storeUid,token);
     }
 
-    public StoreResponseDTO updateStatusByUid(Long storeUid,String storeStatus,String token) {
-        return storeClient.updateStatusByUid(storeUid,storeStatus,token);
-    }
-
     public RemoteOrderResponseDTO remoteOrder(String token, String action, RemoteOrderRequestDTO remoteOrderRequestDTO) {
         return storeClient.remoteOrder(token, action, remoteOrderRequestDTO);
     }

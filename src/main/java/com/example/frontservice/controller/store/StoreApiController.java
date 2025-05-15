@@ -54,15 +54,6 @@ public class StoreApiController {
         return storeService.updateStore(uid, storeRequestDTO,token);
     }
 
-    @PatchMapping("/{storeUid}")
-    StoreResponseDTO updateStatusByUid(@PathVariable("storeUid") Long storeUid,
-                                       @RequestParam("storeStatus") String storeStatus,
-                                       HttpServletRequest request){
-        String token = request.getHeader("Authorization");
-
-        return storeService.updateStatusByUid(storeUid,storeStatus,token);
-    }
-
     @DeleteMapping("/{storeUid}")
     void deleteStore(@PathVariable("storeUid") Long storeUid, HttpServletRequest request){
         String token= request.getHeader("Authorization");
