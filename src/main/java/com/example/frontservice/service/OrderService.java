@@ -82,17 +82,5 @@ public class OrderService {
             return resp;
     }
 
-//    public void initCancel(String token, CancelPaymentRequestDTO dto) {
-//        orderClient.initCancel(token, dto);
-//    }
-//
-//    public void confirmCancel(String token, CancelPaymentRequestDTO dto) {
-//        orderClient.confirmCancel(token, dto);
-//    }
-//
-//    public void compensateCancel(String token, CancelPaymentRequestDTO dto) {
-//        orderClient.compensateCancel(token, dto);
-//    }
-
 
 }

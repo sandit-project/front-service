@@ -1,7 +1,6 @@
 let userUid;
 let socialUid;
 let cartItems = [];
-let expectedVersion = null;
 
 // 장바구니 항목 가져오기
 function getCartItems() {
@@ -28,7 +27,6 @@ function getCartItems() {
 async function fetchCustomCart(customCartId) {
     setupAjax();
     checkToken();
-    const token = localStorage.getItem('accessToken');
     return $.ajax({
         url: `/menus/custom-carts/${customCartId}`,
         type: 'GET'

@@ -18,20 +18,9 @@ $(document).ready(async () => {
 
     try {
         const profile = await fetchProfile();
-        userUid = profile.uid;
-        userRole = profile.role;
+        // 경로 마지막 UID를 조회 대상으로 사용 (소셜/일반 구분 없이)
         pathUid = Number(window.location.pathname.split('/').pop());
-        const isAdmin = userRole === 'role_admin' || userRole === 'ROLE_ADMIN';
-
-        // 주소창 uid가 로그인한 유저랑 다르면 리디렉션 or alert
-        if (!isAdmin && pathUid !== userUid) {
-            alert('접근 권한이 없습니다.');
-            window.location.href = '/member/login';
-            return;
-        }
-
-        // 조회 대상 UID: 일반 유저는 본인, 관리자는 pathUid
-        targetUid = isAdmin ? pathUid : userUid;
+        targetUid = pathUid;
 
         await fetchOrders();
         $('#order-table tbody').on('click','tr',function(){

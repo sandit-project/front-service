@@ -167,3 +167,9 @@ button {
         padding: 10px 18px;
     }
 }
+
+/*포인트 숨기기*/
+label[for="point"],
+#point {
+    display: none !important;
+}
