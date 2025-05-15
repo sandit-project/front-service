@@ -115,11 +115,11 @@ $(document).ready(async ()=>{
  * 매니저 UID로 storeUid를 조회
  * GET /stores/storeUid?managerUid={managerUid}
  */
-function fetchStoreUidByManager(managerUid) {
+function fetchStoreUidByManager(userUid) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: 'GET',
-            url: `/stores/storeUid?managerUid=${managerUid}`,
+            url: `/stores/storeUid?userUid=${userUid}`,
             dataType: 'json',
             success: response => {
                 console.log("로그인 한 매니저의 지점명,지점번호 :",response);

@@ -9,13 +9,15 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class StoreResponseDTO {
-    private Integer    storeUid;
+    private Long    storeUid;
     private String  storeName;
-    private int     managerUid;
+    private Long    userUid;
+    private Long    socialUid;
     private String  storeAddress;
     private String  storePostcode;
     private Double  storeLatitude;
     private Double  storeLongitude;
     private String  storeStatus;
     private LocalDateTime storeCreatedDate;
+    private String message;
 }

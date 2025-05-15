@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class StoreRequestDTO {
     private String storeName;
-    private int managerUid;
+    private Long   userUid;
     private String storeAddress;
     private String storePostcode;
     private Double storeLatitude;

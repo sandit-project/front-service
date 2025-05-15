@@ -32,10 +32,10 @@ public class StoreApiController {
     }
 
     @GetMapping("/storeUid")
-    StoreUidResponseDTO getStoreUid (@RequestParam Long managerUid, HttpServletRequest request) {
+    StoreUidResponseDTO getStoreUid (@RequestParam Long userUid, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
-        return storeService.getStoreUidByManager(managerUid,token);
+        return storeService.getStoreUidByManager(userUid,token);
     }
 
     @PostMapping
@@ -52,15 +52,6 @@ public class StoreApiController {
         String token = request.getHeader("Authorization");
 
         return storeService.updateStore(uid, storeRequestDTO,token);
-    }
-
-    @PatchMapping("/{storeUid}")
-    StoreResponseDTO updateStatusByUid(@PathVariable("storeUid") Long storeUid,
-                                       @RequestParam("storeStatus") String storeStatus,
-                                       HttpServletRequest request){
-        String token = request.getHeader("Authorization");
-
-        return storeService.updateStatusByUid(storeUid,storeStatus,token);
     }
 
     @DeleteMapping("/{storeUid}")

@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class StoreUidResponseDTO {
-    private Integer storeUid;
+    private Long storeUid;
     private String storeName;
 }

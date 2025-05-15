@@ -18,7 +18,7 @@ public interface StoreClient {
                               @RequestHeader("Authorization") String token);
 
     @GetMapping("/storeUid")
-    StoreUidResponseDTO getStoreUidByManager(@RequestParam("managerUid") Long managerUid,
+    StoreUidResponseDTO getStoreUidByManager(@RequestParam("userUid") Long userUid,
                                             @RequestHeader("Authorization") String token);
 
     @PostMapping
@@ -35,11 +35,6 @@ public interface StoreClient {
     @DeleteMapping("/{storeUid}")
     StoreResponseDTO deleteStore(@PathVariable(name="storeUid") Long storeUid,
                                  @RequestHeader("Authorization") String token);
-
-    @PatchMapping("/{storeUid}")
-    StoreResponseDTO updateStatusByUid(@PathVariable(name="storeUid") Long storeUid,
-                                       @RequestParam("storeStatus") String storeStatus,
-                                       @RequestHeader("Authorization") String token);
 
     @GetMapping("/orders/list")
     StoreOrderListResponseDTO getStoreOrderList(@RequestParam("limit") int limit,
