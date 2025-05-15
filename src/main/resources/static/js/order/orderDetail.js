@@ -1,92 +1,225 @@
-let storeMap = {
-    1: '강동점',
-    2: '강남점',
-    3: '잠실점'
-};
+const storeMap = {};
+let ordersList = [];
+let groupedData = [];
+let userUid = null;
+let userRole = null;
+let pathUid = null;
+let targetUid = null;
 
 $(document).ready(async () => {
     checkToken();
     setupAjax();
+    //여기에서 다 걸러지니까 본인인증할 필요는 X
+
+    $('#logout-link').on('click', () => {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/member/login';
+    });
 
     try {
         const profile = await fetchProfile();
         userUid = profile.uid;
-        fetchOrders();
+        userRole = profile.role;
+        pathUid = Number(window.location.pathname.split('/').pop());
+        const isAdmin = userRole === 'role_admin' || userRole === 'ROLE_ADMIN';
+
+        // 주소창 uid가 로그인한 유저랑 다르면 리디렉션 or alert
+        if (!isAdmin && pathUid !== userUid) {
+            alert('접근 권한이 없습니다.');
+            window.location.href = '/member/login';
+            return;
+        }
+
+        // 조회 대상 UID: 일반 유저는 본인, 관리자는 pathUid
+        targetUid = isAdmin ? pathUid : userUid;
+
+        await fetchOrders();
+        $('#order-table tbody').on('click','tr',function(){
+            const idx = $(this).data('group-index');
+            const ordersGroup = groupedData[idx].orders;
+            showModal(ordersGroup);
+        });
+
+        $('#close-modal, #order-modal-backdrop').on('click', () => {
+            $('#order-modal-backdrop, #order-modal').hide();
+        });
     } catch (err) {
-        console.error('프로필 조회 실패', err);
-        alert('로그인이 필요합니다.');
+        console.error('초기 데이터 로딩 실패', err);
+        alert('데이터 로딩 중 오류가 발생했습니다.');
         window.location.href = '/login';
     }
 });
-function fetchStores() {
-    return $.ajax({
-        type: 'GET',
-        url: '/stores/list?limit=1000'
-    }).then(response => {
-        response.storeList.forEach(store => {
-            storeMap[store.storeUid] = store.storeName;
-        });
-    });
-}
 
 function fetchProfile() {
-    return $.ajax({ url: '/profile', method: 'GET' });
+    return $.ajax({ url: '/profile', type: 'GET' });
 }
 
-function fetchOrders() {
-    $.ajax({
-        url: `/orders/user/${userUid}`,
-        method: 'GET',
-        contentType: 'application/json',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        success: function (response) {
-            renderOrders(response); // response 자체가 배열
-        },
-        error: function (err) {
-            console.error('주문 목록 불러오기 실패', err);
-            alert('주문 목록을 가져오는 데 실패했습니다.');
+async function fetchOrders() {
+    setupAjax();
+    checkToken();
+    console.log("▶️ 호출할 userUid:", userUid, "pathUid:", pathUid, "targetUid:", targetUid);
+    console.log("▶️ 호출 URL:", `/orders/user/${targetUid}`);
+    try {
+        const response = await $.ajax({
+            url: `/orders/user/${targetUid}?_=${Date.now()}`,
+            type: 'GET',
+            contentType: 'application/json',
+
+        });
+
+        ordersList = response;
+
+        // 스토어 정보 없으면 필요한 것만 요청
+        const uniqueStoreUids = [...new Set(ordersList.map(o => o.storeUid))];
+        const missing = uniqueStoreUids.filter(uid => !storeMap[uid]);
+
+        if (missing.length > 0) {
+            const storeResponse = await $.ajax({
+                url: `/stores/list?limit=1000&lastUid=0`,
+                type: 'GET',
+                contentType: 'application/json',
+            });
+
+            storeResponse.storeList.forEach(store => {
+                storeMap[store.storeUid] = store.storeName;
+            });
+        }
+
+        renderOrders();
+    } catch (err) {
+        console.error('주문 목록 불러오기 실패', err);
+        alert('주문 목록을 가져오는 데 실패했습니다.');
+    }
+}
+
+function renderOrders() {
+    // 2-1) merchant_uid별 그룹핑
+    const groupsMap = ordersList.reduce((acc, o) => {
+        (acc[o.merchantUid] = acc[o.merchantUid] || []).push(o);
+        return acc;
+    }, {});
+
+    // 2-2) [{ merchantUid, orders }, …] 구조로 변환
+    groupedData = Object.entries(groupsMap).map(([muid, orders]) => ({
+        merchantUid: muid,
+        orders
+    }));
+
+    // 최신 주문이 위로 오도록 정렬 (createdDate 기준)
+    groupedData.sort((a, b) => {
+        const dateA = new Date(a.orders[0].createdDate);
+        const dateB = new Date(b.orders[0].createdDate);
+        return dateB - dateA; // 내림차순
+    });
+
+    // 2-3) 테이블에 그리기: data-group-index 로만 식별
+    const $tbody = $('#order-table tbody').empty();
+    groupedData.forEach((groupObj, idx) => {
+        const first = groupObj.orders[0];
+        const storeName = storeMap[first.storeUid] || '—';
+        const baseName = first.items[0]?.menuName || '—';
+        const extra = groupObj.orders.length - 1;
+        const menuText = extra>0
+            ? `${baseName} 외 ${extra}건`
+            : baseName;
+
+        const totalPrice = groupObj.orders
+            .flatMap(o => o.items)
+            .reduce((s,i)=>s+i.unitPrice*i.amount,0);
+        const totalCount = groupObj.orders
+            .flatMap(o => o.items)
+            .reduce((s,i)=>s+i.amount,0);
+
+        const createdDateTime = formatDate(first.createdDate).slice(0,-3);
+        const res = first.reservationDate
+        const reservationDateTime = res ? formatDate(res).slice(0,-3) : '';
+
+        const $row = $(`
+      <tr data-group-index="${idx}">
+        <td>${first.uid}</td>
+        <td>${mapOrderStatus(first.status)}</td>
+        <td>${storeName}</td>
+        <td>${menuText}</td>
+        <td>${totalPrice.toLocaleString()}원</td>
+        <td>${totalCount}</td>
+        <td>${createdDateTime}</td>
+        <td>${reservationDateTime}</td>
+      </tr>
+    `);
+        $tbody.append($row);
+    });
+}
+
+// 4) showModal 은 ordersGroup 배열만 받고, merchantUid는 내부 JS에서 필요 시 꺼내 쓰되 UI엔 노출 안 함
+function showModal(ordersGroup) {
+    const first = ordersGroup[0];
+    const merchantUid = first.merchantUid;
+    $('#modal-status').text(mapOrderStatus(first.status));
+    $('#modal-store-name').text(storeMap[first.storeUid]||'-');
+    const $list = $('#modal-items-list').empty();
+    ordersGroup.forEach(o =>
+        o.items.forEach(it => {
+            const itemHtml = `
+          <div class="kiosk-item">
+            <div class="menu-name">${it.menuName}</div>
+            <div class="menu-detail">${it.amount}개 · ${it.unitPrice.toLocaleString()}원</div>
+          </div>
+        `;
+            $list.append(itemHtml);
+        })
+    );
+
+
+    const total = ordersGroup
+        .flatMap(o => o.items)
+        .reduce((s,i)=>s+i.unitPrice*i.amount,0);
+    $('#modal-total-price').text(total.toLocaleString());
+
+    // 주문 취소 버튼 토글
+    const canCancel = first.status === 'PAYMENT_COMPLETED';
+    $('#cancel-order-btn')
+        .prop('disabled', !canCancel)
+        .toggleClass('disabled', !canCancel)
+        .off('click')
+        .on('click', () => {
+            // ① “주문 취소” 숨기고, 취소 사유 입력 섹션 보이기
+            $('#cancel-order-btn').hide();
+            $('#cancel-reason-section').show();
+        });
+
+    // “뒤로” 버튼: 사유 입력 취소하고 원래 화면으로
+    $('#cancel-reason-back-btn').off('click').on('click', () => {
+        $('#cancel-reason-section').hide();
+        $('#cancel-reason-select').hide();
+        $('#cancel-order-btn').show();
+    });
+
+    // “확인” 버튼: 실제 취소 요청
+    $('#confirm-cancel-btn').off('click').on('click', async () => {
+        const reason = $('#cancel-reason-select').val();
+        if (!reason) {
+            alert('취소 사유를 선택해주세요.');
+            return;
+        }
+
+        try {
+            $('#loading-spinner').show(); // 로딩 시작
+
+            console.log('merchantUid::', merchantUid);
+            const result = await cancelOrder(merchantUid, reason);
+
+            if (result.isSuccess) {
+                $('#order-modal-backdrop, #order-modal').hide();
+                await fetchOrders();
+            }
+        } finally {
+            $('#loading-spinner').hide();
         }
     });
-}
 
 
-function renderOrders(orders) {
-    const $tbody = $('#order-table tbody');
-    $tbody.empty();
-
-    orders.forEach(order => {
-        const storeName = storeMap[order.storeUid] || '알 수 없음';
-        const firstMenuName = order.items.length > 0 ? order.items[0].menuName : '알 수 없음';
-
-        const totalPrice = order.items.reduce((sum, item) => sum + item.unitPrice * item.amount, 0);
-        const totalAmount = order.items.reduce((sum, item) => sum + item.amount, 0);
-
-        const row = `
-            <tr>
-                <td>${order.uid}</td>
-                <td>${mapOrderStatus(order.status)}</td>
-                <td>${storeName}</td>
-                <td>${firstMenuName}</td>
-                <td>${totalPrice.toLocaleString()}원</td>
-                <td>${totalAmount}</td>
-                <td>${formatDate(order.createdDate)}</td>
-            </tr>
-        `;
-        $tbody.append(row);
-    });
-}
-
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const yyyy = date.getFullYear();
-    const mm = ('0' + (date.getMonth() + 1)).slice(-2);
-    const dd = ('0' + date.getDate()).slice(-2);
-    const hh = ('0' + date.getHours()).slice(-2);
-    const min = ('0' + date.getMinutes()).slice(-2);
-    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    // 모달 띄우기
+    $('#order-modal-backdrop, #order-modal').show();
 }
 
 function mapOrderStatus(status) {
@@ -97,6 +230,5 @@ function mapOrderStatus(status) {
         case 'ORDER_COOKING': return '조리 중';
         case 'ORDER_DELIVERING': return '배달 중';
         case 'ORDER_DELIVERED': return '배달 완료';
-        //default: return status;
     }
 }

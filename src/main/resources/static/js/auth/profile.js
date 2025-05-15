@@ -1,26 +1,73 @@
-let userInfo;
-
-$(document).ready(()=>{
+$(document).ready(async ()=>{
     checkToken();
     setupAjax();
-    requestProfileApi();
+
+    await requestDeliveringOrder();
+
+    // 배달원 위치 수신하는 함수 (merchantUid를 경로에 전달해서 수신함)
+    receiveDeliveryManLocation();
+
+    // 카카오맵 렌더링 (위에서 받은 좌표 전달)
+    renderKakaomap();
 
     $('#updateProfileBtn').on("click",() => {
-        requestUpdateProfile();
+        window.location.href = "/member/profile/update"
     });
 });
 
-let requestProfileApi = () => {
+let requestDeliveringOrder = async () => {
     checkToken();
     setupAjax();
 
-    $.ajax({
-        type: 'GET',
+    try {
+        const profile = await fetchProfile();
+        const userUid = profile.uid;
+        const userType = profile.type;
+
+        $('#order-info-box').on('click', () => {
+            window.location.href = `/order/details`;
+        });
+
+        const orders = await fetchOrders(userUid,userType);
+        const delivering = orders
+            .filter(o => o.status === 'ORDER_DELIVERING')
+            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))[0];
+
+        if (delivering) {
+            console.log(delivering);
+            const storeName = await fetchStoreName(delivering.storeUid);
+            const menuName = delivering.items[0]?.menuName || '—';
+            const menuText = delivering.items.length > 1
+                ? `메뉴: ${menuName} 외 ${delivering.items.length - 1}건`
+                : `메뉴: ${menuName}`;
+            const totalPrice = delivering.items.reduce((sum, item) => sum + item.unitPrice * item.amount, 0);
+            const createdAt = formatDate(delivering.createdDate);
+
+            $('#order-store-name').text(`가게: ${storeName}`);
+            $('#order-menu-info').text(menuText);
+            $('#order-total-price').text(`총 가격: ${totalPrice.toLocaleString()}원`);
+            $('#order-created-at').text(`주문 시간: ${createdAt}`);
+        } else {
+            $('#latest-order-box').html('<p>현재 배달 중인 주문이 없습니다.</p>');
+        }
+
+    } catch (err) {
+        console.error('주문 불러오기 실패', err);
+    }
+};
+
+function fetchProfile() {
+    checkToken();
+    setupAjax();
+
+    return $.ajax({
         url: '/profile',
+        type: 'GET',
         success: (response) => {
-            userInfo = response;
             $('#welcome-message').text(response.userName + '님 환영합니다!');
             $('#hiddenUserName').val(response.userName);
+            $('#hiddenUserUId').val(response.uid);
+            $('#hiddenUserType').val(response.type);
             $('#hiddenUserId').val(response.userId);
             $('#hiddenUserRole').val(response.role);
             $('#user_name').text(response.userName);
@@ -34,6 +81,7 @@ let requestProfileApi = () => {
             $('#sub_address2').text(response.subAddress2);
 
             console.log(response);
+            return response;
         },
         error : (error) => {
             console.error('profile in error :: ',error);
@@ -46,21 +94,30 @@ let requestProfileApi = () => {
     });
 }
 
-let requestUpdateProfile = () => {
+// 주문 불러오기
+function fetchOrders(userUid, userType) {
+    checkToken();
     setupAjax();
-    $.ajax({
+
+    console.log(userUid,userType);
+
+    return $.ajax({
+        url: `/orders/user/${userType}/${userUid}`,
         type: 'GET',
-        url: '/member/profile/update',
-        success: ()=>{
-            window.location.href = "/member/profile/update"
-        },
-        error: (error)=>{
-            console.log('오류 발생 : ',error);
-        }
+        contentType: 'application/json',
     });
 }
 
+// 매장 이름 불러오기
+function fetchStoreName(storeUid) {
+    checkToken();
+    setupAjax();
 
+    return $.ajax({
+        type: 'GET',
+        url: `/stores/${storeUid}`
+    }).then(res => res.storeName || '—');
+}
 
 // 회원 탈퇴 버튼 (동적 요소 대응)
 $(document).on("click", "#deleteBtn", () => {
@@ -81,7 +138,9 @@ $(document).on("click", "#deleteBtn", () => {
 });
 
 function deleteAccount() {
+    checkToken();
     setupAjax();
+
     $.ajax({
         type: 'DELETE',
         url: '/user',
@@ -106,3 +165,4 @@ function deleteAccount() {
         }
     });
 }
+

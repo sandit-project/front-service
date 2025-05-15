@@ -12,15 +12,15 @@ $(document).ready(async ()=>{
         $('#hiddenType').val(userInfo.type);
         $('#hiddenUserRole').val(userInfo.role);
 
-        if(userInfo.role === "ROLE_DELIVERY"){
+        if(userInfo.role === "ROLE_DELIVERY" || userInfo.role === "ROLE_ADMIN"){
             // 웹소켓에 위치 전달 하는 함수
-             sendDeliveryManLocation(userInfo.id, userInfo.type);
+            sendDeliveryManLocation(userInfo.id, userInfo.type);
         }
     }).catch((error)=>{
         console.error('board list user info error : ',error);
     });
 
-    requestCookingOrder();
+    await requestCookingOrder();
 
     // ** 새로고침 버튼 클릭 핸들러 **
     $('#refresh-btn').click(async ()=>{
@@ -49,12 +49,12 @@ $(document).ready(async ()=>{
     });
 
     //상태 변경 호출
-    window.changeStatus = (newStatus) => {
+    window.changeStatus = async (newStatus) => {
         console.log("상태 변경 호출 !!",newStatus);
         if(newStatus === "ORDER_COOKING"){
-            requestCookingOrder();
+            await requestCookingOrder();
         }else if(newStatus === "ORDER_DELIVERING"){
-            requestDeliveringOrder();
+            await requestDeliveringOrder();
         }else{
             console.log("잘못된 요청입니다!!");
         }
@@ -91,7 +91,6 @@ $(document).ready(async ()=>{
 
         endDelivery(deliveryInfo);
     });
-
 });
 
 // 조리중 리스트 요청 함수
@@ -153,13 +152,16 @@ let requestDeliveringOrder = () => {
     checkToken();
     setupAjax();
 
+    const deliverymanType = $('#hiddenType').val();
+    const deliverymanUid = $('#hiddenId').val();
+
     if (!hasMore) return;
     isLoading = true;
     $('#loading').show();
 
     $.ajax({
         type: 'GET',
-        url: '/api/delivery/delivering',
+        url: `/api/delivery/delivering/${deliverymanType}/${deliverymanUid}`,
         success: (response) => {
             console.log(response);
             const $tbody = $('#deliveryContent').empty();

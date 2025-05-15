@@ -10,9 +10,9 @@ import lombok.*;
 public class SideCartRequestDTO {
 
     private Long uid;
-    private String sideName;
+//    private String sideName;
     private int amount;
-    private Long totalPrice;
-    private Double calorie;
-    private Long unitPrice;  // ✅ 추가
+//    private Long totalPrice;
+//    private Double calorie;
+//    private Long unitPrice;  // ✅ 추가
 }

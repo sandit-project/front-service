@@ -31,7 +31,9 @@
 </header>
 <main>
     <div>
+        <input id="hiddenUserUId" type="hidden">
         <input id="hiddenUserId" type="hidden">
+        <input id="hiddenUserType" type="hidden">
         <input id="hiddenUserName" type="hidden">
         <input id="hiddenUserRole" type="hidden">
     </div>
@@ -81,8 +83,14 @@
                     <div id="map" style="width:350px;height:350px;"></div>
                 </div>
             </div>
-            <div class="order-info">
-                <p>주문 내역 나올 예정입니다</p>
+            <div class="order-info" id="order-info-box" style="cursor:pointer;">
+                <p>주문 내역:</p>
+                <div id="latest-order-box">
+                    <p id="order-store-name"></p>
+                    <p id="order-menu-info"></p>
+                    <p id="order-total-price"></p>
+                    <p id="order-created-at"></p>
+                </div>
             </div>
         </div>
     </div>

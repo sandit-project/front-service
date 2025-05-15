@@ -18,7 +18,7 @@ public interface StoreClient {
                               @RequestHeader("Authorization") String token);
 
     @GetMapping("/storeUid")
-    StoreUidResponseDTO getStoreUidByManager(@RequestParam("managerUid") Long managerUid,
+    StoreUidResponseDTO getStoreUidByManager(@RequestParam("userUid") Long userUid,
                                             @RequestHeader("Authorization") String token);
 
     @PostMapping

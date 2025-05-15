@@ -70,7 +70,7 @@ let loadStores = ({ limit, lastUid }) => {
                         <tr>
                             <td>${store.storeUid}</td>
                             <td><a href="/store/detail?storeUid=${store.storeUid}">${store.storeName}</a></td>
-                            <td>${store.managerUid}</td>
+                            <td>${store.userUid}</td>
                             <td>${store.storeAddress}</td>
                             <td>${store.storePostcode}</td>
                             <td>${formattedDate}</td>

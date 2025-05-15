@@ -13,7 +13,7 @@ $(document).ready(function () {
             console.log('지점 상세 조회 :',data);
             $('#store_uid').val(data.storeUid);
             $('#store_name').val(data.storeName);
-            $('#store_manager').val(data.managerUid)
+            $('#store_manager').val(data.userUid)
             $('#address').val(data.storeAddress);
             $('#postcode').val(data.storePostcode);
             $('#store_latitude').val(data.storeLatitude);

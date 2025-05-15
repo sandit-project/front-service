@@ -34,10 +34,13 @@ public class DeliveryApiController {
         return deliveryService.getCookingOrders(token);
     }
 
-    @GetMapping("/delivering")
-    public List<DeliveryOrderResponseDTO> getDeliveringOrders(HttpServletRequest request) {
+    @GetMapping("/delivering/{type}/{uid}")
+    public List<DeliveryOrderResponseDTO> getDeliveringOrders(HttpServletRequest request,
+                                                              @PathVariable(name = "type")String type,
+                                                              @PathVariable(name = "uid")Integer uid
+                                                              ) {
         String token = request.getHeader("Authorization");
-        return deliveryService.getDeliveringOrders(token);
+        return deliveryService.getDeliveringOrders(token,type,uid);
     }
 
     @PostMapping("/start")

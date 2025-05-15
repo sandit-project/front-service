@@ -17,8 +17,8 @@ public class OrderViewController {
         return "order/order";
     }
 
-    @GetMapping("/{userUid}")
-    public String orderDetailPage(@PathVariable("userUid") Integer userUid) {
+    @GetMapping("/details")
+    public String orderDetailPage() {
         return "order/order-detail";
     }
 }

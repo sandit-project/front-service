@@ -1,6 +1,10 @@
-let sendDeliveryManLocation = (uid, type) => {
+let sendDeliveryManLocation = async (uid, type) => {
     const socket = new SockJS(WEBSOCKET_URL);
     const stompClient = Stomp.over(socket);
+
+    const deliveryList = await requestDeliveringList(type, uid);
+
+    console.log(deliveryList);
 
     stompClient.connect({}, () => {
         console.log("STOMP 연결됨");
@@ -58,3 +62,14 @@ let receiveDeliveryManLocation = () => {
         console.error("STOMP 에러:", frame);
     };
 };
+
+// 배달원이 수행중인 목록 요청 하는 함수
+let requestDeliveringList = (type, uid) => {
+    checkToken();
+    setupAjax();
+
+    return $.ajax({
+        type: 'GET',
+        url: `/api/delivery/delivering/${type}/${uid}`
+    });
+}

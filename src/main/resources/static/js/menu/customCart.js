@@ -1,17 +1,22 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+    // 사용자 정보 전역으로 불러오기
+    getUserInfo().then((userInfo) => {
+        globalUserInfo = userInfo;
+        console.log('User Info:', userInfo);
+
+
+    }).catch((error) => {
+        console.error('user info error:', error);
+    });
     const defaultExcludeTexts = [
         "선택 안 함", "빵을 선택하세요", "소스를 선택하세요", "재료를 선택하세요", "채소를 선택하세요"
     ];
 
-    // 선택값 가져오는 헬퍼
-    function getSelectValue(name) {
-        return $(`select[name="${name}"]`).val();
-    }
+    const getSelectValue = name => $(`select[name="${name}"]`).val() || null;
 
-    // 가격 및 칼로리 계산 함수
-    function calculatePriceAndCalories() {
+    const calculatePriceAndCalories = () => {
         let totalPrice = 0;
         let totalCalorie = 0;
         let selectedItems = [];
@@ -36,11 +41,10 @@ $(document).ready(function () {
 
         $('input[name="price"]').val(totalPrice);
         $('input[name="calorie"]').val(totalCalorie.toFixed(1));
-    }
+    };
 
-    // 재료 로딩 함수
     const loadIngredients = () => {
-        const ingredientEndpoints = {
+        const endpoints = {
             bread: { url: "/menus/ingredients/breads", nameField: "breadName" },
             cheese: { url: "/menus/ingredients/cheeses", nameField: "cheeseName" },
             material: { url: "/menus/ingredients/materials", nameField: "materialName" },
@@ -48,129 +52,94 @@ $(document).ready(function () {
             sauce: { url: "/menus/ingredients/sauces", nameField: "sauceName" }
         };
 
-        const loadIngredientOptions = (type, selectorPrefix = type) => {
-            const { url, nameField } = ingredientEndpoints[type];
-
+        Object.entries(endpoints).forEach(([type, { url, nameField }]) => {
             $.get(url, function (data) {
-                $(`select[name^="${selectorPrefix}"]`).each(function () {
+                $(`select[name^="${type}"]`).each(function () {
                     const select = $(this);
-                    select.empty();
-                    select.append(`<option value="">선택 안 함</option>`);
+                    select.empty().append(`<option value="">선택 안 함</option>`);
 
                     data.forEach(item => {
-                        const name = item[nameField];
-                        const option = `<option value="${item.uid}" data-price="${item.price}" data-calorie="${item.calorie}">${name}</option>`;
-                        select.append(option);
+                        select.append(
+                            `<option value="${item.uid}" data-price="${item.price}" data-calorie="${item.calorie}">
+                                ${item[nameField]}
+                             </option>`
+                        );
                     });
                 });
             });
-        };
-
-        loadIngredientOptions("bread");
-        loadIngredientOptions("cheese");
-        loadIngredientOptions("material", "material");
-        loadIngredientOptions("vegetable", "vegetable");
-        loadIngredientOptions("sauce", "sauce");
+        });
     };
 
-    // 장바구니 추가 Ajax 요청
-    function addCustomCart() {
-        const breadId = getSelectValue("bread");
-        const material1Id = getSelectValue("material1");
-        const vegetable1Id = getSelectValue("vegetable1");
-        const sauce1Id = getSelectValue("sauce1");
-        const cheeseId = getSelectValue("cheese");
-        const cartUid = crypto.randomUUID(); // localStorage에 저장된 커스텀 샌드위치의 클라이언트 전용 ID
-
-        if (!breadId || !material1Id || !vegetable1Id || !sauce1Id || !cheeseId) {
+    const addCustomCart = () => {
+        const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
+        if (!required.every(name => getSelectValue(name))) {
             alert("모든 필수 항목을 선택해야 합니다.");
             return;
         }
 
-        const customCartDTO = {
-            bread: breadId,
-            material1: material1Id,
-            material2: getSelectValue("material2"),
-            material3: getSelectValue("material3"),
-            cheese: cheeseId,
-            sauce1: sauce1Id,
-            sauce2: getSelectValue("sauce2"),
-            sauce3: getSelectValue("sauce3"),
-            vegetable1: vegetable1Id,
-            vegetable2: getSelectValue("vegetable2"),
-            vegetable3: getSelectValue("vegetable3"),
-            vegetable4: getSelectValue("vegetable4"),
-            vegetable5: getSelectValue("vegetable5"),
-            vegetable6: getSelectValue("vegetable6"),
-            vegetable7: getSelectValue("vegetable7"),
-            vegetable8: getSelectValue("vegetable8"),
-            price: parseInt($('input[name="price"]').val()) || 0,
-            calorie: parseFloat($('input[name="calorie"]').val()) || 0
-        };
+        const fields = [
+            "bread", "cheese", "material1", "material2", "material3",
+            "sauce1", "sauce2", "sauce3",
+            "vegetable1", "vegetable2", "vegetable3", "vegetable4",
+            "vegetable5", "vegetable6", "vegetable7", "vegetable8"
+        ];
 
-        // undefined나 문자열 "undefined"를 null 처리
-        Object.keys(customCartDTO).forEach(key => {
-            if (customCartDTO[key] === "undefined" || customCartDTO[key] === undefined) {
-                customCartDTO[key] = null;
-            }
-        });
+        const customCartDTO = Object.fromEntries(fields.map(name => [name, getSelectValue(name)]));
+
+        customCartDTO.price = parseInt($('input[name="price"]').val()) || 0;
+        customCartDTO.calorie = parseFloat($('input[name="calorie"]').val()) || 0;
+
+        if (globalUserInfo?.type === 'user') {
+            customCartDTO.userUid = globalUserInfo.id;
+        } else if (globalUserInfo?.type === 'social') {
+            customCartDTO.socialUid = globalUserInfo.id;
+        } else {
+            alert("로그인 후 이용해주세요.");
+            return;
+        }
 
         $.ajax({
             url: '/menus/custom-carts',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(customCartDTO),
-            success: function (response) {
-                const newSandwich = {
-                    ...customCartDTO,
-                    uid: response.uid,
-                    cartUid: cartUid
-                };
-                console.log('[DEBUG] localStorage customSandwiches:', localStorage.getItem('customSandwiches'));
-                let existing = JSON.parse(localStorage.getItem('customSandwiches'));
-                if (!Array.isArray(existing)) existing = [];
+            success: (response) => {
+                console.log("서버 응답:", response);
 
-                existing.push(newSandwich);
-                localStorage.setItem('customSandwiches', JSON.stringify(existing));
-                console.log(newSandwich);
-                alert('저장 완료!');
+                customCartDTO.uid = response.uid;
+                const localList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
+                localList.push(customCartDTO);
+                localStorage.setItem('customSandwiches', JSON.stringify(localList));
+                alert('저장 완료! 장바구니로 이동합니다.');
                 location.href = '/cart';
             },
-            error: function (xhr) {
+            error: xhr => {
                 if (xhr.status === 400 && xhr.responseJSON) {
                     const errors = xhr.responseJSON;
-                    let errorMessage = "입력 오류:\n";
+                    let msg = "입력 오류:\n";
                     for (const [field, message] of Object.entries(errors)) {
-                        errorMessage += `- ${field}: ${message}\n`;
+                        msg += `- ${field}: ${message}\n`;
                     }
-                    alert(errorMessage);
+                    alert(msg);
                 } else {
                     alert('저장에 실패했습니다. 다시 시도해 주세요.');
                 }
             }
         });
-    }
+    };
 
-    // 폼 제출 시 처리
     $('#menuForm').on('submit', function (e) {
         e.preventDefault();
-
-        const requiredFields = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
-        let allSelected = requiredFields.every(name => !!getSelectValue(name));
-
-        if (!allSelected) {
+        const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
+        if (!required.every(name => getSelectValue(name))) {
             $('#warningMessage').fadeIn();
             return;
         }
-
         $('#warningMessage').fadeOut();
         addCustomCart();
     });
 
-    // 셀렉트 변경 시 가격/칼로리 갱신
     $('select').on('change', calculatePriceAndCalories);
-
-    // 페이지 로딩 시 초기 데이터 로드
     loadIngredients();
     calculatePriceAndCalories();
 });

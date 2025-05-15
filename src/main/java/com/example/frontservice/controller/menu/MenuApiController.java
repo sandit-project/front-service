@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +21,7 @@ import java.util.List;
 public class MenuApiController {
 
     private final MenuService menuService;
+
 
 
     private String extractToken(HttpServletRequest request) {
@@ -332,67 +334,79 @@ public class MenuApiController {
 
 
     // =================== 장바구니 ===================
-    @GetMapping("/cart")
-    public ResponseEntity<CartResponseDTO> getCartItems(HttpServletRequest request) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.getCartItems("Bearer " +token));
-    }
 
-    @PostMapping("/cart/update/{id}")
-    public ResponseEntity<CartResponseDTO> updateCartItem(
-            HttpServletRequest request,
-            @PathVariable Long id,
-            @RequestParam int amount) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.updateCartItem("Bearer " +token, id, amount));
-    }
+        // 🛒 장바구니 전체 조회
+        @GetMapping("/cart")
+        public CartResponseDTO getCartItems(HttpServletRequest request,
+                                            @RequestParam(value = "userUid", required = false) Long userUid,
+                                            @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            String token = extractToken(request);
+            // 토큰을 통해 인증된 사용자 정보를 기반으로 장바구니 가져오기
+            return menuService.getCartItems("Bearer " +token, userUid, socialUid);
+        }
 
-    @PostMapping("/cart/delete/{id}")
-    public ResponseEntity<CartResponseDTO> deleteCartItem(
-            HttpServletRequest request,
-            @PathVariable Long id) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.deleteCartItem("Bearer " +token, id));
-    }
+        // 🧾 수량 변경
+        @PostMapping("/cart/update/{id}")
+        public CartResponseDTO updateCartItem(HttpServletRequest request,
+                                              @PathVariable("id") Long id,
+                                              @RequestParam("amount") int amount,
+                                              @RequestParam(value = "userUid", required = false) Long userUid,
+                                              @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            // 토큰을 통해 인증된 사용자 정보를 기반으로 장바구니 항목 수량 변경
+            String token = extractToken(request);
+            return menuService.updateCartItem("Bearer " +token, id, amount, userUid, socialUid);
+        }
 
-    @PostMapping("/cart/delete-selected")
-    public ResponseEntity<CartResponseDTO> deleteSelectedItems(
-            HttpServletRequest request,
-            @RequestParam List<Long> selectedIds) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.deleteSelectedItems("Bearer " +token, selectedIds));
-    }
+        // ❌ 단일 항목 삭제
+        @PostMapping("/cart/delete/{id}")
+        public CartResponseDTO deleteCartItem(HttpServletRequest request,
+                                              @PathVariable("id") Long id,
+                                              @RequestParam(value = "userUid", required = false) Long userUid,
+                                              @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            String token = extractToken(request);
+            return menuService.deleteCartItem("Bearer " +token, id, userUid, socialUid);
+        }
 
-    @PostMapping("/cart/order/checkout")
-    public ResponseEntity<CartResponseDTO> checkout(HttpServletRequest request) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.checkout("Bearer " +token));
-    }
+        // ❌ 선택 항목 삭제
+        @PostMapping("/cart/delete-selected")
+        public CartResponseDTO deleteSelectedItems(HttpServletRequest request,
+                                                   @RequestParam("selectedIds") List<Long> selectedIds,
+                                                   @RequestParam(value = "userUid", required = false) Long userUid,
+                                                   @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            String token = extractToken(request);
+            return menuService.deleteSelectedItems("Bearer " +token, selectedIds, userUid, socialUid);
+        }
 
-    @PostMapping("/cart/add")
-    public ResponseEntity<CartResponseDTO> addToCart(
-            HttpServletRequest request,
-            @RequestParam Long menuId,
-            @RequestParam int amount) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addToCart("Bearer " +token, menuId, amount));
-    }
+        // ✅ 결제 완료 시 장바구니 전체 삭제
+        @PostMapping("/cart/order/checkout")
+        public CartResponseDTO checkout(HttpServletRequest request,
+                                        @RequestParam(value = "userUid", required = false) Long userUid,
+                                        @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            String token = extractToken(request);
+            return menuService.checkout("Bearer " +token, userUid, socialUid);
+        }
 
-    @PostMapping("/cart/add/side")
-    public ResponseEntity<CartResponseDTO> addSideToCart(
-            HttpServletRequest request,
-            @RequestBody SideCartRequestDTO dto) {
-        String token = extractToken(request);
-        return ResponseEntity.ok(menuService.addSideToCart("Bearer " + token, dto));
-    }
-//    @GetMapping("/cart/quantity")
-//    public ResponseEntity<Integer> getCartQuantity(HttpServletRequest request) {
-//        String token = extractToken(request); // 헤더에서 토큰 추출
-//        int quantity = menuService.getCartQuantity("Bearer " + token); // 사용자 기반 수량 계산
-//        return ResponseEntity.ok(quantity);
-//    }
+        // ➕ 메뉴 추가
+        @PostMapping("/cart/add")
+        public CartResponseDTO addToCart(HttpServletRequest request,
+                                         @RequestParam("menuId") Long menuId,
+                                         @RequestParam("amount") int amount,
+                                         @RequestParam(value = "userUid", required = false) Long userUid,
+                                         @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            String token = extractToken(request);
+            return menuService.addToCart("Bearer " +token, menuId, amount, userUid, socialUid);
+        }
 
-
+        // ➕ 사이드 추가
+        @PostMapping("/cart/add/side")
+        public CartResponseDTO addSideToCart(HttpServletRequest request,
+                                             @RequestParam("sideId") Long sideId,
+                                             @RequestParam("amount") int amount,
+                                             @RequestParam(value = "userUid", required = false) Long userUid,
+                                             @RequestParam(value = "socialUid", required = false) Long socialUid) {
+            String token = extractToken(request);
+            return menuService.addSideToCart("Bearer " +token,sideId, amount , userUid, socialUid);
+        }
 
 
     // =================== 커스텀 카트 ===================

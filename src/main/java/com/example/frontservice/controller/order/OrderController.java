@@ -29,37 +29,18 @@ public class OrderController {
         log.info("submit order::" + request.toString());
         String token = request.getHeader("Authorization");
 
-        // Bearer 없으면 추가
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
-
         return ResponseEntity.ok(orderService.submit(token,requestdto));
     }
 
-    @GetMapping("/orders/user/{userUid}")
-    public ResponseEntity<List<OrderDetailResponseDTO>> listByUser(HttpServletRequest request, @PathVariable Integer userUid) {
-        log.info("listByUser userUid::" + userUid);
+    @GetMapping("/orders/user/{userType}/{userUid}")
+    public ResponseEntity<List<OrderDetailResponseDTO>> listByUser(HttpServletRequest request,
+                                                                   @PathVariable String userType,
+                                                                   @PathVariable Integer userUid) {
+        log.info("listByUser pathVar:: {},{}", userType, userUid);
 
         String token = request.getHeader("Authorization");
 
-        // Bearer 없으면 추가
-        if (token != null && !token.startsWith("Bearer ")) {
-            token = "Bearer " + token;
-        }
-
-        return ResponseEntity.ok(orderService.listByUser(token, userUid));
-    }
-
-    
-    //상태 변경
-    @PutMapping("/orders/{merchantUid}/status")
-    public ResponseEntity<OrderStatusChangeResponseDTO> changeStatus(
-            @PathVariable String merchantUid,
-            @RequestParam OrderStatus newStatus
-    ) {
-        log.info("changeStatus merchantUid={}, newStatus={}", merchantUid, newStatus);
-        return ResponseEntity.ok(orderService.changeStatus(merchantUid, newStatus));
+        return ResponseEntity.ok(orderService.listByUser(token, userType, userUid));
     }
 
 
@@ -74,4 +55,15 @@ public class OrderController {
         log.info("update order fail::" + request.toString());
         return ResponseEntity.ok(orderService.confirmFail(request));
     }
+
+    @PostMapping("/orders/payments/cancel")
+    public CancelPaymentResponseDTO cancelPayment(
+            HttpServletRequest request,
+            @RequestBody CancelPaymentRequestDTO req
+    ) {
+        String token = request.getHeader("Authorization");
+
+        return orderService.cancelPayment(token, req);
+    }
+
 }

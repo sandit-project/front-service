@@ -13,6 +13,7 @@ import java.util.List;
 @FeignClient(name = "orderClient", url = "${sandit.edge-service-url}/orders")
 public interface OrderClient {
 
+
     //결제 사전 검증
     @PostMapping("/prepare")
     PreparePaymentResponseDTO preparePayment(@RequestBody PreparePaymentRequestDTO request);
@@ -20,11 +21,21 @@ public interface OrderClient {
     @PostMapping
     OrderResponseDTO submitOrder(@RequestHeader("Authorization") String token, @RequestBody OrderRequestDTO request);
 
-    @GetMapping("/user/{userUid}")
-    List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token, @PathVariable Integer userUid);
+    @GetMapping("/user/{userType}/{userUid}")
+    List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token,
+                                                    @PathVariable(name = "userType") String userType,
+                                                    @PathVariable(name = "userUid") Integer userUid);
+
+    @GetMapping("/merchant/{merchantUid}")
+    List<OrderDetailResponseDTO> getOrdersByMerchantUid(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("merchantUid") String merchantUid
+    );
+
 
     @PutMapping("/{merchantUid}/status")
-    OrderStatusChangeResponseDTO changeOrderStatus(@PathVariable("merchantUid") String merchantUid,
+    OrderStatusChangeResponseDTO changeOrderStatus(@RequestHeader("Authorization") String token,
+                                                   @PathVariable("merchantUid") String merchantUid,
                                                    @RequestParam("newStatus") OrderStatus newStatus);
 
     @PostMapping("/update-success")
@@ -32,6 +43,22 @@ public interface OrderClient {
 
     @PostMapping("/update-fail")
     OrderResponseDTO updateOrderStatusFail(@RequestBody UpdateOrderStatusRequestDTO request);
+
+    @PostMapping(value = "/payments/cancel",
+            consumes = "application/json",
+            produces = "application/json")
+    List<CancelPaymentResponseDTO> cancelPayment(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO request
+    );
+
+    @PostMapping("/payments/init")
+    void initCancel(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO dto);
+
+    @PostMapping("/payments/confirm")
+    void confirmCancel(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO dto);
+
+    @PostMapping("/payments/compensate")
+    void compensateCancel(@RequestHeader("Authorization") String token, @RequestBody CancelPaymentRequestDTO dto);
+
 
     //지점 주문 요청 (응답 타입을 리스트로 바로 받음)
     @GetMapping("/store/{storeUid}")

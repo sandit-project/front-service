@@ -29,7 +29,7 @@ $(document).ready(() => {
             // 서버로 전송할 데이터 생성
             const formData = {
                 storeName,
-                managerUid: storeManagerUid,
+                userUid: storeManagerUid,
                 storeAddress: fullAddress,
                 storePostcode: postcode,
                 storeLatitude: storeLatitude,
@@ -59,8 +59,14 @@ $(document).ready(() => {
             type: 'POST',
             url: '/stores',
             data: JSON.stringify(formData),
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',//요청바디는 JSON
+            dataType: 'json',                              // 응답도 JSON으로 기대
+            success: function(res) {
+                console.log('등록 성공:', res);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX 에러:', textStatus, errorThrown);
+            }
         });
     };
 
