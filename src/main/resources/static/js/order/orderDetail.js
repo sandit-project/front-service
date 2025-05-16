@@ -2,14 +2,15 @@ const storeMap = {};
 let ordersList = [];
 let groupedData = [];
 let userUid = null;
-let userRole = null;
-let pathUid = null;
-let targetUid = null;
+let userType = null;
 
-$(document).ready(async () => {
+$(document).ready(() => {
+    initPage();
+});
+
+async function initPage() {
     checkToken();
     setupAjax();
-    //여기에서 다 걸러지니까 본인인증할 필요는 X
 
     $('#logout-link').on('click', () => {
         localStorage.removeItem('accessToken');
@@ -18,11 +19,18 @@ $(document).ready(async () => {
 
     try {
         const profile = await fetchProfile();
-        // 경로 마지막 UID를 조회 대상으로 사용 (소셜/일반 구분 없이)
-        pathUid = Number(window.location.pathname.split('/').pop());
-        targetUid = pathUid;
+        console.log('[DEBUG] profile:', profile);
+
+        userType = profile.type;
+        userUid = profile.uid;
+
+        if (!userUid || isNaN(Number(userUid))) {
+            alert('유효하지 않은 사용자 정보입니다. 다시 로그인 해주세요.');
+            return;
+        }
 
         await fetchOrders();
+
         $('#order-table tbody').on('click','tr',function(){
             const idx = $(this).data('group-index');
             const ordersGroup = groupedData[idx].orders;
@@ -32,33 +40,31 @@ $(document).ready(async () => {
         $('#close-modal, #order-modal-backdrop').on('click', () => {
             $('#order-modal-backdrop, #order-modal').hide();
         });
+
     } catch (err) {
         console.error('초기 데이터 로딩 실패', err);
         alert('데이터 로딩 중 오류가 발생했습니다.');
-        window.location.href = '/login';
     }
-});
-
-function fetchProfile() {
-    return $.ajax({ url: '/profile', type: 'GET' });
 }
 
 async function fetchOrders() {
+    if (!userType || !userUid) {
+        console.warn('사용자 정보 로딩 중입니다. 잠시만 기다려주세요!');
+        return;
+    }
     setupAjax();
     checkToken();
-    console.log("▶️ 호출할 userUid:", userUid, "pathUid:", pathUid, "targetUid:", targetUid);
-    console.log("▶️ 호출 URL:", `/orders/user/${targetUid}`);
+
+    const apiUrl = `/orders/user/${userType}/${userUid}`;
+    console.log("▶️ 호출 URL:", apiUrl);
+
     try {
         const response = await $.ajax({
-            url: `/orders/user/${targetUid}?_=${Date.now()}`,
+            url: apiUrl,
             type: 'GET',
             contentType: 'application/json',
-
         });
-
         ordersList = response;
-
-        // 스토어 정보 없으면 필요한 것만 요청
         const uniqueStoreUids = [...new Set(ordersList.map(o => o.storeUid))];
         const missing = uniqueStoreUids.filter(uid => !storeMap[uid]);
 
@@ -73,13 +79,20 @@ async function fetchOrders() {
                 storeMap[store.storeUid] = store.storeName;
             });
         }
-
         renderOrders();
     } catch (err) {
         console.error('주문 목록 불러오기 실패', err);
         alert('주문 목록을 가져오는 데 실패했습니다.');
     }
 }
+
+function fetchProfile() {
+    return $.ajax({
+        url: '/profile',
+        type: 'GET'
+    });
+}
+
 
 function renderOrders() {
     // 2-1) merchant_uid별 그룹핑
