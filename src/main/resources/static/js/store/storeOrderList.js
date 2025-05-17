@@ -110,6 +110,7 @@ $(document).ready(async ()=>{
 
     }
 
+    // 취소 버튼 클릭 시
     $('#cancel-confirm-btn').click(async function() {
         const reason = $('#cancel-reason-dropdown').val();
         if (!reason) {
@@ -185,7 +186,7 @@ let mergeOrderList = (input) => {
     return merged;
 }
 
-// 주문 조작 함수 (취소를 빼서)
+// 주문 조작 함수
 let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) => {
     checkToken();
     setupAjax();
