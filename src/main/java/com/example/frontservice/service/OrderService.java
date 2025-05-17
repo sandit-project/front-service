@@ -25,6 +25,7 @@ public class OrderService {
 
     //주문
     public OrderResponseDTO submit(String token, OrderRequestDTO request) {
+        log.info("token::" + token);
         return orderClient.submitOrder(token, request);
     }
 
