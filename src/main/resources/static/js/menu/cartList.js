@@ -75,13 +75,21 @@ $(document).ready(function () {
     });
 
     // 주문하기
-    $("#checkout").click(function () {
+    $("#checkout").click(async function () {
         const selectedIds = $(".item-checkbox:checked").map(function () {
             return $(this).val();
         }).get();
 
         if (selectedIds.length === 0) {
             alert("주문할 항목을 선택하세요.");
+            return;
+        }
+        const userId = globalUserInfo.userId;
+        // ** 알러지 체크 호출 **
+        const allergyResult = await checkAllergyAPI(userId, selectedIds);
+        if (allergyResult.risk) {
+            //위험 시, 경고만 띄우고 주문 중단
+            showAllergyWarning(allergyResult);
             return;
         }
 
