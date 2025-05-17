@@ -1,3 +1,4 @@
+let userType;
 let userUid;
 let socialUid;
 let cartItems = [];
@@ -10,8 +11,15 @@ function getCartItems() {
     const urlParams = new URLSearchParams(window.location.search);
     const selectedIds = urlParams.getAll('selectedIds');
 
+    let url = '/menus/cart';
+    if (userType === 'USER') {
+        url += `?userUid=${userUid}`;
+    } else if (userType != 'USER') {
+        url += `?socialUid=${socialUid}`;
+    }
+
     return $.ajax({
-        url: '/menus/cart',
+        url: url,
         type: 'GET',
         contentType: 'application/json',
     }).then(response => {
@@ -140,12 +148,15 @@ function fetchProfileAndFillForm() {
         type: 'GET',
         url: '/profile'
     }).then((response) => {
+        console.log(response);
         fillUserInfoForm(response);
-        if (response.uid != null) {
+
+        userType = response.type;
+
+        if (userType === "USER") {
             userUid = response.uid;
-        }
-        if (response.userId != null) {
-            socialUid = response.socialUid;
+        } else {
+            socialUid = response.uid;
         }
         return response;
     }).catch((err) => {

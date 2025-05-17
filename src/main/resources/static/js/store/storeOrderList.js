@@ -164,7 +164,7 @@ let mergeOrderList = (input) => {
     return merged;
 }
 
-// 주문 조작 함수
+// 주문 조작 함수 (취소를 빼서)
 let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) => {
     checkToken();
     setupAjax();
