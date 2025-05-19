@@ -7,6 +7,7 @@ let cartItems = [];
 function getCartItems() {
     setupAjax();
     checkToken();
+    console.log("Authorization 헤더", localStorage.getItem('accessToken'));
 
     const urlParams = new URLSearchParams(window.location.search);
     const selectedIds = urlParams.getAll('selectedIds');
@@ -479,7 +480,6 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                 dataType: 'json',
                 data: JSON.stringify({
                     merchantUid: response.merchant_uid,
-                    //expectedVersion: expectedVersion
                 }),
                 success: function(updateRes) {
                     alert(updateRes.message || "결제 성공!");
@@ -520,7 +520,6 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
             })
                 //실패 구분하기
                 //포트원 승인되었으나 우리 DB 안 붙을 때
-                //그 때 따로 뺀 취소 함수 불러서 넣기 (커먼에 지금 빼놨던 거)
                 .done(function() {
                     alert('결제 실패!');
                 })
@@ -535,6 +534,8 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
 async function submitOrders(buyer, paymentResponse, reservationDate) {
     setupAjax();
     checkToken();
+    console.log("Authorization 헤더", localStorage.getItem('accessToken'));
+
     const items = await getSelectedCartItems();
     const generalItems = items.filter(i => !i.isCustom);
     const customItems = items.filter(i => i.isCustom);

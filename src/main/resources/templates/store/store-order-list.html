@@ -64,6 +64,19 @@
         로딩 중...
     </div>
 </div>
-
+<!-- 주문 취소 모달 -->
+<div id="cancel-modal" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%); background:white; border:1px solid #ccc; padding:20px; z-index:9999;">
+    <h3>주문 취소 사유 선택</h3>
+    <select id="cancel-reason-dropdown">
+        <option value="">사유 선택</option>
+        <option value="고객 요청">고객 요청</option>
+        <option value="재고 부족">재고 부족</option>
+        <option value="배달 불가">배달 불가</option>
+    </select>
+    <div style="margin-top: 15px; text-align:right;">
+        <button id="cancel-confirm-btn">확인</button>
+        <button id="cancel-cancel-btn">닫기</button>
+    </div>
+</div>
 </body>
 </html>

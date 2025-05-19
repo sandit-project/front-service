@@ -1,4 +1,5 @@
 let storeInfo;
+let currentMerchantUid = null;
 
 $(document).ready(async ()=>{
 
@@ -93,7 +94,7 @@ $(document).ready(async ()=>{
                         <td>${o.addressDestination || '-'}</td>
                         <td>
                           <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">수락</button>
-                          <button onclick="remoteOrder('cancel','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">취소</button>
+                            <button onclick="openCancelModal('${o.merchantUid}')">취소</button>
                           <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">조리</button>
                         </td>
                     </tr>
@@ -108,6 +109,27 @@ $(document).ready(async ()=>{
        }
 
     }
+
+    // 취소 버튼 클릭 시
+    $('#cancel-confirm-btn').click(async function() {
+        const reason = $('#cancel-reason-dropdown').val();
+        if (!reason) {
+            alert('취소 사유를 선택해주세요.');
+            return;
+        }
+
+        await cancelOrder(currentMerchantUid, reason); // 실패 alert는 내부에서 처리됨
+        $('#cancel-modal').hide();
+        $('#cancel-reason-dropdown').val('');
+        currentMerchantUid = null;
+        loadOrders(); // 목록 갱신
+    });
+
+    $('#cancel-cancel-btn').click(function() {
+        $('#cancel-modal').hide();
+        $('#cancel-reason-dropdown').val('');
+        currentMerchantUid = null;
+    });
 
 });
 
@@ -164,7 +186,7 @@ let mergeOrderList = (input) => {
     return merged;
 }
 
-// 주문 조작 함수 (취소를 빼서)
+// 주문 조작 함수
 let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) => {
     checkToken();
     setupAjax();
@@ -197,5 +219,12 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
     });
 
 }
+
+//취소 사유 모달 열기
+window.openCancelModal = function(merchantUid) {
+    currentMerchantUid = merchantUid;
+    $('#cancel-modal').show();
+}
+
 
 
