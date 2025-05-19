@@ -15,8 +15,6 @@ public class ChatService {
 
     private final ChatClient chatClient;
 
-
-
     public ChatRoomResponseDTO createRoom(String token, ChatRoomRequestDTO request) {
         return chatClient.createRoom(token, request);
     }
@@ -28,5 +26,9 @@ public class ChatService {
     public List<ChatMessageResponseDTO> getMessages(String token, String roomId) {
         return chatClient.getMessages(token, roomId);
     }
-}
 
+    // 채팅방 삭제
+    public void deleteRoom(String token, String roomId) {
+        chatClient.deleteRoom(token, roomId);
+    }
+}

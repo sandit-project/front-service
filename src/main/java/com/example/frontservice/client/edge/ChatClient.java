@@ -14,9 +14,13 @@ public interface ChatClient {
     @PostMapping("/rooms")
     ChatRoomResponseDTO createRoom(@RequestHeader("Authorization") String token, @RequestBody ChatRoomRequestDTO request);
 
+
     @GetMapping("/rooms")
     List<ChatRoomResponseDTO> getAllRooms(@RequestHeader("Authorization") String token);
 
     @GetMapping("/rooms/{roomId}/messages")
     List<ChatMessageResponseDTO> getMessages(@RequestHeader("Authorization") String token, @PathVariable String roomId);
+
+    @DeleteMapping("/rooms/{roomId}")
+    void deleteRoom(@RequestHeader("Authorization") String token, @PathVariable String roomId);
 }

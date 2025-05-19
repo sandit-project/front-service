@@ -1,75 +1,114 @@
-// ✅ 랜덤 닉네임 생성 또는 localStorage에서 가져오기
-function getOrCreateNickname() {
-    let nickname = localStorage.getItem('nickname');
-    if (!nickname) {
-        nickname = "User" + Math.floor(Math.random() * 1000);
-        localStorage.setItem('nickname', nickname);
-    }
-    return nickname;
-}
+let stompClient = null;
+let globalUserInfo = null;
 
-// ✅ URL에서 roomId 받기 + 닉네임 자동 설정
-const urlParams = new URLSearchParams(location.search);
-const roomId = urlParams.get("roomId");
-const nickname = getOrCreateNickname();
-
-if (!roomId) {
-    alert("Room ID가 필요합니다. 예: ?roomId=123");
-}
-
-// ✅ 인증 토큰 가져오기
-const token = localStorage.getItem('accessToken');
-if (!token) {
-    alert("로그인 필요: 인증 토큰이 없습니다.");
-    window.location.href = '/member/login';  // 로그인 페이지로 리디렉션
-}
-
-// ✅ WebSocket 연결 설정 (인증 토큰 포함)
-const socket = new SockJS('http://localhost:9006/chat');
-const stompClient = Stomp.over(socket);
-
-stompClient.connect(
-    { Authorization: `Bearer ${token}` },  // 헤더로 토큰 전달
-    () => {
-        stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
-            const message = JSON.parse(msg.body);
-            const isMine = message.sender === nickname;
-            const messageClass = isMine ? "my-message" : "other-message";
-            const messageHtml = `<div class="${messageClass}">
-          <b>${message.sender}</b>: ${message.message}
-      </div>`;
-            $('#chatBox').append(messageHtml);
-            $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+$(document).ready(async function () {
+    checkToken();
+    setupAjax();
+    // 사용자 정보 전역으로 불러오기
+    await getUserInfo().then((userInfo) => {
+        globalUserInfo = userInfo;
+        console.log('User Info:', userInfo);
+    }).catch((error) => {
+        console.error('user info error:', error);
+        Swal.fire("로그인이 필요합니다", "", "warning").then(() => {
+            window.location.href = "/member/login";
         });
-    }
-);
+    });
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("userInfo").innerText = `당신의 닉네임: ${nickname}`;
+    const userId = globalUserInfo.userId;
+    const role = globalUserInfo.role;
+    const userType = globalUserInfo.type;
+
+    const roomId = new URLSearchParams(window.location.search).get("roomId");
+    if (!roomId) {
+        alert("roomId가 필요합니다. 예: ?roomId=123");
+        return;
+    }
+
+    const roleLabel = role === 'ROLE_ADMIN' ? '관리자' : '고객';
+    $('#userInfo').text(`👤 로그인: ${userId} (${userType === 'social' ? '소셜' : '일반'}, ${roleLabel})`);
+
+    await loadChatHistory(roomId, userId);
+    connectWebSocket(roomId, userId, role, userType);
 });
 
-
-
-
-// 메시지 전송 함수
-function sendMessage() {
-    const message = {
-        roomId: roomId,
-        sender: nickname,
-        message: $('#messageInput').val()
-    };
-    stompClient.send("/app/chat.send", {}, JSON.stringify(message));
-    $('#messageInput').val('');
+async function loadChatHistory(roomId, userId) {
+    try {
+        const response = await $.get(`/chat/rooms/${roomId}/messages`);
+        response.forEach((message) => {
+            appendMessageToChatBox(message, userId);
+        });
+        $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight);
+    } catch (err) {
+        console.error("채팅 기록 로딩 실패:", err);
+        Swal.fire("채팅 기록을 불러오지 못했습니다.", "", "error");
+    }
 }
 
-// 버튼 클릭 시 메시지 전송
-$(document).ready(function () {
-    $('#sendBtn').on('click', function () {
-        sendMessage();
-    });
-    $('#messageInput').on('keypress', function (e) {
-        if (e.which === 13) {  // 엔터 키를 누르면 메시지 전송
-            sendMessage();
+function connectWebSocket(roomId, userId, role, userType) {
+    const token = localStorage.getItem("accessToken");
+    const socket = new SockJS("http://localhost:9006/chat");
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect(
+        { Authorization: `Bearer ${token}` },
+        () => {
+            stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
+                const message = JSON.parse(msg.body);
+                appendMessageToChatBox(message, userId);
+                $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight);
+            });
+
+            $("#sendBtn").click(() =>
+                sendMessage(roomId, userId, role, userType)
+            );
+
+            $("#messageInput").keypress((e) => {
+                if (e.which === 13) sendMessage(roomId, userId, role, userType);
+            });
+        },
+        (error) => {
+            console.error("WebSocket 연결 실패", error);
         }
-    });
-});
+    );
+}
+
+function appendMessageToChatBox(message, userId) {
+    const createdAtStr = message.createdAt || new Date().toISOString();
+    const formattedTime = formatDate(createdAtStr);
+
+    const isMine = message.sender === userId;
+
+    const senderLabel = (message.senderRole?.toLowerCase() === 'role_admin')
+        ? '👨‍💼 관리자'
+        : `🙋‍♂️ 고객 (${message.senderType === 'social' ? '소셜' : '일반'})`;
+
+    const messageClass = isMine ? "my-message" : "other-message";
+
+    const messageHtml = `
+        <div class="${messageClass}">
+            <div><b>${senderLabel} - ${message.sender}</b></div>
+            <div>${message.message}</div>
+            <div class="timestamp">${formattedTime}</div>
+        </div>
+    `;
+
+    $("#chatBox").append(messageHtml);
+}
+
+function sendMessage(roomId, userId, role, userType) {
+    const messageText = $("#messageInput").val().trim();
+    if (!messageText) return;
+
+    const message = {
+        roomId,
+        sender: userId,
+        senderRole: role,
+        senderType: userType,
+        message: messageText,
+        timestamp: new Date().toISOString()
+    };
+
+    stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+    $("#messageInput").val("");
+}
