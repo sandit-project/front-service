@@ -1,9 +1,9 @@
 let globalUserInfo;
-$(document).ready(() => {
+$(document).ready(async () => {
     checkToken(); // JWT 토큰 확인
     setupAjax();  // Ajax 헤더 설정
 
-    getUserInfo().then((userInfo) => {
+    await getUserInfo().then((userInfo) => {
         globalUserInfo = userInfo;
         console.log('User Info:', userInfo);
 
@@ -46,7 +46,7 @@ $(document).ready(() => {
     });
 
     // 사이드 메뉴 목록 불러오기
-    $.ajax({
+    await $.ajax({
         type: "GET",
         url: "/menus/sides",
         success: function (sides) {

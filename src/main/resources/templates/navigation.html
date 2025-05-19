@@ -1,0 +1,31 @@
+<!-- ✅ 네비게이션 바 -->
+<nav class="navbar" th:fragment="nav">
+    <div class="navbar-links">
+        <a href="/" class="nav-link">메뉴 소개</a>
+        <a href="/side" class="nav-link">사이드</a>
+        <a href="/" class="nav-link">가맹점</a>
+
+    </div>
+    <div class="management-section">
+        <div class="dropdown-delivery">
+            <a href="#" class="nav-link dropdown-toggle">DELIVERY</a>
+            <div class="dropdown-menu">
+                <a href="/delivery" class="dropdown-item">라이더 페이지</a>
+            </div>
+        </div>
+        <div class="dropdown-manager">
+            <a href="#" class="nav-link dropdown-toggle">Manager</a>
+            <div class="dropdown-menu">
+                <a href="/store/order" class="dropdown-item">주문 관리 페이지</a>
+            </div>
+        </div>
+        <div class="dropdown-admin">
+            <a href="#" class="nav-link dropdown-toggle">ADMIN</a>
+            <div class="dropdown-menu">
+                <a href="/admin" class="dropdown-item">메뉴 관리 페이지</a>
+                <a href="/store/list" class="dropdown-item">지점 관리 페이지</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
