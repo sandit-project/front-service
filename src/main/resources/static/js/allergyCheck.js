@@ -1,12 +1,25 @@
+let globalUserAllergies = [];
+
+async function fetchUserAllergies(userUid) {
+    try {
+        const res = await fetch(`/api/ai/users/${userUid}/allergies`);
+        if (!res.ok) throw new Error("알러지 조회 실패");
+        const data = await res.json();
+        globalUserAllergies = data.allergies || [];
+        console.log("유저 알러지:", globalUserAllergies);
+    } catch (err) {
+        console.error("알러지 조회 오류:", err);
+    }
+}
 
 // 1) 알러지 체크 API 호출
-async function checkAllergyAPI(userId, ingredients) {
+async function checkAllergyAPI(userAllergies, ingredients) {
     try {
         const response = await $.ajax({
             url: '/api/ai/check-allergy',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ user_id: userId, ingredients }),
+            data: JSON.stringify({ allergy: userAllergies, ingredients }),
             dataType: 'json'
         });
         return response;  // { risk, cause, detail }
