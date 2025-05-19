@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(async function () {
     checkToken();
     setupAjax();
     // 사용자 정보 전역으로 불러오기
@@ -6,12 +6,21 @@ $(document).ready(function () {
         globalUserInfo = userInfo;
         console.log('User Info:', userInfo);
 
-
     }).catch((error) => {
         console.error('user info error:', error);
     });
+
     const defaultExcludeTexts = [
         "선택 안 함", "빵을 선택하세요", "소스를 선택하세요", "재료를 선택하세요", "채소를 선택하세요"
+    ];
+
+    // 장바구니 폼 필드 리스트
+    const fields = [
+        "bread", "cheese",
+        "material1", "material2", "material3",
+        "vegetable1","vegetable2","vegetable3","vegetable4",
+        "vegetable5","vegetable6","vegetable7","vegetable8",
+        "sauce1","sauce2","sauce3"
     ];
 
     const getSelectValue = name => $(`select[name="${name}"]`).val() || null;
@@ -70,13 +79,16 @@ $(document).ready(function () {
         });
     };
 
-    const addCustomCart = () => {
+
+
+    const addCustomCart = async () => {
+        // 필수 항목 체트
         const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
         if (!required.every(name => getSelectValue(name))) {
             alert("모든 필수 항목을 선택해야 합니다.");
             return;
         }
-
+        //DTO 생성
         const fields = [
             "bread", "cheese", "material1", "material2", "material3",
             "sauce1", "sauce2", "sauce3",
@@ -89,6 +101,7 @@ $(document).ready(function () {
         customCartDTO.price = parseInt($('input[name="price"]').val()) || 0;
         customCartDTO.calorie = parseFloat($('input[name="calorie"]').val()) || 0;
 
+        // 사용자 ID 세팅
         if (globalUserInfo?.type === 'user') {
             customCartDTO.userUid = globalUserInfo.id;
         } else if (globalUserInfo?.type === 'social') {
@@ -98,6 +111,9 @@ $(document).ready(function () {
             return;
         }
 
+
+
+        // 장바구니 저장
         $.ajax({
             url: '/menus/custom-carts',
             type: 'POST',
@@ -128,17 +144,57 @@ $(document).ready(function () {
         });
     };
 
-    $('#menuForm').on('submit', function (e) {
+    // ① 로그인 후 globalUserInfo.id 가 있으면 호출
+    if (globalUserInfo?.id) {
+        const res = await fetch('http://localhost:9000/api/ai/users/' + globalUserInfo.id + '/allergies');
+        if (res.ok) {
+            const data = await res.json();
+            globalUserAllergies = data.allergies || [];
+        }
+    }
+
+    // 폼 제출 시 addCustomCart 호출
+    $('#menuForm').on('submit', async function (e) {
         e.preventDefault();
+
+        // 필수 유효성
         const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
         if (!required.every(name => getSelectValue(name))) {
             $('#warningMessage').fadeIn();
             return;
         }
         $('#warningMessage').fadeOut();
+
+        // 선택된 재료 텍스트 수집
+        const selectedTexts = [];
+        fields.forEach(name=>{
+            const val = getSelectValue(name);
+            if (val) {
+                const txt = $(`select[name="${name}"] option[value="${val}"]`).text();
+                if (txt && !defaultExcludeTexts.includes(txt)) selectedTexts.push(txt);
+            }
+        });
+
+        // ① AI-서비스로 알러지 체크
+        const res = await checkAllergyAPI(globalUserAllergies, selectedTexts);
+        if (res.risk) {
+            // ② 위험 시 경고 UI 표시 후 중단
+            showAllergyWarning(res);
+            return;
+        }
+
+        // ③ 이상 없으면 DTO 생성 후 저장
+        const dto = Object.fromEntries(fields.map(n=>[n, getSelectValue(n)]));
+        dto.price   = +$('input[name="price"]').val()   || 0;
+        dto.calorie = +$('input[name="calorie"]').val() || 0;
+        if (globalUserInfo.type === 'user')   dto.userUid   = globalUserInfo.id;
+        else if (globalUserInfo.type === 'social') dto.socialUid = globalUserInfo.id;
+        else { alert('로그인 후 이용해주세요.'); return; }
+
+        // 장바구니 저장 함수
         addCustomCart();
     });
-
+    // 초기 로드
     $('select').on('change', calculatePriceAndCalories);
     loadIngredients();
     calculatePriceAndCalories();
