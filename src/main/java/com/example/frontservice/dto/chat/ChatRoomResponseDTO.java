@@ -13,4 +13,5 @@ public class ChatRoomResponseDTO {
     private String id;
     private String name;
     private LocalDateTime createdAt;
+    private String ownerId;  // 방 생성자 ID 추가
 }

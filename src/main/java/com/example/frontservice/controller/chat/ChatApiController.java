@@ -56,4 +56,12 @@ public class ChatApiController {
         String token = extractToken(servletRequest);
         return ResponseEntity.ok(chatService.getMessages("Bearer " + token, roomId));
     }
+    // 채팅방 삭제
+    @DeleteMapping("/rooms/{roomId}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable String roomId, HttpServletRequest servletRequest) {
+        String token = extractToken(servletRequest);
+        chatService.deleteRoom("Bearer " + token, roomId);
+        return ResponseEntity.noContent().build();  // 204 No Content
+    }
+
 }

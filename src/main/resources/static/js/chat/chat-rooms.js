@@ -1,4 +1,25 @@
+function getUserInfo() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return null;
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return {
+            userId: payload.sub,
+            role: payload.role || 'ROLE_USER'  // 기본 역할 지정
+        };
+    } catch (e) {
+        return null;
+    }
+}
+
 function fetchRooms() {
+    const userInfo = getUserInfo();
+    if (!userInfo) {
+        alert("로그인이 필요합니다.");
+        window.location.href = '/member/login';
+        return;
+    }
+
     $.ajax({
         url: '/chat/rooms',
         method: 'GET',
@@ -6,12 +27,39 @@ function fetchRooms() {
             const roomListDiv = $('#roomList');
             roomListDiv.empty();
 
-            data.forEach(room => {
-                const roomDiv = $('<div></div>')
+            // 관리자면 모든 방, 일반 회원이면 본인 소유 방만 필터링
+            const roomsToShow = (userInfo.role === 'ROLE_ADMIN')
+                ? data
+                : data.filter(room => room.ownerId === userInfo.userId);
+
+            if (!roomsToShow.length) {
+                roomListDiv.append('<div>생성된 채팅방이 없습니다.</div>');
+                return;
+            }
+
+            roomsToShow.forEach(room => {
+                const roomDiv = $('<div></div>').addClass('room-entry');
+
+                const nameSpan = $('<span></span>')
                     .text(room.name)
+                    .css('cursor', 'pointer')
                     .click(() => {
                         window.location.href = '/chat-room?roomId=' + room.id;
                     });
+
+                roomDiv.append(nameSpan);
+
+                const deleteButton = $('<button></button>')
+                    .text('삭제')
+                    .addClass('delete-btn')
+                    .click(e => {
+                        e.stopPropagation();
+                        if (confirm(`'${room.name}' 방을 삭제하시겠습니까?`)) {
+                            deleteRoom(room.id);
+                        }
+                    });
+
+                roomDiv.append(deleteButton);
                 roomListDiv.append(roomDiv);
             });
         },
@@ -23,8 +71,10 @@ function fetchRooms() {
 
 function createRoom() {
     const roomName = $('#roomName').val().trim();
-    if (!roomName) {
-        alert("방 이름을 입력하세요.");
+    const userInfo = getUserInfo();
+
+    if (!roomName || !userInfo) {
+        alert("방 이름 또는 사용자 정보가 없습니다.");
         return;
     }
 
@@ -32,7 +82,7 @@ function createRoom() {
         url: '/chat/rooms',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ name: roomName }),
+        data: JSON.stringify({ name: roomName, ownerId: userInfo.userId }),
         success: function() {
             $('#roomName').val('');
             fetchRooms();
@@ -47,27 +97,50 @@ function createRoom() {
     });
 }
 
-let checkToken = () => {
-    let token = localStorage.getItem('accessToken');
-    if (token == null || token.trim() === '') {
+function deleteRoom(roomId) {
+    $.ajax({
+        url: '/chat/rooms/' + roomId,
+        method: 'DELETE',
+        success: function() {
+            fetchRooms();
+        },
+        error: function() {
+            alert("채팅방 삭제에 실패했습니다.");
+        }
+    });
+}
+
+function checkToken() {
+    const token = localStorage.getItem('accessToken');
+    if (!token || token.trim() === '') {
         window.location.href = '/member/login';
     }
-};
+}
 
-let setupAjax = () => {
+function setupAjax() {
     $.ajaxSetup({
-        beforeSend: (xhr) => {
-            let token = localStorage.getItem('accessToken');
+        beforeSend: function(xhr) {
+            const token = localStorage.getItem('accessToken');
             if (token) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             }
         }
     });
-};
+}
 
-// ✅ 초기 로딩 시점에 호출
+// 초기 실행
 $(document).ready(function() {
-    checkToken();     // 먼저 토큰 검사
-    setupAjax();      // Ajax 설정 먼저 적용
-    fetchRooms();     // 이후 방 목록 가져오기
+    checkToken();
+    setupAjax();
+    fetchRooms();
+
+    $('#createRoomBtn').click(() => {
+        createRoom();
+    });
+
+    $('#roomName').keypress(function(e) {
+        if (e.which === 13) { // Enter키
+            createRoom();
+        }
+    });
 });

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatRoomRequestDTO {
     private String name;
+    private String ownerId;
 }
