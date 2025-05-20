@@ -1,81 +1,139 @@
+/* Reset */
+body, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Import font */
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
 body {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #f5f0e6;
-    color: #4b2e2e;
+    font-family: "Noto Sans KR", sans-serif;
+    background-color: #6884b3;
+    color: #1e1e1e;
     padding: 20px;
-    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    background-image: none;
+    overflow-y: hidden;
 }
 
 h2 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: bold;
     text-align: center;
-    color: #6e3b3b;
-    text-shadow: 1px 1px #fff3d6;
+    color: #ffffff;
+    text-shadow: 1px 1px rgba(0,0,0,0.2);
     margin-bottom: 20px;
 }
 
+/* 유저 정보 */
+#userInfo {
+    margin-bottom: 12px;
+    padding: 0 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* 채팅 메시지 영역 */
 #chatBox {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    height: 300px;
+    gap: 8px;
+    height: 320px;
     overflow-y: auto;
-    border: 3px solid #8b5e3c;
-    padding: 12px;
-    background-color: #fff8e6;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(120, 60, 20, 0.4);
-    margin-bottom: 15px;
-}
-
-#chatBox p {
-    margin: 5px 0;
-    line-height: 1.4;
-}
-
-#messageInput {
-    width: 70%;
-    padding: 10px;
-    border: 2px solid #a97449;
-    border-radius: 4px;
-    background-color: #fffaf2;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
-    color: #4b2e2e;
+    border: 2px solid #4c5f87;
+    padding: 16px;
+    background-color: #f1f4fa;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    margin: 0 16px 18px;
     box-sizing: border-box;
 }
 
+#chatBox p {
+    margin: 4px 0;
+    line-height: 1.5;
+    font-size: 1rem;
+}
+
+/* 입력 영역 (input + button) */
+#inputArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+/* 입력창 */
+#messageInput {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #d1d1d1;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 15px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* 버튼 */
 #sendBtn {
-    padding: 10px 16px;
-    margin-left: 8px;
-    background-color: #8b4513;
-    color: #fff8dc;
+    padding: 10px 18px;
+    background-color: #fdf01b;
+    color: #6b6b00;
     border: none;
-    border-radius: 4px;
-    font-family: 'Courier New', Courier, monospace;
+    border-radius: 6px;
+    font-family: "Noto Sans KR", sans-serif;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 1px 1px 3px rgba(50, 25, 10, 0.5);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease;
 }
 
 #sendBtn:hover {
-    background-color: #a0522d;
+    background-color: #f6e200;
 }
 
+/* 메시지 스타일 */
 .my-message {
-    align-self: flex-start;   /* 내 메시지 왼쪽 정렬 */
-    max-width: 60%;
-    background-color: #d1e7dd;
-    padding: 5px 10px;
-    border-radius: 10px;
+    align-self: flex-start;
+    max-width: 65%;
+    background-color: #fdf01b;
+    color: #1c1c1c;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .other-message {
-    align-self: flex-end;     /* 상대 메시지 오른쪽 정렬 */
-    max-width: 60%;
-    background-color: #f8d7da;
-    padding: 5px 10px;
+    align-self: flex-end;
+    max-width: 65%;
+    background-color: #ffffff;
+    color: #1c1c1c;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 스크롤바 커스터마이징 */
+#chatBox::-webkit-scrollbar-track {
+    background-color: #6884b3;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+#chatBox::-webkit-scrollbar {
+    width: 12px;
+    background-color: #f5f5f5;
+}
+
+#chatBox::-webkit-scrollbar-thumb {
     border-radius: 10px;
+    background-color: #555;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }

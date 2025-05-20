@@ -50,7 +50,7 @@ body {
     box-shadow: 0 10px 30px rgba(85, 54, 25, 0.2);
 }
 
-#sandit-logo{
+#sandit-logo {
     width: 100%;
     height: auto;
 }
@@ -66,9 +66,8 @@ body {
 .menu-info {
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* ✨ 설명이 남은 공간을 채움 */
+    flex-grow: 1;
     justify-content: space-between;
-
 }
 
 .menu-info h2 {
@@ -92,26 +91,7 @@ body {
 }
 
 /* 🔵 장바구니 버튼 */
-.add-to-cart-btn {
-    background: linear-gradient(45deg, #a0522d, #8b5c32);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 15px;
-    font-weight: 700;
-    border: none;
-    transition: background 0.3s ease;
-    margin-top: 12px;
-    text-decoration: none;
-    cursor: pointer;
-    align-self: center; /* ✨ 버튼을 중앙 정렬 */
-}
-
-.add-to-cart-btn:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
-}
-
-
+.add-to-cart-btn,
 .order-btn {
     background: linear-gradient(45deg, #a0522d, #8b5c32);
     color: #fff;
@@ -124,11 +104,50 @@ body {
     margin-top: 12px;
     text-decoration: none;
     cursor: pointer;
-    align-self: center; /* ✨ 버튼을 중앙 정렬 */
+    align-self: center;
 }
 
+.add-to-cart-btn:hover,
 .order-btn:hover {
     background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+}
+
+/* 🔵 메뉴 링크 */
+.menu-item a {
+    text-decoration: none;
+}
+
+/* 🔵 1:1 채팅 버튼 고정 스타일 */
+.chat-item {
+    position: fixed;
+    bottom: 120px;
+    right: 60px;
+    z-index: 1000;
+}
+
+#oneOnOneChatBtn {
+    width: 100px;
+    height: 100px;
+    background-color: #fff7e6; /* ✅ 더 밝은 바닐라색 */
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+#oneOnOneChatBtn:hover {
+    background-color: #fff0cc; /* 살짝 진해진 밝은 색 */
+}
+
+#sandit-chat {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
 }
 
 /* 🔵 반응형 */
@@ -151,7 +170,4 @@ body {
     .main-heading {
         font-size: 32px;
     }
-}
-.menu-item a {
-    text-decoration: none;
 }
