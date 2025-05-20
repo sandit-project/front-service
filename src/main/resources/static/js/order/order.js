@@ -473,7 +473,7 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         buyer_email: buyer.email,
         buyer_addr: buyer.mainAddress,
         buyer_addr_sub: buyer.subAddress1,
-    }, function (response) {
+    }, async function (response) {
         console.log(response);
         if (response.success) {
             // 결제 성공 시 업데이트 요청
@@ -502,9 +502,30 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                             alert('주문 저장 및 카트 삭제 완료!');
                             window.location.reload();
                         })
-                        .catch(err => {
+                        .catch(async (err) => {
                             console.error('주문 처리 오류', err);
-                            alert('주문 저장 중 오류가 발생했습니다.');
+                            alert('주문 저장 중 오류가 발생했습니다. 결제를 자동으로 취소합니다.');
+
+                            //주문 저장이 안되면 결제 취소 처리
+                            try {
+                                await cancelOrder(response.merchant_uid, '주문 저장 실패로 인한 자동 취소');
+                                alert('결제가 취소되었습니다.');
+
+                                await $.ajax({
+                                    url: '/orders/update-fail',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        merchantUid: response.merchant_uid,
+                                        reason: '주문 저장 실패로 인한 자동 취소 처리'
+                                    })
+                                });
+
+                                alert('시스템 상태가 복구되었습니다. 다시 시도해주세요.');
+                            } catch (cancelErr) {
+                                console.error('자동 결제 취소 실패', cancelErr);
+                                alert('결제 취소에도 실패했습니다. 고객센터에 문의해주세요.');
+                            }
                         });
                 },
                 error: function(err) {
@@ -513,25 +534,23 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                 }
             });
         } else {
-            // 결제 실패 시
-            $.ajax({
-                url: `/orders/update-fail`,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    merchantUid: response.merchant_uid
-                })
-            })
-                //실패 구분하기
-                //포트원 승인되었으나 우리 DB 안 붙을 때
-                .done(function() {
-                    alert('결제 실패!');
-                })
-                .fail(function(err) {
-                    console.error('상태 업데이트 실패', err);
-                    alert('주문 상태 업데이트 중 오류가 발생했습니다.');
+            try {
+                await $.ajax({
+                    url: `/orders/update-fail`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        merchantUid: response.merchant_uid,
+                        reason: response.error_msg || '사용자 취소 또는 결제 실패'
+                    })
                 });
-        };
+
+                alert(response.error_msg || '결제가 실패했습니다. 다시 시도해주세요.');
+            } catch (err) {
+                console.error('update-fail 전송 실패', err);
+                alert('결제 실패 처리를 서버에 알리지 못했습니다. 고객센터에 문의해주세요.');
+            }
+        }
     });
 }
 
