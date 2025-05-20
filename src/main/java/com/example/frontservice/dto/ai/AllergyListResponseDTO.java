@@ -7,8 +7,6 @@ import java.util.List;
 
 @Getter
 @Builder
-public class AllgergyCheckResponseDTO {
-    private boolean risk;
-    private List<String> cause;
-    private String detail;
+public class AllergyListResponseDTO {
+    private List<String> allergy;
 }
