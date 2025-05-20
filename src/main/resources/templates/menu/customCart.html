@@ -6,7 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/menu/customCart.js}"></script>
     <script th:src="@{/js/common.js}"></script>
-    <script src="/js/allergyCheck.js"></script>
+    <script th:src="@{/js/allergyCheck.js}"></script>
     <link th:href="@{/css/menu/menuAdmin.css}" rel="stylesheet">
 </head>
 <body>
@@ -105,16 +105,19 @@
             🍞 <strong>선택한 구성:</strong> <span id="selectionText">선택 항목이 없습니다.</span>
 
         </div>
-            <div>
-        <button type="submit" class="btn btn-primary" id="submitBtn">장바구니 담기</button>
-        <button type="button" class="btn btn-secondary cancel-btn" onclick="location.href='/cart'">장바구니</button>
-        <button type="button" class="btn btn-danger main-btn" onclick="location.href='/'">홈으로</button>
-
+        <div id="allergyWarning" style="display:none;"></div>
+        <div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">장바구니 담기</button>
+            <button type="button" class="btn btn-secondary cancel-btn" onclick="location.href='/cart'">장바구니</button>
+            <button type="button" class="btn btn-danger main-btn" onclick="location.href='/'">홈으로</button>
+       </div>
     </div>
 </form>
 
 <!-- 경고 메시지 추가 -->
 <div id="warningMessage" style="display:none; color: red;">빵과 재료를 선택해주세요.</div>
+
+
 
 </body>
 </html>

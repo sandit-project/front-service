@@ -1,26 +1,105 @@
-$(document).ready(async function () {
+window.globalUserAllergies = window.globalUserAllergies || [];
+window.globalUserInfo = window.globalUserInfo || null;
+
+$(document).ready( () => {
     checkToken();
     setupAjax();
-    // 사용자 정보 전역으로 불러오기
-    getUserInfo().then((userInfo) => {
-        globalUserInfo = userInfo;
+    // 1.유저 정보 가져오기
+    getUserInfo().then(async (userInfo) => {
+        window.globalUserInfo = userInfo;
         console.log('User Info:', userInfo);
 
+        // 2.user/social 분기 : userUid or socialUid 구분해서 알러지 요청
+        let allergyUrl = '';
+        if (window.globalUserInfo.type === 'user') {
+            allergyUrl = `/api/ai/users/${window.globalUserInfo.id}/allergies`;
+        }else if (window.globalUserInfo.type === 'social') {
+            allergyUrl = `/api/ai/socials/${window.globalUserInfo.id}/allergies`;
+        } // 실제로 socials 엔드포인트는 백엔드에 추가
+
+        // (fetch → $.ajax로 교체)
+        const data = await $.ajax({
+            url: allergyUrl,
+            type: 'GET',
+            dataType: 'json'
+        });
+        window.globalUserAllergies = data.allergy || [];
+
+        // 폼 제출 시 addCustomCart 호출
+        $('#menuForm').on('submit', async function (e) {
+            e.preventDefault();
+
+            // 필수값 유효성
+            const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
+            if (!required.every(name => getSelectValue(name))) {
+                $('#warningMessage').fadeIn();
+                return;
+            }
+            $('#warningMessage').fadeOut();
+
+            // 장바구니 폼 필드 리스트
+            const fields = [
+                "bread", "cheese",
+                "material1", "material2", "material3",
+                "vegetable1","vegetable2","vegetable3","vegetable4",
+                "vegetable5","vegetable6","vegetable7","vegetable8",
+                "sauce1","sauce2","sauce3"
+            ];
+
+            // 선택된 재료 텍스트만 추출
+            const selectedTexts = [];
+            //  fields: ["bread", ...] select name 리스트
+            fields.forEach(name=>{
+                const val = $(`select[name="${name}"]`).val();
+                if (val) {
+                    const txt = $(`select[name="${name}"] option[value="${val}"]`).text();
+                    if (txt && !defaultExcludeTexts.includes(txt)) selectedTexts.push(txt);
+                }
+            });
+
+            //  user/social UID 구분해서 body 구성
+            let allergyReqBody ={
+                ingredients: selectedTexts,
+                allergy: globalUserAllergies
+            };
+            if (globalUserInfo.type === 'user') {
+                allergyReqBody.user_uid = globalUserInfo.id;
+            } else if (globalUserInfo.type === 'social') {
+                allergyReqBody.social_uid = globalUserInfo.id;
+            }
+
+            // ① AI-서비스로 알러지 체크
+            const res = await checkAllergyAPI(allergyReqBody);
+            if (res.risk) {
+                // ② 위험 시 경고 UI 표시 후 중단
+                showAllergyWarning(res);
+                return;
+            }
+
+            // ③ 이상 없으면 DTO 생성 후 저장
+            const dto = Object.fromEntries(fields.map(n=>[n, getSelectValue(n)]));
+            dto.price   = +$('input[name="price"]').val()   || 0;
+            dto.calorie = +$('input[name="calorie"]').val() || 0;
+            if (globalUserInfo.type === 'user')   dto.userUid   = globalUserInfo.id;
+            else if (globalUserInfo.type === 'social') dto.socialUid = globalUserInfo.id;
+            else { alert('로그인 후 이용해주세요.'); return; }
+
+            // 장바구니 저장 함수
+            await addCustomCart();
+        });
+        // 초기 로드
+        $('select').on('change', calculatePriceAndCalories);
+        loadIngredients();
+        calculatePriceAndCalories();
+
     }).catch((error) => {
-        console.error('user info error:', error);
+        alert('로그인 정보 확인에 실패했습니다.');
+        location.href = '/login';
     });
+
 
     const defaultExcludeTexts = [
         "선택 안 함", "빵을 선택하세요", "소스를 선택하세요", "재료를 선택하세요", "채소를 선택하세요"
-    ];
-
-    // 장바구니 폼 필드 리스트
-    const fields = [
-        "bread", "cheese",
-        "material1", "material2", "material3",
-        "vegetable1","vegetable2","vegetable3","vegetable4",
-        "vegetable5","vegetable6","vegetable7","vegetable8",
-        "sauce1","sauce2","sauce3"
     ];
 
     const getSelectValue = name => $(`select[name="${name}"]`).val() || null;
