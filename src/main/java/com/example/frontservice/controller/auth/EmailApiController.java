@@ -44,8 +44,23 @@ public class EmailApiController {
     public ResponseEntity<String> verifyCode(
             @PathVariable String email,
             @RequestBody EmailRequestDTO emailRequestDTO
-            ) {
-        String token = emailService.verifyEmailCode(email, emailRequestDTO.getCode());
-        return ResponseEntity.ok(token);
+    ) {
+        try {
+            String token = emailService.verifyEmailCode(email, emailRequestDTO.getCode());
+            return ResponseEntity.ok(token);
+        } catch (FeignException e) {
+            if (e.status() == 404) {
+                // 인증 코드 불일치: 404로 변환
+                return ResponseEntity
+                        .status(404)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(e.contentUTF8());
+            }
+            // 필요하다면 400 등도 분기 처리
+            return ResponseEntity
+                    .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    .body("이메일 인증 중 오류가 발생했습니다.");
+        }
     }
+
 }
