@@ -1,64 +1,132 @@
+/* Reset */
+body, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Import font */
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
 body {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #f5f0e6;
-    color: #4b2e2e;
+    font-family: "Noto Sans KR", sans-serif;
+    background-color: #6884b3;
+    color: #1e1e1e;
     padding: 20px;
-    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    background-image: none;
 }
 
 h2 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: bold;
     text-align: center;
-    color: #6e3b3b;
-    text-shadow: 1px 1px #fff3d6;
+    color: #ffffff;
+    text-shadow: 1px 1px rgba(0,0,0,0.2);
     margin-bottom: 20px;
 }
 
+/* Input field */
 input#roomName {
-    padding: 10px;
+    padding: 10px 12px;
     width: 250px;
-    font-size: 14px;
-    border: 2px solid #a97449;
-    background-color: #fffaf2;
-    color: #4b2e2e;
-    border-radius: 4px;
-    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    border: 2px solid #d1d1d1;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 6px;
+    font-family: "Noto Sans KR", sans-serif;
 }
 
+/* Button */
 button {
-    padding: 10px 16px;
-    background-color: #8b4513;
-    color: #fff8dc;
+    padding: 10px 18px;
+    background-color: #fdf01b;
+    color: #6b6b00;
     border: none;
     font-weight: bold;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
-    margin-left: 8px;
-    box-shadow: 1px 1px 3px rgba(50, 25, 10, 0.5);
+    font-family: "Noto Sans KR", sans-serif;
+    margin-left: 10px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #a0522d;
+    background-color: #f6e200;
 }
 
+/* Room List */
 #roomList {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-#roomList div {
-    margin-bottom: 10px;
-    cursor: pointer;
+/* 각 채팅방 박스 */
+.room-entry {
     padding: 10px 14px;
-    border: 2px solid #8b5e3c;
-    border-radius: 6px;
-    background-color: #fff8e6;
-    box-shadow: 2px 2px 4px rgba(120, 60, 20, 0.4);
+    border: 2px solid #4c5f87;
+    border-radius: 10px;
+    background-color: #f1f4fa;
+    color: #1c1c1c;
+    font-weight: bold;
+    font-size: 0.95rem;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     width: fit-content;
+    cursor: pointer;
     transition: background-color 0.2s;
+
+    /* 가로 정렬 */
+    display: flex;
+    flex-direction: column; /* 위: 이름+버튼, 아래: 생성시간 */
 }
 
-#roomList div:hover {
-    background-color: #f0e0cc;
+/* 이름 + 삭제 버튼 컨테이너 */
+.room-entry > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+}
+
+/* 방 이름 */
+.room-entry > div:first-child > span {
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+/* 삭제 버튼 */
+.delete-btn {
+    padding: 5px 12px;
+    background-color: #fdf01b;
+    color: #6b6b00;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.delete-btn:hover {
+    background-color: #f6e200;
+}
+
+/* 호버 시 배경색 */
+.room-entry:hover {
+    background-color: #e3eaf4;
+}
+
+/* 생성시간 */
+.created-time {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 6px;
+    font-family: "Noto Sans KR", sans-serif;
+    width: 100%;
 }

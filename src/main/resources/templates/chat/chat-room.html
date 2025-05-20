@@ -11,22 +11,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- 커스텀 JS/CSS -->
-    <script th:src="@{/js/common.js}"></script>
+<!--    <script th:src="@{/js/common.js}"></script>-->
     <script th:src="@{/js/chat/chat-room.js}"></script>
-
     <link th:href="@{/css/chat/chat-room.css}" rel="stylesheet">
 </head>
 <body>
 <h2>채팅방</h2>
 
-<!-- 로그인된 유저 정보 출력 -->
-<div id="userInfo" style="margin-bottom: 10px; font-weight: bold;"></div>
+<!-- 로그인된 유저 정보 -->
+<div id="userInfo"></div>
 
 <!-- 채팅 메시지 영역 -->
-<div id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+<div id="chatBox"></div>
 
 <!-- 입력창 및 전송 버튼 -->
-<input id="messageInput" type="text" placeholder="메시지를 입력하세요" style="width: 70%;" />
-<button id="sendBtn">전송</button>
+<div id="inputArea">
+    <input id="messageInput" type="text" placeholder="메시지를 입력하세요" />
+    <button id="sendBtn">전송</button>
+</div>
 </body>
 </html>
