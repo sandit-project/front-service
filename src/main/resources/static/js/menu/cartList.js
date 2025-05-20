@@ -84,14 +84,6 @@ $(document).ready(function () {
             alert("주문할 항목을 선택하세요.");
             return;
         }
-        const userId = globalUserInfo.userId;
-        // ** 알러지 체크 호출 **
-        const allergyResult = await checkAllergyAPI(userId, selectedIds);
-        if (allergyResult.risk) {
-            //위험 시, 경고만 띄우고 주문 중단
-            showAllergyWarning(allergyResult);
-            return;
-        }
 
         const query = selectedIds.map(id => `selectedIds=${id}`).join('&');
         const userQuery = new URLSearchParams(getUserParams()).toString();
