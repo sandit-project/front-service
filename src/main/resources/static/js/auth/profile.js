@@ -7,9 +7,9 @@ $(document).ready(async ()=>{
     // 카카오맵 렌더링 (위에서 받은 좌표 전달)
     renderKakaomap(resultList[0]);
 
-    $('#updateProfileBtn').on("click",() => {
-        window.location.href = "/member/profile/update"
-    });
+    // $('#updateProfileBtn').on("click",() => {
+    //     window.location.href = "/member/profile/update"
+    // });
 });
 
 let requestDeliveringOrder = async () => {
@@ -171,6 +171,11 @@ $(document).on("click", "#deleteBtn", () => {
         }
     });
 });
+
+// 회원 수정 버튼
+$(document).on("click", "#updateProfileBtn", () => {
+    window.location.href = "/member/profile/update";
+})
 
 function deleteAccount() {
     checkToken();

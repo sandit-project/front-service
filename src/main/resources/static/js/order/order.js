@@ -96,19 +96,19 @@ function checkUserAddress() {
 }
 
 //주소 검색 호출 함수
-function execDaumPostcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            // 1) 주소 문자열
-            const addr = data.roadAddress || data.jibunAddress;
-            $('#mainAddress').val(addr);
-
-            // 2) 좌표 값까지 hidden input 에 세팅
-            $('#deliveryDestinationLat').val(data.y);
-            $('#deliveryDestinationLan').val(data.x);
-        }
-    }).open();
-}
+// function execDaumPostcode() {
+//     new daum.Postcode({
+//         oncomplete: function(data) {
+//             // 1) 주소 문자열
+//             const addr = data.roadAddress || data.jibunAddress;
+//             $('#mainAddress').val(addr);
+//
+//             // 2) 좌표 값까지 hidden input 에 세팅
+//             $('#deliveryDestinationLat').val(data.y);
+//             $('#deliveryDestinationLan').val(data.x);
+//         }
+//     }).open();
+// }
 
 
 // 스토어 리스트 가져오기
@@ -217,6 +217,10 @@ $(document).ready(async () => {
         const $o = $(this).find('option:selected');
         $('#storeLatitude').val($o.data('lat'));
         $('#storeLongitude').val($o.data('lan'));
+    });
+
+    $('#find-address-btn').on('click', function() {
+        execDaumPostcode("main");
     });
 
     $('#payButton').click(async () => {
@@ -418,7 +422,7 @@ function getBuyerInfo() {
 // 사전 검증 API 호출
 function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, reservationDate) {
     return $.ajax({
-        url: '/orders/prepare',
+        url: `/orders/prepare`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -469,12 +473,12 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         buyer_email: buyer.email,
         buyer_addr: buyer.mainAddress,
         buyer_addr_sub: buyer.subAddress1,
-    }, function (response) {
+    }, async function (response) {
         console.log(response);
         if (response.success) {
             // 결제 성공 시 업데이트 요청
             $.ajax({
-                url: '/orders/update-success',
+                url: `/orders/update-success`,
                 type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
@@ -498,9 +502,30 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                             alert('주문 저장 및 카트 삭제 완료!');
                             window.location.reload();
                         })
-                        .catch(err => {
+                        .catch(async (err) => {
                             console.error('주문 처리 오류', err);
-                            alert('주문 저장 중 오류가 발생했습니다.');
+                            alert('주문 저장 중 오류가 발생했습니다. 결제를 자동으로 취소합니다.');
+
+                            //주문 저장이 안되면 결제 취소 처리
+                            try {
+                                await cancelOrder(response.merchant_uid, '주문 저장 실패로 인한 자동 취소');
+                                alert('결제가 취소되었습니다.');
+
+                                await $.ajax({
+                                    url: '/orders/update-fail',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        merchantUid: response.merchant_uid,
+                                        reason: '주문 저장 실패로 인한 자동 취소 처리'
+                                    })
+                                });
+
+                                alert('시스템 상태가 복구되었습니다. 다시 시도해주세요.');
+                            } catch (cancelErr) {
+                                console.error('자동 결제 취소 실패', cancelErr);
+                                alert('결제 취소에도 실패했습니다. 고객센터에 문의해주세요.');
+                            }
                         });
                 },
                 error: function(err) {
@@ -509,25 +534,23 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                 }
             });
         } else {
-            // 결제 실패 시
-            $.ajax({
-                url: '/orders/update-fail',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    merchantUid: response.merchant_uid
-                })
-            })
-                //실패 구분하기
-                //포트원 승인되었으나 우리 DB 안 붙을 때
-                .done(function() {
-                    alert('결제 실패!');
-                })
-                .fail(function(err) {
-                    console.error('상태 업데이트 실패', err);
-                    alert('주문 상태 업데이트 중 오류가 발생했습니다.');
+            try {
+                await $.ajax({
+                    url: `/orders/update-fail`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        merchantUid: response.merchant_uid,
+                        reason: response.error_msg || '사용자 취소 또는 결제 실패'
+                    })
                 });
-        };
+
+                alert(response.error_msg || '결제가 실패했습니다. 다시 시도해주세요.');
+            } catch (err) {
+                console.error('update-fail 전송 실패', err);
+                alert('결제 실패 처리를 서버에 알리지 못했습니다. 고객센터에 문의해주세요.');
+            }
+        }
     });
 }
 
@@ -576,7 +599,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
         // 응답에서 orderUids 가져오기
         const resp = await $.ajax({
             type: 'POST',
-            url: '/orders',
+            url: `/orders/${userType}`,
             contentType: 'application/json',
             data: JSON.stringify(payload)
         });
@@ -602,12 +625,11 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
                 amount: i.amount,
                 unitPrice: i.unitPrice,
                 calorie: i.calorie || 0,
-                //version: expectedVersion || 0
             }))
         };
         const resp2 = await $.ajax({
             type: 'POST',
-            url: '/orders',
+            url: `/orders/${userType}`,
             contentType: 'application/json',
             data: JSON.stringify(customPayload)
         });
@@ -639,7 +661,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
 
         await $.ajax({
             type: 'POST',
-            url: '/orders/custom/final',
+            url: `/orders/custom/final`,
             contentType: 'application/json',
             data: JSON.stringify({
                 orderRequestDTO: {

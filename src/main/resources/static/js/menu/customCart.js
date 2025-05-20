@@ -1,7 +1,6 @@
-window.globalUserAllergies = window.globalUserAllergies || [];
-window.globalUserInfo = window.globalUserInfo || null;
+let globalUserInfo;
 
-$(document).ready( () => {
+$(document).ready(async function () {
     checkToken();
     setupAjax();
     // 1.유저 정보 가져오기

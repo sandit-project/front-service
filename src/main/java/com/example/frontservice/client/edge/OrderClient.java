@@ -18,8 +18,10 @@ public interface OrderClient {
     @PostMapping("/prepare")
     PreparePaymentResponseDTO preparePayment(@RequestBody PreparePaymentRequestDTO request);
 
-    @PostMapping
-    OrderResponseDTO submitOrder(@RequestHeader("Authorization") String token, @RequestBody OrderRequestDTO request);
+    @PostMapping("/{userType}")
+    OrderResponseDTO submitOrder(@RequestHeader("Authorization") String token,
+                                 @PathVariable(name = "userType") String userType,
+                                 @RequestBody OrderRequestDTO request);
 
     @GetMapping("/user/{userType}/{userUid}")
     List<OrderDetailResponseDTO> getOrdersByUserUid(@RequestHeader("Authorization") String token,

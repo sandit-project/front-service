@@ -24,13 +24,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.prepare(request));
     }
 
-    @PostMapping("/orders")
-    public ResponseEntity<OrderResponseDTO> submit(HttpServletRequest request, @RequestBody OrderRequestDTO requestdto) {
+    @PostMapping("/orders/{userType}")
+    public ResponseEntity<OrderResponseDTO> submit(HttpServletRequest request,
+                                                   @PathVariable String userType,
+                                                   @RequestBody OrderRequestDTO requestdto) {
         log.info("submit order::" + request.toString());
         String token = request.getHeader("Authorization");
         log.info("token::" + token);
 
-        return ResponseEntity.ok(orderService.submit(token,requestdto));
+        return ResponseEntity.ok(orderService.submit(token,userType, requestdto));
     }
 
     @GetMapping("/orders/user/{userType}/{userUid}")

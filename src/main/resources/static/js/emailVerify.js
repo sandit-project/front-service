@@ -1,7 +1,8 @@
+let timerInterval;
+let emailSent     = false;
+let emailVerified = false;
+
 $(document).ready(() => {
-    let timerInterval;
-    let emailSent     = false;
-    let emailVerified = false;
 
     function formatTime(sec) {
         const m = String(Math.floor(sec / 60)).padStart(2, '0');
@@ -24,6 +25,25 @@ $(document).ready(() => {
             }
         }, 1000);
     }
+
+    //이메일 입력값이 바뀌면 인증 버튼 다시 활성화/비활성화
+    function updateEmailButtonState() {
+        const email = $('#email').val();
+        const isValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
+        if (!isValid || emailVerified) {
+            $('#email-submit').prop('disabled', true);
+        } else {
+            $('#email-submit').prop('disabled', false);
+        }
+    }
+
+    $('#email').on('input', function() {
+        emailSent = false;
+        emailVerified = false;
+        $('#email-submit').prop('disabled', false);
+        $('#email_code').val('');
+        $('#email-code-group').hide();
+    });
 
     // 1) 코드 전송
     $('#email-submit').on('click', async () => {
@@ -75,8 +95,10 @@ $(document).ready(() => {
             if (token && token.length > 0) {
                 clearInterval(timerInterval);
                 alert('이메일 인증 완료!');
+                emailVerified = true;
+
                 $('#email, #email-submit, #email_code, #email-verify').prop('disabled', true);
-                // 필요하다면 token을 로컬스토리지나 hidden field 등에 저장
+                //updateEmailButtonState();
             } else {
                 alert('인증 코드가 올바르지 않습니다.');
             }
@@ -89,4 +111,8 @@ $(document).ready(() => {
             }
         }
     });
+
+    // 페이지 로딩 시 초기 상태 적용
+    updateEmailButtonState();
 });
+

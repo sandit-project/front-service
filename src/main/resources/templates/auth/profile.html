@@ -13,22 +13,29 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/kakaoMobility.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/auth/profile.css}" rel="stylesheet">
 </head>
 <body>
-<header>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
+<!--<header>-->
+<!--    <div class="header-container">-->
+<!--        <h1 id="welcome-message"></h1>-->
+<!--    </div>-->
+<!--    <div class="header-logo">-->
+<!--        <a href="/" class="site-title">SAND-IT</a>-->
+<!--    </div>-->
+<!--    <div class="group-btn">-->
+<!--        <button class="delete-btn" id="deleteBtn">회원탈퇴</button>-->
+<!--        <button class="update-btn" id="updateProfileBtn">수정하기</button>-->
+<!--    </div>-->
+<!--</header>-->
+<main>
     <div class="header-container">
         <h1 id="welcome-message"></h1>
     </div>
-    <div class="header-logo">
-        <a href="/" class="site-title">SAND-IT</a>
-    </div>
-    <div class="group-btn">
-        <button class="delete-btn" id="deleteBtn">회원탈퇴</button>
-        <button class="update-btn" id="updateProfileBtn">수정하기</button>
-    </div>
-</header>
-<main>
+
     <div>
         <input id="hiddenUserUId" type="hidden">
         <input id="hiddenUserId" type="hidden">
@@ -93,10 +100,16 @@
             </div>
         </div>
     </div>
+
+    <div class="group-btn">
+        <button class="delete-btn" id="deleteBtn">회원탈퇴</button>
+        <button class="update-btn" id="updateProfileBtn">수정하기</button>
+    </div>
 </main>
-<footer>
-    <p>&copy; 2023 회사명. All rights reserved.</p>
-</footer>
+<!--<footer>-->
+<!--    <p>&copy; 2023 회사명. All rights reserved.</p>-->
+<!--</footer>-->
+<div th:replace="~{footer :: footer}"></div>
 <script>
     const WEBSOCKET_URL = /*[[${websocketUrl}]]*/ "http://localhost:9006/delivery-location";
 </script>
