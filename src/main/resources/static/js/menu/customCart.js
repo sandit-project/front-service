@@ -223,5 +223,58 @@ $(document).ready( () => {
         });
     };
 
+    // // ① 로그인 후 globalUserInfo.id 가 있으면 호출
+    // if (globalUserInfo?.id) {
+    //     const res = await fetch('http://localhost:9000/api/ai/users/' + globalUserInfo.id + '/allergies');
+    //     if (res.ok) {
+    //         const data = await res.json();
+    //         globalUserAllergies = data.allergies || [];
+    //     }
+    // }
 
+    // 폼 제출 시 addCustomCart 호출
+    $('#menuForm').on('submit', function (e) {
+        e.preventDefault();
+
+        // 필수 유효성
+        const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
+        if (!required.every(name => getSelectValue(name))) {
+            $('#warningMessage').fadeIn();
+            return;
+        }
+        $('#warningMessage').fadeOut();
+
+        // 선택된 재료 텍스트 수집
+        const selectedTexts = [];
+        fields.forEach(name=>{
+            const val = getSelectValue(name);
+            if (val) {
+                const txt = $(`select[name="${name}"] option[value="${val}"]`).text();
+                if (txt && !defaultExcludeTexts.includes(txt)) selectedTexts.push(txt);
+            }
+        });
+
+        // // ① AI-서비스로 알러지 체크
+        // const res = await checkAllergyAPI(globalUserAllergies, selectedTexts);
+        // if (res.risk) {
+        //     // ② 위험 시 경고 UI 표시 후 중단
+        //     showAllergyWarning(res);
+        //     return;
+        // }
+
+        // // ③ 이상 없으면 DTO 생성 후 저장
+        // const dto = Object.fromEntries(fields.map(n=>[n, getSelectValue(n)]));
+        // dto.price   = +$('input[name="price"]').val()   || 0;
+        // dto.calorie = +$('input[name="calorie"]').val() || 0;
+        // if (globalUserInfo.type === 'user')   dto.userUid   = globalUserInfo.id;
+        // else if (globalUserInfo.type === 'social') dto.socialUid = globalUserInfo.id;
+        // else { alert('로그인 후 이용해주세요.'); return; }
+
+        // 장바구니 저장 함수
+        addCustomCart();
+    });
+    // 초기 로드
+    $('select').on('change', calculatePriceAndCalories);
+    loadIngredients();
+    calculatePriceAndCalories();
 });
