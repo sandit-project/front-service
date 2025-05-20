@@ -24,9 +24,9 @@ public class OrderService {
     }
 
     //주문
-    public OrderResponseDTO submit(String token, OrderRequestDTO request) {
+    public OrderResponseDTO submit(String token, String userType, OrderRequestDTO request) {
         log.info("token::" + token);
-        return orderClient.submitOrder(token, request);
+        return orderClient.submitOrder(token, userType, request);
     }
 
     //주문 내역 확인

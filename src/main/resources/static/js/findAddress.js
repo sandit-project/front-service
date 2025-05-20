@@ -5,6 +5,12 @@ function execDaumPostcode(addressType) {
             if(addressType === "main"){
                 $('#main_postcode').val(data.zonecode);
                 $('#main_address_base').val(data.address);
+
+                //주문 페이지 전용 세팅
+                if ($('#mainAddress').length) {
+                    $('#mainAddress').val(data.address);
+                }
+
             }else if(addressType === "sub1"){
                 $('#sub1_postcode').val(data.zonecode);
                 $('#sub1_address_base').val(data.address);
@@ -31,6 +37,13 @@ function execDaumPostcode(addressType) {
                     if(addressType === "main"){
                         $('#main_latitude').val(coords.lat);
                         $('#main_longitude').val(coords.lng);
+
+                        //주문 페이지 전용 세팅
+                        if ($('#deliveryDestinationLat').length && $('#deliveryDestinationLan').length) {
+                            $('#deliveryDestinationLat').val(coords.lat);
+                            $('#deliveryDestinationLan').val(coords.lng);
+                        }
+
                     }else if(addressType === "sub1"){
                         $('#sub1_latitude').val(coords.lat);
                         $('#sub1_longitude').val(coords.lng);

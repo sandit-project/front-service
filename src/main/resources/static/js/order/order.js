@@ -96,19 +96,19 @@ function checkUserAddress() {
 }
 
 //주소 검색 호출 함수
-function execDaumPostcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            // 1) 주소 문자열
-            const addr = data.roadAddress || data.jibunAddress;
-            $('#mainAddress').val(addr);
-
-            // 2) 좌표 값까지 hidden input 에 세팅
-            $('#deliveryDestinationLat').val(data.y);
-            $('#deliveryDestinationLan').val(data.x);
-        }
-    }).open();
-}
+// function execDaumPostcode() {
+//     new daum.Postcode({
+//         oncomplete: function(data) {
+//             // 1) 주소 문자열
+//             const addr = data.roadAddress || data.jibunAddress;
+//             $('#mainAddress').val(addr);
+//
+//             // 2) 좌표 값까지 hidden input 에 세팅
+//             $('#deliveryDestinationLat').val(data.y);
+//             $('#deliveryDestinationLan').val(data.x);
+//         }
+//     }).open();
+// }
 
 
 // 스토어 리스트 가져오기
@@ -217,6 +217,10 @@ $(document).ready(async () => {
         const $o = $(this).find('option:selected');
         $('#storeLatitude').val($o.data('lat'));
         $('#storeLongitude').val($o.data('lan'));
+    });
+
+    $('#find-address-btn').on('click', function() {
+        execDaumPostcode("main");
     });
 
     $('#payButton').click(async () => {
@@ -418,7 +422,7 @@ function getBuyerInfo() {
 // 사전 검증 API 호출
 function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, reservationDate) {
     return $.ajax({
-        url: '/orders/prepare',
+        url: `/orders/prepare`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -474,7 +478,7 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         if (response.success) {
             // 결제 성공 시 업데이트 요청
             $.ajax({
-                url: '/orders/update-success',
+                url: `/orders/update-success`,
                 type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
@@ -511,7 +515,7 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         } else {
             // 결제 실패 시
             $.ajax({
-                url: '/orders/update-fail',
+                url: `/orders/update-fail`,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -576,7 +580,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
         // 응답에서 orderUids 가져오기
         const resp = await $.ajax({
             type: 'POST',
-            url: '/orders',
+            url: `/orders/${userType}`,
             contentType: 'application/json',
             data: JSON.stringify(payload)
         });
@@ -602,12 +606,11 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
                 amount: i.amount,
                 unitPrice: i.unitPrice,
                 calorie: i.calorie || 0,
-                //version: expectedVersion || 0
             }))
         };
         const resp2 = await $.ajax({
             type: 'POST',
-            url: '/orders',
+            url: `/orders/${userType}`,
             contentType: 'application/json',
             data: JSON.stringify(customPayload)
         });
@@ -639,7 +642,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
 
         await $.ajax({
             type: 'POST',
-            url: '/orders/custom/final',
+            url: `/orders/custom/final`,
             contentType: 'application/json',
             data: JSON.stringify({
                 orderRequestDTO: {
