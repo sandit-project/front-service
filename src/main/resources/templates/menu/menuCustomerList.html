@@ -5,32 +5,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- JQuery + SweetAlert -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- JS -->
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/menu/menuCustomerList.js}"></script>
-    <script th:src="@{/js/chat-badge.js}"></script>
+    <script th:src="@{/js/modal-chat.js}"></script>
+<
+
+
+    <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}" />
+
+    <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
     <link rel="stylesheet" th:href="@{/css/menu/menuCustomerList.css}" />
-    <link rel="stylesheet" th:href="@{/css/chat-badge.css}" />
 </head>
+
 <body>
-
-<!-- 헤더 -->
+<!-- 헤더 & 네비게이션 -->
 <div th:replace="~{header :: header}"></div>
-
-<!-- 네비게이션 바 -->
 <div th:replace="~{navigation :: nav}"></div>
 
-<!-- 메인 타이틀 -->
+<!-- 타이틀 -->
 <h1 class="main-heading">ENJOY! SAND-IT!</h1>
 
-<!-- 메뉴 전체 컨테이너 -->
+<!-- 메뉴 리스트 -->
 <div class="menu-container">
-    <!-- 커스텀 샌드위치 -->
+    <!-- 커스텀 메뉴 (고정) -->
     <div class="menu-item custom-item">
         <a href="/customCart">
             <div class="menu-info">
@@ -42,7 +46,7 @@
         </a>
     </div>
 
-    <!-- 일반 메뉴는 JS에서 동적으로 삽입됨 -->
+    <!-- 일반 메뉴는 JS에서 동적 로딩 -->
 </div>
 
 <!-- 1:1 채팅 버튼 -->
@@ -51,81 +55,27 @@
         <img id="sandit-chat"
              src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png"
              alt="sandit-chat" />
-        <div id="chatBadge" class="chat-badge">!</div>
+        <div id="chatBadge" class="chat-badge"></div>
     </button>
 </div>
 
 <!-- 푸터 -->
 <div th:replace="~{footer :: footer}"></div>
 
-<!-- 모달 컨테이너 -->
+<!-- 모달 -->
 <div id="modalContainer" style="display:none;">
     <div id="modalOverlay"></div>
-    <div id="modalContent"></div>
+
+    <div id="modalContentWrapper">
+
+        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+        <div id="modalContent"></div>
+    </div>
 </div>
+<!-- 페이지 아무데나, 보통 body 끝 부분에 넣으면 좋아요 -->
 
-<!-- 모달 스타일 -->
-<style>
-    #modalOverlay {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 999;
-    }
-    #modalContent {
-        position: fixed;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        z-index: 1000;
-        width: 80%;
-        max-width: 800px;
-        max-height: 90%;
-        overflow-y: auto;
-        padding: 20px;
-        border-radius: 8px;
-    }
-</style>
 
-<!-- 모달 및 채팅방 로딩 스크립트 -->
-<script>
-    function openModalWithContent(url, onLoadCallback) {
-        $('#modalContent').html('<p>로딩 중...</p>');
-        $('#modalContainer').show();
 
-        $.get(url, function (data) {
-            $('#modalContent').html(data);
-            if (typeof onLoadCallback === 'function') {
-                onLoadCallback();
-            }
-        }).fail(function () {
-            $('#modalContent').html('<p>컨텐츠를 불러오는데 실패했습니다.</p>');
-        });
-    }
-
-    function closeModal() {
-        $('#modalContainer').hide();
-        $('#modalContent').html('');
-    }
-
-    $(document).on('click', '#modalOverlay', closeModal);
-
-    // 1:1 채팅 버튼 클릭 시 모달 열기 (/chat에서 모달용 html 불러오기)
-    $(document).on('click', '#oneOnOneChatBtn', function () {
-        openModalWithContent('/chat');
-    });
-
-    // 채팅방 리스트 등에서 채팅방 클릭 시
-    $(document).on('click', '.enter-chat-room', function () {
-        const roomId = $(this).data('room-id');
-        openModalWithContent('/chat-room?roomId=' + roomId, function () {
-            // 모달 내용 로드 후 initChatRoom 함수가 있으면 호출 (roomId 전달)
-            if (typeof initChatRoom === 'function') {
-                initChatRoom(roomId);
-            }
-        });
-    });
-</script>
 
 </body>
 </html>
