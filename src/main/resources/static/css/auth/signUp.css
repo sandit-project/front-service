@@ -8,16 +8,13 @@
 body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif;
     background: linear-gradient(135deg, #f4ede7, #e6d3c1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
 }
 
 /* 컨테이너 */
 .signup-container {
     width: 100%;
     max-width: 600px;
+    margin: 20px auto 40px auto;
     background-color: #fff8f0;
     padding: 40px;
     border-radius: 16px;

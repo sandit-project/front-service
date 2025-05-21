@@ -1,187 +1,148 @@
-/* 🔸 기본 설정: 빈티지 웨스턴 느낌 + 부드러운 폰트 */
 body {
-    font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #e8dcc9);
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fff4eb;
     color: #3b2a1a;
     margin: 0;
     padding: 0;
 }
 
-/* 🔸 카트 컨테이너 */
 .cart-container {
-    width: 85%;
-    margin: 40px auto;
-    background-color: #fffaf2;
+    width: 90%;
+    margin: 60px auto;
+    background-color: rgba(255, 255, 255, 0.7); /* 반투명 */
     padding: 40px;
-    border-radius: 18px;
-    border: 2px solid #b8926a;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    font-size: 17px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(4px);
 }
 
-/* 🔸 카트 제목 */
 .cart-title {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 36px;
-    font-weight: 800;
-    color: #4d3321;
-    letter-spacing: 1.5px;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-    font-family: 'Noto Sans KR', sans-serif;
-    text-transform: uppercase;
+    margin-bottom: 36px;
+    font-size: 38px;
+    font-weight: 600;
+    color: #F38B20;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
 }
 
-/* 🔸 카트 테이블 */
+/* 🧾 테이블 스타일 */
 .cart-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 30px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    margin-bottom: 32px;
 }
 
-/* 🔸 셀 스타일 */
-.cart-table th, .cart-table td {
-    border: 1px solid #d3b187;
+.cart-table th,
+.cart-table td {
+    border: none; /* 경계선 제거 */
     padding: 16px;
     text-align: center;
     vertical-align: middle;
-    font-size: 16px;
-    color: #4b2d1c;
-    background-color: #fef9f0;
-    font-family: 'Noto Sans KR', sans-serif;
+    background-color: transparent; /* 기존 배경 제거 */
+    font-size: 15px;
+    color: #5a3b26;
 }
 
-/* 🔸 테이블 헤더 */
 .cart-table th {
-    background-color: #f0d6a8;
+    background-color: #fce6c9;
     font-weight: bold;
-    color: #3d2717;
-    text-transform: uppercase;
+    padding: 16px;
+    text-align: center;
+    color: #5a3b26;
 }
 
-/* 🔸 수량 필드 */
+/* 좌측 상단 헤더 셀만 둥글게 */
+.cart-table thead th:first-child {
+    border-top-left-radius: 14px;
+}
+
+/* 우측 상단 헤더 셀만 둥글게 */
+.cart-table thead th:last-child {
+    border-top-right-radius: 14px;
+}
+
+
+/* 각 셀 사이 구분 대신 row 간 간격 추가하고 싶다면 */
+.cart-table tbody tr {
+    border-bottom: 1px solid #f3e4d2;
+}
+
+.cart-table img {
+    border-radius: 12px;
+    width: 60px;
+    height: auto;
+}
+
+/* 수량 필드 */
 .amount-input {
     width: 60px;
     padding: 8px;
     text-align: center;
-    border: 1px solid #c8a576;
+    border: 1px solid #f0c9a5;
     border-radius: 6px;
-    background-color: #f5e5cd;
+    background-color: #fff5e1;
     color: #3d2b1f;
-    font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 🔸 공통 버튼 스타일 */
-button {
-    padding: 10px 20px;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: bold;
-    font-family: 'Noto Sans KR', sans-serif;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.15);
-    margin: 0;
-}
-
-/* 🔸 버튼 색상 */
-.update-btn {
-    background: linear-gradient(45deg, #7c4a2d, #5e3b23);
-    color: #fffdf5;
-    border-color: #5e3b23;
-}
-
-.delete-btn {
-    background: linear-gradient(45deg, #a94c38, #842e1e);
-    color: #fffaf2;
-    border-color: #842e1e;
-}
-
-.cart-actions button {
-    background: linear-gradient(45deg, #6a4e2e, #4a311f);
-    color: #fefaf6;
-    border-color: #4a311f;
-}
-
-/* 🔸 버튼 Hover */
-.update-btn:hover {
-    background: linear-gradient(45deg, #5e3b23, #3b2315);
-    transform: translateY(-2px);
-}
-
-.delete-btn:hover {
-    background: linear-gradient(45deg, #842e1e, #5b1d14);
-    transform: scale(1.05);
-}
-
-.cart-actions button:hover {
-    background: linear-gradient(45deg, #4a311f, #2f1d12);
-    transform: scale(1.05);
-}
-
-/* 🔸 특별한 버튼 색상 */
-#clearCart {
-    background: linear-gradient(45deg, #e3a857, #c6883f);
-    color: white;
-}
-
-#checkout {
-    background: linear-gradient(45deg, #5e8a5f, #446b45);
-    color: white;
-}
-
-#deleteSelected {
-    background: linear-gradient(45deg, #b44f4b, #902a26);
-    color: white;
-}
-
-/* 🔸 특별 버튼 Hover */
-#clearCart:hover {
-    background: linear-gradient(45deg, #c6883f, #a46f2e);
-}
-
-#checkout:hover {
-    background: linear-gradient(45deg, #446b45, #2d4e2d);
-}
-
-#deleteSelected:hover {
-    background: linear-gradient(45deg, #902a26, #6b1d1a);
-}
-
-/* 🔸 카트 요약 */
+/* 요약 영역 */
 .cart-summary {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 17px;
+    font-weight: 600;
     text-align: right;
     color: #5a3b26;
     margin-bottom: 30px;
-    font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 장바구니 메뉴 이미지 스타일 */
-.item-image {
-    width: 40px;  /* 원하는 크기로 조절 */
-    height: 40px;
-    margin-right: 10px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* 🔸 카트 버튼 영역: 오른쪽 정렬 + 정돈 */
+/* 버튼 영역 */
 .cart-actions {
     display: flex;
     justify-content: flex-end;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
 }
 
-/* 🔸 반응형 */
+/* 버튼 공통 */
+.cart-actions button {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 개별 버튼 스타일 */
+#deleteSelected {
+    background: #d8720f;
+    color: white;
+}
+#deleteSelected:hover {
+    background: #b85c0b;
+}
+
+#backToHome {
+    background: #ffffff;
+    color: #F38B20;
+    border: 2px solid #F38B20;
+}
+#backToHome:hover {
+    background: #fff6ed;
+}
+
+#checkout {
+    background: #5e8a5f;
+    color: white;
+}
+#checkout:hover {
+    background: #446b45;
+}
+
+/* 반응형 */
 @media (max-width: 768px) {
     .cart-container {
         width: 95%;
@@ -192,16 +153,82 @@ button {
         font-size: 28px;
     }
 
-    button {
-        font-size: 14px;
-        padding: 8px 14px;
-    }
-
     .cart-summary {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .cart-actions {
         justify-content: center;
     }
 }
+
+/* ✅ 공통 체크박스 스타일 */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #F38B20;
+    border-radius: 6px;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+    vertical-align: middle;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #F38B20;
+    border-color: #d16a0a;
+}
+
+input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px; /* 위로 조금 올림 */
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0; /* 더 굵게 */
+    transform: rotate(45deg);
+    opacity: 0;
+}
+
+input[type="checkbox"]:checked::after {
+    opacity: 1;
+}
+
+/* 공통 버튼 스타일 */
+.update-btn,
+.delete-btn {
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 변경 버튼 (메인 테마색) */
+.update-btn {
+    background-color: #F38B20;
+    color: white;
+}
+.update-btn:hover {
+    background-color: #d8720f;
+    box-shadow: 0 2px 8px rgba(243, 139, 32, 0.3);
+}
+
+/* 삭제 버튼 (경고) */
+.delete-btn {
+    background-color: #d45d5d;
+    color: white;
+}
+.delete-btn:hover {
+    background-color: #b94747;
+    box-shadow: 0 2px 8px rgba(212, 93, 93, 0.3);
+}
+

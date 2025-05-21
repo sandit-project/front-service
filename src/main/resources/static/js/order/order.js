@@ -66,25 +66,42 @@ function fillUserInfoForm(user) {
 async function renderCartItems(items) {
     const $container = $('#cartContainer');
     $container.empty();
-    items.forEach(item => {
-        const isCustom   = item.menuName === '커스텀 샌드위치';
-        const customId = isCustom ? item.customCartUid : null;
-        const cartUid = item.uid; // cart 테이블의 PK
-        const itemHtml = `
-                <div class="cart-item" data-cart-item
-                     data-cart-uid="${cartUid}"
-                    data-custom-id="${customId ?? ''}"
-                    data-is-custom="${isCustom}"
-                    data-calorie="${item.calorie}">
-                <input type="checkbox" class="cart-check" checked>
-                <span class="item-name">${item.menuName}</span>
-                <span class="item-unitPrice">${item.unitPrice}원</span>
-                <span class="item-calorie">${item.calorie}kcal</span>
-                <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
-            </div>
-        `;
-        $container.append(itemHtml);
-    });
+
+    const tableHtml = `
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>메뉴</th>
+                    <th>단가</th>
+                    <th>칼로리</th>
+                    <th>수량</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${items.map(item => {
+        const isCustom = item.menuName === '커스텀 샌드위치';
+        const customId = isCustom ? item.customCartUid : '';
+        const cartUid = item.uid;
+        return `
+                        <tr class="cart-item"
+                            data-cart-item
+                            data-cart-uid="${cartUid}"
+                            data-custom-id="${customId}"
+                            data-is-custom="${isCustom}"
+                            data-calorie="${item.calorie}">
+                            <td><input type="checkbox" class="cart-check" checked></td>
+                            <td class="item-name">${item.menuName}</td>
+                            <td class="item-unitPrice">${item.unitPrice}원</td>
+                            <td class="item-calorie">${item.calorie}kcal</td>
+                            <td><input type="number" class="item-amount" value="${item.amount}" min="1"></td>
+                        </tr>
+                    `;
+    }).join('')}
+            </tbody>
+        </table>
+    `;
+    $container.append(tableHtml);
 }
 
 // custom_cart PK만

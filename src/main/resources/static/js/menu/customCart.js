@@ -30,7 +30,7 @@ $(document).ready(async function () {
 
             // 필수값 유효성
             const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
-            if (!required.every(name => getSelectValue(name))) {
+            if (!required.every(name => getSelectedValue(name))) {
                 $('#warningMessage').fadeIn();
                 return;
             }
@@ -76,7 +76,7 @@ $(document).ready(async function () {
             }
 
             // ③ 이상 없으면 DTO 생성 후 저장
-            const dto = Object.fromEntries(fields.map(n=>[n, getSelectValue(n)]));
+            const dto = Object.fromEntries(fields.map(n=>[n, getSelectedValue(n)]));
             dto.price   = +$('input[name="price"]').val()   || 0;
             dto.calorie = +$('input[name="calorie"]').val() || 0;
             if (globalUserInfo.type === 'user')   dto.userUid   = globalUserInfo.id;
@@ -101,18 +101,20 @@ $(document).ready(async function () {
         "선택 안 함", "빵을 선택하세요", "소스를 선택하세요", "재료를 선택하세요", "채소를 선택하세요"
     ];
 
-    const getSelectValue = name => $(`select[name="${name}"]`).val() || null;
+    const getSelectedValue = name => {
+        return $(`.option-button[data-name="${name}"].selected`).data('value') || null;
+    };
 
     const calculatePriceAndCalories = () => {
         let totalPrice = 0;
         let totalCalorie = 0;
         let selectedItems = [];
 
-        $('select').each(function () {
-            const selected = $(this).find(':selected');
-            const price = parseInt(selected.data('price')) || 0;
-            const calorie = parseFloat(selected.data('calorie')) || 0;
-            const text = selected.text();
+        $('.option-button.selected').each(function () {
+            const $el = $(this);
+            const price = parseInt($el.data('price')) || 0;
+            const calorie = parseFloat($el.data('calorie')) || 0;
+            const text = $el.text().trim();
 
             totalPrice += price;
             totalCalorie += calorie;
@@ -130,39 +132,68 @@ $(document).ready(async function () {
         $('input[name="calorie"]').val(totalCalorie.toFixed(1));
     };
 
+    $(document).on('click', '.option-button', function () {
+        const $btn = $(this);
+        const groupName = $btn.data('name');
+        const $grid = $btn.closest('.option-grid');
+
+        // 한번 더 누르면 선택 해제할 수 있는 그룹들
+        const toggleableGroups = [
+            'material2', 'material3',
+            'vegetable2', 'vegetable3', 'vegetable4', 'vegetable5', 'vegetable6', 'vegetable7', 'vegetable8',
+            'sauce2', 'sauce3'
+        ];
+
+        if (toggleableGroups.includes(groupName)) {
+            // toggle 가능: 이미 선택됐으면 해제, 아니면 선택
+            $btn.toggleClass('selected');
+        } else {
+            // 단일 선택 그룹: 기존 선택 해제 후 새로 선택
+            $(`.option-button[data-name="${groupName}"]`).removeClass('selected');
+            $btn.addClass('selected');
+        }
+
+        calculatePriceAndCalories();
+    });
+
+
     const loadIngredients = () => {
         const endpoints = {
-            bread: { url: "/menus/ingredients/breads", nameField: "breadName" },
-            cheese: { url: "/menus/ingredients/cheeses", nameField: "cheeseName" },
-            material: { url: "/menus/ingredients/materials", nameField: "materialName" },
-            vegetable: { url: "/menus/ingredients/vegetables", nameField: "vegetableName" },
-            sauce: { url: "/menus/ingredients/sauces", nameField: "sauceName" }
+            bread:    { url: "/menus/ingredients/breads",     nameField: "breadName" },
+            cheese:   { url: "/menus/ingredients/cheeses",    nameField: "cheeseName" },
+            material: { url: "/menus/ingredients/materials",  nameField: "materialName" },
+            vegetable:{ url: "/menus/ingredients/vegetables", nameField: "vegetableName" },
+            sauce:    { url: "/menus/ingredients/sauces",     nameField: "sauceName" }
         };
 
         Object.entries(endpoints).forEach(([type, { url, nameField }]) => {
             $.get(url, function (data) {
-                $(`select[name^="${type}"]`).each(function () {
-                    const select = $(this);
-                    select.empty().append(`<option value="">선택 안 함</option>`);
+                $(`.option-grid[data-name^="${type}"]`).each(function () {
+                    const $grid = $(this);
+                    const groupName = $grid.data('name');
+
+                    $grid.empty();
 
                     data.forEach(item => {
-                        select.append(
-                            `<option value="${item.uid}" data-price="${item.price}" data-calorie="${item.calorie}">
-                                ${item[nameField]}
-                             </option>`
-                        );
+                        const $btn = $('<div class="option-button"></div>');
+                        $btn.text(item[nameField]);
+                        $btn.attr({
+                            'data-value': item.uid,
+                            'data-name': groupName,
+                            'data-price': item.price,
+                            'data-calorie': item.calorie
+                        });
+                        $grid.append($btn);
                     });
                 });
             });
         });
     };
 
-
-
     const addCustomCart = async () => {
         // 필수 항목 체트
         const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
-        if (!required.every(name => getSelectValue(name))) {
+        if (!required.every(name => getSelectedValue(name))) {
             alert("모든 필수 항목을 선택해야 합니다.");
             return;
         }
@@ -174,7 +205,7 @@ $(document).ready(async function () {
             "vegetable5", "vegetable6", "vegetable7", "vegetable8"
         ];
 
-        const customCartDTO = Object.fromEntries(fields.map(name => [name, getSelectValue(name)]));
+        const customCartDTO = Object.fromEntries(fields.map(name => [name, getSelectedValue(name)]));
 
         customCartDTO.price = parseInt($('input[name="price"]').val()) || 0;
         customCartDTO.calorie = parseFloat($('input[name="calorie"]').val()) || 0;

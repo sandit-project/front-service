@@ -6,11 +6,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/store/storeList.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/store/storeList.css}" rel="stylesheet">
     <title>지점 목록</title>
 </head>
 <body>
-
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <div class="container">
     <div class="header">
         <h1 id="welcome-message">지점 목록</h1>
@@ -52,6 +54,6 @@
         <button id="nextPage" class="btn">다음</button>
     </div>
 </div>
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

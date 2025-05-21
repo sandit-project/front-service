@@ -3,22 +3,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 5% 0px;
-    background: #efe0c8;
-    border-bottom: 2px solid #d2b48c;
+    padding: 25px 5% 0;
+    background: #fff4eb;
+    border-bottom: 2px solid #f0c9a5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .site-title {
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 800;
-    color: #5a3b26;
+    color: #F38B20;
     text-decoration: none;
     letter-spacing: 2px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#header-logo{
-    width: 200px;
+#header-logo {
+    width: 180px;
     height: auto;
 }
 
@@ -44,71 +44,79 @@
 
 /* 🔵 네비게이션 */
 .navbar {
-    background: #d2b48c;
+    background: #F38B20;
     padding: 14px 5%;
     display: flex;
     justify-content: space-between;
-    align-items: center; /* 네비게이션 바 아이템 상하 가운데 정렬 */
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .navbar-links {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 36px;
 }
 
 .nav-link {
     text-decoration: none;
     font-weight: 600;
-    color: #4a2f1d;
-    font-size: 16px;
-    padding: 10px 20px;
-    /*background-color: #c19a6b;*/
-    /*border-radius: 20px;*/
-    transition: background-color 0.3s;
+    color: white;
+    font-size: 15px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
     cursor: pointer;
 }
 
 .nav-link:hover {
-    background-color: #8b5c32;
-    color: #fff3e0;
+    background-color: white;
+    color: #F38B20;
 }
+
+.management-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px; /* 메뉴 간격 */
+}
+
+.management-section > div {
+    position: relative;
+}
+
+.nav-link.dropdown-toggle {
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    transition: background-color 0.3s;
+}
+
+.nav-link.dropdown-toggle:hover {
+    background-color: white;
+    color: #F38B20;
+    border-radius: 6px;
+}
+
 
 /* 🔵 드롭다운 */
-.management-section{
-    display: flex;
-    gap: 20px;
-}
-
-.dropdown-admin,.dropdown-delivery,.dropdown-manager {
-    position: relative;
-    display: inline-block;
-    align-self: center; /* 드롭다운 메뉴가 네비게이션 바 중앙에 위치하도록 설정 */
-}
-
-/* 드롭다운 토글 뒤에 화살표 추가 */
-.dropdown-toggle::after {
-    content: ' ▼';  /* 화살표 */
-    font-size: 0.6em;
-}
-
-/* 드롭다운 메뉴 스타일 */
 .dropdown-menu {
     display: none;
     position: absolute;
-    background-color: #fff8f0;
+    background-color: #fffdf7;
     min-width: 150px;
     box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
     z-index: 1;
     border-radius: 6px;
     padding: 0.5rem 0;
-    left: 50%;  /* 부모 요소의 가운데로 설정 */
-    transform: translateX(-50%);  /* 왼쪽으로 50%만큼 이동하여 정확하게 가운데 정렬 */
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-/* 드롭다운 메뉴 아이템 스타일 */
 .dropdown-menu .dropdown-item {
-    color: #4e372a;
+    color: #5a3b26;
     padding: 0.5rem 1rem;
     text-decoration: none;
     display: block;
@@ -116,39 +124,40 @@
     text-align: center;
 }
 
-/* 메뉴 아이템 hover 시 배경 색상 변경 */
 .dropdown-menu .dropdown-item:hover {
-    background-color: #fcebd5;
-}
-
-/* 드롭다운 메뉴가 보일 때 */
-.dropdown-admin:hover .dropdown-menu ,
-.dropdown-delivery:hover .dropdown-menu,
-.dropdown-manager:hover .dropdown-menu{
+    background-color: #fff2e5;
     display: block;
 }
 
-/* 🔵 푸터 */
-.footer {
-    background-color: #efe0c8;
-    padding: 25px 0;
-    text-align: center;
-    font-size: 13px;
-    color: #7b6149;
+.dropdown-delivery:hover .dropdown-menu,
+.dropdown-manager:hover .dropdown-menu,
+.dropdown-admin:hover .dropdown-menu,
+.dropdown-menu:hover {
+    display: block;
 }
 
-.footer-links {
-    margin-top: 10px;
+
+
+/* 🔵 푸터 */
+.footer {
+    background-color: #fff4eb;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #7a5b42;
+    border-top: 1px solid #f0c9a5;
 }
 
 .footer-link {
-    margin: 0 10px;
-    color: #7b6149;
+    margin: 0 12px;
+    color: #F38B20;
     text-decoration: none;
+    font-weight: 500;
     font-size: 13px;
-    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
 .footer-link:hover {
+    color: #d8720f;
     text-decoration: underline;
 }

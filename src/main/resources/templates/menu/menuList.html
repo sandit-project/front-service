@@ -6,12 +6,14 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu/menuList.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/menu/menuList.css}" rel="stylesheet">
     <title>메뉴 목록</title>
 </head>
 <body>
 <h1>메뉴 목록</h1>
-
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <table>
     <thead>
     <tr>
@@ -40,6 +42,6 @@
     <button onclick="location.href='/menus/admin'">새 메뉴 등록</button>
     <button onclick="location.href='/admin'" style="margin-left: 10px;">메인으로 가기</button>
 </div>
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

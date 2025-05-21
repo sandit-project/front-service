@@ -6,9 +6,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu/menuAdmin.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/menu/menuAdmin.css}" rel="stylesheet">
 </head>
 <body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <h2>메뉴 등록</h2>
 
 <form id="menuForm" th:action="@{/menus}" method="post" enctype="multipart/form-data">
@@ -75,5 +78,6 @@
         <button type="button" class="btn btn-danger" onclick="location.href='/admin'">메인으로 가기</button>
     </div>
 </form>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

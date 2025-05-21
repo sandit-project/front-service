@@ -14,11 +14,14 @@
     <script th:src="@{/js/store/storeOrderList.js}"></script>
 
     <!-- 공용 CSS 스타일 -->
+    <link th:href="@{/css/common.css}" rel="stylesheet"/>
     <link th:href="@{/css/store/storeOrderList.css}" rel="stylesheet"/>
 
     <title>지점 주문 목록</title>
 </head>
 <body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <div class="container">
     <div class="header">
         <h1 id="welcome-message">
@@ -78,5 +81,6 @@
         <button id="cancel-cancel-btn">닫기</button>
     </div>
 </div>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

@@ -14,11 +14,14 @@
     <script th:src="@{/js/delivery/deliveryList.js}"></script>
 
     <!-- 공용 CSS 스타일 -->
+    <link th:href="@{/css/common.css}" rel="stylesheet"/>
     <link th:href="@{/css/delivery/deliveryList.css}" rel="stylesheet"/>
 
     <title>배달 목록</title>
 </head>
 <body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <div class="container">
     <div class="header">
         <h1>
@@ -63,5 +66,6 @@
 <script>
     const WEBSOCKET_URL = /*[[${websocketUrl}]]*/ "http://localhost:9006/delivery-location";
 </script>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

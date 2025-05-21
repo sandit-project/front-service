@@ -171,7 +171,6 @@ $(document).ready(async () => {
 
 
 
-// 주석 풀고 git 올리기
 (function () {
     // 토큰 체크 및 로그인 리다이렉트
     function checkToken() {
