@@ -7,10 +7,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu/menuForCustomer.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/menu/menuForCustomer.css}">
 </head>
 <body>
-
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <nav class="navbar">
     <div class="navbar-title">SAND-IT 메뉴 상세</div>
     <div class="navbar-links">
@@ -38,6 +40,6 @@
         <div id="vegetableTags" class="menu-tags"></div>
     </div>
 </div>
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

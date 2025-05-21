@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>주문 내역</title>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" th:href="@{/css/common.css}">
   <link rel="stylesheet" th:href="@{/css/order/orderDetail.css}">
   <script th:src="@{/js/order/orderCancel.js}"></script>
   <script th:src="@{/js/common.js}"></script>
@@ -15,11 +16,8 @@
 </head>
 <body>
 <header>
-  <div class="top-nav">
-    <a href="/" class="nav-link">홈</a>
-    <a href="/cart" class="nav-link">장바구니</a>
-    <a href="#" id="logout-link" class="nav-link">로그아웃</a>
-  </div>
+  <div th:replace="~{header :: header}"></div>
+  <div th:replace="~{navigation :: nav}"></div>
   <h1>주문 내역</h1>
 </header>
 
@@ -76,5 +74,6 @@
   <div class="spinner"></div>
   <div class="spinner-text">결제 취소 중입니다...</div>
 </div>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

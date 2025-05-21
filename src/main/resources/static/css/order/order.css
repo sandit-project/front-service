@@ -1,175 +1,321 @@
-/* 🌾 기본 배경 및 폰트 */
-
+/* 🍞 기본 배경 및 폰트 */
 body {
-    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f6efe3, #e1d4be);
-    color: #3a2a1a;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fff4eb;
+    color: #3b2a1a;
     margin: 0;
     padding: 0;
 }
 
-/* 상단 네비게이션 스타일 */
-.top-nav {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 10px 5%;
-    background-color: #fef9f0;
-}
-.nav-link {
-    text-decoration: none;
-    font-weight: bold;
-    color: #5e3e23;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background 0.2s;
-}
-.nav-link:hover {
-    background-color: rgba(210, 160, 100, 0.2);
-}
-
-/* 제목 스타일 */
-header {
+h1 {
     text-align: center;
-    padding: 30px 0;
-}
-header h1 {
-    font-size: 2.5em;
-    color: #5e3e23;
 }
 
-/* 🧾 컨테이너 */
+/* 📦 장바구니 컨테이너 */
 #cartContainer {
-    width: 85%;
-    margin: 40px auto;
-    background-color: #fffaf2;
-    padding: 30px;
-    border-radius: 18px;
-    border: 2px solid #b8926a;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    font-size: 17px;
+    width: 90%;
+    margin: 0;
+    padding-top: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(4px);
+    font-size: 16px;
+    flex: 1;
+    max-width: 45%;
 }
 
-/* 🧍 주문자 정보 폼 */
+/* 🧍 주문자 정보 영역 */
 .buyer-info {
-    width: 85%;
-    margin: 30px auto;
-    padding: 30px;
-    background-color: #fffaf2;
-    border: 2px solid #b8926a;
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    flex: 1;
+    max-width: 45%;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(4px);
 }
+
+#cartContainer, .buyer-info {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+}
+
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #4b2d1c;
     font-weight: 600;
+    color: #5a3b26;
 }
 
-.form-group input, .form-group select {
-    width: 33.33%; /* 3분의 1로 설정 */
+.form-group input,
+.form-group select {
+    width: 100%;
     padding: 12px;
-    margin-top: 6px;
-    border: 1px solid #d3b187;
     border-radius: 8px;
-    background-color: #fef9f0;
-    color: #4b2d1c;
+    background-color: #fff5e1;
+    color: #3d2b1f;
     font-size: 15px;
+    box-sizing: border-box;
 }
 
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select {
+    border: none;
+    background-color: #fff4eb;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: none; /* 부드러운 내부 테두리 제거 */
+}
+
+@media (max-width: 768px) {
+    .address-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .address-group button {
+        width: 100%;
+        margin-top: 8px;
+    }
+}
+
+
+/* 📮 주소 검색 */
 .address-group {
     display: flex;
     gap: 10px;
-    align-items: center;
+    align-items: stretch;
 }
 
-/* 📅 예약 시간 필드 */
+.address-group input[type="text"] {
+    flex: 1;
+    height: auto;
+}
+
+.address-group button {
+    height: auto;
+    padding: 12px 20px;
+    white-space: nowrap; /* ✅ 줄바꿈 방지 */
+    font-size: 14px;
+    border-radius: 12px;
+}
+
+/* 🕐 예약 필드 */
 #reservationDate {
     margin-top: 6px;
 }
 
-/* 💰 요약 영역 */
+/* 💰 결제 요약 */
 .summary {
-    width: 85%;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #fef9f0;
-    border-top: 2px solid #b8926a;
+    width: 90%;
+    margin: 40px auto;
+    background-color: #fff4eb;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 600;
     color: #5a3b26;
     text-align: right;
 }
 
-/* 🔘 버튼 */
+/* 🧡 버튼 스타일 */
 button {
-    padding: 12px 30px;
-    border: 2px solid transparent;
-    border-radius: 10px;
-    font-weight: bold;
-    font-family: 'Noto Sans', sans-serif;
-    text-transform: uppercase;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
     transition: all 0.3s ease;
-    text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.05);
-    font-size: 16px;
 }
 
-/* 🟤 주요 버튼 */
+/* 🔘 버튼 색상 */
 .btn-primary {
-    background: linear-gradient(45deg, #d9a066, #c28a48);
-    color: #fffefc;
+    background-color: #F38B20;
+    color: white;
 }
-
 .btn-primary:hover {
-    background: linear-gradient(45deg, #c28a48, #a96f35);
+    background-color: #d8720f;
+    box-shadow: 0 2px 8px rgba(243, 139, 32, 0.3);
 }
 
-/* 🟣 보조 버튼 */
 .btn-secondary {
-    background: linear-gradient(45deg, #b5a8e4, #9f90d0);
-    color: #fcfcfd;
+    background-color: white;
+    color: #F38B20;
+    border: 2px solid #F38B20;
 }
-
 .btn-secondary:hover {
-    background: linear-gradient(45deg, #9f90d0, #8c7ec0);
+    background-color: #fff3e0;
 }
 
-/* 🟡 예약/주의 버튼 */
 .btn-warning {
-    background: linear-gradient(45deg, #fdd085, #fbc16c);
-    color: #5a3b26;
+    background-color: #d45d5d;
+    color: white;
 }
-
 .btn-warning:hover {
-    background: linear-gradient(45deg, #fbc16c, #f8b24f);
+    background-color: #b94747;
 }
 
 /* 📱 반응형 */
 @media (max-width: 768px) {
-    #cartContainer, .buyer-info, .summary {
+    #cartContainer,
+    .buyer-info,
+    .summary {
         width: 95%;
-        padding: 20px;
+        padding: 24px;
     }
 
-    .form-group input, .form-group select {
+    .form-group input,
+    .form-group select {
         width: 100%;
     }
 
     button {
         font-size: 14px;
-        padding: 10px 18px;
+        padding: 8px 18px;
     }
 }
 
-/*포인트 숨기기*/
+/* 숨김 처리 (포인트 필드) */
 label[for="point"],
 #point {
     display: none !important;
 }
+
+/* 💡 가로 정렬용 강제 래퍼 */
+#cartContainer,
+.buyer-info {
+    display: inline-block;
+    vertical-align: top;
+    width: 48%;
+    box-sizing: border-box;
+}
+
+/* 📏 간격 */
+#cartContainer {
+    margin-right: 2%;
+}
+
+/* 💡 hr 숨기기 (필요 없으면) */
+hr {
+    display: none;
+}
+
+/* 📱 반응형 대응 */
+@media (max-width: 768px) {
+    #cartContainer,
+    .buyer-info {
+        display: block;
+        width: 95%;
+        margin: 20px auto;
+    }
+}
+
+.order-wrapper {
+    display: flex;
+    align-items: flex-start; /* 위 기준 정렬 */
+    gap: 2%;
+    justify-content: center; /* 가로 가운데 */
+    margin-top: 30px;
+}
+
+/* 🟧 체크박스 리디자인 */
+.cart-check {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #F38B20;
+    border-radius: 5px;
+    background-color: #fff7e6;
+    cursor: pointer;
+    vertical-align: middle;
+    position: relative;
+    margin-right: 8px;
+    transition: all 0.2s ease;
+}
+
+.cart-check:checked {
+    background-color: #F38B20;
+    border-color: #F38B20;
+}
+
+.cart-check:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    font-size: 14px;
+    color: #3b2a1a;
+}
+
+.cart-table th {
+    background-color: #f5e7d3;
+    padding: 14px;
+    text-align: center;
+    font-weight: 700;
+    color: #5a3b26;
+}
+
+.cart-table td {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #f0e0c8;
+}
+
+.cart-table tr:last-child td {
+    border-bottom: none;
+}
+
+.cart-table input[type="number"] {
+    width: 60px;
+    text-align: center;
+    padding: 6px 10px;
+    border: 1.8px solid #f0c9a5;
+    border-radius: 8px;
+    background-color: #fffaf2;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5a3b26;
+    transition: border-color 0.2s ease;
+}
+
+.cart-table input[type="number"]:focus {
+    border-color: #F38B20;
+    outline: none;
+    box-shadow: 0 0 5px rgba(243, 139, 32, 0.3);
+}
+
+
+
+
+

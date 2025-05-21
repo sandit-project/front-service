@@ -6,10 +6,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu/breadList.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/menu/commonList.css}" rel="stylesheet">
     <title>빵 목록</title>
 </head>
 <body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <h1>빵 목록</h1>
 
 <table>
@@ -34,5 +37,6 @@
 <br>
 <button onclick="location.href='/breads/admin'">새 빵 등록</button>
 <button onclick="location.href='/admin'" style="margin-left: 10px;">메인으로 가기</button>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

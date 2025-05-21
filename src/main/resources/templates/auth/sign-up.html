@@ -8,10 +8,16 @@
     <script th:src="@{/js/findAddress.js}"></script>
     <script th:src="@{/js/emailVerify.js}"></script>
     <script th:src="@{/js/auth/signUp.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/auth/signUp.css}" rel="stylesheet">
     <title>회원가입</title>
 </head>
 <body>
+<!-- 헤더 -->
+<div th:replace="~{header :: header}"></div>
+
+<!-- 네비게이션 바 -->
+<div th:replace="~{navigation :: nav}"></div>
 
 <div class="signup-container">
     <h2 id="test">회원가입</h2>
@@ -34,6 +40,7 @@
 
         <div class="form-group">
             <label for="phone">전화번호</label>
+            <p>-은 자동입력됩니다.</p>
             <input type="text" id="phone" placeholder="전화번호를 입력하세요" required>
         </div>
 
@@ -87,14 +94,30 @@
 
         <div class="form-group" id="allergy-group" style="display: none;">
             <label>알레르기 선택:</label>
-            <label><input type="checkbox" name="allergy" value="계란">계란</label>
-            <label><input type="checkbox" name="allergy" value="우유">우유</label>
-            <label><input type="checkbox" name="allergy" value="땅콩">땅콩</label>
+
+            <!-- 자주 선택되는 항목 -->
+            <label><input type="checkbox" name="allergy" value="우유"> 우유(유제품)</label>
+            <label><input type="checkbox" name="allergy" value="난류"> 난류(계란)</label>
+            <label><input type="checkbox" name="allergy" value="대두"> 대두(콩)</label>
+            <label><input type="checkbox" name="allergy" value="땅콩"> 땅콩</label>
+            <label><input type="checkbox" name="allergy" value="갑각류"> 갑각류</label>
+            <label><input type="checkbox" name="allergy" value="견과류"> 견과류</label>
+
+            <!-- 기타 항목 보기 -->
+            <button type="button" id="toggle-allergy" class="btn-sm">+ 기타 알레르기 보기</button>
+
+            <div id="other-allergy-options" style="display: none; margin-top: 10px;">
+                <label><input type="checkbox" name="allergy" value="생선"> 생선</label>
+                <label><input type="checkbox" name="allergy" value="참깨"> 참깨</label>
+                <label><input type="checkbox" name="allergy" value="복숭아"> 복숭아</label>
+                <label><input type="checkbox" name="allergy" value="토마토"> 토마토</label>
+                <label><input type="checkbox" name="allergy" value="아황산류"> 아황산류</label>
+            </div>
         </div>
 
         <button id="signup" type="button">회원가입</button>
     </div>
 </div>
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

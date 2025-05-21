@@ -8,9 +8,13 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
     <script th:src="@{/js/store/storeRegister.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/store/storeRegister.css}" rel="stylesheet">
     <title>지점 등록</title>
 </head>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
+
 <body>
 
 <div class="storeRegister-container">
@@ -58,6 +62,6 @@
 </div>
 
 
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>
