@@ -5,24 +5,24 @@ $(document).ready(async function () {
     setupAjax();
     // 1.유저 정보 가져오기
     getUserInfo().then(async (userInfo) => {
-        window.globalUserInfo = userInfo;
+        globalUserInfo = userInfo;
         console.log('User Info:', userInfo);
 
         // 2.user/social 분기 : userUid or socialUid 구분해서 알러지 요청
-        let allergyUrl = '';
-        if (window.globalUserInfo.type === 'user') {
-            allergyUrl = `/api/ai/users/${window.globalUserInfo.id}/allergies`;
-        }else if (window.globalUserInfo.type === 'social') {
-            allergyUrl = `/api/ai/socials/${window.globalUserInfo.id}/allergies`;
-        } // 실제로 socials 엔드포인트는 백엔드에 추가
-
-        // (fetch → $.ajax로 교체)
-        const data = await $.ajax({
-            url: allergyUrl,
-            type: 'GET',
-            dataType: 'json'
-        });
-        window.globalUserAllergies = data.allergy || [];
+        // let allergyUrl = '';
+        // if (globalUserInfo.type === 'user') {
+        //     allergyUrl = `/api/ai/users/${globalUserInfo.id}/allergies`;
+        // }else if (globalUserInfo.type === 'social') {
+        //     allergyUrl = `/api/ai/socials/${globalUserInfo.id}/allergies`;
+        // } // 실제로 socials 엔드포인트는 백엔드에 추가
+        //
+        // // (fetch → $.ajax로 교체)
+        // const data = await $.ajax({
+        //     url: allergyUrl,
+        //     type: 'GET',
+        //     dataType: 'json'
+        // });
+        // window.globalUserAllergies = data.allergy || [];
 
         // 폼 제출 시 addCustomCart 호출
         $('#menuForm').on('submit', async function (e) {
@@ -93,7 +93,7 @@ $(document).ready(async function () {
 
     }).catch((error) => {
         alert('로그인 정보 확인에 실패했습니다.');
-        location.href = '/login';
+        location.href = '/member/login';
     });
 
 

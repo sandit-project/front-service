@@ -77,7 +77,7 @@ $(document).ready(function () {
     // 주문하기
     $("#checkout").click(async function () {
         const selectedIds = $(".item-checkbox:checked").map(function () {
-            return $(this).val();
+            return parseInt($(this).val(), 10);
         }).get();
 
         if (selectedIds.length === 0) {
@@ -85,9 +85,16 @@ $(document).ready(function () {
             return;
         }
 
-        const query = selectedIds.map(id => `selectedIds=${id}`).join('&');
-        const userQuery = new URLSearchParams(getUserParams()).toString();
-        window.location.href = `/order?${query}&${userQuery}`;
+        const userInfo = getUserParams();
+
+        // 선택한 UID를 sessionStorage에 저장
+        sessionStorage.setItem("checkoutData", JSON.stringify({
+            selectedIds,
+            userInfo
+        }));
+
+        // 안전하게 /order 이동
+        window.location.href = "/order";
     });
 
     $("#backToHome").click(function () {
