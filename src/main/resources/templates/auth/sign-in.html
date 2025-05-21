@@ -6,11 +6,16 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/auth/signIn.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/auth/signIn.css}" rel="stylesheet">
     <title>로그인</title>
 </head>
 <body>
+<!-- 헤더 -->
+<div th:replace="~{header :: header}"></div>
 
+<!-- 네비게이션 바 -->
+<div th:replace="~{navigation :: nav}"></div>
 <div class="login-container">
     <h2>로그인</h2>
     <div>
@@ -37,6 +42,6 @@
         <a th:href="@{/oauth/google}" class="btn">구글 로그인</a>
     </div>
 </div>
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

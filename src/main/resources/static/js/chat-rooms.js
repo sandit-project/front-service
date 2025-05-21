@@ -30,6 +30,7 @@
                 role: payload.role || 'ROLE_USER'
             };
         } catch (e) {
+            console.warn('JWT 파싱 실패:', e);
             return null;
         }
     }
@@ -69,7 +70,6 @@
                         .text(room.name)
                         .attr('data-room-id', room.id);
 
-
                     const deleteButton = $('<button></button>')
                         .text('삭제')
                         .addClass('delete-btn')
@@ -80,8 +80,7 @@
                             }
                         });
 
-                    topLineDiv.append(nameSpan);
-                    topLineDiv.append(deleteButton);
+                    topLineDiv.append(nameSpan, deleteButton);
 
                     const createdAt = new Date(room.createdAt);
                     const formattedDate = createdAt.getFullYear() + '-' +
@@ -94,8 +93,7 @@
                         .addClass('created-time')
                         .text(formattedDate);
 
-                    roomDiv.append(topLineDiv);
-                    roomDiv.append(dateDiv);
+                    roomDiv.append(topLineDiv, dateDiv);
 
                     roomListDiv.append(roomDiv);
                 });
@@ -160,18 +158,18 @@
         setupAjax();
         fetchRooms();
 
-        $('#createRoomBtn').click(() => {
-            createRoom();
-        });
+        $('#createRoomBtn').off('click').on('click', createRoom);
 
-        $('#roomName').keypress(function(e) {
+        $('#roomName').off('keypress').on('keypress', function(e) {
             if (e.which === 13) {  // Enter key
                 createRoom();
             }
         });
     });
 
-    // 인라인 이벤트에서 createRoom 호출해야 한다면, 아래 주석 해제
+    // 인라인 이벤트에서 createRoom 호출 필요 시
     window.createRoom = createRoom;
 
 })();
+
+

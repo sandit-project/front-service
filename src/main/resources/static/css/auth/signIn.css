@@ -8,10 +8,10 @@
 body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif;
     background: linear-gradient(135deg, #f8f1e6, #efe0c8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*height: 100vh;*/
 }
 
 /* 로그인 박스 */
@@ -23,6 +23,7 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
+    margin: 40px auto;
 }
 
 /* 타이틀 */

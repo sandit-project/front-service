@@ -137,3 +137,19 @@ h2 {
     background-color: #555;
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
+
+.modal-back-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 1010;
+}
+
+.modal-back-btn:hover {
+    color: #ccc;
+}

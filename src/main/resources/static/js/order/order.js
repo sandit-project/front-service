@@ -7,16 +7,21 @@ let cartItems = [];
 function getCartItems() {
     setupAjax();
     checkToken();
-    console.log("Authorization 헤더", localStorage.getItem('accessToken'));
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const selectedIds = urlParams.getAll('selectedIds');
+    // sessionStorage에서 선택한 UID랑 유저 정보 가져오기
+    const checkoutData = JSON.parse(sessionStorage.getItem("checkoutData") || "{}");
+    const selectedIds = checkoutData.selectedIds || [];
 
+    // userUid 또는 socialUid로 API 요청
     let url = '/menus/cart';
-    if (userType === 'USER') {
-        url += `?userUid=${userUid}`;
-    } else if (userType != 'USER') {
-        url += `?socialUid=${socialUid}`;
+    if (checkoutData.userInfo?.userUid) {
+        url += `?userUid=${checkoutData.userInfo.userUid}`;
+        userUid = checkoutData.userInfo.userUid;
+        userType = 'USER';
+    } else if (checkoutData.userInfo?.socialUid) {
+        url += `?socialUid=${checkoutData.userInfo.socialUid}`;
+        socialUid = checkoutData.userInfo.socialUid;
+        userType = 'SOCIAL';
     }
 
     return $.ajax({
@@ -25,13 +30,13 @@ function getCartItems() {
         contentType: 'application/json',
     }).then(response => {
         const allItems = response.cartItems || [];
-        if (selectedIds.length === 0) {
-            return allItems; // fallback
-        }
 
-        return allItems.filter(item => selectedIds.includes(item.uid.toString()));
+        // 선택한 UID만 필터링
+        if (selectedIds.length === 0) return allItems;
+        return allItems.filter(item => selectedIds.includes(item.uid));
     });
 }
+
 
 async function fetchCustomCart(customCartId) {
     setupAjax();
@@ -61,25 +66,42 @@ function fillUserInfoForm(user) {
 async function renderCartItems(items) {
     const $container = $('#cartContainer');
     $container.empty();
-    items.forEach(item => {
-        const isCustom   = item.menuName === '커스텀 샌드위치';
-        const customId = isCustom ? item.customCartUid : null;
-        const cartUid = item.uid; // cart 테이블의 PK
-        const itemHtml = `
-                <div class="cart-item" data-cart-item
-                     data-cart-uid="${cartUid}"
-                    data-custom-id="${customId ?? ''}"
-                    data-is-custom="${isCustom}"
-                    data-calorie="${item.calorie}">
-                <input type="checkbox" class="cart-check" checked>
-                <span class="item-name">${item.menuName}</span>
-                <span class="item-unitPrice">${item.unitPrice}원</span>
-                <span class="item-calorie">${item.calorie}kcal</span>
-                <input type="number" class="item-amount" value="${item.amount}" min="1" style="width: 50px;">
-            </div>
-        `;
-        $container.append(itemHtml);
-    });
+
+    const tableHtml = `
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>메뉴</th>
+                    <th>단가</th>
+                    <th>칼로리</th>
+                    <th>수량</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${items.map(item => {
+        const isCustom = item.menuName === '커스텀 샌드위치';
+        const customId = isCustom ? item.customCartUid : '';
+        const cartUid = item.uid;
+        return `
+                        <tr class="cart-item"
+                            data-cart-item
+                            data-cart-uid="${cartUid}"
+                            data-custom-id="${customId}"
+                            data-is-custom="${isCustom}"
+                            data-calorie="${item.calorie}">
+                            <td><input type="checkbox" class="cart-check" checked></td>
+                            <td class="item-name">${item.menuName}</td>
+                            <td class="item-unitPrice">${item.unitPrice}원</td>
+                            <td class="item-calorie">${item.calorie}kcal</td>
+                            <td><input type="number" class="item-amount" value="${item.amount}" min="1"></td>
+                        </tr>
+                    `;
+    }).join('')}
+            </tbody>
+        </table>
+    `;
+    $container.append(tableHtml);
 }
 
 // custom_cart PK만
@@ -94,22 +116,6 @@ function checkUserAddress() {
     const address = $('#mainAddress').val();
     return Promise.resolve(!!address && address.trim() !== '');
 }
-
-//주소 검색 호출 함수
-// function execDaumPostcode() {
-//     new daum.Postcode({
-//         oncomplete: function(data) {
-//             // 1) 주소 문자열
-//             const addr = data.roadAddress || data.jibunAddress;
-//             $('#mainAddress').val(addr);
-//
-//             // 2) 좌표 값까지 hidden input 에 세팅
-//             $('#deliveryDestinationLat').val(data.y);
-//             $('#deliveryDestinationLan').val(data.x);
-//         }
-//     }).open();
-// }
-
 
 // 스토어 리스트 가져오기
 function getStores(limit = 100) {
@@ -499,6 +505,7 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                                 $(`.cart-item[data-cart-uid="${uid}"]`).remove();
                             });
                             updateTotalPrice();
+                            sessionStorage.removeItem("checkoutData");
                             alert('주문 저장 및 카트 삭제 완료!');
                             window.location.reload();
                         })

@@ -6,11 +6,14 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/menu/sauceList.js}"></script>
+    <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/menu/commonList.css}" rel="stylesheet">
 
     <title>소스 목록</title>
 </head>
 <body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <h1>소스 목록</h1>
 <table>
     <thead>
@@ -45,5 +48,6 @@
 <br>
 <button onclick="location.href='/sauces/admin'">새 소스 등록</button>
 <button onclick="location.href='/admin'" style="margin-left: 10px;">메인으로 가기</button>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

@@ -5,19 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- JQuery + SweetAlert -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- SweetAlert2 CDN 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- JS -->
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/menu/sideMenuCustomerList.js}"></script>
+    <script th:src="@{/js/modal-chat.js}"></script>
+
+    <!-- ✅ 추가 -->
+
+    <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/menu/menuCustomerList.css}">
+    <link rel="stylesheet" th:href="@{/css/modal-chat.css}"/> <!-- ✅ 추가 -->
 </head>
+
 <body>
 
-<!-- ✅ 헤더: 로그인 / 회원가입 영역 -->
+<!-- ✅ 헤더 -->
 <div th:replace="~{header :: header}"></div>
 
 <!-- ✅ 네비게이션 바 -->
@@ -28,14 +36,35 @@
 
 <!-- ✅ 메뉴 전체 컨테이너 -->
 <div class="menu-container">
-    <!-- ✅ 커스텀 샌드위치 -->
-
-
     <!-- ✅ 일반 메뉴는 JS에서 동적으로 삽입됨 -->
 </div>
 
-<!-- ✅ 푸터 추가 -->
+<!-- ✅ 1:1 채팅 버튼 -->
+<div class="chat-item">
+    <button id="oneOnOneChatBtn" title="1:1 채팅 열기">
+        <img id="sandit-chat"
+             src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png"
+             alt="sandit-chat" />
+        <div id="chatBadge" class="chat-badge"></div>
+    </button>
+</div>
+
+<!-- ✅ 푸터 -->
 <div th:replace="~{footer :: footer}"></div>
+
+<!-- ✅ 모달 영역 -->
+<div id="modalContainer" style="display:none;">
+    <div id="modalOverlay"></div>
+
+    <div id="modalContentWrapper">
+
+        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+<!-- 페이지 아무데나, 보통 body 끝 부분에 넣으면 좋아요 -->
+<div id="toast" style="display:none; position: fixed; bottom: 30px; right: 30px; min-width: 250px; background-color: #333; color: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 9999; font-size: 14px;">
+</div>
 
 </body>
 </html>

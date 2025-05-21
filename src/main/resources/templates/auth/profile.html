@@ -15,6 +15,7 @@
     <script th:src="@{/js/kakaoMobility.js}"></script>
     <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/auth/profile.css}" rel="stylesheet">
+    <title>Profile</title>
 </head>
 <body>
 <div th:replace="~{header :: header}"></div>
@@ -46,39 +47,39 @@
     <div class="detail-container">
         <div class="info-section">
             <div class="user-profile">
-                <P>이름 : </P>
+                <P class="round-pill">이름</P>
                 <P id="user_name"></P>
             </div>
-            <div class="user-profile">
-                <P>포인트 : </P>
-                <P id="user_point"></P>
+            <div class="user-profile" hidden>
+                <P class="user_point">포인트</P>
+                <P class="user_point"></P>
             </div>
             <div class="user-profile">
-                <P>이메일 : </P>
+                <P class="round-pill">이메일</P>
                 <P id="user_email"></P>
             </div>
             <div class="user-profile">
-                <P>연락처 : </P>
+                <P class="round-pill">연락처</P>
                 <P id="user_phone"></P>
             </div>
             <div class="user-profile">
-                <P>가입일 : </P>
+                <P class="round-pill">가입일</P>
                 <P id="created_date"></P>
             </div>
             <div class="user-profile">
-                <P>가입경로 : </P>
+                <P class="round-pill">가입경로</P>
                 <P id="user_type"></P>
             </div>
             <div class="user-profile">
-                <P>메인 주소 : </P>
+                <P class="round-pill">메인 주소 </P>
                 <P id="main_address"></P>
             </div>
             <div class="user-profile">
-                <P>추가 주소 1 : </P>
+                <P class="round-pill">추가 주소 1</P>
                 <P id="sub_address1"></P>
             </div>
             <div class="user-profile">
-                <P>추가 주소 2 : </P>
+                <P class="round-pill">추가 주소 2</P>
                 <P id="sub_address2"></P>
             </div>
         </div>

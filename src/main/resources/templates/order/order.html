@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-    <link rel="stylesheet" th:href="@{/css/order/order.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
     <script th:src="@{/js/order/orderCancel.js}"></script>
@@ -23,14 +23,12 @@
 </head>
 <body>
 <header>
-    <div class="top-nav">
-        <a href="/" class="nav-link">홈</a>
-        <a href="/cart" class="nav-link">장바구니</a>
-        <a href="#" id="logout-link" class="nav-link">로그아웃</a>
-    </div>
+    <div th:replace="~{header :: header}"></div>
+    <div th:replace="~{navigation :: nav}"></div>
     <h1>주문</h1>
 </header>
 
+<div class="order-wrapper">
 <div id="cartContainer">
     <!-- JS로 장바구니 항목이 렌더링됨 -->
 </div>
@@ -97,5 +95,7 @@
     <button type="button" class="btn-primary" id="payButton">결제하기</button>
 </div>
 </div>
+</div>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

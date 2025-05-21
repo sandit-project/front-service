@@ -6,9 +6,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script src="/js/menu/menuEdit.js"></script>
+    <link href="/css/common.css" rel="stylesheet">
     <link href="/css/menu/menuEdit.css" rel="stylesheet">
 </head>
 <body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <h1>메뉴 수정</h1>
 
 <form id="menuEditForm">
@@ -149,6 +152,6 @@
     </div>
 
 </form>
-
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

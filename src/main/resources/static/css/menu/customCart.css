@@ -1,0 +1,210 @@
+/* 🍞 기본 배경 및 레이아웃 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fff4eb;
+    color: #3b2a1a;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    text-align: center;
+    color: #F38B20;
+    font-weight: 800;
+    margin-top: 40px;
+}
+
+/* 🥪 커스텀 폼 전체 박스 */
+#menuForm {
+    max-width: 960px;
+    margin: 40px auto;
+    background: rgba(255,255,255,0.85);
+    padding: 30px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* 📋 셀렉트 필드 라벨 */
+#menuForm label {
+    display: inline-block;
+    margin: 12px 0 6px;
+    font-weight: 600;
+    color: #5a3b26;
+}
+
+/* 🔽 셀렉트 박스 스타일 */
+#menuForm select {
+    padding: 10px;
+    margin-right: 8px;
+    border: 1px solid #f0c9a5;
+    border-radius: 8px;
+    background-color: #fffaf2;
+    font-size: 14px;
+    color: #3b2a1a;
+    min-width: 180px;
+}
+
+/* 🥬 채소 선택 박스 그룹 */
+.select-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+
+/* 📐 입력 필드 (가격, 칼로리) */
+#menuForm input[type="number"] {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #f0c9a5;
+    background-color: #fffaf2;
+    font-size: 14px;
+    color: #3b2a1a;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+/* 📦 총 요약 */
+#total-summary,
+#selection-summary {
+    background-color: #fff2e0;
+    padding: 14px 20px;
+    border: 1px solid #f0c9a5;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #5a3b26;
+    margin: 20px 0 10px;
+}
+
+/* ⚠️ 경고 메시지 */
+#warningMessage {
+    background-color: #fff3f3;
+    color: #c0392b;
+    border-left: 5px solid #e74c3c;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin: 10px 0;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 🧡 버튼들 */
+button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background-color: #F38B20;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #d8720f;
+    box-shadow: 0 2px 8px rgba(243, 139, 32, 0.3);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #F38B20;
+    border: 2px solid #F38B20;
+}
+
+.btn-secondary:hover {
+    background-color: #fff3e0;
+}
+
+.btn-danger {
+    background-color: #d45d5d;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #b94747;
+}
+
+/* 📱 반응형 대응 */
+@media (max-width: 768px) {
+    #menuForm {
+        padding: 20px;
+    }
+
+    #menuForm select,
+    #menuForm input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .select-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.form-row label {
+    flex: 0 0 120px;
+    font-weight: 600;
+    color: #5a3b26;
+    white-space: nowrap;
+}
+
+.form-actions > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.option-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.option-button {
+    padding: 10px 16px;
+    background-color: #fffaf2;
+    border: 2px solid #f0c9a5;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #3b2a1a;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    min-width: 100px;
+    text-align: center;
+}
+
+.option-button:hover {
+    background-color: #fdf0db;
+    border-color: #f0b980;
+}
+
+.option-button.selected {
+    background-color: #F38B20;
+    color: white;
+    border-color: #d8720f;
+}
+

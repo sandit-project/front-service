@@ -1,412 +1,316 @@
-/* orderDetail.css */
-
-/* ─── 기본 초기화 ───────────────────────────────────────────────────────── */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    background-color: #f9f1e7;
     font-family: 'Noto Sans KR', sans-serif;
+    background: #fff4eb;
+    color: #3b2a1a;
     margin: 0;
     padding: 0;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 30px 40px;
-    background-color: #fffaf3;
-    border-radius: 20px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-h2 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #4d2c14;
-    margin-bottom: 24px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
-}
-
-thead {
-    background-color: #f4e9dc;
-    color: #4d2c14;
-}
-
-th, td {
-    padding: 14px 16px;
-    text-align: center;
-    border-bottom: 1px solid #e0cbb4;
-}
-
-tbody tr:hover {
-    background-color: #fef6e9;
-    cursor: pointer;
-}
-
-td {
-    color: #4d2c14;
-}
-
-
-
-/* ─── 헤더 ─────────────────────────────────────────────────────────────── */
-header {
-    text-align: center;
-    padding: 30px 0;
-}
-header h1 {
-    font-size: 2.5em;
-    color: #5e3e23;
-}
-
-/* ─── 메인 컨테이너 ───────────────────────────────────────────────────── */
 main {
-    width: 85%;
+    width: 90%;
     margin: 40px auto;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(4px);
 }
 
-/* ─── 주문 테이블 ─────────────────────────────────────────────────────── */
+/* 🔶 테이블 스타일 */
 #order-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fffaf2;
-    border: 2px solid #b8926a;
-    border-radius: 18px;
+    margin-bottom: 30px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.95);
 }
 
 #order-table thead {
-    background: linear-gradient(45deg, #d9a066, #c28a48);
-    color: #fffefc;
+    background-color: #fce6c9;
+    color: #5a3b26;
 }
 
-#order-table thead th {
-    padding: 14px;
-    font-size: 16px;
+#order-table th,
+#order-table td {
+    padding: 16px;
     text-align: center;
+    font-size: 14px;
+}
+
+#order-table th {
+    font-weight: bold;
 }
 
 #order-table tbody tr {
-    border-bottom: 1px solid #e7dfd0;
-    cursor: pointer;
-}
-
-#order-table tbody tr:last-child {
-    border-bottom: none;
-}
-
-#order-table tbody td {
-    padding: 12px;
-    font-size: 14px;
-    text-align: center;
-    color: #3a2a1a;
+    border-bottom: 1px solid #f3e4d2;
+    transition: background-color 0.2s ease;
 }
 
 #order-table tbody tr:hover {
-    background-color: #fef9f0;
-}
-
-/* ─── 모달 백드롭 ────────────────────────────────────────────────────── */
-.modal-backdrop {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-    z-index: 1000;
-}
-
-/* ─── 모달 ───────────────────────────────────────────────────────────── */
-.modal {
-    display: none;
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 700px;
-    background: #fffaf2;
-    border: 2px solid #b8926a;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 1001;
-}
-
-/* ─── 모달 콘텐츠 ───────────────────────────────────────────────────── */
-.modal-content {
-    padding: 1.5rem;
-    font-size: 16px;
-    color: #3a2a1a;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.modal-btn.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* 모달 헤딩 아래 적당한 여백 */
-.modal-content h2 {
-    margin-bottom: 16px;
-}
-
-/* 레이블(p)마다 위아래 마진 */
-.modal-content p,
-.modal-content .modal-label {
-    margin: 8px 0;
-    font-weight: 500;
-    color: #5e3e23;
-}
-
-/* 아이템 리스트 들여쓰기, 불릿, 여백 */
-.order-item-list {
-    padding-left: 1.2em;
-    margin: 8px 0 16px;
-    list-style-type: disc;
-    list-style-position: inside;
-}
-
-.order-item-list li {
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #3a2a1a;
-    line-height: 1.4;
-}
-
-/* 키오스크 스타일 메뉴 리스트 */
-.kiosk-menu-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 1rem 0;
-}
-
-.kiosk-item {
-    background-color: #f7f7f7;
-    padding: 1rem;
-    border-radius: 8px;
-    width: 200px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    text-align: center;
-    font-size: 1.1rem;
-    line-height: 1.4;
-}
-
-.kiosk-item .menu-name {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-
-
-/* ─── 모달 닫기 버튼 ─────────────────────────────────────────────────── */
-.modal-close {
-    float: right;
-    font-size: 1.5em;
+    background-color: #fff4e2;
     cursor: pointer;
-    color: #5e3e23;
 }
 
-/* ─── 모달 버튼 ───────────────────────────────────────────────────────── */
-.modal-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 12px 30px;
+/* ✅ 체크박스 */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #F38B20;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+    vertical-align: middle;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #F38B20;
+    border-color: #d8720f;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+/* 버튼 */
+.modal-btn,
+#cancel-reason-back-btn,
+#confirm-cancel-btn {
+    padding: 10px 24px;
+    border-radius: 20px;
     border: none;
-    border-radius: 10px;
-    background: linear-gradient(45deg, #fdd085, #fbc16c);
-    color: #5a3b26;
-    font-weight: bold;
-    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.3s ease;
-}
-.modal-btn:hover {
-    background: linear-gradient(45deg, #fbc16c, #f8b24f);
+    transition: all 0.3s ease;
+    font-family: 'Noto Sans KR', sans-serif;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
-/* ─── 반응형 ───────────────────────────────────────────────────────────── */
+/* 기본 버튼 색상 */
+.modal-btn,
+#confirm-cancel-btn {
+    background: #F38B20;
+    color: white;
+}
+.modal-btn:hover,
+#confirm-cancel-btn:hover {
+    background: #d8720f;
+}
+
+/* 뒤로 버튼 */
+#cancel-reason-back-btn {
+    background: white;
+    color: #F38B20;
+    border: 2px solid #F38B20;
+}
+#cancel-reason-back-btn:hover {
+    background: #fff2e0;
+}
+
+/* 타이틀 */
+header h1 {
+    text-align: center;
+    font-size: 36px;
+    color: #F38B20;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
+}
+
+/* 반응형 */
 @media (max-width: 768px) {
     main {
         width: 95%;
+        padding: 24px;
     }
-    .modal-content {
-        padding: 20px;
+
+    #order-table th,
+    #order-table td {
+        font-size: 13px;
+        padding: 10px;
     }
+
     .modal-btn {
-        padding: 10px 20px;
+        font-size: 13px;
+        padding: 8px 18px;
     }
 }
 
-/* ─── 취소 사유 입력 영역 ────────────────────────────────────────────── */
-#cancel-reason-section {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e7dfd0;
+/* 모달 백드롭 */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+/* 모달창 본체 */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 460px;
+    background-color: #fffdf7;
+    padding: 24px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1010;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 닫기 버튼 */
+.modal-close {
+    float: right;
+    font-size: 22px;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.modal-close:hover {
+    color: #000;
+}
+
+/* 제목 */
+.modal h2 {
+    text-align: center;
+    font-size: 22px;
+    color: #5a3b26;
+    margin-bottom: 20px;
+}
+
+/* 기본 텍스트 */
+.modal p {
+    font-size: 15px;
+    color: #3b2a1a;
+    margin-bottom: 12px;
+}
+
+/* 메뉴 목록 스타일 */
+.kiosk-menu-list {
+    background-color: #fffaf3;
+    padding: 14px;
+    border-radius: 12px;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 버튼 공통 스타일 */
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #F38B20;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.modal-btn:hover {
+    background-color: #db740a;
+}
+
+/* 취소 사유 선택 영역 */
+#cancel-reason-select {
+    border-radius: 8px;
+    border: 1px solid #f0c9a5;
+    background-color: #fffaf2;
+    font-size: 14px;
 }
 
 #cancel-reason-section label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #5e3e23;
-}
-
-/* 드롭다운 */
-#cancel-reason-select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-    appearance: none;
-    background-color: #fff;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg…>");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-}
-
-/* 취소 사유 버튼들 (뒤로/확인) */
-#cancel-reason-back-btn,
-#confirm-cancel-btn {
-    margin-left: 0.5rem;    /* 공통 간격 */
-    padding: 10px 24px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-#cancel-reason-back-btn {
-    background: #e7dfd0;
-    color: #5e3e23;
-}
-#cancel-reason-back-btn:hover {
-    background: #d9cbbd;
-}
-
-#confirm-cancel-btn {
-    background: linear-gradient(45deg, #fdd085, #fbc16c);
+    font-weight: 600;
     color: #5a3b26;
 }
-#confirm-cancel-btn:hover {
-    background: linear-gradient(45deg, #fbc16c, #f8b24f);
-}
 
-/* 뒤로, 확인 버튼 컨테이너 */
-#cancel-reason-section > div {
-    text-align: right;
-}
-
-/* 뒤로 버튼은 차분하게 */
-#cancel-reason-back-btn {
-    background: #e7dfd0;
-    color: #5e3e23;
-}
-#cancel-reason-back-btn:hover {
-    background: #d9cbbd;
-}
-
-/* 모바일 대응: 버튼, 텍스트박스 크기 줄이기 */
-@media (max-width: 768px) {
-    #cancel-reason-text {
-        min-height: 60px;
-        padding: 8px;
-        font-size: 13px;
-    }
-    #cancel-reason-back-btn,
-    #confirm-cancel-btn {
-        padding: 8px 16px;
-        font-size: 13px;
-    }
-}
-/* 취소 사유 드롭다운 스타일 */
-#cancel-reason-select {
-    width: 100%;
-    padding: 0.5rem;            /* 위아래·좌우 여유 */
-    border: 1px solid #ccc;     /* 연한 회색 테두리 */
-    border-radius: 4px;         /* 모서리 둥글게 */
-    font-size: 1rem;            /* 본문 폰트 크기와 동일 */
-    margin-top: 0.5rem;         /* 레이블과 간격 */
-    appearance: none;           /* 기본 화살표 제거(필요 시 커스텀) */
-    background-color: #fff;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polyline points='4,6 8,10 12,6' stroke='%23666' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-}
-
-/* “뒤로”/“확인” 버튼 간격 */
-#cancel-reason-section .modal-btn {
-    margin-left: 0.5rem;
-}
-
-/* 상단 네비게이션 스타일 */
-.top-nav {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 10px 5%;
-    background-color: #fef9f0;
-}
-.nav-link {
-    text-decoration: none;
-    font-weight: bold;
-    color: #5e3e23;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background 0.2s;
-}
-.nav-link:hover {
-    background-color: rgba(210, 160, 100, 0.2);
-}
-/* ─── 로딩 스피너 ─────────────────────────────────────────────── */
+/* 스피너 */
 .loading-spinner-wrapper {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(255, 255, 255, 0.7);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: fixed;
     z-index: 2000;
+    background-color: rgba(255, 255, 255, 0.8);
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
 }
 
 .spinner {
     border: 6px solid #f3f3f3;
-    border-top: 6px solid #c28a48;
+    border-top: 6px solid #F38B20;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 0.9s linear infinite;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
 }
 
 .spinner-text {
-    margin-top: 1rem;
-    font-size: 1.2rem;
-    color: #333;
-    font-weight: 500;
-}
-.loading-spinner-wrapper {
-    flex-direction: column;
+    font-weight: 600;
+    color: #5a3b26;
+    font-size: 16px;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.kiosk-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0e0c8;
+}
+
+.kiosk-item:last-child {
+    border-bottom: none;
+}
+
+.menu-name {
+    font-weight: 600;
+    color: #4e342e;
+    font-size: 15px;
+}
+
+.menu-detail {
+    font-size: 14px;
+    color: #7c5e45;
+}
+
+/* 🚫 주문 취소 비활성화 상태 */
+#cancel-order-btn.disabled {
+    background-color: #ccc !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    box-shadow: none;
+    border: none;
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 

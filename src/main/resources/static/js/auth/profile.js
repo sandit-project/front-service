@@ -68,7 +68,7 @@ function fetchProfile() {
             $('#user_name').text(response.userName);
             $('#user_email').text(response.email);
             $('#user_phone').text(response.phone);
-            $('#created_date').text(response.createdDate);
+            $('#created_date').text(formatJoinDate(response.createdDate));
             $('#user_point').text(response.point);
             $('#user_type').text(response.type);
             $('#main_address').text(response.mainAddress);
@@ -205,4 +205,15 @@ function deleteAccount() {
         }
     });
 }
+
+let formatJoinDate = (koreanISOString) => {
+    const date = new Date(koreanISOString);
+    const isAM = date.getHours() < 12;
+    const hour12 = date.getHours() % 12 || 12;
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const period = isAM ? "오전" : "오후";
+
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${period} ${hour12}시 ${minutes}분`;
+}
+
 
