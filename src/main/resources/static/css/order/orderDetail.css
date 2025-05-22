@@ -1,6 +1,6 @@
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: #fff4eb;
+    background: whitesmoke;
     color: #3b2a1a;
     margin: 0;
     padding: 0;
@@ -124,7 +124,7 @@ input[type="checkbox"]:checked::after {
 header h1 {
     text-align: center;
     font-size: 36px;
-    color: #F38B20;
+    color: #333;
     margin-top: 40px;
     margin-bottom: 20px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.08);

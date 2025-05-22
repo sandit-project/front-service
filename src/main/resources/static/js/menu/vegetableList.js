@@ -21,7 +21,7 @@ $(document).ready(function () {
                         <td><img src="${vegetable.img}" alt="야채 이미지" width="50"></td>
                         <td>${vegetable.status}</td>
                         <td>
-                            <a href="/vegetables/edit/${encodeURIComponent(vegetable.vegetableName)}">수정</a>
+                            <a href="/vegetables/edit/${encodeURIComponent(vegetable.vegetableName)}" class="edit-btn">수정</a>
                             <button class="delete-btn" data-vegetablename="${vegetable.vegetableName}">삭제</button>
                         </td>
                     </tr>`;

@@ -1,163 +1,161 @@
-/* 🔵 헤더 */
+/* 🌿 기본 설정 */
+:root {
+    --theme-orange: #F38B20;
+    --theme-orange-dark: #d7730f;
+    --text-color: #333;
+    --bg-main: #ffffff;
+    --bg-alt: #f9f9f9;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    background-color: var(--bg-alt);
+    color: var(--text-color);
+}
+
+/* 🔸 헤더 */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 5% 0;
-    background: #fff4eb;
-    border-bottom: 2px solid #f0c9a5;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    padding: 24px 5%;
+    background: var(--bg-main);
+    box-shadow: none;
 }
 
 .site-title {
-    font-size: 32px;
-    font-weight: 800;
-    color: #F38B20;
-    text-decoration: none;
-    letter-spacing: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    text-align: center;
 }
 
-#header-logo {
-    width: 180px;
-    height: auto;
+.site-title img {
+    height: 80px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .header-right {
     display: flex;
-    gap: 25px;
-    align-items: center; /* 오른쪽 정렬 아이템 상하 가운데 정렬 */
+    gap: 16px;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 1;
 }
 
 .header-link {
+    color: var(--text-color);
     text-decoration: none;
-    color: #6b4b34;
-    font-size: 16px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: background-color 0.3s;
-    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
 }
 
 .header-link:hover {
-    background-color: #d2b48c;
+    background-color: #f2f2f2;
 }
 
-/* 🔵 네비게이션 */
+/* 🔸 네비게이션 */
 .navbar {
-    background: #F38B20;
-    padding: 14px 5%;
+    background: var(--bg-main);
+    padding: 12px 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #eee;
 }
 
-.navbar-links {
+.navbar-links,
+.management-section {
     display: flex;
-    justify-content: center;
-    gap: 36px;
+    gap: 20px;
+    align-items: center;
 }
 
 .nav-link {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
     text-decoration: none;
-    font-weight: 600;
-    color: white;
-    font-size: 15px;
-    padding: 10px 18px;
-    border-radius: 8px;
-    transition: background-color 0.3s, color 0.3s;
-    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 0;
+    transition: color 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
 }
 
 .nav-link:hover {
-    background-color: white;
-    color: #F38B20;
+    color: var(--theme-orange);
+    border-bottom: 2px solid var(--theme-orange);
+    background-color: transparent;
 }
 
-.management-section {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 24px; /* 메뉴 간격 */
+.dropdown-delivery,
+.dropdown-manager,
+.dropdown-admin {
+    position: relative; /* 이걸 꼭 넣어줘야 자식의 absolute 위치가 기준 잡힘 */
 }
 
-.management-section > div {
-    position: relative;
+.dropdown-toggle {
+    cursor: pointer;
 }
 
-.nav-link.dropdown-toggle {
-    font-weight: bold;
-    font-size: 14px;
-    color: white;
-    text-decoration: none;
-    padding: 8px 12px;
-    transition: background-color 0.3s;
-}
-
-.nav-link.dropdown-toggle:hover {
-    background-color: white;
-    color: #F38B20;
-    border-radius: 6px;
-}
-
-
-/* 🔵 드롭다운 */
 .dropdown-menu {
     display: none;
     position: absolute;
-    background-color: #fffdf7;
-    min-width: 150px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
-    z-index: 1;
+    background-color: white;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     border-radius: 6px;
     padding: 0.5rem 0;
-    left: 50%;
-    transform: translateX(-50%);
+    z-index: 10;
+    top: calc(100% + 10px);
+    min-width: 120px; /* ✅ 최소 너비 확보 */
+    white-space: nowrap; /* ✅ 줄바꿈 방지 */
 }
 
 .dropdown-menu .dropdown-item {
-    color: #5a3b26;
     padding: 0.5rem 1rem;
+    font-size: 14px;
+    color: #555;
+    text-align: left;
     text-decoration: none;
     display: block;
-    transition: background-color 0.3s;
-    text-align: center;
 }
 
 .dropdown-menu .dropdown-item:hover {
-    background-color: #fff2e5;
-    display: block;
+    color: var(--theme-orange);
+    background-color: transparent;
 }
 
 .dropdown-delivery:hover .dropdown-menu,
 .dropdown-manager:hover .dropdown-menu,
-.dropdown-admin:hover .dropdown-menu,
-.dropdown-menu:hover {
+.dropdown-admin:hover .dropdown-menu {
     display: block;
 }
 
-
-
-/* 🔵 푸터 */
+/* 🔸 푸터 */
 .footer {
-    background-color: #fff4eb;
-    padding: 30px 0;
+    background-color: #777;
+    padding: 20px 0;
     text-align: center;
     font-size: 13px;
-    color: #7a5b42;
-    border-top: 1px solid #f0c9a5;
+    color: #fff;
+    border-top: 1px solid #eee;
 }
 
 .footer-link {
-    margin: 0 12px;
-    color: #F38B20;
+    margin: 0 10px;
+    color: var(--theme-orange);
     text-decoration: none;
     font-weight: 500;
-    font-size: 13px;
-    transition: color 0.3s ease;
 }
 
 .footer-link:hover {
-    color: #d8720f;
+    color: var(--theme-orange-dark);
     text-decoration: underline;
 }

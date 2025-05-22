@@ -1,199 +1,187 @@
-/* 🔸 공통 리셋 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* 🔸 페이지 전체 배경 */
+/* 🌐 전체 초기화 */
 body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
+    background: whitesmoke;
     color: #3b2a1a;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-/* 🔸 컨테이너 */
+/* 📦 메인 컨테이너 */
 .container {
     max-width: 1200px;
     margin: 40px auto;
-    padding: 30px;
-    background: #fff8f0;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
+    padding: 28px 24px;
+    background: rgba(255, 255, 255, 0.78);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(85, 54, 25, 0.10);
+    backdrop-filter: blur(4px);
 }
 
-/* 🔸 헤더 */
-.header {
+/* 🧾 헤더 영역 */
+.header-store-list {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
     align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #d2b48c;
-    margin-bottom: 20px;
+    padding: 24px 24px 14px;
+    margin-bottom: 30px;
 }
 
-#welcome-message {
-    font-size: 24px;
-    font-weight: 700;
-    color: #5a3b26;
+.header-store-list h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin: 0;
 }
 
 #order-count {
     font-size: 16px;
-    color: #7b5c3a;
+    color: #333;
 }
 
-/* 🔸 버튼 그룹 */
+/* 🔘 상단 버튼 */
 .btn-group {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px 0;
 }
 
+.btn-group .btn,
+#pagination .page-btn,
 .btn {
-    background: linear-gradient(45deg, #a0522d, #8b5c32);
-    color: #fff;
+    padding: 8px 18px;
+    font-size: 14px;
+    border-radius: 16px;
+    background-color: #f7f7f7;
     border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 14px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: 0.2s ease;
+    font-weight: 600;
+    text-align: center;
+    min-width: 50px;
 }
 
-.btn:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+.btn:hover,
+.btn-group .btn:hover,
+#pagination .page-btn:hover {
+    background-color: #ddd;
 }
 
-/* 🔸 상태 탭 */
-#status-tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
+.btn:active {
+    background: #F38B20;
+    transform: scale(0.98);
 }
 
-#status-tabs li {
-    padding: 10px 20px;
-    font-size: 14px;
-    color: #4a2f1d;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: background 0.3s ease;
+.btn[disabled],
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    pointer-events: none;
 }
 
-#status-tabs li.active {
-    background-color: #d2b48c;
-    color: white;
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    pointer-events: none;
 }
 
-#status-tabs li:hover {
-    background-color: #fcebd5;
-}
-
-/* 🔸 주문 목록 테이블 */
+/* 📃 테이블 */
 table {
     width: 100%;
     border-collapse: collapse;
+    background: whitesmoke;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
     margin-top: 20px;
+}
+
+thead {
+    background-color: #fce6c9;
 }
 
 th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #d2b48c;
-}
-
-th {
-    background-color: #f9f3eb;
-    color: #5a3b26;
-}
-
-td {
-    background-color: #fffaf2;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 14px;
     color: #4a2f1d;
 }
 
-/* 🔸 로딩 표시 */
-#loading {
-    font-size: 18px;
-    font-weight: 600;
-    color: #8b5c32;
-    margin-top: 20px;
+th {
+    font-weight: 700;
+    background-color: #555;
+    color: #fff;
 }
 
-/* 🔸 페이징 영역 */
+tbody tr:hover {
+    cursor: pointer;
+}
+
+/* 🔢 페이징 */
 #pagination {
     display: flex;
-    justify-content: center; /* 변경된 부분: 중앙 정렬 */
+    justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 30px;
 }
 
-/* 🔸 페이징 버튼 */
-#pagination button {
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 700;
-    background-color: #5a3b26;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin: 0 10px;
+#pagination .page-btn.active {
+    background-color: #777 !important;;
+    color: white !important;;
 }
 
-#pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-#pagination button:hover {
-    background-color: #3d2d1d;
-}
-
-/* 🔸 반응형 */
-@media (max-width: 768px) {
+/* 📱 반응형 */
+@media (max-width: 900px) {
     .container {
-        padding: 20px;
+        padding: 12px 2vw;
     }
 
-    #welcome-message {
-        font-size: 20px;
-    }
-
-    .btn-group {
+    .header-store-list {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 16px 8px 8px;
     }
 
-    .btn {
-        width: 100%;
-        margin-bottom: 10px;
+    .header-store-list h1 {
+        font-size: 19px;
     }
 
     table {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     th, td {
-        padding: 8px;
+        padding: 10px;
     }
 
-    /* 페이징 버튼 크기 조정 */
-    #pagination button {
-        font-size: 14px;
+    .btn-group .btn,
+    .btn,
+    #pagination .page-btn {
+        font-size: 13px;
+        padding: 8px 14px;
+        min-width: 70px;
+        min-height: 36px;
     }
 }
 
-@media (max-width: 480px) {
-    #status-tabs {
-        flex-direction: column;
-        align-items: center;
-    }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
-    #status-tabs li {
-        width: 100%;
-        text-align: center;
-    }
+a:hover {
+    color: #F38B20;
+    scale: 1.05;
+    animation: ease 0.5ms;
 }

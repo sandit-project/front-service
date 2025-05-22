@@ -22,6 +22,9 @@
     <script th:src="@{/js/menu/menuCustomerList.js}"></script>
     <script th:src="@{/js/modal-chat.js}"></script>
 
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+
     <style>
 
 
@@ -70,10 +73,11 @@
     <!-- 커스텀 메뉴 (고정) -->
     <div class="menu-item custom-item">
         <a href="/customCart">
+            <img class="menu-img" src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png" alt="sandit-logo" />
+
             <div class="menu-info">
-                <img id="sandit-logo" src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png" alt="sandit-logo" />
                 <h2>커스텀 샌드위치 만들기</h2>
-                <p>직접 재료를 골라 나만의 샌드위치를 만들어보세요!</p>
+                <p>나만의 샌드위치를 만들어보세요!</p>
                 <a href="/customCart" class="add-to-cart-btn">바로가기</a>
             </div>
         </a>

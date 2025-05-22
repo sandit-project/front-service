@@ -23,14 +23,14 @@
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
 <div class="container">
-    <div class="header">
+    <div class="header-delivery">
         <h1>
             <span>배달 목록</span>
             <span id="delivery-count">(0)</span>
         </h1>
         <div class="btn-group">
             <button id="backToHome" class="btn" type="button" onclick="location.href='/'">메인 화면</button>
-            <button id="refresh-btn" class="btn">🔄새로고침</button>
+            <button id="refresh-btn" class="btn">새로고침</button>
         </div>
         <div>
             <input id="hiddenId" type="hidden">

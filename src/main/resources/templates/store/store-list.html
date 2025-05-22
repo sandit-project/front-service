@@ -14,7 +14,7 @@
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
 <div class="container">
-    <div class="header">
+    <div class="header-store-list">
         <h1 id="welcome-message">지점 목록</h1>
         <div id="order-count">주문 수: <span>10</span></div>
     </div>
@@ -48,10 +48,10 @@
 
     <!-- 페이징 영역 -->
     <div id="pagination">
-        <button id="firstPage" class="btn">처음</button>
-        <button id="prevPage" class="btn" disabled>이전</button>
+        <button id="firstPage" class="page-btn">처음</button>
+        <button id="prevPage" class="page-btn" disabled>이전</button>
         <span id="pageNumbers"></span>
-        <button id="nextPage" class="btn">다음</button>
+        <button id="nextPage" class="page-btn">다음</button>
     </div>
 </div>
 <div th:replace="~{footer :: footer}"></div>

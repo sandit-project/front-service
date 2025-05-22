@@ -21,7 +21,7 @@ $(document).ready(function () {
                         <td><img src="${side.img}" alt="사이드 이미지" width="50"></td>
                         <td>${side.status}</td>
                         <td>
-                            <a href="/sides/edit/${encodeURIComponent(side.sideName)}">수정</a>
+                            <a href="/sides/edit/${encodeURIComponent(side.sideName)}" class="edit-btn">수정</a>
                             <button class="delete-btn" data-sidename="${side.sideName}">삭제</button>
                         </td>
                     </tr>`;
