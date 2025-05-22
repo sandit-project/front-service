@@ -46,15 +46,19 @@ $(document).ready(async function () {
                 "sauce1","sauce2","sauce3"
             ];
 
+
+
             // 선택된 재료 텍스트만 추출
             const selectedTexts = [];
             //  fields: ["bread", ...] select name 리스트
             fields.forEach(name=>{
-                const val = $(`select[name="${name}"]`).val();
-                if (val) {
-                    const txt = $(`select[name="${name}"] option[value="${val}"]`).text();
-                    if (txt && !defaultExcludeTexts.includes(txt)) selectedTexts.push(txt);
-                }
+                // 선택된 버튼 찾기 (한 개 or 여러 개)
+                $(`.option-button[data-name="${name}"].selected`).each(function () {
+                    const txt = $(this).text().trim();
+                    if (txt && !defaultExcludeTexts.includes(txt)) {
+                        selectedTexts.push(txt);
+                    }
+                });
             });
 
             //  user/social UID 구분해서 body 구성
@@ -70,20 +74,18 @@ $(document).ready(async function () {
 
             // ① AI-서비스로 알러지 체크
             const res = await checkAllergyAPI(allergyReqBody);
+            // 알러지 경고
             if (res.risk) {
-                // ② 위험 시 경고 UI 표시 후 중단
-                showAllergyWarning(res);
+                Swal.fire({
+                    icon: 'error',
+                    title: '⚠️ 알러지 위험 경고',
+                    html: `
+                        <b>위험 원인:</b> ${res.cause && res.cause.length ? res.cause.join(', ') : '원인 불명'}<br>
+                        <b>설명:</b> ${res.detail || ''}
+        `
+                });
                 return;
             }
-
-            // // ③ 이상 없으면 DTO 생성 후 저장
-            // const dto = Object.fromEntries(fields.map(n=>[n, getSelectValue(n)]));
-            // dto.price   = +$('input[name="price"]').val()   || 0;
-            // dto.calorie = +$('input[name="calorie"]').val() || 0;
-            // if (globalUserInfo.type === 'user')   dto.userUid   = globalUserInfo.id;
-            // else if (globalUserInfo.type === 'social') dto.socialUid = globalUserInfo.id;
-            // else { alert('로그인 후 이용해주세요.'); return; }
-
             // 장바구니 저장 함수
             await addCustomCart();
         });
@@ -97,10 +99,6 @@ $(document).ready(async function () {
         location.href = '/member/login';
     });
 
-
-    const defaultExcludeTexts = [
-        "선택 안 함", "빵을 선택하세요", "소스를 선택하세요", "재료를 선택하세요", "채소를 선택하세요"
-    ];
 
     const getSelectedValue = name => {
         return $(`.option-button[data-name="${name}"].selected`).data('value') || null;
@@ -190,6 +188,10 @@ $(document).ready(async function () {
             });
         });
     };
+
+    const defaultExcludeTexts = [
+        "선택 안 함", "빵을 선택하세요", "소스를 선택하세요", "재료를 선택하세요", "채소를 선택하세요"
+    ];
 
     const addCustomCart = async () => {
         // 필수 항목 체트

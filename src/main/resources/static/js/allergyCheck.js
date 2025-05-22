@@ -31,13 +31,3 @@ async function checkAllergyAPI(body) {
     }
 }
 
-// 2) 경고 UI 표시
-function showAllergyWarning(result) {
-    $('#allergyWarning').html(
-        `<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
-            <p class="font-bold">알러지 위험 경고</p>
-            <p>원인: ${result.cause && result.cause.length > 0 ? result.cause.join(', ') : '원인 불명'}</p>
-            <p>${result.detail || ''}</p>
-        </div>`
-    ).show();
-}
