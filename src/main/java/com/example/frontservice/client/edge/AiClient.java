@@ -4,6 +4,7 @@ import com.example.frontservice.dto.ai.AllergyCheckRequestDTO;
 import com.example.frontservice.dto.ai.AllergyListResponseDTO;
 import com.example.frontservice.dto.ai.AllgergyCheckResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "aiClient", url = "${sandit.edge-service-url}")
@@ -14,7 +15,8 @@ public interface AiClient {
     AllergyListResponseDTO getUserAllergies(@PathVariable("userUid") Long userUid,
                                             @RequestHeader("Authorization")String token);
     // 알러지 체크
-    @PostMapping("/api/ai/check-allergy")
+    @PostMapping(value = "/api/ai/check-allergy",
+                 consumes= MediaType.APPLICATION_JSON_VALUE)
     AllgergyCheckResponseDTO checkAllergy(@RequestBody AllergyCheckRequestDTO request,
                                           @RequestHeader("Authorization") String token);
 }

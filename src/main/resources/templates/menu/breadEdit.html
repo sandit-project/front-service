@@ -6,11 +6,14 @@
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script th:src="@{/js/common.js}"></script>
   <script th:src="@{/js/menu/breadEdit.js}"></script> <!-- 외부 JS 파일 링크 -->
+  <link th:href="@{/css/common.css}" rel="stylesheet">
   <link th:href="@{/css/menu/commonEdit.css}" rel="stylesheet">
   <title>빵 정보 수정</title>
 </head>
 <body>
 <div class="container">
+  <div th:replace="~{header :: header}"></div>
+  <div th:replace="~{navigation :: nav}"></div>
   <h1>빵 정보 수정</h1>
   <form id="breadEditForm" enctype="multipart/form-data">
     <input type="hidden" id="uid" name="uid">
@@ -56,5 +59,6 @@
     </div>
   </form>
 </div>
+<div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

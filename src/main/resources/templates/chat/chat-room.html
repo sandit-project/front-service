@@ -12,11 +12,14 @@
 
     <!-- 커스텀 JS/CSS -->
 <!--    <script th:src="@{/js/common.js}"></script>-->
-    <script th:src="@{/js/chat/chat-room.js}"></script>
+
+    <script th:src="@{/js/chat-room.js}"></script>
+
     <link th:href="@{/css/chat/chat-room.css}" rel="stylesheet">
 </head>
 <body>
 <h2>채팅방</h2>
+<button id="backToChatListBtn" class="modal-back-btn">← </button>
 
 <!-- 로그인된 유저 정보 -->
 <div id="userInfo"></div>
@@ -28,6 +31,8 @@
 <div id="inputArea">
     <input id="messageInput" type="text" placeholder="메시지를 입력하세요" />
     <button id="sendBtn">전송</button>
+
 </div>
+
 </body>
 </html>

@@ -3,6 +3,15 @@ $(document).ready(() => {
     // 최초 로딩 시 권한 값에 따라 알러지 체크박스 show/hide
     toggleAllergyGroup();
 
+    $('#toggle-allergy').on('click', function () {
+        const $other = $('#other-allergy-options');
+        const isVisible = $other.is(':visible');
+
+        $other.toggle(); // 보여주거나 숨기기
+        $(this).text(isVisible ? '+ 기타 알레르기 보기' : '- 기타 알레르기 접기');
+    });
+
+
     // 권한 선택 변경 시마다 show/hide
     $('#role').on('change', function() {
         toggleAllergyGroup();
