@@ -1,4 +1,5 @@
 let globalUserInfo = null;
+let menuList = [];
 
 $(document).ready(async () => {
     checkToken();
@@ -23,6 +24,8 @@ $(document).ready(async () => {
         type: "GET",
         url: "/menus",
         success: function (menus) {
+            menuList = menus; // menus 전체를 저장해 둠
+            console.log("메뉴리스트 :",menuList);
             const container = $(".menu-container");
             menus.forEach(menu => {
                 const html = `
@@ -51,7 +54,7 @@ $(document).ready(async () => {
 
 
     // 장바구니 담기
-    $(document).on("submit", ".add-cart-form", function (e) {
+    $(document).on("submit", ".add-cart-form", async function (e) {
         e.preventDefault();
 
         if (!globalUserInfo) {
@@ -63,6 +66,48 @@ $(document).ready(async () => {
         const parent = form.closest(".menu-item");
         const menuId = parent.data("menu-id");
         const amount = form.find("input[name='amount']").val();
+
+        // ★★★★★ 여기서 menusList에서 해당 메뉴 객체 찾기
+        const menuObj = menuList.find(menu=>menu.uid === menuId);
+        console.log("menuObj :",menuObj);
+        if (!menuObj) {
+            Swal.fire("메뉴 정보를 찾을 수 없습니다.", '', 'error');
+            return;
+        }
+        const ingredients = menuObj.ingredients || []; // 재료명 배열
+        console.log("메뉴정보에서의 재료들 :",ingredients);
+
+        // === 유저 알러지 정보 가져오기 ===
+        let allergyList = [];
+        if (globalUserInfo.type === 'user') {
+            allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
+        } else if (globalUserInfo.type === 'socail') {
+            //소셜 로그인은 별도 처리 필요
+            allergyList = [];
+        }
+
+        // ==== 알러지 체크 로직 ===
+        let allergyReqBody = {
+            user_uid: (globalUserInfo.type === 'user') ? globalUserInfo.id : null,
+            social_uid: (globalUserInfo.type === 'social') ? globalUserInfo.id : null,
+            allergy: allergyList,
+            ingredients: ingredients
+        };
+
+        const allergyResult = await checkAllergyAPI(allergyReqBody);
+
+        if (allergyResult.risk) {
+            Swal.fire({
+                icon: 'error',
+                title: '⚠️ 알러지 위험 경고',
+                html: `
+                        <b>위험 원인:</b> ${res.cause && res.cause.length ? res.cause.join(', ') : '원인 불명'}<br>
+                        <b>설명:</b> ${res.detail || ''}
+                      `
+            });
+            return;
+        }
+
         let userUid ;
         let socialUid ;
         let requestData = { menuId, amount ,userUid, socialUid};
@@ -73,6 +118,7 @@ $(document).ready(async () => {
             requestData.socialUid = globalUserInfo.id;
         }
         console.log(requestData);
+
         $.ajax({
             type: "POST",
             url: "/menus/cart/add",
