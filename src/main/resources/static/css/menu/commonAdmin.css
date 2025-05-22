@@ -1,4 +1,4 @@
-/* 🔵 리셋 및 공통 스타일 */
+/* 공통 초기화 */
 * {
     margin: 0;
     padding: 0;
@@ -6,188 +6,138 @@
 }
 
 body {
-    font-family: 'SUIT', 'Noto Sans KR', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
-    color: #3b2a1a;
-    text-align: center;
-    padding: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fafafa;
+    color: #333;
 }
 
-/* 🔵 헤더 */
-h1, h2 {
-    color: #4d3321;
-    margin-bottom: 20px;
-    font-size: 28px;
-    font-weight: 700;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* 🔵 폼 박스 */
-form, .container {
+/* 헤더 및 내비게이션 영역과 겹치지 않도록 상단 여백 확보 */
+.container {
     max-width: 800px;
-    margin: 0 auto;
-    background: #fffaf2;
-    padding: 35px;
-    border-radius: 15px;
-    border: 2px solid #b59a7a;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    text-align: left;
+    margin: 60px auto 80px;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
-/* 🔵 입력 필드 */
+/* 제목 스타일 */
+h1 {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+/* 폼 입력 영역 */
+.form-group {
+    margin-bottom: 24px;
+}
+
 label {
     display: block;
-    font-weight: bold;
-    margin-top: 20px;
-    color: #4d3321;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4d2c14;
 }
 
-input, select {
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select {
     width: 100%;
-    padding: 12px 14px;
-    margin-top: 8px;
-    border: 1px solid #d2b48c;
+    padding: 10px 14px;
+    border: none;
     border-radius: 8px;
+    background-color: whitesmoke;
     font-size: 14px;
-    color: #5a3b26;
-    background-color: #f9f3eb;
-    transition: border-color 0.3s ease, background 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-input:focus, select:focus {
-    border-color: #8b5c32;
-    outline: none;
-    background: #fffaf2;
-}
-
-/* 🔵 버튼 공통 */
-.btn {
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: 'SUIT', 'Poppins', sans-serif;
-    color: #fffef9;
-    border: 2px solid transparent;
+input[type="file"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
     border-radius: 8px;
-    cursor: pointer;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: whitesmoke;
+    font-size: 14px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-/* 🔵 버튼 스타일별 */
-.btn-primary {
-    background: linear-gradient(45deg, #7c4a2d, #5e3b23);
-    border-color: #5c3b1e;
+input[type="file"]::file-selector-button {
+    background-color: #F38B20; /* 버튼 배경 */
+    color: white;              /* 텍스트 색상 */
+    border: none;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #d7730f;
+}
+
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+/* 버튼 공통 */
+.btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+/* 버튼 스타일 */
+.btn-primary {
+    background-color: #F38B20;
+    color: white;
+}
+
 .btn-primary:hover {
-    background: linear-gradient(45deg, #5e3b23, #4b2c1a);
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
+    background-color: #d7730f;
 }
 
 .btn-secondary {
-    background: linear-gradient(45deg, #bda98d, #a38b6f);
-    border-color: #92795d;
+    background-color: #eee;
+    color: #333;
 }
+
 .btn-secondary:hover {
-    background: linear-gradient(45deg, #a38b6f, #92795d);
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 20px rgba(128, 93, 58, 0.25);
+    background-color: #ddd;
 }
 
 .btn-danger {
-    background: linear-gradient(45deg, #a24a3d, #842d1c);
-    border-color: #732217;
+    background-color: #e74c3c;
+    color: white;
 }
+
 .btn-danger:hover {
-    background: linear-gradient(45deg, #842d1c, #6b1b13);
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 20px rgba(100, 30, 20, 0.3);
+    background-color: #c0392b;
 }
 
-/* 🔵 버튼 영역 */
-.form-actions,
-.button-group {
-    margin-top: 35px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-/* 🔵 상태 업데이트 영역 */
-.bread-status-update {
-    margin-top: 30px;
-    padding: 20px;
-    background: #f9f3eb;
-    border: 1px solid #d8c1a5;
-    border-radius: 12px;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-.bread-status-update:hover {
-    background: #f7f1e4;
-    box-shadow: 0px 6px 16px rgba(85, 54, 25, 0.2);
-}
-
-.bread-status-update p {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #5a3b26;
-}
-
-.status-form {
-    display: flex;
-    gap: 15px;
-}
-
-.status-select {
-    flex: 2;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #c19a6b;
-    border-radius: 8px;
-    background: #fffaf2;
-    transition: border-color 0.3s ease;
-}
-.status-select:focus {
-    border-color: #8b5c32;
-}
-
-/* 🔵 반응형 */
-@media (max-width: 1024px) {
-    form {
-        padding: 30px;
+/* 미디어 쿼리 */
+@media (max-width: 768px) {
+    .container {
+        margin: 30px 16px;
+        padding: 24px;
     }
 
-    .btn {
-        font-size: 15px;
-    }
-}
-
-@media (max-width: 600px) {
-    form {
-        width: 90%;
-        padding: 25px;
-    }
-
-    label {
-        font-size: 14px;
-    }
-
-    input, select {
-        font-size: 14px;
-    }
-
-    .btn {
-        font-size: 14px;
-        padding: 10px 14px;
-    }
-
-    h2 {
-        font-size: 24px;
+    .button-group {
+        flex-direction: column;
+        gap: 12px;
     }
 }

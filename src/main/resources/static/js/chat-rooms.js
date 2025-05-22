@@ -65,11 +65,23 @@
 
                     const topLineDiv = $('<div></div>');
 
+                    // 방 이름 스팬
                     const nameSpan = $('<span></span>')
                         .addClass('enter-chat-room')
                         .text(room.name)
                         .attr('data-room-id', room.id);
 
+                    // 생성자 아이디 스팬 (방 이름 옆에 작게 표시)
+                    const ownerSpan = $('<span></span>')
+                        .addClass('room-owner')
+                        .text(` (ID: ${room.ownerId})`)
+                        .css({
+                            'font-size': '0.85em',
+                            'color': '#666',
+                            'margin-left': '8px'
+                        });
+
+                    // 삭제 버튼
                     const deleteButton = $('<button></button>')
                         .text('삭제')
                         .addClass('delete-btn')
@@ -80,7 +92,7 @@
                             }
                         });
 
-                    topLineDiv.append(nameSpan, deleteButton);
+                    topLineDiv.append(nameSpan, ownerSpan, deleteButton);
 
                     const createdAt = new Date(room.createdAt);
                     const formattedDate = createdAt.getFullYear() + '-' +
@@ -171,5 +183,3 @@
     window.createRoom = createRoom;
 
 })();
-
-

@@ -121,7 +121,7 @@ let updatePaginationButtons = (response) => {
     // 지금까지 저장된 페이지 수만큼 번호 버튼 생성
     const totalPages = cursorMap.size;
     for (let i = 1; i <= totalPages; i++) {
-        const $btn = $(`<button class="btn page-btn" data-page="${i}">${i}</button>`);
+        const $btn = $(`<button class="page-btn" data-page="${i}">${i}</button>`);
         if (i === page) {
             $btn.css('background-color', '#999');
         }

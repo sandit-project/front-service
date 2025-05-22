@@ -1,125 +1,190 @@
-/* 🔸 공통 리셋 */
+/* 🔁 초기화 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* 🔸 페이지 배경 및 폰트 */
 body {
-    font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
-    color: #3b2a1a;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fafafa;
+    color: #333;
 }
 
-/* 🔸 지점 상세 컨테이너 */
+/* 📦 메인 컨테이너 */
 .storeDetail-container {
     max-width: 800px;
-    margin: 40px auto;
+    margin: 60px auto 80px;
     padding: 40px;
-    background: #fff8f0;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
+/* 🧾 타이틀 */
 .storeDetail-container h2 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #5a3b26;
-    margin-bottom: 20px;
     text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    color: #333;
 }
 
-/* 🔸 폼 레이블 및 입력 필드 */
-form div {
-    margin-bottom: 20px;
+/* 📋 폼 항목 */
+.form-group {
+    margin-bottom: 32px;
 }
 
 label {
     display: block;
-    font-size: 16px;
-    color: #5a3b26;
     margin-bottom: 8px;
+    font-weight: 600;
+    color: #4d2c14;
 }
 
-input, select {
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #d2b48c;
-    border-radius: 8px;
-    background: #fffaf2;
-    color: #4a2f1d;
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: #a0522d;
-    background-color: #f9f3eb;
-}
-
-/* 🔸 버튼 스타일 */
-button {
-    padding: 12px 25px;
+    padding: 10px 14px;
     border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
+    outline: none;
+    border-radius: 8px;
+    background-color: whitesmoke;
+    font-size: 14px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* 🔘 파일 업로드 버튼 */
+input[type="file"]::file-selector-button {
+    background-color: #F38B20;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-right: 10px;
+    transition: all 0.3s ease;
 }
 
-button[type="submit"] {
-    background: linear-gradient(45deg, #a0522d, #8b5c32);
-    color: #fff;
+input[type="file"]::file-selector-button:hover {
+    background-color: #d7730f;
 }
 
-button[type="submit"]:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
-}
-
-button.btn-delete {
-    background-color: #c34d4d;
-    color: #fff;
-}
-
-button.btn-delete:hover {
-    background-color: #9c3b3b;
-}
-
-button.btn-prev {
-    background-color: #5a3b26;
-    color: #fff;
-}
-
-button.btn-prev:hover {
-    background-color: #3d2d1d;
-}
-
-/* 🔸 폼 액션 버튼 그룹 */
+/* 🔘 버튼 그룹 */
 .form-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
 }
 
-/* 🔸 숨겨진 필드 스타일 */
+/* 버튼 공통 */
+.btn,
+input[type="submit"],
+.btn-prev {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+/* 버튼 종류 */
+.btn-primary,
+input[type="submit"] {
+    background-color: #F38B20;
+    color: white;
+}
+
+.btn-primary:hover,
+input[type="submit"]:hover {
+    background-color: #d7730f;
+}
+
+.btn-secondary,
+.btn-prev {
+    background-color: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.btn-secondary:hover,
+.btn-prev:hover {
+    background-color: #ddd;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* 🕵️‍♂️ 숨김 필드 */
 input[type="hidden"] {
     display: none;
 }
 
-/* 🔸 반응형 디자인 */
+/* 📱 반응형 */
 @media (max-width: 768px) {
     .storeDetail-container {
-        padding: 20px;
+        margin: 30px 16px;
+        padding: 24px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn,
+    input[type="submit"],
+    .btn-prev {
+        width: 100%;
     }
 
     .storeDetail-container h2 {
-        font-size: 24px;
+        font-size: 22px;
     }
+}
 
-    button {
-        font-size: 14px;
-    }
+/* ✏️ 수정 버튼 스타일 (submit 버튼) */
+button[type="submit"] {
+    padding: 10px 18px;
+    border-radius: 999px;
+    background-color: #F38B20;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #d7730f;
+}
+
+/* ❌ 삭제 버튼 스타일 (id 그대로 유지) */
+#deleteBtn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#deleteBtn:hover {
+    background-color: #c0392b;
 }

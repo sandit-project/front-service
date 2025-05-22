@@ -8,21 +8,60 @@
     <!-- JQuery + SweetAlert -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
-    <!-- JS -->
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
+    <link rel="stylesheet" th:href="@{/css/menu/menuCustomerList.css}" />
+
+    <!-- JS (페이지 하단에 위치해도 무방함) -->
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/menu/menuCustomerList.js}"></script>
     <script th:src="@{/js/modal-chat.js}"></script>
     <script th:src="@{/js/allergyCheck.js}"></script>
+
     <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}" />
 
-    <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
-    <link rel="stylesheet" th:href="@{/css/menu/menuCustomerList.css}" />
-</head>
+    <style>
 
+
+        #chatTooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;          /* 버튼 위쪽에 위치 */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff7f00;   /* 주황색 */
+            color: #fff;
+            padding: 8px 14px;     /* 좀 더 크게 */
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 15px;       /* 글자도 좀 키움 */
+            margin-bottom: 8px;    /* 버튼과 살짝 떨어뜨림 */
+            pointer-events: none;
+            z-index: 1000;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+
+    </style>
+
+    <script>
+        $(function(){
+            $('#oneOnOneChatBtn').hover(
+                function() { $('#chatTooltip').show(); },
+                function() { $('#chatTooltip').hide(); }
+            );
+        });
+    </script>
+</head>
 <body>
+
 <!-- 헤더 & 네비게이션 -->
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
@@ -35,25 +74,26 @@
     <!-- 커스텀 메뉴 (고정) -->
     <div class="menu-item custom-item">
         <a href="/customCart">
+            <img class="menu-img" src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png" alt="sandit-logo" />
+
             <div class="menu-info">
-                <img id="sandit-logo" src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png" alt="sandit-logo" />
                 <h2>커스텀 샌드위치 만들기</h2>
-                <p>직접 재료를 골라 나만의 샌드위치를 만들어보세요!</p>
+                <p>나만의 샌드위치를 만들어보세요!</p>
                 <a href="/customCart" class="add-to-cart-btn">바로가기</a>
             </div>
         </a>
     </div>
-
     <!-- 일반 메뉴는 JS에서 동적 로딩 -->
 </div>
 
 <!-- 1:1 채팅 버튼 -->
 <div class="chat-item">
-    <button id="oneOnOneChatBtn" title="1:1 채팅 열기">
+    <button id="oneOnOneChatBtn"  type="button">
         <img id="sandit-chat"
              src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png"
              alt="sandit-chat" />
         <div id="chatBadge" class="chat-badge"></div>
+        <div id="chatTooltip">1:1 채팅 서비스입니다.</div>
     </button>
 </div>
 
@@ -61,19 +101,14 @@
 <div th:replace="~{footer :: footer}"></div>
 
 <!-- 모달 -->
-<div id="modalContainer" style="display:none;">
+<div id="modalContainer" hidden>
     <div id="modalOverlay"></div>
 
     <div id="modalContentWrapper">
-
         <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
         <div id="modalContent"></div>
     </div>
 </div>
-<!-- 페이지 아무데나, 보통 body 끝 부분에 넣으면 좋아요 -->
-
-
-
 
 </body>
 </html>

@@ -78,7 +78,7 @@ sandit:
   token-redirect-url: ${TOKEN_REDIRECT_URL}
 
 oauth:
-  state: ${OAUTH_STATE:1234}  # 필요한 경우 기본값 지정
+  state: ${OAUTH_STATE}  # 필요한 경우 기본값 지정
   naver:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_CLIENT_SECRET}

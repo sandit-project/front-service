@@ -11,9 +11,9 @@
   <title>빵 정보 수정</title>
 </head>
 <body>
-<div class="container">
   <div th:replace="~{header :: header}"></div>
   <div th:replace="~{navigation :: nav}"></div>
+<div class="container">
   <h1>빵 정보 수정</h1>
   <form id="breadEditForm" enctype="multipart/form-data">
     <input type="hidden" id="uid" name="uid">
@@ -55,7 +55,7 @@
 
     <div class="form-actions">
       <button type="button" id="updateBtn">수정하기</button>
-      <button type="button" onclick="location.href='/breads/list'">목록으로</button>
+      <button type="button" onclick="location.href='/breads/list'" id="goList">목록으로</button>
     </div>
   </form>
 </div>

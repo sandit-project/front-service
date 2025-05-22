@@ -25,7 +25,7 @@ jobs:
 
       - name: Tag Docker image
         run: |
-          docker tag front-service:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/front-service:latest
+          docker tag front-service:latest ${{ secrets.DOCKER_HUB_USERNAME }}/front-service:latest
 
       - name: Push Docker image to Docker Hub
         run: |
