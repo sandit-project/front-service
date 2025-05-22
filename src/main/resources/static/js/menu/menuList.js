@@ -64,7 +64,7 @@ $(document).ready(function () {
                     </td>
                     <td>${menu.status}</td>
                     <td>
-                        <a href="/menus/edit/${encodeURIComponent(menu.menuName)}">수정</a>
+                        <a href="/menus/edit/${encodeURIComponent(menu.menuName)}" class="edit-btn">수정</a>
                     </td>
                     <td>
                         <button class="delete-btn" data-menuName="${menu.menuName}">삭제</button>

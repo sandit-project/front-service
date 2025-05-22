@@ -7,29 +7,30 @@
 
 body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-    background: linear-gradient(135deg, #f4ede7, #e6d3c1);
+    background: whitesmoke;
 }
 
-/* 컨테이너 */
+/* 회원가입 박스 */
 .signup-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto 40px auto;
-    background-color: #fff8f0;
-    padding: 40px;
+    padding: 40px 30px;
     border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.15);
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+    margin: 40px auto;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.10);
 }
 
 .signup-container h2 {
-    text-align: center;
-    margin-bottom: 30px;
     font-size: 28px;
-    color: #5a3b26;
+    margin-bottom: 30px;
+    color: #333;
 }
 
-/* 폼 요소 공통 */
+/* 입력 그룹 */
 .form-group {
+    text-align: left;
     margin-bottom: 20px;
     position: relative;
 }
@@ -37,7 +38,7 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #4a3422;
+    color: #4d3321;
     font-weight: 600;
 }
 
@@ -45,23 +46,18 @@ body {
 .form-group select {
     width: 100%;
     padding: 12px;
-    border: 1px solid #d2b48c;
+    border: none;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     font-size: 14px;
     background-color: #fff;
-    transition: border-color 0.3s ease;
+    transition: box-shadow 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-    border-color: #a0522d;
-    outline: none;
-}
-
-.form-group p {
-    font-size: 13px;
-    margin-top: 5px;
-    color: #8b6c49;
+    box-shadow: 0 0 4px #F38B20;
 }
 
 /* 체크박스 라벨 */
@@ -70,22 +66,29 @@ body {
     margin-right: 8px;
 }
 
+/* 안내문 */
+.form-group p {
+    font-size: 13px;
+    margin-top: 5px;
+    color: #8b6c49;
+}
+
 /* 버튼 공통 */
 button,
 #signup,
 #email-submit,
 #email-verify,
 #mainAddress-kakao {
-    margin-top: 8px;
-    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    width: 100%;
+    margin-top: 10px;
+    background: #F38B20;
     color: #fff;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-size: 14px;
     font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.3s;
 }
 
 button:hover,
@@ -93,40 +96,50 @@ button:hover,
 #email-submit:hover,
 #email-verify:hover,
 #mainAddress-kakao:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+    background: #d7730f;
 }
 
-/* 인증 타이머 */
-#timer {
-    position: absolute;
-    right: 0;
-    top: 38px;
+/* 회원가입 링크 */
+.signup-link {
+    margin-top: 20px;
     font-size: 14px;
-    color: #8b5c32;
+    color: #5a3b26;
 }
 
-/* 지도 */
-.map {
-    margin-top: 10px;
-    border: 1px solid #d2b48c;
-    border-radius: 10px;
-    overflow: hidden;
+.signup-link a
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-/* 회원가입 버튼 */
-#signup {
-    width: 100%;
-    margin-top: 25px;
+.form-row .form-group {
+    flex: 1 1 0;
+    margin-bottom: 0;
 }
 
-/* 반응형 대응 */
-@media screen and (max-width: 600px) {
-    .signup-container {
-        padding: 30px 20px;
-    }
+.form-row .form-group.short {
+    flex: 0 0 120px;
+    min-width: 100px;
+}
 
-    #timer {
-        top: auto;
-        bottom: -25px;
-    }
+.form-row .form-group.checkbox-group {
+    flex: 0 0 90px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.form-row label {
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #4d3321;
+}
+
+input[type="checkbox"] {
+    vertical-align: middle;
+    margin-right: 6px;
+    accent-color: #F38B20;
 }

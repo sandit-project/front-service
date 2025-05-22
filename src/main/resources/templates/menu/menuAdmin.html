@@ -12,9 +12,9 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
-<h2>메뉴 등록</h2>
 
 <form id="menuForm" th:action="@{/menus}" method="post" enctype="multipart/form-data">
+    <h2>메뉴 등록</h2>
     <label>메뉴 이름:</label>
     <input type="text" name="menuName" required><br>
 

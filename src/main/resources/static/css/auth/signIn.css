@@ -7,19 +7,13 @@
 
 body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
-    /*height: 100vh;*/
+    background: whitesmoke;
 }
 
 /* 로그인 박스 */
 .login-container {
-    background-color: #fff8f0;
     padding: 40px 30px;
     border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(85, 54, 25, 0.2);
     width: 100%;
     max-width: 400px;
     text-align: center;
@@ -30,7 +24,7 @@ body {
 .login-container h2 {
     font-size: 28px;
     margin-bottom: 30px;
-    color: #5a3b26;
+    color: #333;
 }
 
 /* 입력 그룹 */
@@ -49,7 +43,10 @@ body {
 .form-group input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #d2b48c;
+    /*border: 1px solid #4d3321;*/
+    border: none;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     font-size: 14px;
     background-color: #fff;
@@ -58,7 +55,7 @@ body {
 
 .form-group input:focus {
     outline: none;
-    border-color: #a0522d;
+    box-shadow: 0 0 4px #F38B20;
 }
 
 /* 로그인 버튼 */
@@ -66,7 +63,7 @@ body {
     width: 100%;
     padding: 12px;
     margin-top: 10px;
-    background: linear-gradient(45deg, #a0522d, #8b5c32);
+    background: #F38B20;
     color: #fff;
     font-weight: bold;
     border: none;
@@ -76,7 +73,7 @@ body {
 }
 
 #signin:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+    background: #d7730f;
 }
 
 /* 회원가입 링크 */

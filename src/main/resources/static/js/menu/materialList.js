@@ -21,7 +21,7 @@ $(document).ready(function () {
                         <td><img src="${material.img}" alt="재료 이미지" width="50"></td>
                         <td>${material.status}</td>
                         <td>
-                            <a href="/materials/edit/${encodeURIComponent(material.materialName)}">수정</a>
+                            <a href="/materials/edit/${encodeURIComponent(material.materialName)}" class="edit-btn">수정</a>
                             <button class="delete-btn" data-materialname="${material.materialName}">삭제</button>
                         </td>
                     </tr>`;

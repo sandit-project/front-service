@@ -93,9 +93,9 @@ $(document).ready(async ()=>{
                         <td>${itemDetails}</td>
                         <td>${o.addressDestination || '-'}</td>
                         <td>
-                          <button onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">수락</button>
-                            <button onclick="openCancelModal('${o.merchantUid}')">취소</button>
-                          <button onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">조리</button>
+                          <button class="order-btn confirm" onclick="remoteOrder('confirm','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">수락</button>
+                            <button class="order-btn cancel" onclick="openCancelModal('${o.merchantUid}')">취소</button>
+                          <button class="order-btn cook" onclick="remoteOrder('cooking','${o.merchantUid}','${o.status}','${o.addressDestination}','${o.addressDestination}')">조리</button>
                         </td>
                     </tr>
                 `);

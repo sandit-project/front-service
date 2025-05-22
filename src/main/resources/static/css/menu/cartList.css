@@ -1,6 +1,6 @@
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: #fff4eb;
+    background: #f9f9f9;
     color: #3b2a1a;
     margin: 0;
     padding: 0;
@@ -21,7 +21,7 @@ body {
     margin-bottom: 36px;
     font-size: 38px;
     font-weight: 600;
-    color: #F38B20;
+    color: #333;
     letter-spacing: 1px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
 }
@@ -45,11 +45,11 @@ body {
 }
 
 .cart-table th {
-    background-color: #fce6c9;
+    background-color: #555;
     font-weight: bold;
     padding: 16px;
     text-align: center;
-    color: #5a3b26;
+    color: #fff;
 }
 
 /* 좌측 상단 헤더 셀만 둥글게 */
@@ -79,10 +79,12 @@ body {
     width: 60px;
     padding: 8px;
     text-align: center;
-    border: 1px solid #f0c9a5;
+    border: none;
     border-radius: 6px;
-    background-color: #fff5e1;
-    color: #3d2b1f;
+    background-color: whitesmoke;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 /* 요약 영역 */
@@ -118,28 +120,31 @@ body {
 
 /* 개별 버튼 스타일 */
 #deleteSelected {
-    background: #d8720f;
-    color: white;
+    background: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: none;
 }
 #deleteSelected:hover {
-    background: #b85c0b;
+    background: #ddd;
 }
 
 #backToHome {
-    background: #ffffff;
-    color: #F38B20;
-    border: 2px solid #F38B20;
+    background: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: none;
 }
 #backToHome:hover {
-    background: #fff6ed;
+    background: #ddd;
 }
 
 #checkout {
-    background: #5e8a5f;
+    background: #F38B20;
     color: white;
 }
 #checkout:hover {
-    background: #446b45;
+    background: #d7730f;
 }
 
 /* 반응형 */
@@ -168,7 +173,7 @@ input[type="checkbox"] {
     -webkit-appearance: none;
     width: 22px;
     height: 22px;
-    border: 2px solid #F38B20;
+    border: #333;
     border-radius: 6px;
     background-color: #fff;
     cursor: pointer;
@@ -178,8 +183,7 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-    background-color: #F38B20;
-    border-color: #d16a0a;
+    background-color: #333;
 }
 
 input[type="checkbox"]::after {
@@ -214,18 +218,20 @@ input[type="checkbox"]:checked::after {
 
 /* 변경 버튼 (메인 테마색) */
 .update-btn {
-    background-color: #F38B20;
-    color: white;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: whitesmoke;
+    color: #333;
 }
 .update-btn:hover {
-    background-color: #d8720f;
-    box-shadow: 0 2px 8px rgba(243, 139, 32, 0.3);
+    background-color: #ddd;
+    transition: ease background-color 0.3s;
 }
 
 /* 삭제 버튼 (경고) */
 .delete-btn {
     background-color: #d45d5d;
     color: white;
+    border-radius: 999px;
 }
 .delete-btn:hover {
     background-color: #b94747;

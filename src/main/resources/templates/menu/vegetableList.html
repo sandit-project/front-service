@@ -13,6 +13,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<div class="container">
 <h1>야채 목록</h1>
 <table>
     <thead>
@@ -47,6 +48,7 @@
 <br>
 <button onclick="location.href='/vegetables/admin'">새 야채 등록</button>
 <button onclick="location.href='/admin'" style="margin-left: 10px;">메인으로 가기</button>
+</div>
 <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

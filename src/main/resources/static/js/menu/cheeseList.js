@@ -20,7 +20,7 @@ $(document).ready(function () {
                         <td><img src="${cheese.img}" alt="치즈 이미지" width="50"></td>
                         <td>${cheese.status}</td>
                         <td>
-                            <a href="/cheeses/edit/${encodeURIComponent(cheese.cheeseName)}">수정</a>
+                            <a href="/cheeses/edit/${encodeURIComponent(cheese.cheeseName)}" class="edit-btn">수정</a>
                             <button class="delete-btn" data-cheesename="${cheese.cheeseName}">삭제</button>
                         </td>
                     </tr>`;
