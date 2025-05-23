@@ -2,145 +2,118 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
-    // 메뉴 수정 정보를 불러옵니다.
-    const menuName = window.location.pathname.split('/').pop();
+    const menuName = decodeURIComponent(window.location.pathname.split('/').pop());
+
     $.ajax({
-        url: "/menus/"+ menuName,
+        url: `/menus/${menuName}`,
         method: "GET",
         success: function (menu) {
-            // 불러온 메뉴 정보로 폼 초기화
             $('input[name="menuName"]').val(menu.menuName);
             $('input[name="price"]').val(menu.price);
             $('input[name="calorie"]').val(menu.calorie);
             $('select[name="status"]').val(menu.status.toLowerCase());
+            $('#imgUrl').val(menu.img);
 
-            // 기존 이미지 URL 설정
-            $("#imgUrl").val(menu.img);
+            const setVal = (name, value) => $(`select[name="${name}"]`).val(value || '');
 
-            // 기존 재료 데이터에 맞게 select 박스 선택 값 설정
-            setSelectedValue('bread', menu.bread);
-            setSelectedValue('material1', menu.material1);
-            setSelectedValue('material2', menu.material2);
-            setSelectedValue('material3', menu.material3);
-            setSelectedValue('cheese', menu.cheese);
-            setSelectedValue('sauce1', menu.sauce1);
-            setSelectedValue('sauce2', menu.sauce2);
-            setSelectedValue('sauce3', menu.sauce3);
+            setVal('breadId', menu.bread);
+            setVal('cheeseId', menu.cheese);
+            ['material1Id', 'material2Id', 'material3Id'].forEach((name, i) => setVal(name, menu[`material${i + 1}`]));
+            for (let i = 1; i <= 8; i++) setVal(`vegetable${i}Id`, menu[`vegetable${i}`]);
+            ['sauce1Id', 'sauce2Id', 'sauce3Id'].forEach((name, i) => setVal(name, menu[`sauce${i + 1}`]));
 
-            // 채소 데이터 설정
-            for (let i = 1; i <= 8; i++) {
-                setSelectedValue(`vegetable${i}`, menu[`vegetable${i}`]);
-            }
+            const promises = [
+                loadIngredientOptions('bread', 'breadId', [menu.bread]),
+                loadIngredientOptions('cheese', 'cheeseId', [menu.cheese]),
+                loadIngredientOptions('material', 'material', [menu.material1, menu.material2, menu.material3]),
+                loadIngredientOptions('vegetable', 'vegetable', [
+                    menu.vegetable1, menu.vegetable2, menu.vegetable3, menu.vegetable4,
+                    menu.vegetable5, menu.vegetable6, menu.vegetable7, menu.vegetable8
+                ]),
+                loadIngredientOptions('sauce', 'sauce', [menu.sauce1, menu.sauce2, menu.sauce3])
+            ];
+
+            $.when.apply($, promises).done(() => console.log("재료 옵션 로딩 완료"));
         },
-        error: function (xhr) {
-            console.error("메뉴 정보 로딩 실패:", xhr.status, xhr.responseText);
+        error: (xhr) => {
+            alert("메뉴 정보 로딩 실패: " + xhr.responseText);
         }
     });
 
-    // 메뉴 수정 버튼 클릭 시 처리
-    $("#updateBtn").on('click', function () {
+    $('#updateBtn').on('click', function () {
         const formData = new FormData();
-        const fileInput = $('#img')[0].files[0];
+        const file = $('#img')[0].files[0];
+        if (file) formData.append('file', file);
 
-        if (fileInput) {
-            formData.append("file", fileInput); // 새 이미지가 있을 때만
-        }
-
-        // 셀렉터에서 값 추출 (null 허용)
-        const getValue = (name, allowEmpty = false) => {
-            const val = $(`[name="${name}"]`).val();
-            return allowEmpty ? val : val || null;
-        };
+        const getVal = (name) => $(`[name="${name}"]`).val() || null;
+        const toInt = v => isNaN(parseInt(v)) ? null : parseInt(v);
+        const toFloat = v => isNaN(parseFloat(v)) ? null : parseFloat(v);
 
         const menuData = {
-            menuName: getValue('menuName'),
-            price: parseInt(getValue('price'), 10),
-            calorie: parseFloat(getValue('calorie')),
-
-            bread: getValue('breadId'),
-            material1: getValue('material1Id'),
-            material2: getValue('material2Id'),
-            material3: getValue('material3Id'),
-            cheese: getValue('cheeseId'),
-
-            vegetable1: getValue('vegetable1Id'),
-            vegetable2: getValue('vegetable2Id'),
-            vegetable3: getValue('vegetable3Id'),
-            vegetable4: getValue('vegetable4Id'),
-            vegetable5: getValue('vegetable5Id'),
-            vegetable6: getValue('vegetable6Id'),
-            vegetable7: getValue('vegetable7Id'),
-            vegetable8: getValue('vegetable8Id'),
-
-            sauce1: getValue('sauce1Id'),
-            sauce2: getValue('sauce2Id'),
-            sauce3: getValue('sauce3Id'),
-
-            status: getValue('status') === "active" ? "ACTIVE" : "DELETED",
-            img: $("#imgUrl").val() || null
+            menuName: getVal('menuName'),
+            price: toInt(getVal('price')),
+            calorie: toFloat(getVal('calorie')),
+            bread: getVal('breadId'),
+            cheese: getVal('cheeseId'),
+            material1: getVal('material1Id'),
+            material2: getVal('material2Id'),
+            material3: getVal('material3Id'),
+            vegetable1: getVal('vegetable1Id'),
+            vegetable2: getVal('vegetable2Id'),
+            vegetable3: getVal('vegetable3Id'),
+            vegetable4: getVal('vegetable4Id'),
+            vegetable5: getVal('vegetable5Id'),
+            vegetable6: getVal('vegetable6Id'),
+            vegetable7: getVal('vegetable7Id'),
+            vegetable8: getVal('vegetable8Id'),
+            sauce1: getVal('sauce1Id'),
+            sauce2: getVal('sauce2Id'),
+            sauce3: getVal('sauce3Id'),
+            status: getVal('status') === 'active' ? 'ACTIVE' : 'DELETED',
+            img: $('#imgUrl').val() || null
         };
 
-        const jsonBlob = new Blob([JSON.stringify(menuData)], { type: "application/json" });
-        formData.append("menu", jsonBlob);
+        formData.append('menu', new Blob([JSON.stringify(menuData)], { type: 'application/json' }));
 
         $.ajax({
-            url: "/menus/" + encodeURIComponent(menuData.menuName),
-            type: "PUT",
+            url: `/menus/${encodeURIComponent(menuData.menuName)}`,
+            method: 'PUT',
             data: formData,
             processData: false,
             contentType: false,
-            success: function () {
-                alert("메뉴 정보가 성공적으로 수정되었습니다.");
+            success: () => {
+                alert("수정 완료");
                 window.location.href = "/menus/list";
             },
-            error: function (xhr) {
-                console.error("수정 실패:", xhr.status, xhr.responseText);
-                alert("수정 중 오류가 발생했습니다. \n" + xhr.responseText);
+            error: (xhr) => {
+                alert("수정 실패: " + xhr.responseText);
             }
         });
     });
 
-    // 메뉴 수정 시 선택 가능한 재료와 옵션을 Ajax로 불러옵니다.
-    loadIngredientOptions('bread', 'bread');
-    loadIngredientOptions('cheese', 'cheese');
-    loadIngredientOptions('material', 'material');
-    loadIngredientOptions('vegetable', 'vegetable');
-    loadIngredientOptions('sauce', 'sauce');
-
-
-    // Select 박스 옵션 채우기
-    function loadIngredientOptions(type, selectorPrefix = type) {
-        const ingredientEndpoints = {
-            bread: { url: "/menus/ingredients/breads", nameField: "breadName" },
-            cheese: { url: "/menus/ingredients/cheeses", nameField: "cheeseName" },
-            material: { url: "/menus/ingredients/materials", nameField: "materialName" },
-            vegetable: { url: "/menus/ingredients/vegetables", nameField: "vegetableName" },
-            sauce: { url: "/menus/ingredients/sauces", nameField: "sauceName" }
+    function loadIngredientOptions(type, selectorPrefix, selected = []) {
+        const endpoints = {
+            bread: ["/menus/ingredients/breads", "breadName"],
+            cheese: ["/menus/ingredients/cheeses", "cheeseName"],
+            material: ["/menus/ingredients/materials", "materialName"],
+            vegetable: ["/menus/ingredients/vegetables", "vegetableName"],
+            sauce: ["/menus/ingredients/sauces", "sauceName"]
         };
 
-        const { url, nameField } = ingredientEndpoints[type];
+        const [url, nameField] = endpoints[type];
 
-        $.get(url, function (data) {
-            $(`select[name^="${selectorPrefix}"]`).each(function () {
-                const select = $(this);
-                select.empty();
-                select.append(`<option value="">선택 안 함</option>`);
-
-                data.forEach(item => {
-                    const name = item[nameField];
-                    const option = `<option value="${item.uid}" data-price="${item.price}" data-calorie="${item.calorie}">${name}</option>`;
-                    select.append(option);
+        return $.get(url).done(function (items) {
+            const selects = $(`select[name^="${selectorPrefix}"]`);
+            selects.each((i, el) => {
+                const $sel = $(el).empty().append(`<option value="">-- 선택 --</option>`);
+                items.forEach(item => {
+                    const option = $('<option>')
+                        .val(item.uid)
+                        .text(item[nameField])
+                        .prop('selected', selected[i] == item.uid);
+                    $sel.append(option);
                 });
             });
-        }).fail(function (xhr) {
-            console.error(`${type} 로딩 실패:`, xhr.status, xhr.responseText);
         });
-    }
-
-    // 선택된 값을 셀렉트 박스에 설정
-    function setSelectedValue(selectorPrefix, selectedValue) {
-        if (selectedValue) {
-            $(`select[name="${selectorPrefix}Id"]`).val(selectedValue);
-        }
     }
 });

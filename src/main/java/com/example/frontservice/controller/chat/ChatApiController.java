@@ -77,7 +77,7 @@ public class ChatApiController {
     // 채팅방 읽음 여부 확인 API
     @GetMapping("/rooms/{roomId}/read")
     public ResponseEntity<Boolean> isRoomReadByUser(@PathVariable String roomId,
-                                                    @RequestParam(required = false) String userId,
+                                                    @RequestParam  String userId,
                                                     HttpServletRequest servletRequest) {
         String token = extractToken(servletRequest);
         return ResponseEntity.ok(chatService.isRoomReadByUser("Bearer " + token, roomId, userId));
