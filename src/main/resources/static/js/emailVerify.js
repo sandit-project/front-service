@@ -49,7 +49,14 @@ $(document).ready(() => {
     $('#email-submit').on('click', async () => {
         if (emailSent) return;
         const rawEmail = $('#email').val().trim();
-        if (!rawEmail) return alert('이메일을 입력해주세요!');
+        if (!rawEmail) {
+            return Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '이메일을 입력해주세요.',
+                confirmButtonColor: '#f97316'
+            });
+        }
         const email = encodeURIComponent(rawEmail);
 
         try {
@@ -58,15 +65,31 @@ $(document).ready(() => {
                 url: `/auths/email/${email}/authcode`,
                 dataType: 'text'
             });
-            alert('인증 코드가 발송되었습니다!');
+            //alert('인증 코드가 발송되었습니다!');
+            Swal.fire({
+                icon: 'success',
+                title: '코드 발송 완료',
+                text: '인증 코드가 발송되었습니다!',
+                confirmButtonColor: '#f97316'
+            });
             $('#email-code-group').show();
             emailSent = true;
             startTimer();
         } catch (err) {
             if (err.status === 400) {
-                alert('이미 사용 중인 이메일입니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '이메일 중복',
+                    text: '이미 사용중인 이메일입니다.',
+                    confirmButtonColor: '#f97316'
+                });
             } else {
-                alert('인증 코드 발송에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '인증 코드 발송 실패',
+                    text: '인증 코드 발송이 실패했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         }
     });
@@ -75,11 +98,23 @@ $(document).ready(() => {
     $('#email-verify').on('click', async () => {
         if (emailVerified) return;
         const rawEmail = $('#email').val().trim();
-        if (!rawEmail) return alert('이메일을 입력해주세요!');
+        if (!rawEmail) {
+            return Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '이메일을 입력해주세요.',
+                confirmButtonColor: '#f97316'
+            });
+        }
         const email = encodeURIComponent(rawEmail);
 
         const code = $('#email_code').val().trim();
-        if (!code) return alert('코드를 입력해주세요!');
+        if (!code) {return Swal.fire({
+            icon: 'warning',
+            title: '인증 코드 입력 필요',
+            text: '인증 코드를 입력해주세요.',
+            confirmButtonColor: '#f97316'
+        })};
 
         try {
             const token = await $.ajax({
@@ -94,20 +129,40 @@ $(document).ready(() => {
             // 토큰 문자열이 비어있지 않으면 성공
             if (token && token.length > 0) {
                 clearInterval(timerInterval);
-                alert('이메일 인증 완료!');
+                Swal.fire({
+                    icon: 'success',
+                    title: '인증 완료',
+                    text: '이메일 인증이 완료되었습니다.',
+                    confirmButtonColor: '#f97316'
+                });
                 emailVerified = true;
 
                 $('#email, #email-submit, #email_code, #email-verify').prop('disabled', true);
                 //updateEmailButtonState();
             } else {
-                alert('인증 코드가 올바르지 않습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '인증 실패',
+                    text: '인증 코드가 올바르지 않습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         } catch (err) {
             if (err.status === 404) {
-                alert('인증 코드가 올바르지 않습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '인증 실패',
+                    text: '인증 코드가 올바르지 않습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             } else {
                 console.error('검증 오류:', err.status, err.responseText);
-                alert('검증 중 오류가 발생했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '검증 중 오류 발생',
+                    text: '검증 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         }
     });

@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/auth/signIn.js}"></script>
     <link th:href="@{/css/common.css}" rel="stylesheet">
     <link th:href="@{/css/auth/signIn.css}" rel="stylesheet">
@@ -36,10 +38,15 @@
         아직 회원이 아니신가요? <a th:href="@{/member/join}">회원가입</a>
     </div>
 
-    <div class="oauth-btn">
-        <a th:href="@{/oauth/naver}" class="btn">네이버 로그인</a>
-        <a th:href="@{/oauth/kakao}" class="btn">카카오 로그인</a>
-        <a th:href="@{/oauth/google}" class="btn">구글 로그인</a>
+<!--    <div class="oauth-btn">-->
+<!--        <a th:href="@{/oauth/naver}" class="btn">네이버 로그인</a>-->
+<!--        <a th:href="@{/oauth/kakao}" class="btn">카카오 로그인</a>-->
+<!--        <a th:href="@{/oauth/google}" class="btn">구글 로그인</a>-->
+<!--    </div>-->
+    <div class="oauth-icon-group">
+        <a th:href="@{/oauth/naver}" class="oauth-icon naver" title="네이버 로그인"></a>
+        <a th:href="@{/oauth/kakao}" class="oauth-icon kakao" title="카카오 로그인"></a>
+        <a th:href="@{/oauth/google}" class="oauth-icon google" title="구글 로그인"></a>
     </div>
 </div>
 <div th:replace="~{footer :: footer}"></div>

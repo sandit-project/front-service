@@ -32,10 +32,9 @@ $(document).ready(async function () {
             // 필수값 유효성
             const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
             if (!required.every(name => getSelectedValue(name))) {
-                $('#warningMessage').fadeIn();
+                showWarning();
                 return;
             }
-            $('#warningMessage').fadeOut();
 
             // 장바구니 폼 필드 리스트
             const fields = [
@@ -134,27 +133,37 @@ $(document).ready(async function () {
     $(document).on('click', '.option-button', function () {
         const $btn = $(this);
         const groupName = $btn.data('name');
-        const $grid = $btn.closest('.option-grid');
 
-        // 한번 더 누르면 선택 해제할 수 있는 그룹들
-        const toggleableGroups = [
-            'material2', 'material3',
-            'vegetable2', 'vegetable3', 'vegetable4', 'vegetable5', 'vegetable6', 'vegetable7', 'vegetable8',
-            'sauce2', 'sauce3'
+        // 단일 선택 그룹
+        const singleSelectGroups = [
+            'bread', 'cheese',
+            'material1', 'material2', 'material3',
+            'vegetable1', 'vegetable2', 'vegetable3', 'vegetable4', 'vegetable5', 'vegetable6', 'vegetable7', 'vegetable8',
+            'sauce1', 'sauce2', 'sauce3'
         ];
 
-        if (toggleableGroups.includes(groupName)) {
-            // toggle 가능: 이미 선택됐으면 해제, 아니면 선택
-            $btn.toggleClass('selected');
+        if (singleSelectGroups.includes(groupName)) {
+            // 같은 그룹의 기존 선택 해제 후 현재 항목 선택
+            const $groupButtons = $(`.option-button[data-name="${groupName}"]`);
+            if ($btn.hasClass('selected')) {
+                $btn.removeClass('selected');
+            } else {
+                $groupButtons.removeClass('selected');
+                $btn.addClass('selected');
+            }
         } else {
-            // 단일 선택 그룹: 기존 선택 해제 후 새로 선택
-            $(`.option-button[data-name="${groupName}"]`).removeClass('selected');
-            $btn.addClass('selected');
+            // 기타 그룹은 기본 toggle (예외가 있다면 조건 추가)
+            $btn.toggleClass('selected');
         }
 
         calculatePriceAndCalories();
     });
 
+    $(document).on('click', '.toggle-btn', function () {
+        const targetId = $(this).data('target');
+        const $target = $('#' + targetId);
+        $target.slideToggle(300); // 부드러운 전환
+    });
 
     const loadIngredients = () => {
         const endpoints = {
@@ -238,8 +247,15 @@ $(document).ready(async function () {
                 const localList = JSON.parse(localStorage.getItem('customSandwiches')) || [];
                 localList.push(customCartDTO);
                 localStorage.setItem('customSandwiches', JSON.stringify(localList));
-                alert('저장 완료! 장바구니로 이동합니다.');
-                location.href = '/cart';
+                Swal.fire({
+                    icon: 'success',
+                    title: '장바구니에 담겼습니다!',
+                    text: '커스텀 샌드위치가 저장되었어요. 장바구니로 이동합니다.',
+                    confirmButtonColor: '#f97316',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    location.href = '/cart';
+                });
             },
             error: xhr => {
                 if (xhr.status === 400 && xhr.responseJSON) {
@@ -258,4 +274,13 @@ $(document).ready(async function () {
 
 });
 
-
+//경고 메시지
+function showWarning() {
+    Swal.fire({
+        icon: 'warning',
+        title: '선택 오류',
+        text: '빵과 재료를 선택해주세요.',
+        confirmButtonColor: '#f97316',
+        confirmButtonText: '확인'
+    });
+}

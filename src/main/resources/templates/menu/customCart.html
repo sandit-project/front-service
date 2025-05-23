@@ -6,6 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/menu/customCart.js}"></script>
     <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/allergyCheck.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link th:href="@{/css/common.css}" rel="stylesheet">
@@ -14,9 +15,9 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
-<h2>커스텀 샌드위치</h2>
 
 <form id="menuForm" action="#" method="post" enctype="multipart/form-data">
+<h2>커스텀 샌드위치 주문</h2>
     <div class="section">
         <h3 class="section-title">빵 선택</h3>
         <div class="option-grid" data-name="bread"></div>
@@ -28,10 +29,13 @@
     </div>
 
     <div class="section">
-        <h3 class="section-title">재료 추가</h3>
+        <h3 class="section-title">재료 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="material2"></div>
-        <h3 class="section-title">재료 추가</h3>
+        <button type="button" class="toggle-btn" data-target="extra-materials">재료 추가 선택</button>
+        <div class="toggle-section" id="extra-materials" style="display: none">
+        <h3 class="section-title">재료 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="material3"></div>
+        </div>
     </div>
 
     <div class="section">
@@ -42,29 +46,35 @@
     <div class="section">
         <h3 class="section-title">채소 선택</h3>
         <div class="option-grid" data-name="vegetable1"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable2"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <button type="button" class="toggle-btn" data-target="extra-vegetables">채소 추가 선택</button>
+        <div class="toggle-section" id="extra-vegetables" style="display: none">
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable3"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable4"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable5"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable6"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable7"></div>
-        <h3 class="section-title">채소 추가</h3>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="vegetable8"></div>
+        </div>
     </div>
 
     <div class="section">
         <h3 class="section-title">소스 선택</h3>
         <div class="option-grid" data-name="sauce1"></div>
-        <h3 class="section-title">소스 추가</h3>
+        <h3 class="section-title">소스 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="sauce2"></div>
-        <h3 class="section-title">소스 추가</h3>
+        <button type="button" class="toggle-btn" data-target="extra-sauces">소스 추가 선택</button>
+        <div class="toggle-section" id="extra-sauces" style="display: none">
+        <h3 class="section-title">소스 <span class="highlight-orange">추가</span></h3>
         <div class="option-grid" data-name="sauce3"></div>
+        </div>
     </div>
 
     <input type="hidden" name="price" required readonly>
@@ -79,16 +89,12 @@
         </div>
         <div id="allergyWarning" style="display:none;"></div>
         <div>
-            <button type="submit" class="btn btn-primary" id="submitBtn">장바구니 담기</button>
-            <button type="button" class="btn btn-secondary cancel-btn" onclick="location.href='/cart'">장바구니</button>
             <button type="button" class="btn btn-danger main-btn" onclick="location.href='/'">홈으로</button>
+            <button type="button" class="btn btn-secondary cancel-btn" onclick="location.href='/cart'">장바구니</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">장바구니 담기</button>
         </div>
     </div>
 </form>
-
-<!-- 경고 메시지 추가 -->
-<div id="warningMessage" style="display:none; color: red;">빵과 재료를 선택해주세요.</div>
-
 
 <div th:replace="~{footer :: footer}"></div>
 </body>
