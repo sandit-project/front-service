@@ -16,7 +16,7 @@ function connectWebSocket() {
         console.log('[WebSocket] 이미 연결된 상태');
         return;
     }
-
+    const WEBSOCKET_URL = /*[[${websocketUrl}]]*/ "http://localhost:9006/delivery-location";
     const socket = new SockJS(WEBSOCKET_URL);
     stompClient = Stomp.over(socket);
 
