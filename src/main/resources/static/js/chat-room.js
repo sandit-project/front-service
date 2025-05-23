@@ -119,7 +119,7 @@
             stompClient.disconnect(() => console.log("기존 WebSocket 연결 종료"));
         }
 
-        const socket = new SockJS("http://localhost:9006/chat");
+        const socket = new SockJS(WEBSOCKET);
         stompClient = Stomp.over(socket);
 
         stompClient.connect({ Authorization: `Bearer ${token}` }, () => {

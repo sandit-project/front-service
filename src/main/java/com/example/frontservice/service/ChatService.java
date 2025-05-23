@@ -5,6 +5,8 @@ import com.example.frontservice.dto.chat.ChatMessageResponseDTO;
 import com.example.frontservice.dto.chat.ChatRoomRequestDTO;
 import com.example.frontservice.dto.chat.ChatRoomResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,4 +33,12 @@ public class ChatService {
     public void deleteRoom(String token, String roomId) {
         chatClient.deleteRoom(token, roomId);
     }
+
+    public void markRoomAsRead(String token, String roomId, String userId){chatClient.markRoomAsRead(token, roomId, userId);};
+
+
+    public Boolean isRoomReadByUser(String token, String roomId, String userId) {
+        return chatClient.isRoomReadByUser(token, roomId, userId);
+    }
+
 }
