@@ -11,9 +11,10 @@
     <title>메뉴 목록</title>
 </head>
 <body>
-<h1>메뉴 목록</h1>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<div class="container">
+<h1>메뉴 목록</h1>
 <table>
     <thead>
     <tr>
@@ -41,6 +42,7 @@
 <div>
     <button onclick="location.href='/menus/admin'">새 메뉴 등록</button>
     <button onclick="location.href='/admin'" style="margin-left: 10px;">메인으로 가기</button>
+</div>
 </div>
 <div th:replace="~{footer :: footer}"></div>
 </body>

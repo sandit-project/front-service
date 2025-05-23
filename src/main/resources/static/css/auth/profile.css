@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: #fff4eb;
+    background: whitesmoke;
     color: #3b2a1a;
 }
 
@@ -21,7 +21,7 @@ main {
 #welcome-message {
     font-size: 28px;
     font-weight: 800;
-    color: #F38B20;
+    color: #333;
     margin-bottom: 24px;
     text-align: center;
 }
@@ -81,7 +81,7 @@ main {
 .order-info {
     margin-top: 24px;
     padding: 20px;
-    background-color: #fffaf2;
+    border: 1px solid whitesmoke;
     border-radius: 14px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     transition: all 0.3s ease;
@@ -90,7 +90,6 @@ main {
 
 .order-info:hover {
     transform: translateY(-3px);
-    background-color: #fff7e6;
 }
 
 /* 👇 주문 텍스트 */
@@ -134,7 +133,7 @@ button {
     border: 2px solid #F38B20;
 }
 .delete-btn:hover {
-    background-color: #fff3e0;
+    background-color: whitesmoke;
 }
 
 /* 📱 반응형 */

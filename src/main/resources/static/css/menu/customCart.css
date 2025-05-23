@@ -1,7 +1,7 @@
 /* 🍞 기본 배경 및 레이아웃 */
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: #fff4eb;
+    background: whitesmoke;
     color: #3b2a1a;
     margin: 0;
     padding: 0;
@@ -9,7 +9,7 @@ body {
 
 h2 {
     text-align: center;
-    color: #F38B20;
+    color: #333;
     font-weight: 800;
     margin-top: 40px;
 }
@@ -36,11 +36,12 @@ h2 {
 #menuForm select {
     padding: 10px;
     margin-right: 8px;
-    border: 1px solid #f0c9a5;
-    border-radius: 8px;
-    background-color: #fffaf2;
+    border: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    background-color: whitesmoke;
     font-size: 14px;
-    color: #3b2a1a;
+    color: #333;
     min-width: 180px;
 }
 
@@ -57,10 +58,11 @@ h2 {
 #menuForm input[type="number"] {
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #f0c9a5;
-    background-color: #fffaf2;
+    border: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: whitesmoke;
     font-size: 14px;
-    color: #3b2a1a;
+    color: #333;
     width: 200px;
     margin-bottom: 10px;
 }
@@ -103,8 +105,9 @@ button {
 }
 
 .btn-primary {
-    background-color: #F38B20;
-    color: white;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    color: #333;
 }
 
 .btn-primary:hover {
@@ -186,11 +189,12 @@ button {
 
 .option-button {
     padding: 10px 16px;
-    background-color: #fffaf2;
-    border: 2px solid #f0c9a5;
-    border-radius: 12px;
+    background-color: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 999px;
     font-size: 14px;
-    color: #3b2a1a;
+    color: #333;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     min-width: 100px;
@@ -198,13 +202,13 @@ button {
 }
 
 .option-button:hover {
-    background-color: #fdf0db;
-    border-color: #f0b980;
+    background-color: #ddd;
 }
 
 .option-button.selected {
     background-color: #F38B20;
     color: white;
     border-color: #d8720f;
+    font-weight: 700;
 }
 

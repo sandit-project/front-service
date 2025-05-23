@@ -1,84 +1,99 @@
-/* 기본 스타일 */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+/* 공통 초기화 */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-/* 컨테이너 스타일 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* 컨테이너 */
 .container {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
     width: 100%;
-    max-width: 400px;
-    transition: box-shadow 0.3s ease;
+    margin: 40px auto; /* ✅ 중앙 정렬 */
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
-.container:hover {
-    box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
-}
 
 /* 제목 */
 h1 {
     text-align: center;
-    color: #4d3321; /* 제목 색상 */
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 32px;
+    color: #333;
 }
 
-/* 폼 그룹 */
+/* 입력 필드 그룹 */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
-/* 레이블 스타일 */
 label {
-    font-weight: bold;
     display: block;
     margin-bottom: 8px;
-    color: #5a3b26; /* 레이블 색상 */
-    font-size: 16px;
+    font-weight: 600;
+    color: #4d2c14;
+    font-size: 15px;
 }
 
-/* 입력 필드 스타일 */
+/* 입력 필드 */
 input[type="text"],
 input[type="number"],
 select {
     width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #c19a6b; /* 경계선 색상 */
+    padding: 10px 14px;
+    border: none;
     border-radius: 8px;
-    font-size: 16px;
-    background: #f9f3eb; /* 배경 색상 */
-    transition: border-color 0.3s ease, background 0.3s ease;
-    box-sizing: border-box;
+    background-color: #f3f3f3;
+    font-size: 14px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.2s ease;
 }
 
-/* 입력 필드 포커스 시 스타일 */
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus {
-    border-color: #a0522d; /* 포커스 시 경계선 색상 */
-    background: #f0e0c6; /* 포커스 시 배경 색상 */
+    background-color: #eaeaea;
+    outline: none;
 }
 
-/* 파일 입력 필드 */
+/* 파일 업로드 */
 input[type="file"] {
+    width: 100%;
+    padding: 10px 14px;
     border: none;
-    background: none;
-    padding: 0;
+    border-radius: 8px;
+    background-color: #f3f3f3;
+    font-size: 14px;
 }
 
-/* 이미지 스타일 */
+input[type="file"]::file-selector-button {
+    background-color: #F38B20;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #d7730f;
+}
+
+/* 미리보기 이미지 */
 img {
     display: block;
     margin-top: 12px;
@@ -88,43 +103,84 @@ img {
     object-fit: cover;
 }
 
-/* 폼 액션 버튼들 */
-.form-actions {
-    text-align: center;
-    margin-top: 30px;
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
 }
 
-/* 버튼 기본 스타일 */
-button {
-    background: linear-gradient(45deg, #a0522d, #8b5c32); /* 기본 버튼 색상 */
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 16px;
+/* 버튼 공통 스타일 */
+.btn {
+    padding: 10px 20px;
+    border-radius: 999px;
     font-weight: 600;
-    border-radius: 8px;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.3s ease, box-shadow 0.2s ease;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+/* 버튼 타입 */
+.btn-primary {
+    background-color: #F38B20;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #d7730f;
+}
+
+.btn-secondary {
+    background-color: #eee;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .container {
+        padding: 24px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* 수정 및 목록 버튼 공통 스타일 */
+#updateBtn,
+#goList {
+    background-color: whitesmoke;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     margin: 8px;
-    min-width: 120px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 버튼 호버 효과 */
-button:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28); /* 호버 시 색상 */
-    transform: translateY(-4px);
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* 두 번째 버튼 스타일 (회색 버튼) */
-button:nth-child(2) {
-    background: linear-gradient(45deg, #b02a37, #8b3232); /* 취소 버튼 색상 */
-}
-
-button:nth-child(2):hover {
-    background: linear-gradient(45deg, #7a2121, #5b1a1a); /* 취소 버튼 호버 색상 */
-    transform: translateY(-4px);
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+#updateBtn:hover,
+#goList:hover {
+    background-color: #F38B20;
+    color: #fff;
+    transform: scale(1.05);
 }

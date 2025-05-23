@@ -15,18 +15,10 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
-<!--<header>-->
-<!--    <div class="header-container">-->
-<!--        <h1 id="welcome-message"></h1>-->
-<!--        <p>프로필 수정 중...</p>-->
-<!--    </div>-->
-<!--    <div class="group-btn">-->
-<!--        <button class="update-btn" id="updateProfileBtn">수정하기</button>-->
-<!--    </div>-->
-<!--</header>-->
 <main>
     <div class="header-container">
-        <h1 id="welcome-message"></h1>
+<!--        <h1 id="welcome-message"></h1>-->
+        <h1>프로필 수정</h1>
         <p id="update-status">프로필 수정 중...</p>
     </div>
 
@@ -41,79 +33,77 @@
                 <label for="user_name">이름</label>
                 <input type="text" id="user_name" placeholder="이름을 입력하세요" required>
             </div>
-            <div class="user-profile">
+
+            <div class="user-profile inline-group">
                 <label for="email">이메일</label>
                 <input type="text" id="email" placeholder="이메일을 입력하세요" required>
                 <button type="button" id="email-submit">인증하기</button>
+                <label for="emailyn">수신여부</label>
+                <input type="checkbox" id="emailyn">
             </div>
+
             <div class="user-profile" id="email-code-group" style="display:none;">
                 <label for="email_code">인증 코드</label>
                 <input type="text" id="email_code" placeholder="코드를 입력하세요">
                 <button type="button" id="email-verify">확인</button>
                 <span id="timer">03:00</span>
             </div>
-            <div class="user-profile">
-                <label for="emailyn">이메일 수신여부 </label>
-                <input type="checkbox" id="emailyn">
-            </div>
-            <div class="user-profile">
+
+            <div class="user-profile inline-group">
                 <label for="phone">전화번호</label>
                 <input type="text" id="phone" placeholder="전화번호를 입력하세요" required>
-            </div>
-            <div class="user-profile">
-                <label for="phoneyn">연락처 수신여부 </label>
+                <label for="phoneyn">수신여부</label>
                 <input type="checkbox" id="phoneyn">
             </div>
-            <div class="user-profile">
-                <div>
+
+            <div class="user-profile address-block">
+                <div class="address-header">
                     <label for="main_address_base">현재 선택된 주소</label>
                     <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
-                    <!-- zonecode 저장용 hidden field -->
-                    <input type="hidden" id="main_postcode">
                     <button type="button" id="mainAddress-kakao">주소 찾기</button>
-                    <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-                    <input type="hidden" id="main_latitude" name="latitude">
-                    <input type="hidden" id="main_longitude" name="longitude">
                 </div>
-                <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="user-profile">
+                <div class="map" style="display:none;"></div>
+                <p class="address-detail">아파트의 경우 동, 호수까지 입력해주세요</p>
+                <div class="address-detail">
                     <label for="main_address_detail">상세주소</label>
                     <input type="text" id="main_address_detail" placeholder="상세주소를 입력하세요">
                 </div>
             </div>
-            <div class="user-profile">
-                <div>
+
+            <div class="user-profile address-block">
+                <div class="address-header">
                     <label for="main_address_base">추가 주소 1</label>
                     <input type="text" id="sub1_address_base" placeholder="주소를 입력하세요" required>
-                    <!-- zonecode 저장용 hidden field -->
-                    <input type="hidden" id="sub1_postcode">
                     <button type="button" id="subAddress1-kakao">주소 찾기</button>
-                    <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-                    <input type="hidden" id="sub1_latitude" name="latitude">
-                    <input type="hidden" id="sub1_longitude" name="longitude">
                 </div>
-                <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="user-profile">
+                <div class="map" style="display:none;"></div>
+                <p class="address-detail">아파트의 경우 동, 호수까지 입력해주세요</p>
+                <div class="address-detail">
                     <label for="sub1_address_detail">상세주소</label>
                     <input type="text" id="sub1_address_detail" placeholder="상세주소를 입력하세요">
                 </div>
+                <!-- 히든 필드들 -->
+                <input type="hidden" id="sub1_postcode">
+                <input type="hidden" id="sub1_latitude" name="latitude">
+                <input type="hidden" id="sub1_longitude" name="longitude">
             </div>
-            <div class="user-profile">
-                <div>
+
+            <div class="user-profile address-block">
+                <div class="address-header">
                     <label for="main_address_base">추가 주소 2</label>
                     <input type="text" id="sub2_address_base" placeholder="주소를 입력하세요" required>
-                    <!-- zonecode 저장용 hidden field -->
-                    <input type="hidden" id="sub2_postcode">
                     <button type="button" id="subAddress2-kakao">주소 찾기</button>
-                    <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
-                    <input type="hidden" id="sub2_latitude" name="latitude">
-                    <input type="hidden" id="sub2_longitude" name="longitude">
                 </div>
-                <p>아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="user-profile">
+                <div class="map" style="display:none;"></div>
+                <p class="address-detail">아파트의 경우 동, 호수까지 입력해주세요</p>
+                <div class="address-detail">
                     <label for="sub2_address_detail">상세주소</label>
                     <input type="text" id="sub2_address_detail" placeholder="상세주소를 입력하세요">
                 </div>
+                <!-- 히든 필드들 -->
+                <input type="hidden" id="sub2_postcode">
+                <input type="hidden" id="sub2_latitude" name="latitude">
+                <input type="hidden" id="sub2_longitude" name="longitude">
             </div>
 
         </div>
