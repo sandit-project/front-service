@@ -30,7 +30,7 @@ jobs:
 
       - name: Tag Docker image
         run: |
-          docker tag edge-service:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/front-service:latest
+          docker tag front-service:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/front-service:latest
 
       - name: Push Docker image to Amazon ECR
         run: |
