@@ -20,8 +20,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'   # 원하는 버전 지정 가능 (예: 'v1.27.3')
+
+      - name: Configure kubeconfig for EKS cluster
+        run: |
+          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name sandit-cluster
+
+      - name: Create Kubernetes Secrets from GitHub Secrets
+        run: |
+          kubectl create secret generic front-service-secrets \
+            --from-literal=KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }} \
+            --from-literal=GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            --from-literal=GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            --from-literal=KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
+            --from-literal=KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
+            --from-literal=NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
+            --from-literal=NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
+            --from-literal=MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
+            --from-literal=MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
+            --from-literal=MAIL_FROM=${{ secrets.MAIL_FROM }} \
+            --from-literal=OAUTH_STATE=${{ secrets.OAUTH_STATE }} \
+            --from-literal=PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }} \
+            --from-literal=PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Log in to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker image
