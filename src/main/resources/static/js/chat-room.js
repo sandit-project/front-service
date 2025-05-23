@@ -118,8 +118,8 @@
         if (stompClient && stompClient.connected) {
             stompClient.disconnect(() => console.log("기존 WebSocket 연결 종료"));
         }
-
-        const socket = new SockJS(WEBSOCKET);
+        const WEBSOCKET_URL = /*[[${websocketUrl}]]*/ "http://localhost:9006/delivery-location";
+        const socket = new SockJS(WEBSOCKET_URL);
         stompClient = Stomp.over(socket);
 
         stompClient.connect({ Authorization: `Bearer ${token}` }, () => {
