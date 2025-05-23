@@ -12,13 +12,31 @@ let cancelOrder = (merchantUid, reason) => {
         if (!resp.isSuccess) {
             const msg = resp.message || '알 수 없는 오류';
             if (msg.includes('imp_uid') || msg.includes('merchant_uid')) {
-                alert(SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE);
+                Swal.fire({
+                    icon: 'warning',
+                    title: '처리 지연',
+                    text: SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE,
+                    confirmButtonColor: '#f97316'
+                });
+                //alert(SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE);
             } else {
-                alert(`결제 취소 실패: ${msg}`);
+                //alert(`결제 취소 실패: ${msg}`);
+                Swal.fire({
+                    icon: 'error',
+                    title: '결제 취소 실패',
+                    text: `결제 취소가 실패하였습니다. 다시 시도해주세요. 실패 사유 : ${msg}`,
+                    confirmButtonColor: '#f97316'
+                });
             }
             return Promise.reject(new Error(msg));
         } else {
-            alert(resp.message || '결제 취소 성공!');
+            //alert(resp.message || '결제 취소 성공!');
+            Swal.fire({
+                icon: 'success',
+                title: '주문 취소 완료',
+                text: resp.message || '결제 및 주문이 취소되었습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
         return resp;
     }).catch(err => {

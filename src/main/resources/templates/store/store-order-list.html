@@ -9,6 +9,8 @@
 <!--    테스트 후 삭제하기-->
     <script th:src="@{/js/order/orderCancel.js}"></script>
     <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
+
 
     <!-- 주문 목록 전용 스크립트 -->
     <script th:src="@{/js/store/storeOrderList.js}"></script>
@@ -24,14 +26,13 @@
 <div th:replace="~{navigation :: nav}"></div>
 <div class="container">
     <div class="header-store">
-        <h1 id="welcome-message">
+        <div>
+            <h1 id="welcome-message">
             <span id="welcome-text">지점 주문 목록</span>
             <span id="order-count">(0)</span>
         </h1>
-        <div class="btn-group">
-            <button id="backToHome" class="btn" type="button" onclick="location.href='/'">메인 화면</button>
-            <button id="refresh-btn" class="btn">🔄새로고침</button>
         </div>
+            <button id="refresh-btn" class="btn">새로고침</button>
     </div>
 
     <div id="board">
@@ -74,7 +75,6 @@
         <option value="">사유 선택</option>
         <option value="고객 요청">고객 요청</option>
         <option value="재고 부족">재고 부족</option>
-        <option value="배달 불가">배달 불가</option>
     </select>
     <div style="margin-top: 15px; text-align:right;">
         <button id="cancel-confirm-btn">확인</button>
