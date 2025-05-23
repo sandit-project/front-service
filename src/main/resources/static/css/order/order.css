@@ -62,8 +62,11 @@ h1 {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    background-color: #fff5e1;
-    color: #3d2b1f;
+    border: none;
+    outline: none;
+    background-color: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
     font-size: 15px;
     box-sizing: border-box;
 }
@@ -73,10 +76,12 @@ h1 {
 .form-group input[type="tel"],
 .form-group select {
     border: none;
-    background-color: #fff4eb;
+    background-color: whitesmoke;
+    color: #333;
     padding: 12px;
     border-radius: 8px;
-    box-shadow: none; /* 부드러운 내부 테두리 제거 */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    outline: none;
 }
 
 @media (max-width: 768px) {
@@ -121,13 +126,13 @@ h1 {
 .summary {
     width: 90%;
     margin: 40px auto;
-    background-color: #fff4eb;
+    background-color: white;
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
     font-size: 18px;
     font-weight: 600;
-    color: #5a3b26;
+    color: #333;
     text-align: right;
 }
 
@@ -149,25 +154,27 @@ button {
     color: white;
 }
 .btn-primary:hover {
-    background-color: #d8720f;
-    box-shadow: 0 2px 8px rgba(243, 139, 32, 0.3);
+    background: #d7730f;
 }
 
 .btn-secondary {
-    background-color: white;
-    color: #F38B20;
-    border: 2px solid #F38B20;
+    background: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: none;
 }
 .btn-secondary:hover {
-    background-color: #fff3e0;
+    background-color: #ddd;
 }
 
 .btn-warning {
-    background-color: #d45d5d;
-    color: white;
+    background: whitesmoke;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: none;
 }
 .btn-warning:hover {
-    background-color: #b94747;
+    background-color: #ddd;
 }
 
 /* 📱 반응형 */
@@ -239,9 +246,9 @@ hr {
     -webkit-appearance: none;
     width: 18px;
     height: 18px;
-    border: 2px solid #F38B20;
-    border-radius: 5px;
-    background-color: #fff7e6;
+    border: 2px solid #333;
+    border-radius: 6px;
+    background-color: #fff;
     cursor: pointer;
     vertical-align: middle;
     position: relative;
@@ -250,8 +257,8 @@ hr {
 }
 
 .cart-check:checked {
-    background-color: #F38B20;
-    border-color: #F38B20;
+    background-color: #333;
+    border-color: #fff;
 }
 
 .cart-check:checked::after {
@@ -279,11 +286,11 @@ hr {
 }
 
 .cart-table th {
-    background-color: #f5e7d3;
+    background-color: #555;
     padding: 14px;
     text-align: center;
     font-weight: 700;
-    color: #5a3b26;
+    color: #fff;
 }
 
 .cart-table td {
@@ -300,19 +307,19 @@ hr {
     width: 60px;
     text-align: center;
     padding: 6px 10px;
-    border: 1.8px solid #f0c9a5;
+    border: none;
+    outline: none;
     border-radius: 8px;
-    background-color: #fffaf2;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: whitesmoke;
+    color: #333;
     font-size: 14px;
     font-weight: 600;
-    color: #5a3b26;
     transition: border-color 0.2s ease;
 }
 
 .cart-table input[type="number"]:focus {
-    border-color: #F38B20;
     outline: none;
-    box-shadow: 0 0 5px rgba(243, 139, 32, 0.3);
 }
 
 

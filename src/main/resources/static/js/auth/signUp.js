@@ -5,11 +5,20 @@ $(document).ready(() => {
 
     $('#toggle-allergy').on('click', function () {
         const $other = $('#other-allergy-options');
-        const isVisible = $other.is(':visible');
 
-        $other.toggle(); // 보여주거나 숨기기
-        $(this).text(isVisible ? '+ 기타 알레르기 보기' : '- 기타 알레르기 접기');
+        if ($other.hasClass('open')) {
+            $other.removeClass('open');
+            $(this).text('기타 알레르기'); // ← 닫힐 예정이므로 텍스트 미리 설정
+            setTimeout(() => $other.css('display', 'none'), 10);
+        } else {
+            $other.css('display', 'flex'); // 보여주는 동시에 flex로 설정
+            $(this).text('접기'); // ← 열릴 예정이므로 텍스트 미리 설정
+            setTimeout(() => $other.addClass('open'), 10);
+        }
     });
+
+
+
 
 
     // 권한 선택 변경 시마다 show/hide
@@ -31,7 +40,12 @@ $(document).ready(() => {
     $('#id_validation').on('click', async () => {
         const userId = $('#user_id').val().trim();
         if (!userId) {
-            alert('아이디를 입력해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '아이디 입력',
+                text: '아이디를 입력해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -43,9 +57,19 @@ $(document).ready(() => {
             });
 
             if (res.exists) {
-                alert('이미 사용중인 아이디입니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '중복된 아이디',
+                    text: '이미 사용중인 아이디입니다.',
+                    confirmButtonColor: '#f97316'
+                });
             } else {
-                alert('사용 가능한 아이디입니다.');
+                Swal.fire({
+                    icon: 'success',
+                    title: '사용 가능',
+                    text: '사용 가능한 아이디입니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         } catch (err) {
             const msg = err.responseJSON?.message || '아이디 검증 중 오류가 발생했습니다.';
@@ -91,7 +115,12 @@ $(document).ready(() => {
         const phoneAgree = $('#phoneyn').is(':checked') ? 'Y' : 'N';
         const phone      = $('#phone').val().trim();
         if (phone.length < 11) {
-            alert('전화번호는 11자리 이상 입력해야 합니다.');
+            Swal.fire({
+                icon: 'warning',
+                title: '전화번호 오류',
+                text: '전화번호는 11자리 이상 입력해야 합니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
         const baseAddress   = $('#main_address_base').val().trim();
@@ -104,8 +133,15 @@ $(document).ready(() => {
         });
 
         if (!userId || !password || !userName || !mainAddress) {
-            alert('필수 입력 항목을 모두 채워주세요.');
-            return btn.prop('disabled', false);
+            Swal.fire({
+                icon: 'warning',
+                title: '필수 항목 미입력',
+                text: '아이디, 비밀번호, 이름, 주소를 모두 입력해주세요.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                btn.prop('disabled', false);  // ❗ 알림 닫힌 뒤 버튼 활성화
+            });
+            return;
         }
 
         // 2) hidden에서 세팅된 좌표 읽기
@@ -147,14 +183,30 @@ $(document).ready(() => {
             console.log(res);
 
             if (res.success) {
-                alert('회원가입 성공!');
-                location.href = '/member/login';
+                Swal.fire({
+                    icon: 'success',
+                    title: '회원가입 완료',
+                    text: '가입을 축하드립니다!',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    location.href = '/member/login';
+                });
             } else {
-                alert('회원가입에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '가입 실패',
+                    text: '회원가입에 실패했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         } catch (err) {
             const msg = err.responseJSON?.message || '오류가 발생했습니다.';
-            alert(msg);
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: msg,
+                confirmButtonColor: '#f97316'
+            });
             console.error('회원가입 오류:', err);
         } finally {
             btn.prop('disabled', false);

@@ -17,13 +17,24 @@ $(document).ready(()=>{
            contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: (response) => {
-               alert('로그인이 성공했습니다.');
-               localStorage.setItem('accessToken',response.accessToken);
-               window.location.href = '/';
+                Swal.fire({
+                    icon: 'success',
+                    title: '로그인 성공',
+                    text: '환영합니다!',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    localStorage.setItem('accessToken', response.accessToken);
+                    window.location.href = '/';
+                });
             },
             error : (error) => {
                 console.error('log in error :: ',error);
-                alert('로그인 중 오류가 발생했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '로그인 실패',
+                    text: '아이디 또는 비밀번호를 확인해주세요.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

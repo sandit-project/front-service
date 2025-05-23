@@ -15,6 +15,6 @@ public class DeliveryController {
     @GetMapping
     public String deliveryList(Model model) {
         model.addAttribute("websocketUrl", websocketUrl);
-        return "/delivery/delivery-list";
+        return "delivery/delivery-list";
     }
 }

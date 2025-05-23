@@ -65,7 +65,7 @@ body {
 
 /* 각 셀 사이 구분 대신 row 간 간격 추가하고 싶다면 */
 .cart-table tbody tr {
-    border-bottom: 1px solid #f3e4d2;
+    border-bottom: none;
 }
 
 .cart-table img {
@@ -173,7 +173,7 @@ input[type="checkbox"] {
     -webkit-appearance: none;
     width: 22px;
     height: 22px;
-    border: #333;
+    border: 2px solid #333;
     border-radius: 6px;
     background-color: #fff;
     cursor: pointer;
