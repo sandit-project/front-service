@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/store")
 public class StoreController {
 
+    @GetMapping("/customer-list")
+    public String storeCustomerList(){
+        return "store/customer-store-list";
+    }
+
     @GetMapping("/register")
     public String register()
     {

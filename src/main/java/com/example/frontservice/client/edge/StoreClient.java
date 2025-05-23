@@ -5,8 +5,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @FeignClient(name="storeClient", url="${sandit.edge-service-url}/stores")
 public interface StoreClient {
+
+    @GetMapping
+    List<CustomerStoreListResponseDTO> getCustomerStoreList(@RequestHeader("Authorization") String token);
 
     @GetMapping("/list")
     StoreListResponseDTO getStoreList(@RequestParam("limit") int limit,
