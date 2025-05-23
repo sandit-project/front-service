@@ -23,4 +23,17 @@ public interface ChatClient {
 
     @DeleteMapping("/rooms/{roomId}")
     void deleteRoom(@RequestHeader("Authorization") String token, @PathVariable String roomId);
+
+    @PostMapping("/rooms/{roomId}/read")
+    void markRoomAsRead(@RequestHeader("Authorization") String token,
+                        @PathVariable("roomId") String roomId,
+                        @RequestParam("userId") String userId);
+
+    // ✅ 읽음 여부 조회
+    @GetMapping("/rooms/{roomId}/read")
+    Boolean isRoomReadByUser(@RequestHeader("Authorization") String token,
+                             @PathVariable("roomId") String roomId,
+                             @RequestParam("userId") String userId);
+
+
 }

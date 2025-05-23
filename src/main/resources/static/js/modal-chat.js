@@ -17,7 +17,7 @@ function connectWebSocket() {
         return;
     }
 
-    const socket = new SockJS('http://localhost:9006/chat');
+    const socket = new SockJS(WEBSOCKET_URL);
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function (frame) {

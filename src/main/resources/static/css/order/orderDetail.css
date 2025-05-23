@@ -16,6 +16,10 @@ main {
     backdrop-filter: blur(4px);
 }
 
+h1 {
+    text-align: center;
+}
+
 /* 🔶 테이블 스타일 */
 #order-table {
     width: 100%;
@@ -28,8 +32,8 @@ main {
 }
 
 #order-table thead {
-    background-color: #fce6c9;
-    color: #5a3b26;
+    background-color: #333;
+    color: #fff;
 }
 
 #order-table th,
@@ -44,12 +48,11 @@ main {
 }
 
 #order-table tbody tr {
-    border-bottom: 1px solid #f3e4d2;
     transition: background-color 0.2s ease;
 }
 
 #order-table tbody tr:hover {
-    background-color: #fff4e2;
+    background-color: #ddd;
     cursor: pointer;
 }
 

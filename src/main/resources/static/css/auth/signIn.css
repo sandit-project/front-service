@@ -18,6 +18,7 @@ body {
     max-width: 400px;
     text-align: center;
     margin: 40px auto;
+    background-color: #fff;
 }
 
 /* 타이틀 */
@@ -43,19 +44,18 @@ body {
 .form-group input {
     width: 100%;
     padding: 12px;
-    /*border: 1px solid #4d3321;*/
     border: none;
     outline: none;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     font-size: 14px;
-    background-color: #fff;
+    background-color: whitesmoke;
     transition: border-color 0.2s ease-in-out;
 }
 
 .form-group input:focus {
     outline: none;
-    box-shadow: 0 0 4px #F38B20;
+    box-shadow: 0 0 0 2px #333 inset;
 }
 
 /* 로그인 버튼 */
@@ -117,15 +117,39 @@ body {
 }
 
 /* 각 플랫폼별 색상 */
-.oauth-btn .btn:nth-child(1) {
-    background-color: #03c75a; /* Naver */
+.oauth-icon-group {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
-.oauth-btn .btn:nth-child(2) {
-    background-color: #fee500; /* Kakao */
-    color: #381e1f;
+.oauth-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    display: inline-block;
+    transition: transform 0.2s ease;
 }
 
-.oauth-btn .btn:nth-child(3) {
-    background-color: #4285f4; /* Google */
+.oauth-icon:hover {
+    transform: scale(1.1);
 }
+
+.oauth-icon.naver {
+    background-image: url('/images/icon/naver.png');
+    background-color: #03c75a;
+}
+
+.oauth-icon.kakao {
+    background-image: url('/images/icon/kakao.png');
+    background-color: #fee500;
+}
+
+.oauth-icon.google {
+    background-image: url('/images/icon/google.png');
+    background-color: #4285f4;
+}
+

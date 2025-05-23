@@ -17,9 +17,7 @@
 <div th:replace="~{navigation :: nav}"></div>
 <main>
     <div class="header-container">
-<!--        <h1 id="welcome-message"></h1>-->
         <h1>프로필 수정</h1>
-        <p id="update-status">프로필 수정 중...</p>
     </div>
 
     <div>
@@ -58,17 +56,17 @@
 
             <div class="user-profile address-block">
                 <div class="address-header">
-                    <label for="main_address_base">현재 선택된 주소</label>
+                    <label for="main_address_base">현재 주소</label>
                     <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
                     <button type="button" id="mainAddress-kakao">주소 찾기</button>
                 </div>
                 <div class="map" style="display:none;"></div>
-                <p class="address-detail">아파트의 경우 동, 호수까지 입력해주세요</p>
+            </div>
                 <div class="address-detail">
                     <label for="main_address_detail">상세주소</label>
                     <input type="text" id="main_address_detail" placeholder="상세주소를 입력하세요">
                 </div>
-            </div>
+                <p class="address-guide">아파트의 경우 동, 호수까지 입력해주세요</p>
 
             <div class="user-profile address-block">
                 <div class="address-header">
@@ -77,16 +75,16 @@
                     <button type="button" id="subAddress1-kakao">주소 찾기</button>
                 </div>
                 <div class="map" style="display:none;"></div>
-                <p class="address-detail">아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="address-detail">
-                    <label for="sub1_address_detail">상세주소</label>
-                    <input type="text" id="sub1_address_detail" placeholder="상세주소를 입력하세요">
-                </div>
                 <!-- 히든 필드들 -->
                 <input type="hidden" id="sub1_postcode">
                 <input type="hidden" id="sub1_latitude" name="latitude">
                 <input type="hidden" id="sub1_longitude" name="longitude">
             </div>
+                <div class="address-detail">
+                    <label for="sub1_address_detail">상세주소</label>
+                    <input type="text" id="sub1_address_detail" placeholder="상세주소를 입력하세요">
+                </div>
+                <p class="address-guide">아파트의 경우 동, 호수까지 입력해주세요</p>
 
             <div class="user-profile address-block">
                 <div class="address-header">
@@ -95,16 +93,16 @@
                     <button type="button" id="subAddress2-kakao">주소 찾기</button>
                 </div>
                 <div class="map" style="display:none;"></div>
-                <p class="address-detail">아파트의 경우 동, 호수까지 입력해주세요</p>
-                <div class="address-detail">
-                    <label for="sub2_address_detail">상세주소</label>
-                    <input type="text" id="sub2_address_detail" placeholder="상세주소를 입력하세요">
-                </div>
                 <!-- 히든 필드들 -->
                 <input type="hidden" id="sub2_postcode">
                 <input type="hidden" id="sub2_latitude" name="latitude">
                 <input type="hidden" id="sub2_longitude" name="longitude">
             </div>
+                <div class="address-detail">
+                    <label for="sub2_address_detail">상세주소</label>
+                    <input type="text" id="sub2_address_detail" placeholder="상세주소를 입력하세요">
+                </div>
+                <p class="address-guide">아파트의 경우 동, 호수까지 입력해주세요</p>
 
         </div>
     </div>

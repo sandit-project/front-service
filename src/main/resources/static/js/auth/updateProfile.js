@@ -1,5 +1,4 @@
 $(document).ready(() => {
-    animateUpdateStatus();
     requestProfileApi();
 
     $('#updateProfileBtn').on("click",()=>{
@@ -93,27 +92,5 @@ let requestProfileUpdate = () => {
         }
     });
 }
-
-// 🔄 "프로필 수정 중..." 애니메이션
-let animateUpdateStatus = () => {
-    const el = document.getElementById("update-status");
-    if (!el) return;
-
-    const text = "프로필 수정 중...";
-    let i = 0;
-
-    setInterval(() => {
-        let result = '';
-        for (let j = 0; j < text.length; j++) {
-            if (j === i) {
-                result += `<span style="color: #555; font-weight: bold;">${text[j]}</span>`;
-            } else {
-                result += `<span style="color: #bbb;">${text[j]}</span>`;
-            }
-        }
-        el.innerHTML = result;
-        i = (i + 1) % text.length;
-    }, 500);
-};
 
 

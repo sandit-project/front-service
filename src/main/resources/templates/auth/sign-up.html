@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
     <script th:src="@{/js/emailVerify.js}"></script>
     <script th:src="@{/js/auth/signUp.js}"></script>
@@ -24,8 +26,10 @@
     <div>
         <div class="form-group">
             <label for="user_id">아이디</label>
+            <div class="form-inline">
             <input type="text" id="user_id" placeholder="아이디를 입력하세요" required>
             <button id="id_validation">중복체크</button>
+            </div>
         </div>
 
         <div class="form-group">
@@ -39,8 +43,7 @@
         </div>
 
         <div class="form-group">
-            <label for="phone">전화번호</label>
-            <p>-은 자동입력됩니다.</p>
+            <label for="phone">전화번호 <span>-은 자동입력됩니다.</span></label>
             <input type="text" id="phone" placeholder="전화번호를 입력하세요" required>
         </div>
 
@@ -51,8 +54,10 @@
 
         <div class="form-group">
             <label for="email">이메일</label>
+            <div class="form-inline">
             <input type="text" id="email" placeholder="이메일을 입력하세요" required>
             <button type="button" id="email-submit">인증하기</button>
+            </div>
         </div>
 
         <div class="form-group" id="agreement_email">
@@ -69,11 +74,13 @@
 
         <div class="form-group">
             <label for="main_address_base">주소</label>
+            <div class="form-inline">
             <input type="text" id="main_address_base" placeholder="주소를 입력하세요" required>
             <!-- zonecode 저장용 hidden field -->
             <input type="hidden" id="main_postcode">
             <button type="button" id="mainAddress-kakao">주소 찾기</button>
-            <p>아파트의 경우 동, 호수까지 입력해주세요</p>
+            </div>
+            <p id = "address-guide">아파트의 경우 동, 호수까지 입력해주세요</p>
             <div class="map" style="display:none; width:100%; height:300px; margin-top:10px;"></div>
             <input type="hidden" id="main_latitude" name="latitude">
             <input type="hidden" id="main_longitude" name="longitude">
@@ -93,18 +100,20 @@
         </div>
 
         <div class="form-group" id="allergy-group" style="display: none;">
-            <label>알레르기 선택:</label>
+            <label>알레르기 선택</label>
 
             <!-- 자주 선택되는 항목 -->
+            <div class="allergy-main-options">
             <label><input type="checkbox" name="allergy" value="우유"> 우유(유제품)</label>
             <label><input type="checkbox" name="allergy" value="난류"> 난류(계란)</label>
             <label><input type="checkbox" name="allergy" value="대두"> 대두(콩)</label>
             <label><input type="checkbox" name="allergy" value="땅콩"> 땅콩</label>
             <label><input type="checkbox" name="allergy" value="갑각류"> 갑각류</label>
             <label><input type="checkbox" name="allergy" value="견과류"> 견과류</label>
+            </div>
 
             <!-- 기타 항목 보기 -->
-            <button type="button" id="toggle-allergy" class="btn-sm">+ 기타 알레르기 보기</button>
+            <button type="button" id="toggle-allergy" class="btn-sm">기타 알레르기</button>
 
             <div id="other-allergy-options" style="display: none; margin-top: 10px;">
                 <label><input type="checkbox" name="allergy" value="생선"> 생선</label>
