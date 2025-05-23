@@ -221,7 +221,7 @@
 
     // WebSocket 연결 및 메시지 수신 처리
     let stompClient = null;
-
+    const WEBSOCKET_URL = /*[[${websocketUrl}]]*/ "http://localhost:9006/delivery-location";
     function connectWebSocket() {
         const socket = new SockJS(WEBSOCKET_URL);
         stompClient = Stomp.over(socket);
