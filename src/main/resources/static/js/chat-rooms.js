@@ -65,13 +65,26 @@
 
                     const topLineDiv = $('<div></div>');
 
-                    // 방 이름 스팬
                     const nameSpan = $('<span></span>')
                         .addClass('enter-chat-room')
                         .text(room.name)
-                        .attr('data-room-id', room.id);
+                        .attr('data-room-id', room.id)
+                        .css('cursor', 'pointer');
 
-                    // 생성자 아이디 스팬 (방 이름 옆에 작게 표시)
+                    // 기본적으로 뱃지는 숨김
+                    const badgeSpan = $('<span></span>')
+                        .addClass('unread-badge')
+                        .text('')
+                        .css({
+                            'background-color': 'red',
+                            'width': '12px',
+                            'height': '12px',
+                            'border-radius': '50%',
+                            'margin-left': '6px',
+                            'vertical-align': 'middle',
+                            'display': 'none'  // 기본 숨김
+                        });
+
                     const ownerSpan = $('<span></span>')
                         .addClass('room-owner')
                         .text(` (ID: ${room.ownerId})`)
@@ -81,7 +94,6 @@
                             'margin-left': '8px'
                         });
 
-                    // 삭제 버튼
                     const deleteButton = $('<button></button>')
                         .text('삭제')
                         .addClass('delete-btn')
@@ -92,7 +104,7 @@
                             }
                         });
 
-                    topLineDiv.append(nameSpan, ownerSpan, deleteButton);
+                    topLineDiv.append(nameSpan, badgeSpan, ownerSpan, deleteButton);
 
                     const createdAt = new Date(room.createdAt);
                     const formattedDate = createdAt.getFullYear() + '-' +
@@ -106,7 +118,6 @@
                         .text(formattedDate);
 
                     roomDiv.append(topLineDiv, dateDiv);
-
                     roomListDiv.append(roomDiv);
                 });
             },
@@ -164,22 +175,122 @@
         });
     }
 
-    // DOM 로드 후 초기화
+    // 읽음 처리 API 호출
+    function markRoomAsRead(roomId) {
+        const userInfo = getUserInfo();
+        if (!userInfo) return;
+
+        $.ajax({
+            url: `/chat/rooms/${roomId}/read`,
+            method: 'POST',
+            data: {
+                userId: userInfo.userId
+            },
+            success: function() {
+                const roomEntry = $(`.enter-chat-room[data-room-id="${roomId}"]`);
+                roomEntry.siblings('.unread-badge').hide();
+            },
+            error: function() {
+                console.warn('읽음 처리 실패');
+            }
+        });
+    }
+
+    // 브라우저 알림 권한 요청
+    function requestNotificationPermission() {
+        if (!("Notification" in window)) {
+            console.warn("이 브라우저는 Notification API를 지원하지 않습니다.");
+            return;
+        }
+        if (Notification.permission === "default") {
+            Notification.requestPermission().then(function(permission) {
+                console.log("Notification permission:", permission);
+            });
+        }
+    }
+
+    // 브라우저 알림 표시
+    function showBrowserNotification(title, body) {
+        if (Notification.permission === "granted") {
+            new Notification(title, {
+                body: body,
+                icon: '/favicon.ico'
+            });
+        }
+    }
+
+    // WebSocket 연결 및 메시지 수신 처리
+    let stompClient = null;
+
+    function connectWebSocket() {
+        const socket = new SockJS(WEBSOCKET_URL);
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+
+            const userInfo = getUserInfo();
+            if (!userInfo) return;
+
+            stompClient.subscribe(`/topic/chat/rooms/${userInfo.userId}`, function(message) {
+                const payload = JSON.parse(message.body);
+                console.log('WebSocket message received:', payload);
+
+                const roomId = payload.roomId;
+                const sender = payload.senderName || "새 메시지";
+                const content = payload.content || "새로운 메시지가 도착했습니다.";
+
+                if (!roomId) {
+                    console.warn('roomId가 메시지에 없습니다!');
+                    return;
+                }
+
+                const roomEntry = $(`.enter-chat-room[data-room-id="${roomId}"]`);
+                if (roomEntry.length === 0) {
+                    console.warn(`해당 roomId(${roomId})를 가진 채팅방 요소를 찾지 못했습니다.`);
+                    return;
+                }
+
+                const badge = roomEntry.siblings('.unread-badge');
+                if (badge.length) {
+                    badge.show();
+                    console.log(`채팅방 ${roomId} 뱃지 표시 완료`);
+                } else {
+                    console.warn('뱃지 요소를 찾지 못했습니다.');
+                }
+
+                // 브라우저 알림 띄우기
+                showBrowserNotification(`${sender}님으로부터`, content);
+            });
+        });
+    }
+
+    // 채팅방 클릭 시 읽음 처리 및 뱃지 숨김
+    $(document).on('click', '.enter-chat-room', function() {
+        const roomId = $(this).data('room-id');
+
+        markRoomAsRead(roomId);
+
+        // 필요하면 채팅방 열기 함수 호출
+        // openChatRoom(roomId);
+    });
+
+    // 초기화
     $(document).ready(function() {
         checkToken();
         setupAjax();
         fetchRooms();
+        requestNotificationPermission();
+        connectWebSocket();
 
         $('#createRoomBtn').off('click').on('click', createRoom);
 
         $('#roomName').off('keypress').on('keypress', function(e) {
-            if (e.which === 13) {  // Enter key
+            if (e.which === 13) {
                 createRoom();
             }
         });
     });
 
-    // 인라인 이벤트에서 createRoom 호출 필요 시
     window.createRoom = createRoom;
-
 })();
