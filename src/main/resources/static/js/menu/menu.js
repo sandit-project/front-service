@@ -2,6 +2,8 @@ $(document).ready(()=>{
     checkToken();
     setupAjax();
     getUserInfo().then((userInfo)=>{
+        initUserUI(userInfo);
+
         $('#welcome-message').text(userInfo.userName + '님 환영합니다!');
         $('#hiddenUserName').val(userInfo.userName);
         $('#hiddenUserId').val(userInfo.userId);

@@ -38,6 +38,7 @@ body {
 #order-count {
     font-size: 16px;
     color: #333;
+    align-self: end;
 }
 
 .btn,

@@ -2,6 +2,10 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     // 지점 등록 버튼 클릭 이벤트
     $('#storeRegister').click(async (event) => {
         event.preventDefault(); // 기본 동작 막기

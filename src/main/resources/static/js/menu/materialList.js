@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     // 재료 목록 불러오기
     function loadMaterials() {
         $.ajax({

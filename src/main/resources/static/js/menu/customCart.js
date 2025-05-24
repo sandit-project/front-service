@@ -9,6 +9,8 @@ $(document).ready(async function () {
         globalUserInfo = userInfo;
         console.log('User Info:', userInfo);
 
+        initUserUI(userInfo);
+
         // 2.user/social 분기 : userUid or socialUid 구분해서 알러지 요청
         let allergyUrl = '';
         if (globalUserInfo.type === 'user') {

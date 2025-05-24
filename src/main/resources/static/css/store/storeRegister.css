@@ -38,8 +38,9 @@ body {
 label {
     display: block;
     margin-bottom: 8px;
+    margin-top: 12px;
     font-weight: 600;
-    color: #4d2c14;
+    color: #333;
 }
 
 input[type="text"],

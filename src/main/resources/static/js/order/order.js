@@ -209,6 +209,11 @@ $(document).ready(async () => {
     IMP.init('imp54787882');
 
     const user = await fetchProfileAndFillForm();
+    if (user?.uid) {
+        initUserUI(user); // 로그인한 사용자용
+    } else {
+        renderGuestUI(); // 비회원 사용자용
+    }
     cartItems = await getCartItems();
     console.log('[DEBUG] cartItems from 서버 →', cartItems);
 

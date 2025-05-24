@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     $("#submitBtn").on("click", function () {
         let fileInput = $("#img")[0].files[0];
 

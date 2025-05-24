@@ -75,6 +75,7 @@ function fetchProfile() {
             $('#sub_address1').text(response.subAddress1);
             $('#sub_address2').text(response.subAddress2);
 
+            initUserUI(response);
             console.log(response);
             return response;
         },

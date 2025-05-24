@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     const menuName = decodeURIComponent(window.location.pathname.split('/').pop());
 
     $.ajax({

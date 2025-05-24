@@ -3,6 +3,10 @@ $(document).ready(function () {
         checkToken();
         setupAjax();
 
+        getUserInfo().then((userInfo) => {
+            initUserUI(userInfo);
+        });
+
         let fileInput = $("#img")[0].files[0];
 
         if (!fileInput) {

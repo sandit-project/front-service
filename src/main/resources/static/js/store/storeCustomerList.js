@@ -3,6 +3,14 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        if (userInfo) {
+            initUserUI(userInfo);
+        } else {
+            renderGuestUI();
+        }
+    });
+
     $.ajax({
         type: "GET",
         url: "/stores",   // 실제 스토어 목록을 반환하는 백엔드 API

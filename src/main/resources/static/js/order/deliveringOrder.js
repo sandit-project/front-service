@@ -4,6 +4,7 @@ $(document).ready(async () => {
 
     try {
         const profile = await fetchProfile();
+        initUserUI(profile);
         const userUid = profile.uid;
 
         $('#order-info-box').on('click', () => {

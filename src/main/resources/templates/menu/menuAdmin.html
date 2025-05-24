@@ -15,7 +15,7 @@
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
 
-<form id="menuForm" th:action="@{/menus}" method="post" enctype="multipart/form-data">
+<form id="menuForm" enctype="multipart/form-data">
     <h2>메뉴 등록</h2>
     <label>메뉴 이름:</label>
     <input type="text" name="menuName" required><br>
@@ -26,44 +26,64 @@
     <label>칼로리:</label>
     <input type="number" name="calorie" step="0.1" required><br>
 
-    <label>빵 선택:</label>
-    <select name="bread" id="breadSelect" required>
-        <option value="">빵을 선택하세요</option>
-    </select><br>
+    <div class="section">
+        <h3 class="section-title">빵 선택</h3>
+        <div class="option-grid" data-name="bread"></div>
+    </div>
 
-    <label>메인 재료 1:</label>
-    <select name="material1" id="material1Select">
-        <option value="">재료를 선택하세요</option>
-    </select><br>
+    <div class="section">
+        <h3 class="section-title">메인 재료</h3>
+        <div class="option-grid" data-name="material1"></div>
+    </div>
 
-    <label>추가 재료 2, 3:</label>
-    <select name="material2" id="material2Select">
-        <option value="">선택 안 함</option>
-    </select>
-    <select name="material3" id="material3Select">
-        <option value="">선택 안 함</option>
-    </select><br>
+    <div class="section">
+        <h3 class="section-title">재료 <span class="highlight-orange">추가</span></h3>
+        <div class="option-grid" data-name="material2"></div>
+        <button type="button" class="toggle-btn" data-target="extra-materials">추가 재료 선택</button>
+        <div class="toggle-section" id="extra-materials" style="display: none">
+            <h3 class="section-title">재료 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="material3"></div>
+        </div>
+    </div>
 
-    <label>치즈 선택:</label>
-    <select name="cheese" id="cheeseSelect">
-        <option value="">선택 안 함</option>
-    </select><br>
+    <div class="section">
+        <h3 class="section-title">치즈 선택</h3>
+        <div class="option-grid" data-name="cheese"></div>
+    </div>
 
-    <label>채소 선택:</label>
-    <div id="vegetableSelects">
-        <!-- JavaScript로 select 8개 동적 생성 -->
-    </div><br>
+    <div class="section">
+        <h3 class="section-title">채소 선택</h3>
+        <div class="option-grid" data-name="vegetable1"></div>
+        <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+        <div class="option-grid" data-name="vegetable2"></div>
+        <button type="button" class="toggle-btn" data-target="extra-vegetables">추가 채소 선택</button>
+        <div class="toggle-section" id="extra-vegetables" style="display: none">
+            <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="vegetable3"></div>
+            <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="vegetable4"></div>
+            <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="vegetable5"></div>
+            <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="vegetable6"></div>
+            <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="vegetable7"></div>
+            <h3 class="section-title">채소 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="vegetable8"></div>
+        </div>
+    </div>
 
-    <label>소스 선택:</label>
-    <select name="sauce1" id="sauce1Select">
-        <option value="">소스를 선택하세요</option>
-    </select>
-    <select name="sauce2" id="sauce2Select">
-        <option value="">선택 안 함</option>
-    </select>
-    <select name="sauce3" id="sauce3Select">
-        <option value="">선택 안 함</option>
-    </select><br>
+    <div class="section">
+        <h3 class="section-title">소스 선택</h3>
+        <div class="option-grid" data-name="sauce1"></div>
+        <h3 class="section-title">소스 <span class="highlight-orange">추가</span></h3>
+        <div class="option-grid" data-name="sauce2"></div>
+        <button type="button" class="toggle-btn" data-target="extra-sauces">추가 소스 선택</button>
+        <div class="toggle-section" id="extra-sauces" style="display: none">
+            <h3 class="section-title">소스 <span class="highlight-orange">추가</span></h3>
+            <div class="option-grid" data-name="sauce3"></div>
+        </div>
+    </div>
 
     <label>이미지 업로드:</label>
     <input type="file" id="img" name="file" accept="image/*" required><br>
@@ -75,11 +95,12 @@
     </select><br>
 
     <div class="button-group">
-        <button type="button" class="btn btn-primary" id="submitBtn">등록하기</button>
+        <button type="submit" class="btn btn-primary">등록하기</button>
         <button type="button" class="btn btn-secondary" onclick="location.href='/menus/list'">목록으로 가기</button>
         <button type="button" class="btn btn-danger" onclick="location.href='/admin'">메인으로 가기</button>
     </div>
 </form>
+
 <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

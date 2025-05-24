@@ -14,6 +14,7 @@ $(document).ready(function () {
             return;
         }
 
+        initUserUI(userInfo);
         loadCartItems();
     });
 

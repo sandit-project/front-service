@@ -81,3 +81,20 @@ function logout() {
         }
     });
 }
+
+//권한에 따른 nav바 노출
+function hideUnauthorizedNav(user) {
+    const role = user.role;
+
+    // 기본적으로 관리 섹션 전체 숨김
+    $('.dropdown-admin, .dropdown-manager, .dropdown-delivery').hide();
+
+    if (role === 'ROLE_ADMIN') {
+        $('.dropdown-admin, .dropdown-manager, .dropdown-delivery').show(); // 어드민은 전부 보임
+    } else if (role === 'ROLE_MANAGER') {
+        $('.dropdown-manager').show();
+    } else if (role === 'ROLE_DELIVERY') {
+        $('.dropdown-delivery').show();
+    }
+}
+

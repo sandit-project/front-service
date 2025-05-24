@@ -3,7 +3,7 @@
     --theme-orange-dark: #d7730f;
     --text-main: #333;
     --bg-main: #ffffff;
-    --bg-alt: #fafafa;
+    --bg-alt: #f9f9f9;
 }
 
 * {
@@ -18,40 +18,146 @@ body {
     color: var(--text-main);
 }
 
-/* 📦 컨테이너 */
-.container, form {
-    max-width: 800px;
-    margin: 60px auto 80px;
-    padding: 40px;
-    background-color: var(--bg-main);
+form {
+    max-width: 1000px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px 50px;
     border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* 제목 */
-h1, h2 {
+h2 {
     text-align: center;
-    font-size: 26px;
+    color: #333;
     font-weight: 800;
-    margin-bottom: 32px;
-    color: var(--text-main);
+    margin-bottom: 40px;
 }
 
-/* 폼 필드 */
+.section {
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #333;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.highlight-orange {
+    color: var(--theme-orange);
+    font-weight: 700;
+}
+
+.option-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.option-button {
+    padding: 10px 16px;
+    background-color: whitesmoke;
+    border: none;
+    border-radius: 999px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.option-button:hover {
+    background-color: #ddd;
+}
+
+.option-button.selected {
+    background-color: var(--theme-orange);
+    color: white;
+    font-weight: 700;
+}
+
+.toggle-btn {
+    display: inline-block;
+    margin: 10px 0 20px;
+    background-color: whitesmoke;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn:hover {
+    background-color: #ddd;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--theme-orange);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--theme-orange-dark);
+}
+
+.btn-secondary {
+    background-color: #eee;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
 label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #4d2c14;
+    color: #333;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="file"],
-select {
+input,
+select,
+textarea {
     width: 100%;
     padding: 10px 14px;
+    margin-bottom: 16px;
     outline: none;
     border: none;
     border-radius: 8px;
@@ -60,7 +166,6 @@ select {
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-/* 파일 업로드 버튼 */
 input[type="file"]::file-selector-button {
     background-color: var(--theme-orange);
     color: white;
@@ -77,55 +182,15 @@ input[type="file"]::file-selector-button:hover {
     background-color: var(--theme-orange-dark);
 }
 
-/* 🔘 버튼 그룹 */
-.button-group,
-.form-actions {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 40px;
-}
-
-/* 공통 버튼 스타일 */
-.btn {
-    padding: 10px 18px;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border: none;
-}
-
-.btn-primary {
-    background-color: var(--theme-orange);
-    color: white;
-}
-.btn-primary:hover {
-    background-color: var(--theme-orange-dark);
-}
-
-.btn-secondary {
-    background-color: #eee;
-    color: #333;
-}
-.btn-secondary:hover {
-    background-color: #ddd;
-}
-
-.btn-danger {
-    background-color: #e74c3c;
-    color: white;
-}
-.btn-danger:hover {
-    background-color: #c0392b;
-}
-
-/* ✅ 반응형 */
 @media (max-width: 768px) {
-    .container, form {
-        padding: 24px;
+    form {
+        padding: 20px;
         margin: 30px 16px;
+    }
+
+    .option-grid {
+        flex-direction: column;
+        gap: 8px;
     }
 
     .button-group {
@@ -133,7 +198,7 @@ input[type="file"]::file-selector-button:hover {
         gap: 12px;
     }
 
-    h1, h2 {
+    h2 {
         font-size: 22px;
     }
 
@@ -141,39 +206,3 @@ input[type="file"]::file-selector-button:hover {
         font-size: 14px;
     }
 }
-
-select {
-    margin-bottom: 16px; /* 셀렉트 박스 사이 간격 */
-}
-
-/* 혹은 공통 폼 필드에 여유 간격을 주려면 */
-input,
-select,
-textarea {
-    margin-bottom: 16px;
-}
-
-.option-button {
-    display: inline-block;
-    padding: 10px 14px;
-    margin: 5px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    user-select: none;
-}
-
-.option-button.selected {
-    background-color: #f97316;
-    color: white;
-    border-color: #f97316;
-}
-.option-grid {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-    gap: 8px;
-}
-

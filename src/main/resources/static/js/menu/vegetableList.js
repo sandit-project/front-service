@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     // 야채 목록 불러오기
     function loadVegetables() {
         $.ajax({

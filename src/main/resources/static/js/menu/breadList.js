@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     function loadBreads() {
         $.ajax({
             url: "/menus/breads",  // ✅ 새 API 경로

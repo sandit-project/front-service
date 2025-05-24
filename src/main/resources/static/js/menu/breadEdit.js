@@ -1,6 +1,9 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
     // URL에서 breadName을 가져오기 (예: /menus/breads/edit/식빵)
     const breadName = window.location.pathname.split('/').pop();  // URL에서 마지막 부분을 가져옴
 

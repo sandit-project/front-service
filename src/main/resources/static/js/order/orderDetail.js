@@ -19,6 +19,11 @@ async function initPage() {
 
     try {
         const profile = await fetchProfile();
+
+        if (profile?.uid) {
+            initUserUI(profile);
+        }
+
         console.log('[DEBUG] profile:', profile);
 
         userType = profile.type;

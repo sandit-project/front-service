@@ -1,6 +1,11 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     const sideName = window.location.pathname.split('/').pop();
 
     $.ajax({

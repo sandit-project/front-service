@@ -1,6 +1,11 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     // 메뉴 목록을 Ajax로 로드
     function loadMenus() {
         $.ajax({

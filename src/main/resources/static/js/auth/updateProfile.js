@@ -23,6 +23,7 @@ let requestProfileApi = () => {
             $('#sub2_address_base').val(response.subAddress2);
 
             console.log(response);
+            initUserUI(response);
         },
         error : (error) => {
             console.error('profile in error :: ',error);

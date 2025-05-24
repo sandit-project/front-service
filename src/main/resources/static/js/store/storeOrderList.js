@@ -13,6 +13,7 @@ $(document).ready(async ()=>{
     let userInfo;
     try {
         userInfo = await getUserInfo();      // common.js 에 정의된 함수 호출
+        initUserUI(userInfo);
     } catch (err) {
         console.error('유저 정보 조회 실패:', err);
         alert('유저 정보를 불러오지 못했습니다. 다시 로그인 해주세요.');

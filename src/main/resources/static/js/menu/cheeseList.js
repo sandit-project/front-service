@@ -1,6 +1,9 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
     // 치즈 목록 불러오기
     function loadCheeses() {
         $.ajax({

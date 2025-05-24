@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     const params = new URLSearchParams(window.location.search);
     const storeUid = params.get("storeUid");
 

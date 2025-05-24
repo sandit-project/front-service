@@ -12,6 +12,7 @@ $(document).ready(async () => {
 
         if (userInfo) {
             initUserUI(userInfo);
+            hideUnauthorizedNav(userInfo);
         } else {
             renderGuestUI();
         }

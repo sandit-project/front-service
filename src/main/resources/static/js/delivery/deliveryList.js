@@ -12,6 +12,8 @@ $(document).ready(async ()=>{
         $('#hiddenType').val(userInfo.type);
         $('#hiddenUserRole').val(userInfo.role);
 
+        initUserUI(userInfo);
+
         if(userInfo.role === "ROLE_DELIVERY" || userInfo.role === "ROLE_ADMIN"){
             // 웹소켓에 위치 전달 하는 함수
             sendDeliveryManLocation(userInfo.id, userInfo.type);
