@@ -7,12 +7,20 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/stores")
 @RequiredArgsConstructor
 public class StoreApiController {
 
     private final StoreService storeService;
+
+    @GetMapping
+    public List<CustomerStoreListResponseDTO> getStoreList(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return storeService.getStores(token);
+    }
 
     @GetMapping("/list")
     StoreListResponseDTO getAllStores (@RequestParam(name = "limit", defaultValue = "10") int limit,
@@ -23,6 +31,12 @@ public class StoreApiController {
 
         return storeService.getAllStores(storeListRequestDTO,token);
     }
+
+//    @GetMapping("/customerList")
+//    public List<StoreCustomerListResponseDTO>getStores(HttpServletRequest requset){
+//        String token = requset.getHeader("Authorization");
+//        return storeService.getStores(token);
+//    }
 
     @GetMapping("/{storeUid}")
     StoreResponseDTO getStore (@PathVariable Long storeUid, HttpServletRequest request) {

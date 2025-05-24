@@ -5,6 +5,8 @@ import com.example.frontservice.dto.store.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StoreService {
@@ -14,6 +16,11 @@ public class StoreService {
     public StoreListResponseDTO getAllStores (StoreListRequestDTO storeListRequestDTO,String token) {
 
         return storeClient.getStoreList(storeListRequestDTO.getLimit(), storeListRequestDTO.getLastUid(),token);
+    }
+
+    public List<CustomerStoreListResponseDTO> getStores (String token) {
+
+        return storeClient.getCustomerStoreList(token);
     }
 
     public StoreResponseDTO getStore (Long storeUid,String token) {
