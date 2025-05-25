@@ -18,7 +18,12 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(`메뉴 목록 불러오기 실패 [${status}]:`, error);
-                alert("메뉴 목록을 불러오는 중 오류가 발생했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '메뉴 불러오기 실패',
+                    text: '메뉴 목록을 불러오는 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     }
@@ -92,22 +97,49 @@ $(document).ready(function () {
     // 메뉴 삭제
     function deleteMenu(menuName) {
         if (!menuName) {
-            alert("삭제할 메뉴 이름이 없습니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '삭제 실패',
+                text: '삭제할 메뉴 이름이 없습니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
-        if (!confirm(`'${menuName}' 메뉴를 삭제하시겠습니까?`)) return;
-
-        $.ajax({
-            url: "/menus/" + encodeURIComponent(menuName),
-            type: "DELETE",
-            success: function () {
-                alert("메뉴가 삭제되었습니다!");
-                loadMenus(); // 삭제 후 메뉴 목록 새로 고침
-            },
-            error: function (xhr, status, error) {
-                console.error(`삭제 실패 [${status}]:`, error);
-                alert("삭제 중 오류가 발생했습니다.");
+        Swal.fire({
+            title: `'${menuName}' 메뉴를 삭제하시겠습니까?`,
+            text: "삭제된 메뉴는 복구할 수 없습니다.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "삭제",
+            cancelButtonText: "취소"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/menus/" + encodeURIComponent(menuName),
+                    type: "DELETE",
+                    success: function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제 완료',
+                            text: '메뉴가 삭제되었습니다!',
+                            confirmButtonColor: '#f97316'
+                        }).then(() => {
+                            loadMenus(); // 원래 있던 새로고침
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(`삭제 실패 [${status}]:`, error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제 실패',
+                            text: '삭제 중 오류가 발생했습니다.',
+                            confirmButtonColor: '#f97316'
+                        });
+                    }
+                });
             }
         });
     }

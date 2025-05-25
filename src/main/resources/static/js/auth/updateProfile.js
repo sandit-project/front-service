@@ -27,7 +27,12 @@ let requestProfileApi = () => {
         },
         error : (error) => {
             console.error('profile in error :: ',error);
-            alert('프로필 요청 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '프로필 요청 실패',
+                text: '프로필 요청 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
             if(error.status === 401){
                 // 토큰 만료 에러 메세지에 따라 refreshToken 보냄
                 handleTokenExpiration();
@@ -55,7 +60,13 @@ let requestProfileUpdate = () => {
     const subAddress2   = detailSub2Address ? `${baseSub2Address} ${detailSub2Address}` : baseSub2Address;
 
     if (!userName || !mainAddress) {
-        alert('필수 입력 항목을 모두 채워주세요.');
+        Swal.fire({
+            icon: 'warning',
+            title: '입력 누락',
+            text: '필수 입력 항목을 모두 채워주세요.',
+            confirmButtonColor: '#f97316'
+        });
+        return;
     }
 
     // 2) hidden에서 세팅된 좌표 읽기
@@ -84,12 +95,23 @@ let requestProfileUpdate = () => {
         contentType : 'application/json; charset=utf-8',
         dataType : 'json',
         success : () => {
-            alert('회원 정보가 수정 되었습니다.');
-            window.location.href = '/member/profile';
+            Swal.fire({
+                icon: 'success',
+                title: '수정 완료',
+                text: '회원 정보가 성공적으로 수정되었습니다.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                window.location.href = '/member/profile';
+            });
         },
         error : (error) => {
             console.error('update error :: ',error);
-            alert('회원 정보가 수정 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '수정 실패',
+                text: '회원 정보 수정 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }

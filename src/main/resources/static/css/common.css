@@ -6,6 +6,24 @@
     --bg-main: #ffffff;
     --bg-alt: #f9f9f9;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.footer {
+    flex-shrink: 0;
+}
+
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
@@ -148,14 +166,15 @@ body {
     border-top: 1px solid #eee;
 }
 
-.footer-link {
-    margin: 0 10px;
-    color: var(--theme-orange);
-    text-decoration: none;
-    font-weight: 500;
+.footer-links{
+    display: flex;
+    justify-content: center;
 }
 
-.footer-link:hover {
-    color: var(--theme-orange-dark);
-    text-decoration: underline;
+.footer-link {
+    margin: 0 10px;
+    color: darkgrey;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 500;
 }

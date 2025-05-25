@@ -96,8 +96,14 @@ $(document).ready(async function () {
         calculatePriceAndCalories();
 
     }).catch((error) => {
-        alert('로그인 정보 확인에 실패했습니다.');
-        location.href = '/member/login';
+        Swal.fire({
+            icon: 'error',
+            title: '로그인 실패',
+            text: '로그인 정보 확인에 실패했습니다.',
+            confirmButtonColor: '#f97316'
+        }).then(() => {
+            location.href = '/member/login';
+        });
     });
 
 
@@ -208,7 +214,12 @@ $(document).ready(async function () {
         // 필수 항목 체트
         const required = ["bread", "material1", "vegetable1", "sauce1", "cheese"];
         if (!required.every(name => getSelectedValue(name))) {
-            alert("모든 필수 항목을 선택해야 합니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '선택 오류',
+                text: '모든 필수 항목을 선택해야 합니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
         //DTO 생성
@@ -230,7 +241,12 @@ $(document).ready(async function () {
         } else if (globalUserInfo?.type === 'social') {
             customCartDTO.socialUid = globalUserInfo.id;
         } else {
-            alert("로그인 후 이용해주세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: '로그인이 필요합니다',
+                text: '로그인 후 이용해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -266,9 +282,19 @@ $(document).ready(async function () {
                     for (const [field, message] of Object.entries(errors)) {
                         msg += `- ${field}: ${message}\n`;
                     }
-                    alert(msg);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '입력 오류',
+                        text: msg,
+                        confirmButtonColor: '#f97316'
+                    });
                 } else {
-                    alert('저장에 실패했습니다. 다시 시도해 주세요.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '저장 실패',
+                        text: '저장에 실패했습니다. 다시 시도해 주세요.',
+                        confirmButtonColor: '#f97316'
+                    });
                 }
             }
         });

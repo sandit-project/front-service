@@ -30,13 +30,24 @@ let logout = () => {
         type: 'POST',
         url: '/logout',
         success: ()=>{
-            alert('로그아웃이 성공했습니다.');
-            localStorage.removeItem('accessToken');
-            window.location.href = '/member/login';
+            Swal.fire({
+                icon: 'success',
+                title: '로그아웃 완료',
+                text: '로그아웃이 성공했습니다.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/member/login';
+            });
         },
         error: (error)=>{
             console.log('오류 발생 : ',error);
-            alert('로그아웃 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '로그아웃 실패',
+                text: '로그아웃 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }
@@ -47,13 +58,24 @@ let deleteAccount = () => {
         type: 'DELETE',
         url: '/user',
         success: ()=>{
-            alert('회원 탈퇴가 성공했습니다.');
-            localStorage.removeItem('accessToken');
-            window.location.href = '/member/login';
+            Swal.fire({
+                icon: 'success',
+                title: '탈퇴 완료',
+                text: '회원 탈퇴가 성공했습니다.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/member/login';
+            });
         },
         error: (error)=>{
             console.log('오류 발생 : ',error);
-            alert('회원 탈퇴 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '탈퇴 실패',
+                text: '회원 탈퇴 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }
@@ -64,11 +86,21 @@ let requestProfile = () => {
         type: 'GET',
         url: '/member/profile',
         success: ()=>{
-            alert('회원 정보 로드에 성공했습니다.');
+            Swal.fire({
+                icon: 'success',
+                title: '정보 로드 성공',
+                text: '회원 정보 로드에 성공했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         },
         error: (error)=>{
             console.log('오류 발생 : ',error);
-            alert('회원 정보 로드 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '정보 로드 실패',
+                text: '회원 정보 로드 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }

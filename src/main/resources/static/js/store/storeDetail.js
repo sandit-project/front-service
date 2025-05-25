@@ -25,7 +25,12 @@ $(document).ready(function () {
             $('#status').val(data.storeStatus)
         },
         error: function () {
-            alert('지점 정보를 불러오는데 실패했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '지점 정보 오류',
+                text: '지점 정보를 불러오는데 실패했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 
@@ -51,28 +56,62 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function () {
-                alert('수정 성공!');
-                window.location.href = '/store/list';
+                Swal.fire({
+                    icon: 'success',
+                    title: '수정 완료',
+                    text: '지점 정보가 수정되었습니다.',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    window.location.href = '/store/list';
+                });
             },
             error: function () {
-                alert('수정 실패!');
+                Swal.fire({
+                    icon: 'error',
+                    title: '수정 실패',
+                    text: '지점 정보 수정 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });
 
     // 삭제 요청
     $('#deleteBtn').click(function () {
-        if (!confirm('정말 삭제하시겠습니까?')) return;
+        Swal.fire({
+            icon: 'warning',
+            title: '정말 삭제하시겠습니까?',
+            text: '삭제된 지점은 복구할 수 없습니다.',
+            showCancelButton: true,
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6'
+        }).then((result) => {
+            if (result.isConfirmed) {
 
-        $.ajax({
-            url: `/stores/${storeUid}`,
-            method: 'DELETE',
-            success: function () {
-                alert('삭제 성공!');
-                window.location.href = '/store/list';
-            },
-            error: function () {
-                alert('삭제 실패!');
+                $.ajax({
+                    url: `/stores/${storeUid}`,
+                    method: 'DELETE',
+                    success: function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제 완료',
+                            text: '지점이 삭제되었습니다.',
+                            confirmButtonColor: '#f97316'
+                        }).then(() => {
+                            window.location.href = '/store/list';
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제 실패',
+                            text: '지점 삭제 중 오류가 발생했습니다.',
+                            confirmButtonColor: '#f97316'
+                        });
+                    }
+                });
             }
         });
     });

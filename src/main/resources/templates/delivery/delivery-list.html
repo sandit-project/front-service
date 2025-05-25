@@ -23,6 +23,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<main>
 <div class="container">
     <div class="header-delivery">
         <h1>
@@ -63,6 +64,7 @@
         </table>
     </div>
 </div>
+    </main>
 <script>
     const WEBSOCKET_URL = "[[${websocketUrl}]]";
 </script>

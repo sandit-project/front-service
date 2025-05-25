@@ -16,7 +16,12 @@ $(document).ready(async ()=>{
         initUserUI(userInfo);
     } catch (err) {
         console.error('유저 정보 조회 실패:', err);
-        alert('유저 정보를 불러오지 못했습니다. 다시 로그인 해주세요.');
+        Swal.fire({
+            icon: 'error',
+            title: '로그인 필요',
+            text: '유저 정보를 불러오지 못했습니다. 다시 로그인 해주세요.',
+            confirmButtonColor: '#f97316'
+        });
         return;
     }
 
@@ -28,7 +33,12 @@ $(document).ready(async ()=>{
     storeInfo = await fetchStoreUidByManager(managerUid);
 
     if (storeInfo==null) {
-        alert('지점 정보를 불러오는 데 실패했습니다.');
+        Swal.fire({
+            icon: 'error',
+            title: '지점 정보 오류',
+            text: '지점 정보를 불러오는 데 실패했습니다.',
+            confirmButtonColor: '#f97316'
+        });
         return;
     }
     // 화면 헤더 텍스트 업데이트
@@ -104,7 +114,12 @@ $(document).ready(async ()=>{
         }
      } catch (err){
            console.error('주문 목록 조회 실패 :',err);
-           alert('주문 목록을 불러오는 중 오류가 발생했습니다.');
+           Swal.fire({
+               icon: 'error',
+               title: '주문 목록 오류',
+               text: '주문 목록을 불러오는 중 오류가 발생했습니다.',
+               confirmButtonColor: '#f97316'
+           });
      } finally {
            $('#loading').hide();
        }
@@ -115,7 +130,12 @@ $(document).ready(async ()=>{
     $('#cancel-confirm-btn').click(async function() {
         const reason = $('#cancel-reason-dropdown').val();
         if (!reason) {
-            alert('취소 사유를 선택해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '취소 사유 필요',
+                text: '취소 사유를 선택해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -211,11 +231,24 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
         dataType : 'json',
         success: (response) => {
             console.log(response);
-            alert(response.message);
+            Swal.fire({
+                icon: 'success',
+                title: '요청 완료',
+                text: response.message || '요청이 성공적으로 처리되었습니다.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                loadOrders();
+            });
         },
         error: (error) => {
             console.log('오류발생 : ', error);
-            alert('요청 중 오류가 발생했습니다.');
+            const message = error?.responseJSON?.message || '요청 중 오류가 발생했습니다.';
+            Swal.fire({
+                icon: 'error',
+                title: '에러',
+                text: message,
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 

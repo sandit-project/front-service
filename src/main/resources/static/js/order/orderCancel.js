@@ -18,9 +18,7 @@ let cancelOrder = (merchantUid, reason) => {
                     text: SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE,
                     confirmButtonColor: '#f97316'
                 });
-                //alert(SYSTEM_MESSAGES.CANCEL_DELAY_NOTICE);
             } else {
-                //alert(`결제 취소 실패: ${msg}`);
                 Swal.fire({
                     icon: 'error',
                     title: '결제 취소 실패',
@@ -30,7 +28,6 @@ let cancelOrder = (merchantUid, reason) => {
             }
             return Promise.reject(new Error(msg));
         } else {
-            //alert(resp.message || '결제 취소 성공!');
             Swal.fire({
                 icon: 'success',
                 title: '주문 취소 완료',

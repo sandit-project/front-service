@@ -108,6 +108,12 @@ let loadStores = ({ limit, lastUid }) => {
         },
         error: (error) => {
             console.error('지점 목록 조회 오류 :: ', error);
+            Swal.fire({
+                icon: 'error',
+                title: '지점 목록 오류',
+                text: '지점 목록을 불러오는 중 문제가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 };

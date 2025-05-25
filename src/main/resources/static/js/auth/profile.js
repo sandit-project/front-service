@@ -81,7 +81,12 @@ function fetchProfile() {
         },
         error : (error) => {
             console.error('profile in error :: ',error);
-            alert('프로필 요청 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '프로필 요청 실패',
+                text: '프로필 요청 중 오류가 발생했습니다. 다시 로그인해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             if(error.status === 401){
                 // 토큰 만료 에러 메세지에 따라 refreshToken 보냄
                 handleTokenExpiration();

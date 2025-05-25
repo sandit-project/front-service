@@ -34,6 +34,12 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error("사이드 목록을 불러오는 중 오류 발생:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '불러오기 실패',
+                    text: '사이드 목록을 불러오는 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     }
@@ -43,25 +49,51 @@ $(document).ready(function () {
         let sideName = $(this).data("sidename");
 
         if (!sideName) {
-            alert("삭제할 사이드 이름이 없습니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '삭제 실패',
+                text: '삭제할 사이드 이름이 없습니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
-        if (confirm("정말 삭제하시겠습니까?")) {
-            $.ajax({
-                url: "/menus/sides/" + encodeURIComponent(sideName),
-                type: "DELETE",
-                success: function () {
-                    alert("사이드가 삭제되었습니다!");
-                    loadSides(); // 목록 새로고침
-                },
-                error: function () {
-                    alert("삭제 중 오류가 발생했습니다.");
-                }
-            });
-        }
+        Swal.fire({
+            title: '정말 삭제하시겠습니까?',
+            text: '삭제된 사이드는 복구할 수 없습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/menus/sides/" + encodeURIComponent(sideName),
+                    type: "DELETE",
+                    success: function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제 완료',
+                            text: '사이드가 삭제되었습니다!',
+                            confirmButtonColor: '#f97316'
+                        }).then(() => {
+                            loadSides();
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제 실패',
+                            text: '삭제 중 오류가 발생했습니다.',
+                            confirmButtonColor: '#f97316'
+                        });
+                    }
+                });
+            }
+        });
     });
-
     // 페이지 로드 시 사이드 목록 불러오기
     loadSides();
 });

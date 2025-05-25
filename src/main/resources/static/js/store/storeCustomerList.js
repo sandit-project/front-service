@@ -33,7 +33,12 @@ $(document).ready(() => {
             });
         },
         error: function () {
-            alert("가맹점 목록을 불러오는 데 실패했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '가맹점 목록 오류',
+                text: '가맹점 목록을 불러오는 데 실패했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 });

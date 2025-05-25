@@ -72,7 +72,13 @@ $(document).ready(async () => {
             });
         },
         error: function () {
-            alert("사이드 메뉴 목록을 불러오는 데 실패했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '불러오기 실패',
+                text: '사이드 메뉴 목록을 불러오는 데 실패했습니다.',
+                confirmButtonColor: '#f97316'
+            });
+
         }
     });
 
@@ -118,7 +124,13 @@ $(document).ready(async () => {
                 });
             },
             error: function (xhr) {
-                alert("주문 오류: " + xhr.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: '주문 실패',
+                    text: xhr.responseText || '알 수 없는 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
+
             }
         });
     });
@@ -224,12 +236,23 @@ function deleteAccount() {
         type: 'DELETE',
         url: '/user',
         success: () => {
-            alert('회원 탈퇴가 완료되었습니다.');
-            localStorage.removeItem('accessToken');
-            window.location.href = '/member/login';
+            Swal.fire({
+                icon: 'success',
+                title: '회원 탈퇴 완료',
+                text: '이용해 주셔서 감사합니다.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/member/login';
+            });
         },
         error: () => {
-            alert('회원 탈퇴 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '탈퇴 실패',
+                text: '회원 탈퇴 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }

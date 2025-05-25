@@ -34,6 +34,12 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error("소스 목록을 불러오는 중 오류 발생:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '목록 불러오기 실패',
+                    text: '소스 목록을 불러오는 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     }
@@ -43,23 +49,50 @@ $(document).ready(function () {
         let sauceName = $(this).data("saucename");
 
         if (!sauceName) {
-            alert("삭제할 소스 이름이 없습니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '삭제 실패',
+                text: '삭제할 소스 이름이 없습니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
-        if (confirm("정말 삭제하시겠습니까?")) {
-            $.ajax({
-                url: "/menus/sauces/" + encodeURIComponent(sauceName),
-                type: "DELETE",
-                success: function () {
-                    alert("소스가 삭제되었습니다!");
-                    loadSauces(); // 목록 새로고침
-                },
-                error: function () {
-                    alert("삭제 중 오류가 발생했습니다.");
-                }
-            });
-        }
+        Swal.fire({
+            title: `'${sauceName}' 소스를 삭제하시겠습니까?`,
+            text: '삭제된 소스는 복구할 수 없습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/menus/sauces/" + encodeURIComponent(sauceName),
+                    type: "DELETE",
+                    success: function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제 완료',
+                            text: '소스가 삭제되었습니다!',
+                            confirmButtonColor: '#f97316'
+                        }).then(() => {
+                            loadSauces(); // 목록 새로고침
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제 실패',
+                            text: '삭제 중 오류가 발생했습니다.',
+                            confirmButtonColor: '#f97316'
+                        });
+                    }
+                });
+            }
+        });
     });
 
     // 페이지 로드 시 소스 목록 불러오기

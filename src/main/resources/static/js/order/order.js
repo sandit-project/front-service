@@ -238,6 +238,17 @@ $(document).ready(async () => {
         console.log('pay button clicked');
         // 예약 시간 input의 값을 읽어오되, 값이 없으면 null로 처리
 
+        const phone = $('#phone').val();
+        if (!phone || phone.trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: '전화번호 필요',
+                text: '주문을 진행하려면 전화번호를 입력해주세요.',
+                confirmButtonColor: '#f97316'
+            });
+            return;
+        }
+
         // 1) flatpickr 에서 넘어오는 "YYYY-MM-DDTHH:mm" 문자열을 가져온다
         const raw = $('#reservationDate').val();
         let reservationDate = null;
@@ -521,13 +532,6 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                     merchantUid: response.merchant_uid,
                 }),
                 success: function(updateRes) {
-                    //alert(updateRes.message || "결제 성공!");
-                    Swal.fire({
-                        icon: 'success',
-                        title: '결제 완료',
-                        text: updateRes.message || '결제 성공!',
-                        confirmButtonColor: '#f97316'
-                    });
                     submitOrders(buyer, response, reservationDate)
                         .then(() => {
                             const allCartUids   = getSelectedCartUids();
@@ -546,8 +550,9 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                                 title: '결제 및 주문 완료',
                                 text: '결제 및 주문이 완료되었습니다.',
                                 confirmButtonColor: '#f97316'
+                            }).then(() => {
+                                window.location.href = "/";
                             });
-                            window.location.href = "/";
                         })
                         .catch(async (err) => {
                             console.error('주문 처리 오류', err);
