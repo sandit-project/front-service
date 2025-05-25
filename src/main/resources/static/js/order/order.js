@@ -114,6 +114,7 @@ function getSelectedCustomIds() {
 // 주소 존재 여부 체크 API 호출
 function checkUserAddress() {
     const address = $('#mainAddress').val();
+    const detail = $('#mainAddressDetail').val();
     return Promise.resolve(!!address && address.trim() !== '');
 }
 
@@ -649,7 +650,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
         addressStartLat:    parseFloat($('#storeLatitude').val()),
         addressStartLan:    parseFloat($('#storeLongitude').val()),
         // 도착지는 사용자 입력 주소
-        addressDestination: $('#mainAddress').val(),
+        addressDestination: `${$('#mainAddress').val()} ${$('#mainAddressDetail').val()}`.trim(),
         addressDestinationLat:  parseFloat($('#deliveryDestinationLat').val()),
         addressDestinationLan:  parseFloat($('#deliveryDestinationLan').val())
     };
