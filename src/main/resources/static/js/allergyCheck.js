@@ -11,6 +11,13 @@ async function fetchUserAllergies(userUid) {
         return data.allergy || []; // ✅ 이 한 줄을 꼭 추가!!
     } catch (err) {
         console.error("알러지 조회 오류:", err);
+        // SweetAlert로 오류 알림
+        swal({
+            title: "알러지 조회 오류",
+            text: "알러지 정보를 불러오는 도중 문제가 발생했습니다.",
+            icon: "error",
+            confirmButtonColor: '#f97316'
+        });
         window.globalUserAllergies = [];
         return [];  // 실패시에도 무조건 배열 반환
     }

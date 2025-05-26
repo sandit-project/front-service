@@ -37,3 +37,10 @@ h1 {
     font-size: 1.25rem;
     color: #fd9600;
 }
+.store-map {
+    width: 220px;
+    height: 150px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #eee;
+    margin-bottom: 12px;
+}
