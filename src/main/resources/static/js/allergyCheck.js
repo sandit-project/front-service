@@ -1,8 +1,16 @@
 //유저 알러지 조회
-async function fetchUserAllergies(userUid) {
+async function fetchUserAllergies(type, userUid) {
     try {
+        let url;
+        if(type === "user"){
+            url = `/api/ai/users/${userUid}/allergies`;
+        }else if(type === "social"){
+            url = `/api/ai/socials/${userUid}/allergies`;
+        }else{
+            url = null;
+        }
         const data = await $.ajax({
-            url: `/api/ai/users/${userUid}/allergies`,
+            url: url,
             type: 'GET',
             dataType: 'json'
         });

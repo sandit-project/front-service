@@ -32,7 +32,7 @@ $(document).ready(async () => {
                 const html = `
                     <div class="menu-item" data-menu-id="${menu.uid}">
                         <a href="/menus/name/${menu.menuName}">
-                            <img src="${menu.img}" alt="메뉴 이미지">
+                            <img src="${menu.img}" alt="메뉴 이미지" onerror="this.onerror=null; this.src='https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png';">
                         </a>
                         <div class="menu-info">
                             <h2>${menu.menuName}</h2>
@@ -185,12 +185,7 @@ $(document).ready(async () => {
 
         // === 유저 알러지 정보 가져오기 ===
         let allergyList = [];
-        if (globalUserInfo.type === 'user') {
-            allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
-        } else if (globalUserInfo.type === 'social') {
-            //소셜 로그인은 별도 처리 필요
-            allergyList = [];
-        }
+        allergyList = await fetchUserAllergies(globalUserInfo.type, globalUserInfo.id); // user_uid로 호출
 
         // ==== 알러지 체크 로직 ===
         let allergyReqBody = {

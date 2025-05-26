@@ -2,7 +2,9 @@ $(document).ready(async ()=>{
     checkToken();
     setupAjax();
 
-    const resultList = await requestDeliveringOrder();
+    const profile = await fetchProfile();
+    await fetchUserAllergies(profile.type, profile.uid);
+    const resultList = await requestDeliveringOrder(profile.type, profile.uid);
 
     // 카카오맵 렌더링 (위에서 받은 좌표 전달)
     renderKakaomap(resultList[0]);
@@ -12,20 +14,16 @@ $(document).ready(async ()=>{
     // });
 });
 
-let requestDeliveringOrder = async () => {
+let requestDeliveringOrder = async (type,uid) => {
     checkToken();
     setupAjax();
 
     try {
-        const profile = await fetchProfile();
-        const userUid = profile.uid;
-        const userType = profile.type;
-
         $('#order-info-box').on('click', () => {
             window.location.href = `/order/details`;
         });
 
-        const orders = await fetchOrders(userUid,userType);
+        const orders = await fetchOrders(uid,type);
 
         if (orders) {
             const mergedOrders = await mergeOrderList(orders);
@@ -77,7 +75,6 @@ function fetchProfile() {
 
             initUserUI(response);
             console.log(response);
-            return response;
         },
         error : (error) => {
             console.error('profile in error :: ',error);
