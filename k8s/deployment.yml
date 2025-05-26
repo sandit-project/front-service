@@ -34,15 +34,15 @@ spec:
             - name: EDGE_SERVICE_URL
               value: http://edge-service:80
             - name: GOOGLE_OAUTH_CALLBACK_URL
-              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/google/callback
+              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/google/callback
             - name: KAKAO_OAUTH_CALLBACK_URL
-              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/kakao/callback
+              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/kakao/callback
             - name: NAVER_OAUTH_CALLBACK_URL
-              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/naver/callback
+              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/naver/callback
             - name: TOKEN_REDIRECT_URL
-              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/token/
+              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/token/
             - name: WEBSOCKET_URL
-              value:  http://a8ea2a2e54db44efea26ca557d787d15-1613665184.ap-northeast-2.elb.amazonaws.com/delivery-location
+              value:  http://a21c030df37ff40b59301ff538deb564-60416311.ap-northeast-2.elb.amazonaws.com/delivery-location
             - name: SPRING_PROFILES_ACTIVE
               value: deploy
             - name: KAKAO_REST_API_KEY
