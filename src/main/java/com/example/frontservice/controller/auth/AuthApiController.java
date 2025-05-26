@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -137,5 +138,11 @@ public class AuthApiController {
     public boolean updateProfile(HttpServletRequest request, @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO){
         String token = request.getHeader("Authorization");
         return authService.updateProfile(token, updateProfileRequestDTO);
+    }
+
+    @GetMapping("/user/managers")
+    public List<ManagerDTO> getUserManagers(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        return authService.getManagers(token);
     }
 }

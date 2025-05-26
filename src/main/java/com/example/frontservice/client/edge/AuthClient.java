@@ -7,6 +7,7 @@ import com.example.frontservice.dto.oauth.OAuthUpdateTokensDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "authClient", url = "${sandit.edge-service-url}/auths")
@@ -44,5 +45,8 @@ public interface AuthClient {
 
     @PutMapping("/profile")
     boolean updateProfile(@RequestHeader("Authorization") String token, @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO);
+
+    @GetMapping("/managers")
+    List<ManagerDTO> getManagers(@RequestHeader("Authorization") String token);
 
 }

@@ -93,12 +93,7 @@ $(document).ready(async () => {
 
         // === 유저 알러지 정보 가져오기 ===
         let allergyList = [];
-        if (globalUserInfo.type === 'user') {
-            allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
-        } else if (globalUserInfo.type === 'social') {
-            //소셜 로그인은 별도 처리 필요
-            allergyList = [];
-        }
+        allergyList = await fetchUserAllergies(globalUserInfo.type, globalUserInfo.id);
 
         // ==== 알러지 체크 로직 ===
         let allergyReqBody = {
