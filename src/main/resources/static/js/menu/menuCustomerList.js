@@ -26,9 +26,13 @@ $(document).ready(async () => {
         url: "/menus",
         success: function (menus) {
             menuList = menus; // menus 전체를 저장해 둠
-            console.log("메뉴리스트 :",menuList);
+            console.log("메뉴리스트 :", menuList);
             const container = $(".menu-container");
+
             menus.forEach(menu => {
+                // status가 "ACTIVE"가 아니면 무시 (대소문자 구분 없이 처리)
+                if ((menu.status || '').toUpperCase() !== 'ACTIVE') return;
+
                 const html = `
                     <div class="menu-item" data-menu-id="${menu.uid}">
                         <a href="/menus/name/${menu.menuName}">
@@ -44,7 +48,8 @@ $(document).ready(async () => {
                             </form>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
                 container.append(html);
             });
         },
@@ -55,9 +60,9 @@ $(document).ready(async () => {
                 text: '메뉴 목록을 불러오는 데 실패했습니다.',
                 confirmButtonColor: '#f97316'
             });
-
         }
     });
+
 
 
     // 장바구니 담기
