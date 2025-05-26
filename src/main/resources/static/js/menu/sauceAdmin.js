@@ -2,11 +2,20 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     $("#submitBtn").on("click", function () {
         let fileInput = $("#img")[0].files[0];
 
         if (!fileInput) {
-            alert("이미지를 업로드해야 합니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '이미지 누락',
+                text: '이미지를 업로드해야 합니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -33,12 +42,23 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function () {
-                alert("소스 정보가 등록되었습니다!");
-                window.location.href = "/sauces/list"; // 필요 시 주석 해제
+                Swal.fire({
+                    icon: 'success',
+                    title: '등록 완료',
+                    text: '소스 정보가 등록되었습니다!',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    window.location.href = "/sauces/list";
+                });
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
-                alert("소스 정보 등록 중 오류가 발생했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '등록 실패',
+                    text: '소스 정보 등록 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

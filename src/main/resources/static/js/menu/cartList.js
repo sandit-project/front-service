@@ -14,6 +14,7 @@ $(document).ready(function () {
             return;
         }
 
+        initUserUI(userInfo);
         loadCartItems();
     });
 
@@ -34,7 +35,12 @@ $(document).ready(function () {
         const newAmount = parseInt(row.find(".amount-input").val());
 
         if (!newAmount || newAmount < 1) {
-            alert("수량은 1 이상이어야 합니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '수량 오류',
+                text: '수량은 1 이상이어야 합니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -46,9 +52,21 @@ $(document).ready(function () {
         const row = $(this).closest("tr");
         const id = row.data("id");
 
-        if (confirm("정말 삭제하시겠습니까?")) {
-            deleteCartItem(id, row);
-        }
+        Swal.fire({
+            title: '정말 삭제하시겠습니까?',
+            text: '이 항목은 복구할 수 없습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteCartItem(id, row);
+            }
+        });
+
     });
 
     // 선택 삭제
@@ -58,20 +76,43 @@ $(document).ready(function () {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert("삭제할 항목을 선택하세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: '삭제 실패',
+                text: '삭제할 항목을 선택하세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
-        if (!confirm(`${selectedIds.length}개 항목을 삭제할까요?`)) return;
+        Swal.fire({
+            title: `${selectedIds.length}개 항목을 삭제할까요?`,
+            text: "삭제된 항목은 복구할 수 없습니다.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "삭제",
+            cancelButtonText: "취소",
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const requestData = {
+                    selectedIds,
+                    ...getUserParams()
+                };
 
-        const requestData = {
-            selectedIds,
-            ...getUserParams()
-        };
-
-        $.post("/menus/cart/delete-selected", requestData)
-            .done(response => renderCartItems(response.cartItems))
-            .fail(() => alert("선택 삭제 실패"));
+                $.post("/menus/cart/delete-selected", requestData)
+                    .done(response => renderCartItems(response.cartItems))
+                    .fail(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제 실패',
+                            text: '선택한 항목 삭제 중 오류가 발생했습니다.',
+                            confirmButtonColor: '#f97316'
+                        });
+                    });
+            }
+        });
     });
 
     // 주문하기
@@ -81,7 +122,12 @@ $(document).ready(function () {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert("주문할 항목을 선택하세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: '선택 없음',
+                text: '주문할 항목을 선택하세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -113,7 +159,14 @@ function loadCartItems() {
     const params = getUserParams();
     $.get("/menus/cart", params, function (response) {
         renderCartItems(response.cartItems);
-    }).fail(() => alert("장바구니 로딩 실패"));
+    }).fail(() => {
+        Swal.fire({
+            icon: 'error',
+            title: '로딩 실패',
+            text: '장바구니 로딩 중 오류가 발생했습니다.',
+            confirmButtonColor: '#f97316'
+        });
+    });
 }
 
 function renderCartItems(cartItems) {
@@ -161,7 +214,12 @@ function updateCartItemAmount(id, newAmount) {
             renderCartItems(response.cartItems);
         },
         error: function () {
-            alert("수량 변경 실패");
+            Swal.fire({
+                icon: 'error',
+                title: '수량 변경 실패',
+                text: '수량 변경 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }
@@ -176,9 +234,20 @@ function deleteCartItem(id, row) {
         success: function (response) {
             row.remove();
             renderCartItems(response.cartItems);
+            Swal.fire({
+                icon: 'success',
+                title: '삭제 완료',
+                text: '항목이 삭제되었습니다.',
+                confirmButtonColor: '#f97316'
+            });
         },
         error: function () {
-            alert("삭제 실패");
+            Swal.fire({
+                icon: 'error',
+                title: '삭제 실패',
+                text: '항목 삭제 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }

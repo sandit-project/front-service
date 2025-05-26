@@ -2,6 +2,10 @@ $(document).ready(function () {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     const menuName = decodeURIComponent(window.location.pathname.split('/').pop());
 
     $.ajax({
@@ -36,7 +40,12 @@ $(document).ready(function () {
             $.when.apply($, promises).done(() => console.log("재료 옵션 로딩 완료"));
         },
         error: (xhr) => {
-            alert("메뉴 정보 로딩 실패: " + xhr.responseText);
+            Swal.fire({
+                icon: 'error',
+                title: '메뉴 로딩 실패',
+                text: xhr.responseText || '메뉴 정보를 불러오는 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 
@@ -82,11 +91,22 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: () => {
-                alert("수정 완료");
-                window.location.href = "/menus/list";
+                Swal.fire({
+                    icon: 'success',
+                    title: '수정 완료',
+                    text: '메뉴가 성공적으로 수정되었습니다.',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    window.location.href = "/menus/list";
+                });
             },
             error: (xhr) => {
-                alert("수정 실패: " + xhr.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: '수정 실패',
+                    text: xhr.responseText || '수정 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

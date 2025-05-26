@@ -1,6 +1,9 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
     // URL에서 cheeseName을 가져오기 (예: /menus/cheeses/edit/치즈이름)
     const cheeseName = window.location.pathname.split('/').pop();  // URL에서 마지막 부분을 가져옴
 
@@ -20,7 +23,12 @@ $(document).ready(function () {
         },
         error: function (xhr) {
             console.error("Error:", xhr.responseText);
-            alert("치즈 정보 불러오기 중 오류가 발생했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '불러오기 실패',
+                text: '치즈 정보 불러오기 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 
@@ -52,12 +60,23 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function () {
-                alert("치즈 정보가 수정되었습니다!");
-                window.location.href = "/cheeses/list";  // 수정 완료 후 목록 페이지로 이동
+                Swal.fire({
+                    icon: 'success',
+                    title: '수정 완료',
+                    text: '치즈 정보가 수정되었습니다!',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    window.location.href = "/cheeses/list";
+                });
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
-                alert("치즈 정보 수정 중 오류가 발생했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '수정 실패',
+                    text: '치즈 정보 수정 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

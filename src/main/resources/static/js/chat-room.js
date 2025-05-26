@@ -44,7 +44,12 @@
             globalUserInfo = await getUserInfo();
 
             if (!roomId) {
-                alert("roomId가 필요합니다. 예: ?roomId=123");
+                Swal.fire({
+                    icon: 'warning',
+                    title: '채팅방 ID 누락',
+                    text: 'roomId가 필요합니다. 예: ?roomId=123',
+                    confirmButtonColor: '#f97316'
+                });
                 return;
             }
 

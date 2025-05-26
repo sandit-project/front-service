@@ -28,7 +28,12 @@ async function checkAllergyAPI(body) {
         });
         return response;  // { risk, cause, detail }
     } catch (error) {
-        alert("알러지 체크 오류: " + (error.responseText || error.statusText));
+        Swal.fire({
+            icon: 'error',
+            title: '알러지 체크 실패',
+            text: error.responseText || error.statusText || '오류가 발생했습니다.',
+            confirmButtonColor: '#f97316'
+        });
         return { risk: false, cause: [], detail: '체크 중 오류 발생' };
     }
 }

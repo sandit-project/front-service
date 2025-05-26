@@ -1,5 +1,9 @@
 $(document).ready(()=>{
 
+    renderGuestUI();
+
+    $('.dropdown-admin, .dropdown-manager, .dropdown-delivery').hide();
+
     $('#signin').on('click',()=>{
 
         let userId = $('#user_id').val();
@@ -24,6 +28,7 @@ $(document).ready(()=>{
                     confirmButtonColor: '#f97316'
                 }).then(() => {
                     localStorage.setItem('accessToken', response.accessToken);
+                    initUserUI(response);
                     window.location.href = '/';
                 });
             },

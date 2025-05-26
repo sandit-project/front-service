@@ -39,8 +39,14 @@
     function fetchRooms() {
         const userInfo = getUserInfo();
         if (!userInfo) {
-            alert("로그인이 필요합니다.");
-            window.location.href = '/member/login';
+            Swal.fire({
+                icon: 'warning',
+                title: '로그인이 필요합니다',
+                text: '로그인 후 이용해 주세요.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                window.location.href = '/member/login';
+            });
             return;
         }
 
@@ -98,9 +104,20 @@
                         .addClass('delete-btn')
                         .click(e => {
                             e.stopPropagation();
-                            if (confirm(`'${room.name}' 방을 삭제하시겠습니까?`)) {
-                                deleteRoom(room.id);
-                            }
+                            Swal.fire({
+                                icon: 'warning',
+                                title: `'${room.name}' 방을 삭제하시겠습니까?`,
+                                text: '삭제된 방은 복구할 수 없습니다.',
+                                showCancelButton: true,
+                                confirmButtonText: '삭제',
+                                cancelButtonText: '취소',
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    deleteRoom(room.id);
+                                }
+                            });
                         });
 
                     topLineDiv.append(nameSpan, badgeSpan, ownerSpan, deleteButton);
@@ -121,7 +138,12 @@
                 });
             },
             error: function() {
-                alert("채팅방 목록을 불러오는 데 실패했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '목록 불러오기 실패',
+                    text: '채팅방 목록을 불러오는 데 실패했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     }
@@ -132,12 +154,23 @@
         const userInfo = getUserInfo();
 
         if (!roomName) {
-            alert("방 이름을 입력하세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: '입력 필요',
+                text: '방 이름을 입력하세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
         if (!userInfo) {
-            alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
-            window.location.href = '/member/login';
+            Swal.fire({
+                icon: 'error',
+                title: '사용자 정보 없음',
+                text: '로그인 후 다시 시도해주세요.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                window.location.href = '/member/login';
+            });
             return;
         }
 
@@ -152,9 +185,19 @@
             },
             error: function(xhr) {
                 if (xhr.status === 409) {
-                    alert("이미 존재하는 방 이름입니다.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: '중복된 방 이름',
+                        text: '이미 존재하는 방 이름입니다.',
+                        confirmButtonColor: '#f97316'
+                    });
                 } else {
-                    alert("방 생성 중 오류가 발생했습니다.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: '방 생성 실패',
+                        text: '방 생성 중 오류가 발생했습니다.',
+                        confirmButtonColor: '#f97316'
+                    });
                 }
             }
         });
@@ -169,7 +212,12 @@
                 fetchRooms();
             },
             error: function() {
-                alert("채팅방 삭제에 실패했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '삭제 실패',
+                    text: '채팅방 삭제에 실패했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     }

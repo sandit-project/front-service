@@ -19,13 +19,23 @@ async function initPage() {
 
     try {
         const profile = await fetchProfile();
+
+        if (profile?.uid) {
+            initUserUI(profile);
+        }
+
         console.log('[DEBUG] profile:', profile);
 
         userType = profile.type;
         userUid = profile.uid;
 
         if (!userUid || isNaN(Number(userUid))) {
-            alert('유효하지 않은 사용자 정보입니다. 다시 로그인 해주세요.');
+            Swal.fire({
+                icon: 'error',
+                title: '사용자 오류',
+                text: '유효하지 않은 사용자 정보입니다. 다시 로그인 해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -43,7 +53,12 @@ async function initPage() {
 
     } catch (err) {
         console.error('초기 데이터 로딩 실패', err);
-        alert('데이터 로딩 중 오류가 발생했습니다.');
+        Swal.fire({
+            icon: 'error',
+            title: '로딩 실패',
+            text: '데이터 로딩 중 오류가 발생했습니다. 네트워크 상태를 확인해주세요.',
+            confirmButtonColor: '#f97316'
+        });
     }
 }
 
@@ -82,7 +97,12 @@ async function fetchOrders() {
         renderOrders();
     } catch (err) {
         console.error('주문 목록 불러오기 실패', err);
-        alert('주문 목록을 가져오는 데 실패했습니다.');
+        Swal.fire({
+            icon: 'error',
+            title: '불러오기 실패',
+            text: '주문 목록을 가져오는 데 실패했습니다. 잠시 후 다시 시도해주세요.',
+            confirmButtonColor: '#f97316'
+        });
     }
 }
 
@@ -200,7 +220,12 @@ function showModal(ordersGroup) {
     $('#confirm-cancel-btn').off('click').on('click', async () => {
         const reason = $('#cancel-reason-select').val();
         if (!reason) {
-            alert('취소 사유를 선택해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '취소 사유 필요',
+                text: '취소 사유를 선택해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 

@@ -65,7 +65,6 @@ $(document).ready(() => {
                 url: `/auths/email/${email}/authcode`,
                 dataType: 'text'
             });
-            //alert('인증 코드가 발송되었습니다!');
             Swal.fire({
                 icon: 'success',
                 title: '코드 발송 완료',

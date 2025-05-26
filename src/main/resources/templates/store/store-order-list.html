@@ -6,6 +6,7 @@
 
     <!-- jQuery & 공통 스크립트 -->
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!--    테스트 후 삭제하기-->
     <script th:src="@{/js/order/orderCancel.js}"></script>
     <script th:src="@{/js/common.js}"></script>
@@ -24,6 +25,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<main>
 <div class="container">
     <div class="header-store">
         <div>
@@ -77,10 +79,11 @@
         <option value="재고 부족">재고 부족</option>
     </select>
     <div style="margin-top: 15px; text-align:right;">
-        <button id="cancel-confirm-btn">확인</button>
-        <button id="cancel-cancel-btn">닫기</button>
+        <button id="cancel-confirm-btn" style="outline: none; border: none; font-weight: bold; padding: 10px 20px;">확인</button>
+        <button id="cancel-cancel-btn" style="outline: none; border: none; font-weight: bold; padding: 10px 20px;">닫기</button>
     </div>
 </div>
+</main>
 <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>

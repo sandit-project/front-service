@@ -12,6 +12,7 @@ $(document).ready(async () => {
 
         if (userInfo) {
             initUserUI(userInfo);
+            hideUnauthorizedNav(userInfo);
         } else {
             renderGuestUI();
         }
@@ -48,7 +49,13 @@ $(document).ready(async () => {
             });
         },
         error: function () {
-            alert("메뉴 목록을 불러오는 데 실패했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '로딩 실패',
+                text: '메뉴 목록을 불러오는 데 실패했습니다.',
+                confirmButtonColor: '#f97316'
+            });
+
         }
     });
 
@@ -141,7 +148,12 @@ $(document).ready(async () => {
                 });
             },
             error: function (xhr) {
-                alert("주문 오류: " + xhr.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: '주문 실패',
+                    text: xhr.responseText || '알 수 없는 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

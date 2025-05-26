@@ -5,10 +5,17 @@
     box-sizing: border-box;
 }
 
+.user-profile p:last-child {
+    color: #333;
+    font-size: 15px;
+    word-break: break-word;
+    flex: 1;
+}
+
 body {
     font-family: 'Noto Sans KR', sans-serif;
     background: whitesmoke;
-    color: #3b2a1a;
+    color: #333;
 }
 
 /* 🧡 메인 */
@@ -41,7 +48,7 @@ main {
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.06);
     flex: 1;
-    min-width: 340px;
+    min-width: 450px;
 }
 
 .user-profile {
@@ -59,7 +66,7 @@ main {
 }
 
 .user-profile p:last-child {
-    color: #7c5e45;
+    color: #333;
     font-size: 15px;
 }
 
@@ -95,7 +102,7 @@ main {
 /* 👇 주문 텍스트 */
 .order-info p {
     margin-bottom: 8px;
-    color: #5a3b26;
+    color: #333;
     font-size: 15px;
     font-weight: 500;
 }

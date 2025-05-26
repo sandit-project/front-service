@@ -24,7 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
+    padding: 14px 24px 14px 24px;
     margin-bottom: 20px;
 }
 
@@ -38,12 +38,15 @@ body {
 #order-count {
     font-size: 16px;
     color: #333;
+    align-self: end;
 }
 
 .btn,
 .order-btn {
     color: #333;
     padding: 10px 22px;
+    min-width: 90px;
+    min-height: 42px;
     border: none;
     border-radius: 20px;
     font-weight: 700;
@@ -52,7 +55,19 @@ body {
     transition: background 0.2s, transform 0.12s, box-shadow 0.2s;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     background: whitesmoke;
+    user-select: none;
 }
+
+.order-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    min-width: auto;
+    min-height: auto;
+    border-radius: 999px;
+    font-weight: bold;
+    box-shadow: none;
+}
+
 
 .btn:hover,
 .order-btn:hover {
@@ -82,13 +97,15 @@ body {
 
 #status-tabs li {
     padding: 10px 24px;
+    font-size: 15px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     background: whitesmoke;
     color: #333;
     border-radius: 20px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
 }
 
 #status-tabs li:hover,
@@ -200,7 +217,7 @@ tbody tr:hover {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 20px;
-    color: #4a2f1d;
+    color: #333;
 }
 
 #cancel-reason-dropdown {
@@ -241,6 +258,7 @@ tbody tr:hover {
 
 #cancel-cancel-btn {
     background-color: #f0f0f0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     color: #333;
     border-radius: 999px;
     cursor: pointer;
