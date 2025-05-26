@@ -73,7 +73,12 @@ $(document).ready(() => {
             }
         } catch (err) {
             const msg = err.responseJSON?.message || '아이디 검증 중 오류가 발생했습니다.';
-            alert(msg);
+            Swal.fire({
+                icon: 'error',
+                title: '아이디 확인 실패',
+                text: msg,
+                confirmButtonColor: '#f97316'
+            });
             console.error('아이디 중복 체크 오류:', err);
         }
     });
@@ -148,8 +153,15 @@ $(document).ready(() => {
         const mainLat = parseFloat($('#main_latitude').val());
         const mainLan = parseFloat($('#main_longitude').val());
         if (isNaN(mainLat) || isNaN(mainLan)) {
-            alert('주소 찾기 후 회원가입해주세요.');
-            return btn.prop('disabled', false);
+            Swal.fire({
+                icon: 'warning',
+                title: '주소 미지정',
+                text: '주소 찾기 후 회원가입해주세요.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                btn.prop('disabled', false);
+            });
+            return;
         }
 
         // 3) payload 구성

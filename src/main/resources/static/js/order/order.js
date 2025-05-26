@@ -114,6 +114,7 @@ function getSelectedCustomIds() {
 // 주소 존재 여부 체크 API 호출
 function checkUserAddress() {
     const address = $('#mainAddress').val();
+    const detail = $('#mainAddressDetail').val();
     return Promise.resolve(!!address && address.trim() !== '');
 }
 
@@ -209,6 +210,11 @@ $(document).ready(async () => {
     IMP.init('imp54787882');
 
     const user = await fetchProfileAndFillForm();
+    if (user?.uid) {
+        initUserUI(user); // 로그인한 사용자용
+    } else {
+        renderGuestUI(); // 비회원 사용자용
+    }
     cartItems = await getCartItems();
     console.log('[DEBUG] cartItems from 서버 →', cartItems);
 
@@ -232,6 +238,17 @@ $(document).ready(async () => {
     $('#payButton').click(async () => {
         console.log('pay button clicked');
         // 예약 시간 input의 값을 읽어오되, 값이 없으면 null로 처리
+
+        const phone = $('#phone').val();
+        if (!phone || phone.trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: '전화번호 필요',
+                text: '주문을 진행하려면 전화번호를 입력해주세요.',
+                confirmButtonColor: '#f97316'
+            });
+            return;
+        }
 
         // 1) flatpickr 에서 넘어오는 "YYYY-MM-DDTHH:mm" 문자열을 가져온다
         const raw = $('#reservationDate').val();
@@ -257,8 +274,12 @@ $(document).ready(async () => {
         try {
             const hasAddress = await checkUserAddress(userUid);
             if (!hasAddress) {
-                alert('주소를 먼저 입력해야 주문할 수 있습니다.');
-                //window.location.href = `/users/1/edit-address`;  // 주소 입력 페이지로 리다이렉션 (추후 수정)
+                Swal.fire({
+                    icon: 'warning',
+                    title: '주소 입력 필요',
+                    text: '주소를 먼저 입력해야 주문할 수 있습니다.',
+                    confirmButtonColor: '#f97316'
+                });
                 return;
             }
         } catch (error) {
@@ -275,7 +296,12 @@ $(document).ready(async () => {
         console.log('[DEBUG] selectedItems 결과:', selectedItems);
 
         if (cartUids.length === 0) {
-            alert('주문할 메뉴를 선택해주세요.');
+            Swal.fire({
+                icon: 'warning',
+                title: '선택 필요',
+                text: '주문할 메뉴를 선택해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -293,7 +319,12 @@ $(document).ready(async () => {
         console.log("storeUid:", storeUid);
 
         if (!storeUid) {
-            alert('스토어를 선택해주세요!');
+            Swal.fire({
+                icon: 'warning',
+                title: '스토어 선택 필요',
+                text: '주문할 스토어를 선택해주세요.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -304,7 +335,12 @@ $(document).ready(async () => {
             requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate);
         } catch (err) {
             console.error('사전 검증 실패', err);
-            alert('결제 실패했습니다! 다시 시도해주세요!');
+            Swal.fire({
+                icon: 'error',
+                title: '결제 실패',
+                text: '결제가 실패하였습니다. 다시 시도해주세요.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 });
@@ -398,7 +434,12 @@ $(document).on('change', '.item-amount', function () {
     const newAmount = parseInt($input.val(), 10);
 
     if (isNaN(newAmount) || newAmount < 1) {
-        alert('수량은 1 이상이어야 합니다.');
+        Swal.fire({
+            icon: 'warning',
+            title: '수량 선택 필요',
+            text: '수량을 1개 이상 선택해주세요.',
+            confirmButtonColor: '#f97316'
+        });
         $input.val(1);
         return;
     }
@@ -492,7 +533,6 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                     merchantUid: response.merchant_uid,
                 }),
                 success: function(updateRes) {
-                    alert(updateRes.message || "결제 성공!");
                     submitOrders(buyer, response, reservationDate)
                         .then(() => {
                             const allCartUids   = getSelectedCartUids();
@@ -506,17 +546,34 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                             });
                             updateTotalPrice();
                             sessionStorage.removeItem("checkoutData");
-                            alert('주문 저장 및 카트 삭제 완료!');
-                            window.location.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: '결제 및 주문 완료',
+                                text: '결제 및 주문이 완료되었습니다.',
+                                confirmButtonColor: '#f97316'
+                            }).then(() => {
+                                window.location.href = "/";
+                            });
                         })
                         .catch(async (err) => {
                             console.error('주문 처리 오류', err);
-                            alert('주문 저장 중 오류가 발생했습니다. 결제를 자동으로 취소합니다.');
-
+                            //alert('주문 저장 중 오류가 발생했습니다. 결제를 자동으로 취소합니다.');
+                            Swal.fire({
+                                icon: 'warning',
+                                title: '주문 저장 중 오류 발생',
+                                text: '주문 저장 중 오류가 발생했습니다. 결제를 자동으로 취소합니다.',
+                                confirmButtonColor: '#f97316'
+                            });
                             //주문 저장이 안되면 결제 취소 처리
                             try {
                                 await cancelOrder(response.merchant_uid, '주문 저장 실패로 인한 자동 취소');
                                 alert('결제가 취소되었습니다.');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '결제 취소',
+                                    text: '주문 저장이 실패하여 결제가 취소 되었습니다. 다시 주문해주세요.',
+                                    confirmButtonColor: '#f97316'
+                                });
 
                                 await $.ajax({
                                     url: '/orders/update-fail',
@@ -528,16 +585,33 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                                     })
                                 });
 
-                                alert('시스템 상태가 복구되었습니다. 다시 시도해주세요.');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '시스템 상태 복구 완료',
+                                    text: '시스템 상태가 복구되었습니다. 다시 시도해주세요.',
+                                    confirmButtonColor: '#f97316'
+                                });
                             } catch (cancelErr) {
                                 console.error('자동 결제 취소 실패', cancelErr);
-                                alert('결제 취소에도 실패했습니다. 고객센터에 문의해주세요.');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '결제 취소 실패',
+                                    text: '결제 취소에도 실패했습니다. 고객센터에 문의해주세요.',
+                                    confirmButtonColor: '#f97316'
+                                });
+                                // alert('결제 취소에도 실패했습니다. 고객센터에 문의해주세요.');
                             }
                         });
                 },
                 error: function(err) {
                     console.error('상태 업데이트 실패', err);
-                    alert('결제는 성공했지만, 주문 처리 중 문제가 발생했습니다. 고객센터에 문의하세요.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '주문 처리 실패',
+                        text: '결제는 성공했지만, 주문 처리 중 문제가 발생했습니다. 고객센터에 문의하세요.',
+                        confirmButtonColor: '#f97316'
+                    });
+                    //alert('결제는 성공했지만, 주문 처리 중 문제가 발생했습니다. 고객센터에 문의하세요.');
                 }
             });
         } else {
@@ -576,7 +650,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
         addressStartLat:    parseFloat($('#storeLatitude').val()),
         addressStartLan:    parseFloat($('#storeLongitude').val()),
         // 도착지는 사용자 입력 주소
-        addressDestination: $('#mainAddress').val(),
+        addressDestination: `${$('#mainAddress').val()} ${$('#mainAddressDetail').val()}`.trim(),
         addressDestinationLat:  parseFloat($('#deliveryDestinationLat').val()),
         addressDestinationLan:  parseFloat($('#deliveryDestinationLan').val())
     };

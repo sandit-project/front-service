@@ -31,12 +31,17 @@ body {
 
 .header-delivery h1 {
     font-size: 26px;
-    color: #5a3b26;
+    color: #333;
     display: flex;
     gap: 10px;
     align-items: center;
     font-weight: bold;
     margin: 0;
+}
+
+#delivery-count {
+    font-size: 16px;
+    align-self: end;
 }
 
 /* 🔵 버튼 그룹 */
@@ -133,7 +138,6 @@ th, td {
     padding: 14px 16px;
     text-align: center;
     color: #4d3321;
-    /*border-bottom: 1px solid #e6d6b7;*/
     font-size: 14px;
 }
 
@@ -237,4 +241,20 @@ input[type="checkbox"]:checked::after {
         min-width: 70px;
         min-height: 36px;
     }
+}
+
+.start-delivery-btn, .end-delivery-btn {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 999px;
+    background-color: #F38B20;
+    padding: 10px 12px;
+    font-weight: bold;
+    word-wrap: break-word;
+    color: #fff;
+}
+
+.start-delivery-btn:hover, .end-delivery-btn:hover {
+    background-color: #d7730f;
 }

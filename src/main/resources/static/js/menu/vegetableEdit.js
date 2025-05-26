@@ -1,6 +1,11 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     const vegetableName = window.location.pathname.split('/').pop();
 
     $.ajax({
@@ -17,7 +22,12 @@ $(document).ready(function () {
         },
         error: function (xhr) {
             console.error("Error:", xhr.responseText);
-            alert("야채 정보 불러오기 중 오류가 발생했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '불러오기 실패',
+                text: '야채 정보 불러오기 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 
@@ -48,12 +58,23 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function () {
-                alert("야채 정보가 수정되었습니다!");
-                window.location.href = "/vegetables/list";
+                Swal.fire({
+                    icon: 'success',
+                    title: '수정 완료',
+                    text: '야채 정보가 수정되었습니다!',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    window.location.href = "/vegetables/list";
+                });
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
-                alert("야채 정보 수정 중 오류가 발생했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '수정 실패',
+                    text: '야채 정보 수정 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

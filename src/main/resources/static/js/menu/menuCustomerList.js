@@ -12,6 +12,7 @@ $(document).ready(async () => {
 
         if (userInfo) {
             initUserUI(userInfo);
+            hideUnauthorizedNav(userInfo);
         } else {
             renderGuestUI();
         }
@@ -48,7 +49,13 @@ $(document).ready(async () => {
             });
         },
         error: function () {
-            alert("메뉴 목록을 불러오는 데 실패했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '로딩 실패',
+                text: '메뉴 목록을 불러오는 데 실패했습니다.',
+                confirmButtonColor: '#f97316'
+            });
+
         }
     });
 
@@ -74,14 +81,16 @@ $(document).ready(async () => {
             Swal.fire("메뉴 정보를 찾을 수 없습니다.", '', 'error');
             return;
         }
-        const ingredients = menuObj.ingredients || []; // 재료명 배열
+        // *** 재료명 추출 ***
+        const ingredients = extractIngredients(menuObj);
+
         console.log("메뉴정보에서의 재료들 :",ingredients);
 
         // === 유저 알러지 정보 가져오기 ===
         let allergyList = [];
         if (globalUserInfo.type === 'user') {
             allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
-        } else if (globalUserInfo.type === 'socail') {
+        } else if (globalUserInfo.type === 'social') {
             //소셜 로그인은 별도 처리 필요
             allergyList = [];
         }
@@ -93,6 +102,7 @@ $(document).ready(async () => {
             allergy: allergyList,
             ingredients: ingredients
         };
+        console.log("allergyReqBody :",allergyReqBody);
 
         const allergyResult = await checkAllergyAPI(allergyReqBody);
 
@@ -101,8 +111,8 @@ $(document).ready(async () => {
                 icon: 'error',
                 title: '⚠️ 알러지 위험 경고',
                 html: `
-                        <b>위험 원인:</b> ${res.cause && res.cause.length ? res.cause.join(', ') : '원인 불명'}<br>
-                        <b>설명:</b> ${res.detail || ''}
+                        <b>위험 원인:</b> ${allergyResult.cause && allergyResult.cause.length ? allergyResult.cause.join(', ') : '원인 불명'}<br>
+                        <b>설명:</b> ${allergyResult.detail || ''}
                       `
             });
             return;
@@ -138,13 +148,18 @@ $(document).ready(async () => {
                 });
             },
             error: function (xhr) {
-                alert("주문 오류: " + xhr.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: '주문 실패',
+                    text: xhr.responseText || '알 수 없는 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });
 
     // 바로 주문
-    $(document).on("click", ".order-btn", function (e) {
+    $(document).on("click", ".order-btn", async function (e) {
         e.preventDefault();
 
         if (!globalUserInfo || !globalUserInfo.type || !globalUserInfo.id) {
@@ -155,6 +170,50 @@ $(document).ready(async () => {
         const parent = $(this).closest(".menu-item");
         const menuId = parent.data("menu-id");
         const amount = parent.find("input[name='amount']").val();
+
+        // ★★★★★ 여기서 menusList에서 해당 메뉴 객체 찾기
+        const menuObj = menuList.find(menu=>menu.uid === menuId);
+        console.log("menuObj :",menuObj);
+        if (!menuObj) {
+            Swal.fire("메뉴 정보를 찾을 수 없습니다.", '', 'error');
+            return;
+        }
+        // *** 재료명 추출 ***
+        const ingredients = extractIngredients(menuObj);
+
+        console.log("메뉴정보에서의 재료들 :",ingredients);
+
+        // === 유저 알러지 정보 가져오기 ===
+        let allergyList = [];
+        if (globalUserInfo.type === 'user') {
+            allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
+        } else if (globalUserInfo.type === 'social') {
+            //소셜 로그인은 별도 처리 필요
+            allergyList = [];
+        }
+
+        // ==== 알러지 체크 로직 ===
+        let allergyReqBody = {
+            user_uid: (globalUserInfo.type === 'user') ? globalUserInfo.id : null,
+            social_uid: (globalUserInfo.type === 'social') ? globalUserInfo.id : null,
+            allergy: allergyList,
+            ingredients: ingredients
+        };
+        console.log("allergyReqBody :",allergyReqBody);
+
+        const allergyResult = await checkAllergyAPI(allergyReqBody);
+
+        if (allergyResult.risk) {
+            Swal.fire({
+                icon: 'error',
+                title: '⚠️ 알러지 위험 경고',
+                html: `
+                        <b>위험 원인:</b> ${allergyResult.cause && allergyResult.cause.length ? allergyResult.cause.join(', ') : '원인 불명'}<br>
+                        <b>설명:</b> ${allergyResult.detail || ''}
+                      `
+            });
+            return;
+        }
 
         let requestData = { menuId, amount };
 

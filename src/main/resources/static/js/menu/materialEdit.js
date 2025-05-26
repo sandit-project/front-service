@@ -1,6 +1,11 @@
 $(document).ready(function () {
     checkToken();
     setupAjax();
+
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     // URL에서 materialName을 가져오기 (예: /menus/materials/edit/햄)
     const materialName = window.location.pathname.split('/').pop();
 
@@ -19,7 +24,12 @@ $(document).ready(function () {
         },
         error: function (xhr) {
             console.error("Error:", xhr.responseText);
-            alert("재료 정보 불러오기 중 오류가 발생했습니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '불러오기 실패',
+                text: '재료 정보 불러오기 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 
@@ -51,12 +61,23 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function () {
-                alert("재료 정보가 수정되었습니다!");
-                window.location.href = "/materials/list";
+                Swal.fire({
+                    icon: 'success',
+                    title: '수정 완료',
+                    text: '재료 정보가 수정되었습니다!',
+                    confirmButtonColor: '#f97316'
+                }).then(() => {
+                    window.location.href = "/materials/list";
+                });
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
-                alert("재료 정보 수정 중 오류가 발생했습니다.");
+                Swal.fire({
+                    icon: 'error',
+                    title: '수정 실패',
+                    text: '재료 정보 수정 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         });
     });

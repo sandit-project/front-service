@@ -2,6 +2,10 @@ $(document).ready(()=>{
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     //최초 페이지(1)는 lastUid가 null 이어야 함
     cursorMap.set(1,null);
     initStoreList();
@@ -104,6 +108,12 @@ let loadStores = ({ limit, lastUid }) => {
         },
         error: (error) => {
             console.error('지점 목록 조회 오류 :: ', error);
+            Swal.fire({
+                icon: 'error',
+                title: '지점 목록 오류',
+                text: '지점 목록을 불러오는 중 문제가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 };
@@ -138,19 +148,3 @@ let updatePaginationButtons = (response) => {
         loadStores({ limit, lastUid: cursorMap.get(page) });
     });
 };
-
-let logout = () => {
-    $.ajax({
-        type: 'POST',
-        url: '/logout',
-        success: () => {
-            alert('로그아웃이 성공했습니다.');
-            localStorage.removeItem('accessToken');
-            window.location.href = '/member/login'
-        },
-        error: (error) => {
-            console.log('오류발생 : ', error);
-            alert('로그아웃 중 오류가 발생했습니다.');
-        }
-    });
-}

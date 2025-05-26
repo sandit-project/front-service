@@ -2,6 +2,10 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
+    getUserInfo().then((userInfo) => {
+        initUserUI(userInfo);
+    });
+
     // 지점 등록 버튼 클릭 이벤트
     $('#storeRegister').click(async (event) => {
         event.preventDefault(); // 기본 동작 막기
@@ -22,7 +26,12 @@ $(document).ready(() => {
             const status = 'ACTIVE';
 
             if (!storeName || !address || !postcode) {
-                alert('모든 항목을 입력해주세요.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: '입력 누락',
+                    text: '모든 항목을 입력해주세요.',
+                    confirmButtonColor: '#f97316'
+                });
                 return;
             }
 
@@ -42,11 +51,22 @@ $(document).ready(() => {
             // 서버로 데이터 전송
             await sendDataToServer(formData);
 
-            alert('지점가입이 성공했습니다.');
-            window.location.href = '/store/list'; // 페이지 이동
+            Swal.fire({
+                icon: 'success',
+                title: '등록 완료',
+                text: '지점 등록이 성공적으로 완료되었습니다.',
+                confirmButtonColor: '#f97316'
+            }).then(() => {
+                window.location.href = '/store/list';
+            });
         } catch (error) {
             console.error('오류 발생: ', error);
-            alert('처리 중 문제가 발생했습니다. 다시 시도해주세요.');
+            Swal.fire({
+                icon: 'error',
+                title: '오류 발생',
+                text: '처리 중 문제가 발생했습니다. 다시 시도해주세요.',
+                confirmButtonColor: '#f97316'
+            });
         } finally {
             button.prop('disabled', false); // 버튼 활성화
         }

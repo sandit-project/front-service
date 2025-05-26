@@ -22,10 +22,9 @@ body {
 /* 🧾 헤더 영역 */
 .header-store-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 16px;
-    justify-content: center;
-    align-items: center;
+    /*justify-content: space-between;*/
     padding: 24px 24px 14px;
     margin-bottom: 30px;
 }
@@ -34,19 +33,19 @@ body {
     font-size: 26px;
     font-weight: bold;
     color: #333;
-    text-align: center;
     margin: 0;
 }
 
 #order-count {
     font-size: 16px;
     color: #333;
+    align-self: end;
 }
 
 /* 🔘 상단 버튼 */
 .btn-group {
     display: flex;
-    justify-content: center;
+    justify-content: right;
     gap: 16px;
     margin: 20px 0;
 }
@@ -113,7 +112,7 @@ th, td {
     padding: 14px 16px;
     text-align: center;
     font-size: 14px;
-    color: #4a2f1d;
+    color: #333;
 }
 
 th {

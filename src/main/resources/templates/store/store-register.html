@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/findAddress.js}"></script>
     <script th:src="@{/js/store/storeRegister.js}"></script>
     <link th:href="@{/css/common.css}" rel="stylesheet">
@@ -17,6 +19,7 @@
 
 <body>
 
+<main>
 <div class="storeRegister-container">
     <h2 id="title">지점 입력</h2>
     <div>
@@ -60,7 +63,7 @@
 
     </div>
 </div>
-
+</main>
 
 <div th:replace="~{footer :: footer}"></div>
 </body>

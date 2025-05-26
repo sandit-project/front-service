@@ -59,7 +59,12 @@ function execDaumPostcode(addressType) {
                 }
             } catch (err) {
                 console.error('좌표 조회 에러:', err);
-                alert('주소 변환에 실패했습니다.');
+                Swal.fire({
+                    icon: 'error',
+                    title: '주소 변환 실패',
+                    text: '입력한 주소로 좌표를 찾을 수 없습니다.',
+                    confirmButtonColor: '#f97316'
+                });
             }
         }
     }).open();

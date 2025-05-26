@@ -12,6 +12,8 @@ $(document).ready(async ()=>{
         $('#hiddenType').val(userInfo.type);
         $('#hiddenUserRole').val(userInfo.role);
 
+        initUserUI(userInfo);
+
         if(userInfo.role === "ROLE_DELIVERY" || userInfo.role === "ROLE_ADMIN"){
             // 웹소켓에 위치 전달 하는 함수
             sendDeliveryManLocation(userInfo.id, userInfo.type);
@@ -142,7 +144,12 @@ let requestCookingOrder = () => {
         },
         error: (error) => {
             console.log('오류발생 : ', error);
-            alert('요청 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '요청 실패',
+                text: '요청 중 오류가 발생했습니다. 다시 시도해주세요.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }
@@ -200,7 +207,12 @@ let requestDeliveringOrder = () => {
         },
         error: (error) => {
             console.log('오류발생 : ', error);
-            alert('요청 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '요청 실패',
+                text: '요청 중 오류가 발생했습니다. 다시 시도해주세요.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }
@@ -235,11 +247,21 @@ let startDelivery = (info) => {
         dataType: 'json',
         success: (response) => {
             console.log(response);
-            alert(response.message);
+            Swal.fire({
+                icon: 'success',
+                title: '배달 시작됨',
+                text: response.message || '배달이 시작되었습니다.',
+                confirmButtonColor: '#f97316'
+            });
         },
         error: (error) => {
             console.log('오류발생 : ', error);
-            alert('요청 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '배달 시작 실패',
+                text: '요청 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }
@@ -274,11 +296,21 @@ let endDelivery = (info) => {
         dataType: 'json',
         success: (response) => {
             console.log(response);
-            alert(response.message);
+            Swal.fire({
+                icon: 'success',
+                title: '배달 완료됨',
+                text: response.message || '배달이 완료되었습니다.',
+                confirmButtonColor: '#f97316'
+            });
         },
         error: (error) => {
             console.log('오류발생 : ', error);
-            alert('요청 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '배달 완료 실패',
+                text: '요청 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         }
     });
 }

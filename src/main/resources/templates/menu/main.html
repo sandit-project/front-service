@@ -6,6 +6,9 @@
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/menu/main.css}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
 </head>
 <body>
@@ -53,6 +56,24 @@
 </div>
 
 <script>
+    $(document).ready(async () => {
+        checkToken();
+        setupAjax();
+
+        try {
+            const userInfo = await getUserInfo();
+            if (userInfo) {
+                initUserUI(userInfo);
+                hideUnauthorizedNav(userInfo);
+            } else {
+                renderGuestUI();
+            }
+        } catch (e) {
+            console.error('유저 정보 가져오기 실패:', e);
+            renderGuestUI();
+        }
+    });
+
     function navigateTo(url) {
         if (url) {
             window.location.href = url;
