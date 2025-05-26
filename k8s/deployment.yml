@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-service
+spec:
+  selector:
+    matchLabels:
+      app: front-service
+  template:
+    metadata:
+      labels:
+        app: front-service
+    spec:
+      nodeSelector:
+        role: websocket
+      containers:
+        - name: front-service
+          image: 448049828702.dkr.ecr.ap-northeast-2.amazonaws.com/front-service:latest
+          imagePullPolicy: Always
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 5" ]
+          resources:
+            requests:
+              cpu: "350m"
+              memory: "500Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+          ports:
+            - containerPort: 9000
+          env:
+            - name: EDGE_SERVICE_URL
+              value: http://edge-service:80
+            - name: GOOGLE_OAUTH_CALLBACK_URL
+              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/google/callback
+            - name: KAKAO_OAUTH_CALLBACK_URL
+              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/kakao/callback
+            - name: NAVER_OAUTH_CALLBACK_URL
+              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/naver/callback
+            - name: TOKEN_REDIRECT_URL
+              value:  http://a4257e828b8834babb533778c5ad8ddf-1696788353.ap-northeast-2.elb.amazonaws.com/oauth/token/
+            - name: WEBSOCKET_URL
+              value:  http://a8ea2a2e54db44efea26ca557d787d15-1613665184.ap-northeast-2.elb.amazonaws.com/delivery-location
+            - name: SPRING_PROFILES_ACTIVE
+              value: deploy
+            - name: KAKAO_REST_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: KAKAO_REST_API_KEY
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: KAKAO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: KAKAO_CLIENT_ID
+            - name: KAKAO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: KAKAO_CLIENT_SECRET
+            - name: NAVER_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: NAVER_CLIENT_ID
+            - name: NAVER_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: NAVER_CLIENT_SECRET
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: MAIL_PASSWORD
+            - name: MAIL_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: MAIL_FROM
+            - name: OAUTH_STATE
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: OAUTH_STATE
+            - name: PORTONE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: PORTONE_API_KEY
+            - name: PORTONE_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: front-service-secrets
+                  key: PORTONE_API_SECRET
