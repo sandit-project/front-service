@@ -24,8 +24,7 @@
     <script th:src="@{/js/modal-chat.js}"></script>
 
 
-    <!-- CSS -->
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
+
 
     <style>
 
@@ -50,7 +49,7 @@
         }
     </style>
 
-    </style>
+
 
     <script>
         $(function(){
@@ -111,7 +110,7 @@
     </div>
 </div>
 <script>
-    const WEBSOCKET_URL = "[[${websocketUrl}]]";
+    window.WEBSOCKET_URL = "[[${websocketUrl}]]";
 </script>
 </body>
 </html>

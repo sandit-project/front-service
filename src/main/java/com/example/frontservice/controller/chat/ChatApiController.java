@@ -64,23 +64,4 @@ public class ChatApiController {
         return ResponseEntity.noContent().build();  // 204 No Content
     }
 
-    // 채팅방 읽음 처리 API 추가
-    @PostMapping("/rooms/{roomId}/read")
-    public ResponseEntity<Void> markRoomAsRead(@PathVariable String roomId,
-                                               @RequestParam(required = false) String userId,
-                                               HttpServletRequest servletRequest) {
-        String token = extractToken(servletRequest);
-        chatService.markRoomAsRead("Bearer " + token, roomId, userId);
-        return ResponseEntity.ok().build();
-    }
-
-    // 채팅방 읽음 여부 확인 API
-    @GetMapping("/rooms/{roomId}/read")
-    public ResponseEntity<Boolean> isRoomReadByUser(@PathVariable String roomId,
-                                                    @RequestParam  String userId,
-                                                    HttpServletRequest servletRequest) {
-        String token = extractToken(servletRequest);
-        return ResponseEntity.ok(chatService.isRoomReadByUser("Bearer " + token, roomId, userId));
-    }
-
 }

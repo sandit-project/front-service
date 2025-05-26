@@ -15,6 +15,23 @@
         return new Promise((resolve, reject) => {
             const token = localStorage.getItem('accessToken');
             if (!token) return reject('토큰 없음');
+
+            const socialPrefixes = ['naver:', 'kakao:', 'google:'];
+            const socialType = socialPrefixes.find(prefix => token.startsWith(prefix));
+
+            if (socialType) {
+                const parts = token.split(':');
+                if (parts.length >= 2) {
+                    return resolve({
+                        userId: parts[1],
+                        role: 'ROLE_USER',
+                        type: socialType.slice(0, -1)
+                    });
+                } else {
+                    return reject('소셜 토큰 형식 오류');
+                }
+            }
+
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 resolve({
@@ -26,6 +43,17 @@
                 reject('JWT 파싱 실패');
             }
         });
+    }
+
+    function hasChatPermission(role, userType) {
+        if (role === 'ROLE_ADMIN') return true;
+
+        const allowedSocialTypes = ['naver', 'kakao', 'google'];
+
+        if (userType === 'normal') return true;
+        if (allowedSocialTypes.includes(userType)) return true;
+
+        return false;
     }
 
     function setupAjax() {
@@ -55,7 +83,17 @@
 
             const { userId, role, type: userType } = globalUserInfo;
             const roleLabel = role === 'ROLE_ADMIN' ? '관리자' : '고객';
-            $('#userInfo').text(` 로그인: ${userId} (${userType === 'social' ? '소셜' : '일반'}, ${roleLabel})`);
+            $('#userInfo').text(` 로그인: ${userId} (${userType === 'normal' ? '일반' : userType}, ${roleLabel})`);
+
+            if (!hasChatPermission(role, userType)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '채팅 권한 없음',
+                    text: '채팅 권한이 없습니다. 관리자에게 문의하세요.',
+                    confirmButtonColor: '#f44336'
+                });
+                return;
+            }
 
             await loadChatHistory(roomId, userId);
             connectWebSocket(roomId, userId, role, userType);
@@ -97,7 +135,7 @@
         const isMine = message.sender === userId;
         const senderLabel = (message.senderRole?.toLowerCase() === 'role_admin')
             ? '👨‍💼 관리자'
-            : `🙋‍♂️ 고객 (${message.senderType === 'social' ? '소셜' : '일반'})`;
+            : `🙋‍♂️ 고객 (${message.senderType === 'normal' ? '일반' : message.senderType})`;
 
         const messageClass = isMine ? "my-message" : "other-message";
 
@@ -110,7 +148,7 @@
         `;
         $("#chatBox").append(messageHtml);
 
-        scrollToBottom(); // 🔥 추가: 메시지 추가 후 항상 스크롤 내림
+        scrollToBottom();
     }
 
     function connectWebSocket(roomId, userId, role, userType) {
@@ -124,7 +162,7 @@
             stompClient.disconnect(() => console.log("기존 WebSocket 연결 종료"));
         }
 
-        const socket = new SockJS(WEBSOCKET_URL);
+        const socket = new SockJS(window.WEBSOCKET_URL);
         stompClient = Stomp.over(socket);
 
         stompClient.connect({ Authorization: `Bearer ${token}` }, () => {
@@ -132,14 +170,16 @@
 
             stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
                 const message = JSON.parse(msg.body);
-
-                if (message.sender === userId) return; // 내 메시지는 중복 방지
+                if (message.sender === userId) return;
                 addMessageIfNotDuplicate(message, userId);
             });
 
             $("#sendBtn").off("click").on("click", () => sendMessage(roomId, userId, role, userType));
             $("#messageInput").off("keypress").on("keypress", (e) => {
-                if (e.which === 13) sendMessage(roomId, userId, role, userType);
+                if (e.which === 13) {
+                    e.preventDefault();
+                    sendMessage(roomId, userId, role, userType);
+                }
             });
         }, (error) => {
             console.error("WebSocket 연결 실패", error);
@@ -147,6 +187,16 @@
     }
 
     function sendMessage(roomId, userId, role, userType) {
+        if (!hasChatPermission(role, userType)) {
+            Swal.fire({
+                icon: 'error',
+                title: '채팅 권한 없음',
+                text: '메시지를 보낼 권한이 없습니다.',
+                confirmButtonColor: '#f44336'
+            });
+            return;
+        }
+
         const messageText = $("#messageInput").val().trim();
         if (!messageText) return;
 
@@ -159,9 +209,9 @@
             timestamp: new Date().toISOString()
         };
 
-        addMessageIfNotDuplicate(message, userId); // 내가 보낸 메시지도 화면에 추가
+        addMessageIfNotDuplicate(message, userId);
         stompClient.send("/app/chat.send", {}, JSON.stringify(message));
-        $("#messageInput").val(""); // 입력창 초기화
+        $("#messageInput").val("");
     }
 
     function formatDate(isoString) {

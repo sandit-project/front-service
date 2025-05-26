@@ -17,7 +17,7 @@ function connectWebSocket() {
         return;
     }
 
-    const socket = new SockJS(WEBSOCKET_URL);
+    const socket = new SockJS(window.WEBSOCKET_URL);
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function (frame) {
