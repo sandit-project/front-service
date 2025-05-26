@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title id="pageTitle">메뉴 상세</title>
+    <meta charset="UTF-8">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
+    <script th:src="@{/js/menu/sideMenuForCustomer.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/menu/menuforCustomer.css}">
+</head>
+<body>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{navigation :: nav}"></div>
+
+<div class="menu-detail-container">
+    <h1 class="menu-title" id="menuTitle">메뉴 이름</h1>
+    <img id="menuImage" alt="메뉴 이미지" class="menu-img">
+
+    <div class="menu-info">
+        <p><strong>가격:</strong> <span id="menuPrice">0</span>원</p>
+        <p><strong>칼로리:</strong> <span id="menuCalorie">0</span> kcal</p>
+
+    </div>
+</div>
+<div th:replace="~{footer :: footer}"></div>
+</body>
+</html>

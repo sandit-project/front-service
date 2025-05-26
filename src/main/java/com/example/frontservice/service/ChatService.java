@@ -34,11 +34,5 @@ public class ChatService {
         chatClient.deleteRoom(token, roomId);
     }
 
-    public void markRoomAsRead(String token, String roomId, String userId){chatClient.markRoomAsRead(token, roomId, userId);};
-
-
-    public Boolean isRoomReadByUser(String token, String roomId, String userId) {
-        return chatClient.isRoomReadByUser(token, roomId, userId);
-    }
 
 }

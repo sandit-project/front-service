@@ -429,7 +429,7 @@ public class MenuApiController {
             HttpServletRequest request,
             @RequestBody String customCartRequestDTO) {
         String token = extractToken(request);
-        System.out.println(customCartRequestDTO.toString());
+
         return ResponseEntity.ok(menuService.createCustomCart("Bearer " +token, customCartRequestDTO));
     }
 
