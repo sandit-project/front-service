@@ -5,6 +5,7 @@ import com.example.frontservice.dto.auth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,5 +44,8 @@ public class AuthService {
 
     public boolean updateProfile(String token, UpdateProfileRequestDTO updateProfileRequestDTO) {
         return authClient.updateProfile(token, updateProfileRequestDTO);
+    }
+    public List<ManagerDTO> getManagers(String token) {
+        return authClient.getManagers(token);
     }
 }
