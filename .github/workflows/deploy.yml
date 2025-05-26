@@ -54,7 +54,7 @@ jobs:
             --from-literal=OAUTH_STATE=${{ secrets.OAUTH_STATE }} \
             --from-literal=PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }} \
             --from-literal=PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }} \
-            --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl apply --validate=false -f -
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
