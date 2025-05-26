@@ -9,12 +9,13 @@ h1 {
 .store-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 40px;
-    margin-top: 40px;
+    max-width: 1320px;
+    margin: 40px auto;
 }
 .store-item {
-    width: 300px;
+    width: 260px;
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 6px 24px rgba(0,0,0,0.08);
@@ -25,9 +26,9 @@ h1 {
 .store-item:hover {
     box-shadow: 0 12px 32px rgba(0,0,0,0.14);
 }
-.store-img {
+.store-map {
     width: 100%;
-    height: 160px;
+    height: 250px;
     object-fit: cover;
     border-radius: 10px;
 }
