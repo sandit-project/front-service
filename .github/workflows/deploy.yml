@@ -65,7 +65,10 @@ jobs:
       - name: Substitute environment variables in deployment file
         run: |
           export DOMAIN_NAME=jurang-park.site
-          envsubst < k8s/front-deployment.template.yml > k8s/front-deployment.yml
+          envsubst < k8s/deployment.yml > k8s/deployment.rendered.yml
+
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/front-deployment.yml
+          kubectl apply -f k8s/deployment.rendered.yml
+          kubectl apply -f k8s/service.yml
+      
