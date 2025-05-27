@@ -26,13 +26,17 @@ $(document).ready(async () => {
         url: "/menus",
         success: function (menus) {
             menuList = menus; // menus 전체를 저장해 둠
-            console.log("메뉴리스트 :",menuList);
+            console.log("메뉴리스트 :", menuList);
             const container = $(".menu-container");
+
             menus.forEach(menu => {
+                // status가 "ACTIVE"가 아니면 무시 (대소문자 구분 없이 처리)
+                if ((menu.status || '').toUpperCase() !== 'ACTIVE') return;
+
                 const html = `
                     <div class="menu-item" data-menu-id="${menu.uid}">
                         <a href="/menus/name/${menu.menuName}">
-                            <img src="${menu.img}" alt="메뉴 이미지">
+                            <img src="${menu.img}" alt="메뉴 이미지" onerror="this.onerror=null; this.src='https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png';">
                         </a>
                         <div class="menu-info">
                             <h2>${menu.menuName}</h2>
@@ -44,7 +48,8 @@ $(document).ready(async () => {
                             </form>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
                 container.append(html);
             });
         },
@@ -55,9 +60,9 @@ $(document).ready(async () => {
                 text: '메뉴 목록을 불러오는 데 실패했습니다.',
                 confirmButtonColor: '#f97316'
             });
-
         }
     });
+
 
 
     // 장바구니 담기
@@ -88,12 +93,7 @@ $(document).ready(async () => {
 
         // === 유저 알러지 정보 가져오기 ===
         let allergyList = [];
-        if (globalUserInfo.type === 'user') {
-            allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
-        } else if (globalUserInfo.type === 'social') {
-            //소셜 로그인은 별도 처리 필요
-            allergyList = [];
-        }
+        allergyList = await fetchUserAllergies(globalUserInfo.type, globalUserInfo.id);
 
         // ==== 알러지 체크 로직 ===
         let allergyReqBody = {
@@ -185,12 +185,7 @@ $(document).ready(async () => {
 
         // === 유저 알러지 정보 가져오기 ===
         let allergyList = [];
-        if (globalUserInfo.type === 'user') {
-            allergyList = await fetchUserAllergies(globalUserInfo.id); // user_uid로 호출
-        } else if (globalUserInfo.type === 'social') {
-            //소셜 로그인은 별도 처리 필요
-            allergyList = [];
-        }
+        allergyList = await fetchUserAllergies(globalUserInfo.type, globalUserInfo.id); // user_uid로 호출
 
         // ==== 알러지 체크 로직 ===
         let allergyReqBody = {

@@ -58,7 +58,7 @@ $(document).ready(async ()=>{
 
 
     //최초 주문 목록 로드
-    loadOrders();
+    await loadOrders();
 
     //주문 목록 단일 로드 함수
     async function loadOrders() {
@@ -170,6 +170,13 @@ function fetchStoreUidByManager(userUid) {
             },
             error: xhr => {
                 console.error('storeUid 조회 실패:', xhr.status);
+                // swal 창으로 에러 메시지 출력
+                Swal.fire({
+                    icon: 'error',
+                    title: '지점 정보 조회 실패',
+                    text: '지점 정보 조회 중 오류가 발생했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
                 reject(null);
             }
         });

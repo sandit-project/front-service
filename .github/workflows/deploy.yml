@@ -62,6 +62,13 @@ jobs:
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/front-service:latest
 
+      - name: Substitute environment variables in deployment file
+        run: |
+          export DOMAIN_NAME=jurang-park.site
+          envsubst < k8s/deployment.yml > k8s/deployment.rendered.yml
+
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/
+          kubectl apply -f k8s/deployment.rendered.yml
+          kubectl apply -f k8s/service.yml
+      

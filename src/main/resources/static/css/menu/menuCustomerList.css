@@ -43,6 +43,7 @@ body {
     position: relative;
     width: 100%;
     box-sizing: border-box;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
     overflow: hidden;
 }
 
@@ -55,7 +56,7 @@ body {
 
 .menu-item:hover {
     transform: scale(1.03);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.14);
     border-radius: 16px;
     z-index: 2;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -72,7 +73,7 @@ body {
     align-items: center;
     text-align: center;
     transition: box-shadow 0.2s;
-    min-height: 130px;
+    min-height: 210px;
     box-sizing: border-box;
 }
 
@@ -133,7 +134,7 @@ body {
 .custom-item .menu-info {
     align-items: center;
     text-align: center;
-    min-height: 130px;
+    min-height: 210px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
 }

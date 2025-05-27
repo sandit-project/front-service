@@ -34,15 +34,15 @@ spec:
             - name: EDGE_SERVICE_URL
               value: http://edge-service:80
             - name: GOOGLE_OAUTH_CALLBACK_URL
-              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/google/callback
+              value:  http://${DOMAIN_NAME}/oauth/google/callback
             - name: KAKAO_OAUTH_CALLBACK_URL
-              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/kakao/callback
+              value:  http://${DOMAIN_NAME}/oauth/kakao/callback
             - name: NAVER_OAUTH_CALLBACK_URL
-              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/naver/callback
+              value:  http://${DOMAIN_NAME}/oauth/naver/callback
             - name: TOKEN_REDIRECT_URL
-              value:  http://a5e864d926b6c47628746ad0b0bc3128-33339417.ap-northeast-2.elb.amazonaws.com/oauth/token/
+              value:  http://${DOMAIN_NAME}/oauth/token/
             - name: WEBSOCKET_URL
-              value:  http://a21c030df37ff40b59301ff538deb564-60416311.ap-northeast-2.elb.amazonaws.com/delivery-location
+              value:  http://${DOMAIN_NAME}/delivery-location
             - name: SPRING_PROFILES_ACTIVE
               value: deploy
             - name: KAKAO_REST_API_KEY

@@ -1,5 +1,6 @@
 package com.example.frontservice.controller.store;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/store")
 public class StoreController {
 
+    @Value("${kakao.rest.api-key}")
+    private String kakaoJsKey;
+
     @GetMapping("/customer-list")
-    public String storeCustomerList(){
+    public String storeCustomerList(Model model) {
+        model.addAttribute("kakaoJsKey", kakaoJsKey);
         return "store/customer-store-list";
     }
 

@@ -2,9 +2,40 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
+    // 관리자(ROLEE_MANAGER) 목록을 불러와서 드롭다운에 채우기
+    $.ajax({
+        type: "GET",
+        url: "/user/managers",
+        dataType: "json",
+        success: function (managers) {
+            console.log("managers : ",managers);
+            const $select = $('#manager');
+            $select.empty();
+            $select.append('<option value="">지점 관리자를 선택하세요</option>');
+            // 배열이 [{userUid: 1, userId: "...", userName: "..."}] 구조여야 함
+            managers.forEach(manager => {
+                $select.append(
+                    $('<option>')
+                        .val(manager.userUid) // 실제 등록은 uid로!
+                        .text(manager.userId+'('+manager.userName+')')
+                );
+            });
+
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: '관리자 목록 불러오기 실패',
+                text: '지점 관리자 목록을 불러오지 못했습니다.',
+                confirmButtonColor: '#f97316'
+            });
+        }
+    });
+
     getUserInfo().then((userInfo) => {
         initUserUI(userInfo);
     });
+
 
     // 지점 등록 버튼 클릭 이벤트
     $('#storeRegister').click(async (event) => {
@@ -16,7 +47,7 @@ $(document).ready(() => {
         try {
             // 입력 데이터 수집
             const storeName = $('#store_name').val();
-            const storeManagerUid = $('#store_manager_uid').val();
+            const storeManagerUid = $('#manager').val();
             const address = $('#store_address_base').val();
             const addressDetail = $('#store_address_detail').val();
             const fullAddress = addressDetail? `${address} ${addressDetail}` : address ;

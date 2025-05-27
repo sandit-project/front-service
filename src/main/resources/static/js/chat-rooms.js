@@ -19,20 +19,50 @@
         });
     }
 
-    // JWT에서 userId, role 추출
+    // JWT 또는 소셜 토큰에서 userId, role, type 추출
     function getUserInfo() {
         const token = localStorage.getItem('accessToken');
         if (!token) return null;
+
+        // 소셜 토큰 접두사: naver:, kakao:, google:
+        const socialPrefixes = ['naver:', 'kakao:', 'google:'];
+        const socialType = socialPrefixes.find(prefix => token.startsWith(prefix));
+
+        if (socialType) {
+            const parts = token.split(':');
+            if (parts.length >= 2) {
+                return {
+                    userId: parts[1],
+                    role: 'ROLE_USER',
+                    type: socialType.slice(0, -1) // 'naver', 'kakao', 'google'
+                };
+            } else {
+                console.warn('소셜 토큰 형식 오류');
+                return null;
+            }
+        }
+
+        // 일반 JWT 처리
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             return {
                 userId: payload.sub,
-                role: payload.role || 'ROLE_USER'
+                role: payload.role || 'ROLE_USER',
+                type: payload.type || 'normal'
             };
         } catch (e) {
             console.warn('JWT 파싱 실패:', e);
             return null;
         }
+    }
+
+    // 채팅 권한 확인 (관리자 무조건 허용, 그 외 소셜 또는 일반 가입자 허용)
+    function hasChatPermission(role, userType) {
+        if (role === 'ROLE_ADMIN') return true;
+        const allowedSocialTypes = ['naver', 'kakao', 'google'];
+        if (userType === 'normal') return true;
+        if (allowedSocialTypes.includes(userType)) return true;
+        return false;
     }
 
     // 채팅방 목록 조회 및 렌더링
@@ -50,6 +80,16 @@
             return;
         }
 
+        if (!hasChatPermission(userInfo.role, userInfo.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: '권한 없음',
+                text: '채팅을 사용할 권한이 없습니다.',
+                confirmButtonColor: '#f97316'
+            });
+            return;
+        }
+
         $.ajax({
             url: '/chat/rooms',
             method: 'GET',
@@ -57,6 +97,7 @@
                 const roomListDiv = $('#roomList');
                 roomListDiv.empty();
 
+                // 관리자는 모든 방, 일반/소셜은 자신의 방만
                 const roomsToShow = (userInfo.role === 'ROLE_ADMIN')
                     ? data
                     : data.filter(room => room.ownerId === userInfo.userId);
@@ -87,7 +128,7 @@
                             'border-radius': '50%',
                             'margin-left': '6px',
                             'vertical-align': 'middle',
-                            'display': room.room_status? 'inline-block' : 'none' // 읽지 않은 메시지 있을 때만 표시
+                            'display': room.room_status ? 'inline-block' : 'none'
                         });
 
                     const ownerSpan = $('<span></span>')
@@ -104,6 +145,18 @@
                         .addClass('delete-btn')
                         .click(e => {
                             e.stopPropagation();
+
+                            // 삭제 권한 체크 - 관리자만 가능하다고 가정
+                            if (userInfo.role !== 'ROLE_ADMIN') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '권한 없음',
+                                    text: '채팅방 삭제 권한이 없습니다.',
+                                    confirmButtonColor: '#f97316'
+                                });
+                                return;
+                            }
+
                             Swal.fire({
                                 icon: 'warning',
                                 title: `'${room.name}' 방을 삭제하시겠습니까?`,
@@ -174,6 +227,16 @@
             return;
         }
 
+        if (!hasChatPermission(userInfo.role, userInfo.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: '권한 없음',
+                text: '채팅방 생성 권한이 없습니다.',
+                confirmButtonColor: '#f97316'
+            });
+            return;
+        }
+
         $.ajax({
             url: '/chat/rooms',
             method: 'POST',
@@ -222,104 +285,20 @@
         });
     }
 
-    // 읽음 처리 API 호출
-    function markRoomAsRead(roomId) {
-        const userInfo = getUserInfo();
-        if (!userInfo) return;
-
-        $.ajax({
-            url: `/chat/rooms/${roomId}/read`,
-            method: 'POST',
-            data: {
-                userId: userInfo.userId
-            },
-            success: function() {
-                const roomEntry = $(`.enter-chat-room[data-room-id="${roomId}"]`);
-                roomEntry.siblings('.unread-badge').hide();
-            },
-            error: function() {
-                console.warn('읽음 처리 실패');
-            }
-        });
-    }
-
-    // 브라우저 알림 권한 요청
-    function requestNotificationPermission() {
-        if (!("Notification" in window)) {
-            console.warn("이 브라우저는 Notification API를 지원하지 않습니다.");
-            return;
-        }
-        if (Notification.permission === "default") {
-            Notification.requestPermission().then(function(permission) {
-                console.log("Notification permission:", permission);
-            });
-        }
-    }
-
-    // 브라우저 알림 표시
-    function showBrowserNotification(title, body) {
-        if (Notification.permission === "granted") {
-            new Notification(title, {
-                body: body,
-                icon: '/favicon.ico' // 필요에 따라 아이콘 경로 수정하세요
-            });
-        }
-    }
-
-    // WebSocket 연결 및 메시지 수신 처리
-    let stompClient = null;
-
-    function connectWebSocket() {
-        const socket = new SockJS("http://localhost:9006/chat");
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
-
-            const userInfo = getUserInfo();
-            if (!userInfo) return;
-
-            stompClient.subscribe(`/topic/chat/rooms/${userInfo.userId}`, function(message) {
-                const payload = JSON.parse(message.body);
-                console.log('WebSocket message received:', payload);
-
-                const roomId = payload.roomId;
-                const sender = payload.senderName || "새 메시지";
-                const content = payload.content || "새로운 메시지가 도착했습니다.";
-
-                if (!roomId) {
-                    console.warn('roomId가 메시지에 없습니다!');
-                    return;
-                }
-
-                const roomEntry = $(`.enter-chat-room[data-room-id="${roomId}"]`);
-                if (roomEntry.length === 0) {
-                    console.warn(`해당 roomId(${roomId})를 가진 채팅방 요소를 찾지 못했습니다.`);
-                    return;
-                }
-
-                const badge = roomEntry.siblings('.unread-badge');
-                if (badge.length) {
-                    badge.show();
-                    console.log(`채팅방 ${roomId} 뱃지 표시 완료`);
-                } else {
-                    console.warn('뱃지 요소를 찾지 못했습니다.');
-                }
-
-                // 브라우저 알림 띄우기
-                showBrowserNotification(`${sender}님으로부터`, content);
-            });
-        });
-    }
-
-    // 채팅방 클릭 시 읽음 처리 및 뱃지 숨김
+    // 채팅방 클릭 시 읽음 처리 및 뱃지 숨김, 권한 체크 추가
     $(document).on('click', '.enter-chat-room', function() {
-        const roomId = $(this).data('room-id');
+        const userInfo = getUserInfo();
+        if (!userInfo || !hasChatPermission(userInfo.role, userInfo.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: '권한 없음',
+                text: '채팅방에 입장할 권한이 없습니다.',
+                confirmButtonColor: '#f97316'
+            });
 
-        markRoomAsRead(roomId);
+        }
 
-        // 필요하면 채팅방 열기 함수 호출
-        // openChatRoom(roomId);
+
     });
 
     // 초기화
@@ -327,8 +306,6 @@
         checkToken();
         setupAjax();
         fetchRooms();
-        requestNotificationPermission();  // 알림 권한 요청
-        connectWebSocket();
 
         $('#createRoomBtn').off('click').on('click', createRoom);
 
