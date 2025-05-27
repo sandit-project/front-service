@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e0a9cdd5535d7bb018489c5662b3b5ae"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e0a9cdd5535d7bb018489c5662b3b5ae&autoload=false"></script>
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -52,10 +52,6 @@
                 <P class="round-pill">이름</P>
                 <P id="user_name"></P>
             </div>
-            <div class="user-profile" hidden>
-                <P class="user_point">포인트</P>
-                <P class="user_point"></P>
-            </div>
             <div class="user-profile">
                 <P class="round-pill">이메일</P>
                 <P id="user_email"></P>
@@ -83,6 +79,10 @@
             <div class="user-profile">
                 <P class="round-pill">추가 주소 2</P>
                 <P id="sub_address2"></P>
+            </div>
+            <div class="user-profile">
+                <P class="round-pill">알러지 정보</P>
+                <P id="allergy"></P>
             </div>
         </div>
         <div class="info-section">

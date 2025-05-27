@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/store")
 public class StoreController {
 
-    @Value("${kakao.map.js-key}")
+    @Value("${kakao.rest.api-key}")
     private String kakaoJsKey;
 
     @GetMapping("/customer-list")
