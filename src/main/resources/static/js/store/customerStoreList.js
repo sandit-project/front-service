@@ -24,9 +24,7 @@ kakao.maps.load(() => {
 
                     const html = `
                     <div class="store-item" data-store-id="${index}">
-                        <div>
-                            <div id="${mapId}" class="store-map"></div>
-                        </div>
+                        <div id="${mapId}" class="store-map"></div>
                         <div class="store-info">
                             <h2>${store.storeName}</h2>
                             <p>${store.storeAddress}</p>
