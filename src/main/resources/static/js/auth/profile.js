@@ -3,15 +3,19 @@ $(document).ready(async ()=>{
     setupAjax();
 
     const profile = await fetchProfile();
-    await fetchUserAllergies(profile.type, profile.uid);
+    const convertType = profile.type === "USER" ? "user":"social";
+
+    const allergyList = await fetchUserAllergies(convertType, profile.uid);
+    $('#allergy').text(allergyList);
+
     const resultList = await requestDeliveringOrder(profile.type, profile.uid);
 
-    // 카카오맵 렌더링 (위에서 받은 좌표 전달)
-    renderKakaomap(resultList[0]);
-
-    // $('#updateProfileBtn').on("click",() => {
-    //     window.location.href = "/member/profile/update"
-    // });
+    if(resultList){
+        // 카카오맵 렌더링 (위에서 받은 좌표 전달)
+        kakao.maps.load(() => {
+            renderKakaomap(resultList[0]);
+        });
+    }
 });
 
 let requestDeliveringOrder = async (type,uid) => {
@@ -46,6 +50,7 @@ let requestDeliveringOrder = async (type,uid) => {
         }
     } catch (err) {
         console.error('주문 불러오기 실패', err);
+        $('#latest-order-box').html('<p>현재 배달 중인 주문이 없습니다.</p>');
     }
 };
 
@@ -67,7 +72,6 @@ function fetchProfile() {
             $('#user_email').text(response.email);
             $('#user_phone').text(response.phone);
             $('#created_date').text(formatJoinDate(response.createdDate));
-            $('#user_point').text(response.point);
             $('#user_type').text(response.type);
             $('#main_address').text(response.mainAddress);
             $('#sub_address1').text(response.subAddress1);

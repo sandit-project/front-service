@@ -15,7 +15,7 @@ spec:
         role: websocket
       containers:
         - name: front-service
-          image: 448049828702.dkr.ecr.ap-northeast-2.amazonaws.com/front-service:latest
+          image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/front-service:latest
           imagePullPolicy: Always
           lifecycle:
             preStop:
@@ -34,15 +34,15 @@ spec:
             - name: EDGE_SERVICE_URL
               value: http://edge-service:80
             - name: GOOGLE_OAUTH_CALLBACK_URL
-              value:  http://${DOMAIN_NAME}/oauth/google/callback
+              value:  http://$DOMAIN_NAME/oauth/google/callback
             - name: KAKAO_OAUTH_CALLBACK_URL
-              value:  http://${DOMAIN_NAME}/oauth/kakao/callback
+              value:  http://$DOMAIN_NAME/oauth/kakao/callback
             - name: NAVER_OAUTH_CALLBACK_URL
-              value:  http://${DOMAIN_NAME}/oauth/naver/callback
+              value:  http://$DOMAIN_NAME/oauth/naver/callback
             - name: TOKEN_REDIRECT_URL
-              value:  http://${DOMAIN_NAME}/oauth/token/
+              value:  http://$DOMAIN_NAME/oauth/token/
             - name: WEBSOCKET_URL
-              value:  http://${DOMAIN_NAME}/delivery-location
+              value:  http://$DOMAIN_NAME/delivery-location
             - name: SPRING_PROFILES_ACTIVE
               value: deploy
             - name: KAKAO_REST_API_KEY
