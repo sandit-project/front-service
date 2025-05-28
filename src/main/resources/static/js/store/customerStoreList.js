@@ -8,6 +8,7 @@ kakao.maps.load(() => {
         getUserInfo().then((userInfo) => {
             if (userInfo) {
                 initUserUI(userInfo);
+                receiveAlarm(userInfo.id, userInfo.type);
             } else {
                 renderGuestUI();
             }
