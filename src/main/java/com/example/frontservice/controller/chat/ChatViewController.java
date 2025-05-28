@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class ChatViewController {
@@ -23,4 +24,7 @@ public class ChatViewController {
         model.addAttribute("websocketUrl", websocketUrl);
         return "chat/chat-room";  // 모델 없이 'chat-room' 템플릿만 반환
     }
+
+
+
 }

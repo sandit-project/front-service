@@ -45,6 +45,7 @@ jobs:
             --from-literal=OAUTH_STATE=${{ secrets.OAUTH_STATE }} \
             --from-literal=PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }} \
             --from-literal=PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }} \
+            --from-literal=AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} \
             --dry-run=client -o yaml | kubectl apply --validate=false -f -
 
       - name: Log in to Amazon ECR
@@ -64,8 +65,13 @@ jobs:
 
       - name: Substitute environment variables in deployment file
         run: |
-          export DOMAIN_NAME=jurang-park.site
+          export DOMAIN_NAME=himedia-a.com
+          export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+          export AWS_REGION=${{ secrets.AWS_REGION }}
           envsubst < k8s/deployment.yml > k8s/deployment.rendered.yml
+
+      - name: Debug print DOMAIN_NAME
+        run: echo $DOMAIN_NAME
 
       - name: Deploy to Kubernetes
         run: |

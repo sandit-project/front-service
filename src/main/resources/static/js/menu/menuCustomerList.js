@@ -48,7 +48,7 @@ $(document).ready(async () => {
                             </form>
                         </div>
                     </div>
-                </div>
+                
             `;
                 container.append(html);
             });

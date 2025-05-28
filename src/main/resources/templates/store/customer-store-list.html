@@ -13,14 +13,48 @@
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/alarm.js}"></script>
     <script th:src="@{/js/store/customerStoreList.js}"></script>
+    <script th:src="@{/js/modal-chat.js}"></script>
 
     <link th:href="@{/css/common.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
     <link rel="stylesheet" th:href="@{/css/store/customerStoreList.css}">
+
+
+    <style>
+        #chatTooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;          /* 버튼 위쪽에 위치 */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff7f00;   /* 주황색 */
+            color: #fff;
+            padding: 8px 14px;     /* 좀 더 크게 */
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 15px;       /* 글자도 좀 키움 */
+            margin-bottom: 8px;    /* 버튼과 살짝 떨어뜨림 */
+            pointer-events: none;
+            z-index: 1000;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+
+    <script>
+        $(function(){
+            $('#oneOnOneChatBtn').hover(
+                function() { $('#chatTooltip').show(); },
+                function() { $('#chatTooltip').hide(); }
+            );
+        });
+    </script>
 
 </head>
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<main>
 <div class="main-container">
     <header>
         <!-- 네비게이션 등 기존 코드 복붙 -->
@@ -30,6 +64,8 @@
         <!-- JS로 가맹점 카드가 렌더링 됨 -->
     </div>
 </div>
+<div th:replace="~{modal-chat :: modal-chat}"></div>
+</main>
 <div th:replace="~{footer :: footer}"></div>
 <script>
     const WEBSOCKET_URL = "[[${websocketUrl}]]";

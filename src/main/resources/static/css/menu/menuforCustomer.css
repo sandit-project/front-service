@@ -68,10 +68,6 @@ body {
     transition: all 0.3s ease;
 }
 
-/*.tag:hover {*/
-/*    background-color: #ecd4b0;*/
-/*}*/
-
 /* 태그 아이콘 포함 버전 */
 .tag-with-img {
     display: inline-flex;
@@ -86,6 +82,48 @@ body {
     object-fit: cover;
     border: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔶 채팅 버튼 */
+.chat-item {
+    position: fixed;
+    bottom: 136px; /* ← 120px에서 16px 위로 */
+    right: 60px;
+    z-index: 1000;
+}
+
+#oneOnOneChatBtn {
+    width: 80px;
+    height: 80px;
+    background-color: #ffefd7;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#oneOnOneChatBtn:hover {
+    background-color: #fff0cc;
+}
+
+#sandit-chat {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.chat-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 12px;
+    height: 12px;
+    background-color: red;
+    border-radius: 50%;
 }
 
 /* 🔶 반응형 대응 */
@@ -112,18 +150,18 @@ body {
         height: 40px;
     }
 
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+    .chat-item {
+        bottom: 120px;
+        right: 20px;
     }
 
-    .navbar-title {
-        font-size: 22px;
+    #oneOnOneChatBtn {
+        width: 64px;
+        height: 64px;
     }
 
-    .navbar-links {
-        flex-wrap: wrap;
-        gap: 8px;
+    #sandit-chat {
+        width: 48px;
+        height: 48px;
     }
 }

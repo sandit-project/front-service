@@ -11,8 +11,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- 커스텀 JS/CSS -->
-<!--    <script th:src="@{/js/common.js}"></script>-->
-
+<!--    <script th:src="@{/js/modal-chat.js}"></script>-->
+    <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/chat-room.js}"></script>
 
 
@@ -36,9 +36,13 @@
     <button id="sendBtn">전송</button>
 
 </div>
+
+<!--<script th:inline="javascript">-->
 <script>
-    window.WEBSOCKET_URL = "[[${websocketUrl}]]";
+    window.WEBSOCKET_URL = window.WEBSOCKET_URL || '[[${websocketUrl}]]';
 </script>
+
+
 </body>
 
 </html>
