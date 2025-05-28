@@ -1,23 +1,5 @@
 (function () {
     // 토큰 체크 및 로그인 리다이렉트
-    function checkToken() {
-        const token = localStorage.getItem('accessToken');
-        if (!token || token.trim() === '') {
-            window.location.href = '/member/login';
-        }
-    }
-
-    // Ajax 요청 시 헤더에 Authorization 토큰 추가
-    function setupAjax() {
-        $.ajaxSetup({
-            beforeSend: function(xhr) {
-                const token = localStorage.getItem('accessToken');
-                if (token) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                }
-            }
-        });
-    }
 
     // JWT 또는 소셜 토큰에서 userId, role, type 추출
     function getUserInfo() {
@@ -128,7 +110,7 @@
                             'border-radius': '50%',
                             'margin-left': '6px',
                             'vertical-align': 'middle',
-                            'display': room.room_status ? 'inline-block' : 'none'
+                            'display': 'none'
                         });
 
                     const ownerSpan = $('<span></span>')
@@ -146,16 +128,20 @@
                         .click(e => {
                             e.stopPropagation();
 
-                            // 삭제 권한 체크 - 관리자만 가능하다고 가정
-                            if (userInfo.role !== 'ROLE_ADMIN') {
+
+                            const isOwner = userInfo.userId === room.ownerId;
+                            const isAdmin = userInfo.role === 'ROLE_ADMIN';
+
+                            if (!isAdmin && !isOwner) {
                                 Swal.fire({
                                     icon: 'error',
                                     title: '권한 없음',
-                                    text: '채팅방 삭제 권한이 없습니다.',
+                                    text: '본인이 생성한 채팅방만 삭제할 수 있습니다.',
                                     confirmButtonColor: '#f97316'
                                 });
                                 return;
                             }
+
 
                             Swal.fire({
                                 icon: 'warning',
