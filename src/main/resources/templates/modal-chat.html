@@ -1,0 +1,20 @@
+<div class="chat-item" th:fragment="modal-chat">
+  <button id="oneOnOneChatBtn"  type="button">
+    <img id="sandit-chat"
+         src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png"
+         alt="sandit-chat" />
+    <div id="chatBadge" class="chat-badge"></div>
+    <div id="chatTooltip">1:1 채팅 서비스입니다.</div>
+  </button>
+</div>
+
+
+<!-- 모달 -->
+<div id="modalContainer" hidden th:fragment="modal-chat">
+  <div id="modalOverlay"></div>
+
+  <div id="modalContentWrapper">
+    <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>

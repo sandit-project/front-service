@@ -15,14 +15,16 @@
 
     <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <link rel="stylesheet" th:href="@{/css/menu/menuCustomerList.css}">
     <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
+    <link rel="stylesheet" th:href="@{/css/menu/sideMenuCustomerList.css}">
+
     <!-- JS -->
 
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/allergyCheck.js}"></script>
     <script th:src="@{/js/menu/sideMenuCustomerList.js}"></script>
+    <script th:src="@{/js/connectWebSocket.js}"></script>
     <script th:src="@{/js/modal-chat.js}"></script>
 
 
@@ -68,36 +70,19 @@
 
 <!-- ✅ 메인 타이틀 -->
 <h1 class="main-heading">ENJOY! SAND-IT!</h1>
-
+<main>
 <!-- ✅ 메뉴 전체 컨테이너 -->
 <div class="menu-container">
     <!-- ✅ 일반 메뉴는 JS에서 동적으로 삽입됨 -->
 </div>
 
-<div class="chat-item">
-<button id="oneOnOneChatBtn"  type="button">
-    <img id="sandit-chat"
-         src="https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png"
-         alt="sandit-chat" />
-    <div id="chatBadge" class="chat-badge"></div>
-    <div id="chatTooltip">1:1 채팅 서비스입니다.</div>
-</button>
-</div>
-
-<!-- 푸터 -->
+<div th:replace="~{modal-chat :: modal-chat}"></div>
+</main>
 <div th:replace="~{footer :: footer}"></div>
-
-<!-- 모달 -->
-<div id="modalContainer" hidden>
-    <div id="modalOverlay"></div>
-
-    <div id="modalContentWrapper">
-        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
-        <div id="modalContent"></div>
-    </div>
-</div>
-<script>
-    window.WEBSOCKET_URL = "[[${websocketUrl}]]";
+<script >
+    window.WEBSOCKET_URL = window.WEBSOCKET_URL || '[[${websocketUrl}]]';
 </script>
+
+
 </body>
 </html>
