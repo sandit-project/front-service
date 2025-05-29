@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/store")
 public class StoreController {
 
-    @Value("${kakao.rest.api-key}")
-    private String kakaoJsKey;
+    @Value("${app.websocket.url}")
+    private String websocketUrl;
 
     @GetMapping("/customer-list")
     public String storeCustomerList(Model model) {
-        model.addAttribute("kakaoJsKey", kakaoJsKey);
+        model.addAttribute("websocketUrl", websocketUrl);
         return "store/customer-store-list";
     }
 

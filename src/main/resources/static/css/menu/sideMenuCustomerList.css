@@ -1,274 +1,211 @@
-/* 🔵 Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* 🌿 메뉴 페이지 리디자인 - 카드 정렬 맞춤 + 밑줄 제거 */
+
+:root {
+    --theme-orange: #F38B20;
+    --theme-orange-dark: #d7730f;
+    --text-color: #333;
+    --bg-main: #ffffff;
+    --bg-card: #fffaf3;
+    --bg-alt: #f9f9f9;
 }
 
 body {
-    font-family: 'Poppins', 'Noto Sans KR', 'Permanent Marker', sans-serif;
-    background: linear-gradient(135deg, #f8f1e6, #efe0c8);
-    color: #3b2a1a;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    background-color: var(--bg-alt);
+    color: var(--text-color);
 }
 
-/* 🔵 헤더 */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 5%;
-    background: #efe0c8;
-    border-bottom: 2px solid #d2b48c;
-}
-
-.site-title {
-    font-size: 34px;
-    font-weight: 800;
-    color: #5a3b26;
-    text-decoration: none;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.header-right {
-    display: flex;
-    gap: 25px;
-    align-items: center; /* 오른쪽 정렬 아이템 상하 가운데 정렬 */
-}
-
-.header-link {
-    text-decoration: none;
-    color: #6b4b34;
-    font-size: 16px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-}
-
-.header-link:hover {
-    background-color: #d2b48c;
-}
-
-/* 🔵 네비게이션 */
-.navbar {
-    background: #d2b48c;
-    padding: 14px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* 네비게이션 바 아이템 상하 가운데 정렬 */
-}
-
-.navbar-links {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-}
-
-.nav-link {
-    text-decoration: none;
-    font-weight: 600;
-    color: #4a2f1d;
-    font-size: 16px;
-    padding: 10px 20px;
-    /*background-color: #c19a6b;*/
-    /*border-radius: 20px;*/
-    transition: background-color 0.3s;
-    cursor: pointer;
-}
-
-.nav-link:hover {
-    background-color: #8b5c32;
-    color: #fff3e0;
-}
-
-/* 🔵 드롭다운 */
-.dropdown {
-    position: relative;
-    display: inline-block;
-    align-self: center; /* 드롭다운 메뉴가 네비게이션 바 중앙에 위치하도록 설정 */
-}
-
-/* 드롭다운 토글 뒤에 화살표 추가 */
-.dropdown-toggle::after {
-    content: ' ▼';  /* 화살표 */
-    font-size: 0.6em;
-}
-
-/* 드롭다운 메뉴 스타일 */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    background-color: #fff8f0;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
-    z-index: 1;
-    border-radius: 6px;
-    padding: 0.5rem 0;
-    left: 50%;  /* 부모 요소의 가운데로 설정 */
-    transform: translateX(-50%);  /* 왼쪽으로 50%만큼 이동하여 정확하게 가운데 정렬 */
-}
-
-/* 드롭다운 메뉴 아이템 스타일 */
-.dropdown-menu .dropdown-item {
-    color: #4e372a;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    display: block;
-    transition: background-color 0.3s;
-}
-
-/* 메뉴 아이템 hover 시 배경 색상 변경 */
-.dropdown-menu .dropdown-item:hover {
-    background-color: #fcebd5;
-}
-
-/* 드롭다운 메뉴가 보일 때 */
-.dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-/* 🔵 메인 타이틀 */
 .main-heading {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 60px 0 30px;
     text-align: center;
-    font-size: 40px;
-    margin: 60px 0 40px;
-    color: #543c2f;
-    font-weight: 900;
 }
 
-/* 🔵 메뉴 컨테이너 */
 .menu-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 40px;
-    justify-content: center;
-    padding: 30px 5%;
-    max-width: 1200px;
+    padding: 0 5% 60px;
+    padding-top: 40px;
+    max-width: 1280px;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
-/* 🔵 메뉴 아이템 */
 .menu-item {
-    background: linear-gradient(145deg, #f9f3eb, #d8c1a5);
-    border-radius: 18px;
-    padding: 18px;
-    box-shadow: 0 6px 16px rgba(85, 54, 25, 0.15);
-    text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.3s ease-in-out;
-    height: 100%;
-}
-
-.menu-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(85, 54, 25, 0.2);
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
 }
 
 .menu-item img {
     width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 14px;
+    max-height: 160px;
+    object-fit: contain;
+    display: block;
 }
 
-/* 🔵 메뉴 정보 */
+.menu-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+    border-radius: 16px;
+    z-index: 2;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 .menu-info {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 100%;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* ✨ 설명이 남은 공간을 채움 */
-    justify-content: space-between;
-
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.2s;
+    min-height: 210px;
+    box-sizing: border-box;
 }
 
 .menu-info h2 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #4d3321;
-    margin-top: 12px;
+    font-size: 16px;
+    font-weight: bold;
     margin-bottom: 6px;
 }
 
-.menu-info p {
-    font-size: 14px;
-    color: #7c5e45;
-    margin-bottom: 8px;
-}
-
+.menu-info p,
 .menu-info span {
-    font-size: 16px;
-    font-weight: 700;
-    color: #5b3d28;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+    text-decoration: none;
 }
 
-/* 🔵 장바구니 버튼 */
-.add-to-cart-btn {
-    background: linear-gradient(45deg, #a0522d, #8b5c32);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 15px;
-    font-weight: 700;
+.add-to-cart-btn, .order-btn {
+    background: whitesmoke;
     border: none;
-    transition: background 0.3s ease;
-    margin-top: 12px;
-    text-decoration: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    color: #333 !important;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 50px;
     cursor: pointer;
-    align-self: center; /* ✨ 버튼을 중앙 정렬 */
+    transition: all 0.3s ease;
+    margin: 4px;
+    text-decoration: none;
 }
 
-.add-to-cart-btn:hover {
-    background: linear-gradient(45deg, #7b3f1d, #5b3d28);
+.add-to-cart-btn:hover, .order-btn:hover {
+    background: var(--theme-orange);
+    color: white !important;
+    border-color: var(--theme-orange);
 }
 
-/* 🔵 푸터 */
-.footer {
-    background-color: #efe0c8;
-    padding: 25px 0;
+.menu-info .btn-wrap {
+    border: none;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.custom-item {
+    order: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    margin-top: 20px;
+}
+
+.custom-item .menu-info {
+    align-items: center;
     text-align: center;
-    font-size: 13px;
-    color: #7b6149;
+    min-height: 210px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
 }
 
-.footer-links {
-    margin-top: 10px;
-}
-
-.footer-link {
-    margin: 0 10px;
-    color: #7b6149;
+.custom-item a {
     text-decoration: none;
-    font-size: 13px;
+    color: inherit;
+}
+
+.chat-item {
+    position: fixed;
+    bottom: 120px;
+    right: 60px;
+    z-index: 1000;
+}
+
+#oneOnOneChatBtn {
+    width: 80px;
+    height: 80px;
+    background-color: #ffefd7;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.footer-link:hover {
-    text-decoration: underline;
+#oneOnOneChatBtn:hover {
+    background-color: #fff0cc;
 }
 
-/* 🔵 반응형 */
-@media (max-width: 1024px) {
-    .menu-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
+#sandit-chat {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
 }
 
-@media (max-width: 600px) {
-    .menu-container {
-        grid-template-columns: 1fr;
-    }
+.chat-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 12px;
+    height: 12px;
+    background-color: red;
+    border-radius: 50%;
+}
 
-    .menu-item {
-        width: 90%;
-        margin: 0 auto;
-    }
-
+@media (max-width: 768px) {
     .main-heading {
-        font-size: 32px;
+        font-size: 28px;
     }
-}
-.menu-item a {
-    text-decoration: none;
+
+    .menu-item img {
+        max-height: 140px;
+    }
+
+    .menu-item,
+    .custom-item {
+        width: 100%;
+    }
+
+    #oneOnOneChatBtn {
+        width: 64px;
+        height: 64px;
+    }
+
+    #sandit-chat {
+        width: 48px;
+        height: 48px;
+    }
 }

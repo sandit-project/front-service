@@ -1,36 +1,20 @@
 $(function () {
-    connectWebSocket();
+     connectWebSocket();// 최초 1회 WebSocket 연결
 });
 
 // --- 전역 변수 ---
 let chatRoomOpenedAt = null;
 let stompClient = null;
+let sock = null;
 let isConnected = false;
 let currentRoomId = null;
 let subscription = null;
 let globalSubscription = null;
+const receivedMessageIds = new Set();
+
 
 // --- WebSocket 연결 ---
-function connectWebSocket() {
-    if (isConnected) {
-        console.log('[WebSocket] 이미 연결된 상태');
-        return;
-    }
 
-    const socket = new SockJS(window.WEBSOCKET_URL);
-    stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, function (frame) {
-        console.log('[WebSocket] 연결 성공:', frame);
-        isConnected = true;
-        subscribeToGlobalMessages();
-    }, function (error) {
-        console.error('[WebSocket] 연결 실패:', error);
-        isConnected = false;
-        stompClient = null;
-        setTimeout(connectWebSocket, 5000);
-    });
-}
 
 // --- 공통 메시지 구독 ---
 function subscribeToGlobalMessages() {
@@ -63,14 +47,10 @@ function initChatRoom(roomId) {
         return;
     }
 
-    if (subscription) {
-        subscription.unsubscribe();
-        subscription = null;
-        console.log('[WebSocket] 이전 방 구독 해제');
-    }
-
+    unsubscribeFromCurrentRoom();
     currentRoomId = roomId;
     chatRoomOpenedAt = Date.now();
+    resetMessageCache();
 
     subscription = stompClient.subscribe(`/topic/room/${roomId}`, function (msg) {
         const message = JSON.parse(msg.body);
@@ -96,13 +76,11 @@ function handleIncomingMessage(message) {
     const userId = getCurrentUserId();
     console.log('[WebSocket] 메시지 처리:', message);
 
-    // 내 메시지는 무시
     if (message.sender === userId) {
         console.log('[WebSocket] 내 메시지라 무시:', message.id || '');
         return;
     }
 
-    // 과거 메시지 무시
     if (message.createdAt) {
         const msgTime = new Date(message.createdAt).getTime();
         if (chatRoomOpenedAt && msgTime < chatRoomOpenedAt) {
@@ -114,14 +92,11 @@ function handleIncomingMessage(message) {
     const isModalOpen = $('#modalContainer').is(':visible');
     const isInCurrentRoom = currentRoomId && message.roomId === currentRoomId;
 
-    console.log('[WebSocket] 모달 열림:', isModalOpen, ', 현재 방:', currentRoomId, ', 메시지 방:', message.roomId);
-
     if (isModalOpen && isInCurrentRoom) {
         addMessageIfNotDuplicate(message);
         $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
     } else {
-        console.log('[WebSocket] 모달 닫혔거나 다른 방 메시지라 알림 없음 (뱃지 알림 기능 제거)');
-        // 뱃지 알림 함수 호출 삭제
+        console.log('[WebSocket] 모달 닫힘 or 다른 방 → 뱃지 생략');
     }
 }
 
@@ -132,11 +107,16 @@ function addMessageIfNotDuplicate(message) {
         return;
     }
 
-    if ($(`#msg-${message.id}`).length === 0) {
+    if (!receivedMessageIds.has(message.id)) {
         $('#chatBox').append(`<div id="msg-${message.id}"><b>${escapeHtml(message.sender)}:</b> ${escapeHtml(message.message)}</div>`);
+        receivedMessageIds.add(message.id);
     } else {
         console.log('[WebSocket] 중복 메시지 무시됨:', message.id);
     }
+}
+
+function resetMessageCache() {
+    receivedMessageIds.clear();
 }
 
 // --- XSS 방지 escape ---
@@ -151,23 +131,37 @@ function escapeHtml(text) {
 
 // --- 현재 로그인 유저 ID 조회 ---
 function getCurrentUserId() {
-    const userId = $('#currentUserId').val() || 'unknownUser';
-    console.log('[Debug] 현재 유저 ID:', userId);
-    return userId;
+    return $('#currentUserId').val() || 'unknownUser';
+}
+
+// --- WebSocket 및 구독, 메시지 캐시 정리 ---
+function cleanupWebSocket() {
+    return new Promise((resolve) => {
+        unsubscribeFromCurrentRoom();
+        resetMessageCache();
+        $("#chatBox").empty();
+        resolve();
+    });
 }
 
 // --- 모달 열기 ---
 function openModalWithContent(url, onLoadCallback) {
     console.log('[Modal] openModalWithContent 호출:', url);
+
+    // 👉 버튼 숨기기
+    $('#oneOnOneChatBtn').hide();
+
+    unsubscribeFromCurrentRoom();
+    resetMessageCache();
+    $('#chatBox').empty();
+    chatRoomOpenedAt = Date.now();
+
     $('#modalContent').html('<p>로딩 중...</p>');
     $('#modalContainer').show();
-    // 뱃지 숨기기 코드 삭제
 
     $.get(url)
         .done(function (data) {
             $('#modalContent').html(data);
-            chatRoomOpenedAt = Date.now();
-
             if (typeof onLoadCallback === 'function') {
                 onLoadCallback();
             }
@@ -180,19 +174,36 @@ function openModalWithContent(url, onLoadCallback) {
 // --- 모달 닫기 ---
 function closeModal() {
     console.log('[Modal] closeModal 호출');
+
     $('#modalContainer').hide();
     $('#modalContent').html('');
-    // 구독 유지 (알림용)
+
+    // 👉 버튼 다시 보이기
+    $('#oneOnOneChatBtn').show();
+
+    return cleanupWebSocket().then(() => {
+        console.log('[Modal] closeModal 끝, 방 구독 정리 완료');
+    });
 }
 
 // --- 이벤트 바인딩 ---
-$(document).on('click', '#modalCloseBtn', closeModal);
-$(document).on('click', '#modalOverlay', closeModal);
-
-$(document).on('click', '#oneOnOneChatBtn', function () {
-    openModalWithContent('/chat');
+$(document).on('click', '#modalCloseBtn', function () {
+    closeModal();
 });
 
+
+// 1:1 채팅 버튼 클릭
+$(document).on('click', '#oneOnOneChatBtn', function () {
+    if ($('#modalContainer').is(':visible')) {
+        closeModal().then(() => {
+            setTimeout(() => openModalWithContent('/chat'), 300);
+        });
+    } else {
+        openModalWithContent('/chat');
+    }
+});
+
+// 채팅방 입장 버튼 클릭
 $(document).on('click', '.enter-chat-room', function () {
     const roomId = $(this).data('roomId') || $(this).attr('data-room-id');
     if (!roomId) {
@@ -200,7 +211,20 @@ $(document).on('click', '.enter-chat-room', function () {
         return;
     }
 
-    openModalWithContent('/chat-room?roomId=' + encodeURIComponent(roomId), function () {
+    const loadRoom = () => openModalWithContent('/chat-room?roomId=' + encodeURIComponent(roomId), () => {
         initChatRoom(roomId);
     });
+
+    if ($('#modalContainer').is(':visible')) {
+        closeModal().then(() => {
+            setTimeout(loadRoom, 300);
+        });
+    } else {
+        loadRoom();
+    }
+});
+
+// --- 페이지 이탈 시 정리 ---
+$(window).on('beforeunload', function () {
+    cleanupWebSocket();
 });

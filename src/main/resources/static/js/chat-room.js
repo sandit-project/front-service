@@ -1,15 +1,10 @@
 (function () {
     let stompClient = null;
+    let subscription = null;
     let globalUserInfo = null;
     const displayedMessages = new Set();
-
-    function checkToken() {
-        return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('accessToken');
-            if (!token || token.trim() === '') reject('토큰 없음');
-            else resolve();
-        });
-    }
+    checkToken();
+   setupAjax();
 
     function getUserInfo() {
         return new Promise((resolve, reject) => {
@@ -47,26 +42,17 @@
 
     function hasChatPermission(role, userType) {
         if (role === 'ROLE_ADMIN') return true;
-
         const allowedSocialTypes = ['naver', 'kakao', 'google'];
-
         if (userType === 'normal') return true;
-        if (allowedSocialTypes.includes(userType)) return true;
-
-        return false;
+        return allowedSocialTypes.includes(userType);
     }
 
-    function setupAjax() {
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                const token = localStorage.getItem('accessToken');
-                if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            }
-        });
-    }
 
+    // ✅ 채팅방 초기화 - 모달 열 때 호출
     window.initChatRoom = async function (roomId) {
         try {
+            cleanupWebSocket();  // 🔑 기존 WebSocket 및 이벤트 정리
+
             await checkToken();
             setupAjax();
             globalUserInfo = await getUserInfo();
@@ -95,8 +81,11 @@
                 return;
             }
 
+            displayedMessages.clear();
+            $("#chatBox").empty();
+
             await loadChatHistory(roomId, userId);
-            connectWebSocket(roomId, userId, role, userType);
+            await connectWebSocket(roomId, userId, role, userType);
         } catch (e) {
             console.error('Error during initChatRoom:', e);
             Swal.fire("로그인이 필요합니다", "", "warning").then(() => {
@@ -109,11 +98,7 @@
         try {
             const response = await $.get(`/chat/rooms/${roomId}/messages`);
             const messages = Array.isArray(response) ? response : response?.content ?? [];
-
-            messages.forEach(message => {
-                addMessageIfNotDuplicate(message, userId);
-            });
-
+            messages.forEach(message => addMessageIfNotDuplicate(message, userId));
             scrollToBottom();
         } catch (err) {
             console.error("채팅 기록 로딩 실패:", err);
@@ -123,7 +108,12 @@
 
     function addMessageIfNotDuplicate(message, userId) {
         if (!message || !message.message || !message.sender) return;
-        const key = message.id || `${message.sender}_${message.message}_${message.createdAt || message.timestamp || ''}`;
+
+        const timestamp = message.createdAt || message.created_at || message.timestamp || '';
+        const key = message.id
+            ? `id_${message.id}`
+            : `sender_${message.sender}_msg_${message.message}_time_${timestamp}`;
+
         if (displayedMessages.has(key)) return;
         displayedMessages.add(key);
         appendMessageToChatBox(message, userId);
@@ -136,7 +126,6 @@
         const senderLabel = (message.senderRole?.toLowerCase() === 'role_admin')
             ? '👨‍💼 관리자'
             : `🙋‍♂️ 고객 (${message.senderType === 'normal' ? '일반' : message.senderType})`;
-
         const messageClass = isMine ? "my-message" : "other-message";
 
         const messageHtml = `
@@ -147,7 +136,6 @@
             </div>
         `;
         $("#chatBox").append(messageHtml);
-
         scrollToBottom();
     }
 
@@ -155,34 +143,52 @@
         const token = localStorage.getItem("accessToken");
         if (!token) {
             console.error("WebSocket 연결 실패: 토큰 없음");
-            return;
+            return Promise.reject("토큰 없음");
         }
 
-        if (stompClient && stompClient.connected) {
-            stompClient.disconnect(() => console.log("기존 WebSocket 연결 종료"));
-        }
+        return new Promise((resolve, reject) => {
+            if (subscription) {
+                subscription.unsubscribe();
+                subscription = null;
+            }
+            if (stompClient && stompClient.connected) {
+                stompClient.disconnect(() => {
+                    console.log("기존 WebSocket 연결 종료 완료");
+                    stompClient = null;
+                    resolve();
+                });
+            } else {
+                resolve();
+            }
+        }).then(() => {
+            const socket = new SockJS(window.WEBSOCKET_URL);
+            stompClient = Stomp.over(socket);
 
-        const socket = new SockJS(window.WEBSOCKET_URL);
-        stompClient = Stomp.over(socket);
+            return new Promise((res, rej) => {
+                stompClient.connect({ Authorization: `Bearer ${token}` }, () => {
+                    console.log("WebSocket 연결 성공");
 
-        stompClient.connect({ Authorization: `Bearer ${token}` }, () => {
-            console.log("WebSocket 연결 성공");
+                    subscription = stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
+                        const message = JSON.parse(msg.body);
+                        if (message.sender === userId) return;
+                        addMessageIfNotDuplicate(message, userId);
+                    });
 
-            stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
-                const message = JSON.parse(msg.body);
-                if (message.sender === userId) return;
-                addMessageIfNotDuplicate(message, userId);
+                    // 🔄 이벤트 핸들러 중복 방지
+                    $("#sendBtn").off("click").on("click", () => sendMessage(roomId, userId, role, userType));
+                    $("#messageInput").off("keypress").on("keypress", (e) => {
+                        if (e.which === 13) {
+                            e.preventDefault();
+                            sendMessage(roomId, userId, role, userType);
+                        }
+                    });
+
+                    res();
+                }, (error) => {
+                    console.error("WebSocket 연결 실패", error);
+                    rej(error);
+                });
             });
-
-            $("#sendBtn").off("click").on("click", () => sendMessage(roomId, userId, role, userType));
-            $("#messageInput").off("keypress").on("keypress", (e) => {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    sendMessage(roomId, userId, role, userType);
-                }
-            });
-        }, (error) => {
-            console.error("WebSocket 연결 실패", error);
         });
     }
 
@@ -243,7 +249,36 @@
         if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+    // ✅ WebSocket 및 이벤트 해제 (모달 닫기 시 호출)
+    function cleanupWebSocket() {
+        if (subscription) {
+            subscription.unsubscribe();
+            subscription = null;
+        }
+        if (stompClient && stompClient.connected) {
+            stompClient.disconnect(() => {
+                console.log("WebSocket 연결 종료됨");
+            });
+            stompClient = null;
+        }
+
+        $("#sendBtn").off("click");
+        $("#messageInput").off("keypress");
+
+        displayedMessages.clear();
+        $("#chatBox").empty();
+    }
+
+    // 모달 닫기 버튼
+    $(document).on('click', '#modalCloseBtn', function () {
+        cleanupWebSocket();
+        $('#modalContainer').hide();
+        $('#modalContent').empty();
+    });
+
+    // 목록으로 돌아가기
     $(document).on('click', '#backToChatListBtn', function () {
+        cleanupWebSocket();
         openModalWithContent('/chat');
     });
 })();

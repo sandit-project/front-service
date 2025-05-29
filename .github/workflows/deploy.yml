@@ -65,7 +65,7 @@ jobs:
 
       - name: Substitute environment variables in deployment file
         run: |
-          export DOMAIN_NAME=jurang-park.site
+          export DOMAIN_NAME=himedia-a.com
           export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
           envsubst < k8s/deployment.yml > k8s/deployment.rendered.yml
