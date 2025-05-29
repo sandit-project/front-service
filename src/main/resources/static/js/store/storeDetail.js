@@ -9,30 +9,63 @@ $(document).ready(function () {
     const params = new URLSearchParams(window.location.search);
     const storeUid = params.get("storeUid");
 
-    // 지점 상세 조회
+    // 👇 매니저 목록 먼저 로딩
     $.ajax({
-        url: `/stores/${storeUid}`,
-        method: 'GET',
-        success: function (data) {
-            console.log('지점 상세 조회 :',data);
-            $('#store_uid').val(data.storeUid);
-            $('#store_name').val(data.storeName);
-            $('#store_manager').val(data.userUid)
-            $('#address').val(data.storeAddress);
-            $('#postcode').val(data.storePostcode);
-            $('#store_latitude').val(data.storeLatitude);
-            $('#store_longitude').val(data.storeLongitude);
-            $('#status').val(data.storeStatus)
+        type: "GET",
+        url: "/user/managers",
+        dataType: "json",
+        success: function (managers) {
+            const $select = $('#store_manager');
+            $select.empty();
+            $select.append('<option value="">지점 관리자를 선택하세요</option>');
+
+            managers.forEach(manager => {
+                $select.append(
+                    $('<option>')
+                        .val(manager.userUid)
+                        .text(manager.userId + '(' + manager.userName + ')')
+                );
+            });
+
+            // 👉 그 후 지점 상세 조회
+            loadStoreDetail(storeUid);
         },
         error: function () {
             Swal.fire({
                 icon: 'error',
-                title: '지점 정보 오류',
-                text: '지점 정보를 불러오는데 실패했습니다.',
+                title: '관리자 목록 불러오기 실패',
+                text: '지점 관리자 목록을 불러오지 못했습니다.',
                 confirmButtonColor: '#f97316'
             });
         }
     });
+
+    // 지점 상세 정보를 채우는 함수
+    function loadStoreDetail(storeUid) {
+        $.ajax({
+            url: `/stores/${storeUid}`,
+            method: 'GET',
+            success: function (data) {
+                console.log('지점 상세 조회 :', data);
+                $('#store_uid').val(data.storeUid);
+                $('#store_name').val(data.storeName);
+                $('#store_manager').val(data.userUid)
+                $('#address').val(data.storeAddress);
+                $('#postcode').val(data.storePostcode);
+                $('#store_latitude').val(data.storeLatitude);
+                $('#store_longitude').val(data.storeLongitude);
+                $('#status').val(data.storeStatus)
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: '지점 정보 오류',
+                    text: '지점 정보를 불러오는데 실패했습니다.',
+                    confirmButtonColor: '#f97316'
+                });
+            }
+        });
+    }
 
 
 

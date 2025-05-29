@@ -22,6 +22,13 @@ async function initPage() {
 
         if (profile?.uid) {
             initUserUI(profile);
+            let type;
+            if(profile.type === "USER"){
+                type = "user";
+            }else{
+                type = "social";
+            }
+            receiveAlarm(profile.uid, type);
         }
 
         console.log('[DEBUG] profile:', profile);

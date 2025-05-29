@@ -5,9 +5,12 @@ import com.example.frontservice.service.StoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/stores")
@@ -50,6 +53,15 @@ public class StoreApiController {
         String token = request.getHeader("Authorization");
 
         return storeService.getStoreUidByManager(userUid,token);
+    }
+    @GetMapping("/check-manager")
+    public ResponseEntity<Map<String,Boolean>> checkManagerAssigned (@RequestParam Long userUid, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        boolean assigned = storeService.isManagerAlreadyAssigned(userUid,token);
+        Map<String,Boolean> result = new HashMap<>();
+        result.put("assigned",assigned);
+
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping

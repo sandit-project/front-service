@@ -1,6 +1,7 @@
 package com.example.frontservice.controller.order;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderViewController {
+    @Value("${app.websocket.url}")
+    private String websocketUrl;
 
     @GetMapping
     public String orderPage() {
@@ -18,7 +21,8 @@ public class OrderViewController {
     }
 
     @GetMapping("/details")
-    public String orderDetailPage() {
+    public String orderDetailPage(Model model) {
+        model.addAttribute("websocketUrl", websocketUrl);
         return "order/order-detail";
     }
 }
