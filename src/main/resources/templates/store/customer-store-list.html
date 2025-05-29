@@ -13,6 +13,7 @@
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/alarm.js}"></script>
     <script th:src="@{/js/store/customerStoreList.js}"></script>
+    <script th:src="@{/js/connectWebSocket.js}"></script>
     <script th:src="@{/js/modal-chat.js}"></script>
 
     <link th:href="@{/css/common.css}" rel="stylesheet">
@@ -67,8 +68,8 @@
 <div th:replace="~{modal-chat :: modal-chat}"></div>
 </main>
 <div th:replace="~{footer :: footer}"></div>
-<script>
-    const WEBSOCKET_URL = "[[${websocketUrl}]]";
+<script >
+    window.WEBSOCKET_URL = window.WEBSOCKET_URL || '[[${websocketUrl}]]';
 </script>
 </body>
 </html>
