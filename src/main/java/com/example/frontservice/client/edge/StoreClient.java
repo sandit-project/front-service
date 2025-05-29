@@ -1,14 +1,21 @@
 package com.example.frontservice.client.edge;
 
 import com.example.frontservice.dto.store.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name="storeClient", url="${sandit.edge-service-url}/stores")
 public interface StoreClient {
+
+    @GetMapping("/check-manager")
+    ResponseEntity<Map<String,Boolean>> checkManagerAssigned(@RequestParam Long userUid,
+                                                        @RequestHeader("Authorization") String token);
 
     @GetMapping
     List<CustomerStoreListResponseDTO> getCustomerStoreList(@RequestHeader("Authorization") String token);

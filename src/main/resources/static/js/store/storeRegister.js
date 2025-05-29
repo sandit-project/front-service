@@ -36,6 +36,36 @@ $(document).ready(() => {
         initUserUI(userInfo);
     });
 
+    // 매니저 선택 시 이미 등록된 관리자 여부 확인
+    $('#manager').change(function () {
+        const selectedManagerUid = $(this).val();
+
+        if (!selectedManagerUid) return; // 기본 선택일 경우 무시
+
+        $.ajax({
+            type: 'GET',
+            url: `/stores/check-manager?userUid=${selectedManagerUid}`,
+            dataType: 'json',
+            success: function(response) {
+                if (response.assigned) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '이미 등록된 관리자',
+                        text: '해당 관리자는 이미 다른 지점에 등록되어 있습니다.',
+                        confirmButtonColor: '#f97316'
+                    });
+
+                    // 선택을 초기화
+                    $('#manager').val('');
+                }
+            },
+            error: function(xhr) {
+                console.error('매니저 등록 확인 오류:', xhr);
+            }
+        });
+    });
+
+
 
     // 지점 등록 버튼 클릭 이벤트
     $('#storeRegister').click(async (event) => {
