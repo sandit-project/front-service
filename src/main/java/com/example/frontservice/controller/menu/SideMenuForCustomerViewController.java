@@ -12,13 +12,11 @@ public class SideMenuForCustomerViewController {
     @Value("${app.websocket.url}")
     private String websocketUrl;
 
-
     @GetMapping("/sidesInfo/{sideName}")
     public String showMenuDetail(@PathVariable String sideName, Model model) {
         model.addAttribute("websocketUrl", websocketUrl);
         return "menu/sideMenuForCustomer"; // 화면만 반환 (HTML 처리)
     }
-
 
 }
 

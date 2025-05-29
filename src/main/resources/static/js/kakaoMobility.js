@@ -79,7 +79,7 @@ let renderKakaomap = (info) => {
     // }
 
     let receiveDeliveryManLocation = (merchantUid) => {
-        const socket = new SockJS(WEBSOCKET_URL);
+        const socket = new SockJS(window.WEBSOCKET_URL);
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, (frame) => {

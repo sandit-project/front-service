@@ -78,6 +78,13 @@ function fetchProfile() {
             $('#sub_address2').text(response.subAddress2);
 
             initUserUI(response);
+            let type;
+            if(response.type === "USER"){
+                type = "user";
+            }else{
+                type = "social";
+            }
+            receiveAlarm(response.uid, response.type);
             console.log(response);
         },
         error : (error) => {

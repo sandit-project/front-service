@@ -117,6 +117,7 @@ body {
 .dropdown-manager,
 .dropdown-admin {
     position: relative; /* 이걸 꼭 넣어줘야 자식의 absolute 위치가 기준 잡힘 */
+    display: none;
 }
 
 .dropdown-toggle {

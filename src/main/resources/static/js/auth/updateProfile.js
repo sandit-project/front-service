@@ -61,6 +61,13 @@ let requestProfileApi = () => {
 
             console.log(response);
             initUserUI(response);
+            let type;
+            if(response.type === "USER"){
+                type = "user";
+            }else{
+                type = "social";
+            }
+            receiveAlarm(response.uid, type);
         },
         error : (error) => {
             console.error('profile in error :: ',error);
