@@ -14,6 +14,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<main>
 <div class="container">
     <h1>관리자 페이지</h1>
     <button class="main-btn" onclick="navigateTo('/')">메인페이지로 이동</button>
@@ -80,6 +81,7 @@
         }
     }
 </script>
+</main>
 <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>
