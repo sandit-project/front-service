@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: front-service
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: himedia-a.com.,www.himedia-a.com.
+    external-dns.alpha.kubernetes.io/hostname: himedia-a.com.
 spec:
   type: LoadBalancer #CLB로 진행 ALB는 ingress필요함
   selector:
