@@ -1,5 +1,4 @@
 $(function() {
-    // common.js 초기화
     setupAjax();
     checkToken();
 

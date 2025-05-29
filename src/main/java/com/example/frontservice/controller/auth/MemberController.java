@@ -26,7 +26,8 @@ public class MemberController {
         return "auth/profile";
     }
     @GetMapping("/profile/update")
-    public String updateProfile() {
+    public String updateProfile(Model model) {
+        model.addAttribute("websocketUrl", websocketUrl);
         return "auth/update-profile";
     }
 }

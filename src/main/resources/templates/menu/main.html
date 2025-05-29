@@ -64,7 +64,6 @@
             const userInfo = await getUserInfo();
             if (userInfo) {
                 initUserUI(userInfo);
-                hideUnauthorizedNav(userInfo);
             } else {
                 renderGuestUI();
             }

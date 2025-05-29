@@ -13,27 +13,51 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/allergyCheck.js}"></script>
-    <script th:src="@{/js/auth/profile.js}"></script>
+    <script th:src="@{/js/connectWebSocket.js}"></script>
+    <script th:src="@{/js/modal-chat.js}"></script>
+    <script th:src="@{/js/alarm.js}"></script>
     <script th:src="@{/js/kakaoMobility.js}"></script>
+    <script th:src="@{/js/auth/profile.js}"></script>
+
     <link th:href="@{/css/common.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
+    <link rel="stylesheet" th:href="@{/css/chat-button.css}" />
     <link th:href="@{/css/auth/profile.css}" rel="stylesheet">
     <title>Profile</title>
+
+    <style>
+        #chatTooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;          /* 버튼 위쪽에 위치 */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff7f00;   /* 주황색 */
+            color: #fff;
+            padding: 8px 14px;     /* 좀 더 크게 */
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 15px;       /* 글자도 좀 키움 */
+            margin-bottom: 8px;    /* 버튼과 살짝 떨어뜨림 */
+            pointer-events: none;
+            z-index: 1000;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+
+    <script>
+        $(function(){
+            $('#oneOnOneChatBtn').hover(
+                function() { $('#chatTooltip').show(); },
+                function() { $('#chatTooltip').hide(); }
+            );
+        });
+    </script>
 </head>
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
-<!--<header>-->
-<!--    <div class="header-container">-->
-<!--        <h1 id="welcome-message"></h1>-->
-<!--    </div>-->
-<!--    <div class="header-logo">-->
-<!--        <a href="/" class="site-title">SAND-IT</a>-->
-<!--    </div>-->
-<!--    <div class="group-btn">-->
-<!--        <button class="delete-btn" id="deleteBtn">회원탈퇴</button>-->
-<!--        <button class="update-btn" id="updateProfileBtn">수정하기</button>-->
-<!--    </div>-->
-<!--</header>-->
 <main>
     <div class="header-container">
         <h1 id="welcome-message"></h1>
@@ -108,13 +132,12 @@
         <button class="delete-btn" id="deleteBtn">회원탈퇴</button>
         <button class="update-btn" id="updateProfileBtn">수정하기</button>
     </div>
+
 </main>
-<!--<footer>-->
-<!--    <p>&copy; 2023 회사명. All rights reserved.</p>-->
-<!--</footer>-->
+<div th:replace="~{modal-chat :: modal-chat}"></div>
 <div th:replace="~{footer :: footer}"></div>
 <script>
-    const WEBSOCKET_URL = "[[${websocketUrl}]]";
+    window.WEBSOCKET_URL = window.WEBSOCKET_URL || '[[${websocketUrl}]]';
 </script>
 </body>
 </html>

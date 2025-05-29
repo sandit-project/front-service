@@ -27,21 +27,7 @@ function initUserUI(userInfo) {
         <a href="/cart" class="header-link">장바구니</a>
     `);
 
-    if (userInfo.role === "ROLE_ADMIN") {
-        $('.dropdown-admin').show();
-        $('.dropdown-delivery').show();
-        $('.dropdown-manager').show();
-    } else if (userInfo.role === "ROLE_DELIVERY") {
-        $('.dropdown-delivery').show();
-        $('.dropdown-admin').hide();
-        $('.dropdown-manager').hide();
-    } else if (userInfo.role === "ROLE_MANAGER") {
-        $('.dropdown-delivery').hide();
-        $('.dropdown-admin').hide();
-        $('.dropdown-manager').show();
-    } else {
-        $('.dropdown-admin, .dropdown-delivery, .dropdown-manager').hide();
-    }
+    hideUnauthorizedNav(userInfo);
 }
 
 // 비로그인 UI 구성
@@ -90,7 +76,7 @@ function hideUnauthorizedNav(user) {
     $('.dropdown-admin, .dropdown-manager, .dropdown-delivery').hide();
 
     if (role === 'ROLE_ADMIN') {
-        $('.dropdown-admin, .dropdown-manager, .dropdown-delivery').show(); // 어드민은 전부 보임
+        $('.dropdown-admin').show();
     } else if (role === 'ROLE_MANAGER') {
         $('.dropdown-manager').show();
     } else if (role === 'ROLE_DELIVERY') {

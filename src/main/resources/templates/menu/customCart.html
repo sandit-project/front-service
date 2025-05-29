@@ -5,12 +5,51 @@
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:src="@{/js/menu/customCart.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/layout.js}"></script>
     <script th:src="@{/js/allergyCheck.js}"></script>
+    <script th:src="@{/js/connectWebSocket.js}"></script>
+    <script th:src="@{/js/modal-chat.js}"></script>
+    <script th:src="@{/js/alarm.js}"></script>
+    <script th:src="@{/js/menu/customCart.js}"></script>
+
     <link th:href="@{/css/common.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/modal-chat.css}" />
+    <link rel="stylesheet" th:href="@{/css/chat-button.css}" />
     <link th:href="@{/css/menu/customCart.css}" rel="stylesheet">
+
+    <style>
+        #chatTooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;          /* 버튼 위쪽에 위치 */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff7f00;   /* 주황색 */
+            color: #fff;
+            padding: 8px 14px;     /* 좀 더 크게 */
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 15px;       /* 글자도 좀 키움 */
+            margin-bottom: 8px;    /* 버튼과 살짝 떨어뜨림 */
+            pointer-events: none;
+            z-index: 1000;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+
+    <script>
+        $(function(){
+            $('#oneOnOneChatBtn').hover(
+                function() { $('#chatTooltip').show(); },
+                function() { $('#chatTooltip').hide(); }
+            );
+        });
+    </script>
 </head>
 <body>
 <div th:replace="~{header :: header}"></div>
@@ -95,7 +134,10 @@
         </div>
     </div>
 </form>
-
+<div th:replace="~{modal-chat :: modal-chat}"></div>
 <div th:replace="~{footer :: footer}"></div>
+<script>
+    window.WEBSOCKET_URL = window.WEBSOCKET_URL || '[[${websocketUrl}]]';
+</script>
 </body>
 </html>

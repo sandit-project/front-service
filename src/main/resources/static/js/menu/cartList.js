@@ -15,6 +15,7 @@ $(document).ready(function () {
         }
 
         initUserUI(userInfo);
+        receiveAlarm(userInfo.id, userInfo.type);
         loadCartItems();
     });
 

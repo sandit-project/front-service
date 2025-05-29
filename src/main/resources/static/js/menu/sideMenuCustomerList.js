@@ -12,6 +12,7 @@ $(document).ready(async () => {
 
         if (globalUserInfo) {
             initUserUI(globalUserInfo);
+            receiveAlarm(globalUserInfo.id, globalUserInfo.type);
         } else {
             renderGuestUI();
         }
@@ -105,25 +106,6 @@ $(document).ready(async () => {
             Swal.fire('오류', '주문 처리 실패', 'error');
         }
     });
-
-    // 로그아웃
-    $(document).on("click", "#logoutBtn", () => {
-        Swal.fire({
-            title: '로그아웃 하시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '네, 로그아웃할게요',
-            cancelButtonText: '취소'
-        }).then(result => {
-            if (result.isConfirmed) logout();
-        });
-    });
-
-    // 회원 탈퇴
-    $(document).on("click", "#deleteBtn", () => deleteAccount());
-
-    // 프로필
-    $(document).on("click", "#profileBtn", () => requestProfile());
 });
 
 // ==== 함수들 ====
@@ -156,72 +138,4 @@ function buildCartRequest(sideId, amount) {
         requestData.socialUid = globalUserInfo.id;
     }
     return requestData;
-}
-
-function initUserUI(userInfo) {
-    $('#welcome-message').text(`${userInfo.userName}님 환영합니다!`);
-    $('#hiddenUserName').val(userInfo.userName);
-    $('#hiddenUserId').val(userInfo.userId);
-    $('#hiddenId').val(userInfo.id);
-    $('#hiddenUserRole').val(userInfo.role);
-
-    const rightMenu = $('.header-right').empty();
-    rightMenu.append(`
-        <a href="#" class="header-link" id="logoutBtn">로그아웃</a>
-        <a href="/member/profile" class="header-link">프로필</a>
-        <a href="/cart" class="header-link">장바구니</a>
-    `);
-
-    if (userInfo.role === "ROLE_ADMIN") {
-        $('.dropdown-admin').show();
-        $('.dropdown-delivery').hide();
-    } else if (userInfo.role === "ROLE_DELIVERY") {
-        $('.dropdown-delivery').show();
-        $('.dropdown-admin').hide();
-    } else {
-        $('.dropdown-admin, .dropdown-delivery').hide();
-    }
-}
-
-function renderGuestUI() {
-    const rightMenu = $('.header-right').empty();
-    rightMenu.append(`
-        <a href="/member/login" class="header-link">로그인</a>
-        <a href="/member/join" class="header-link">회원가입</a>
-        <a href="/cart" class="header-link">장바구니</a>
-    `);
-}
-
-function logout() {
-    setupAjax();
-    $.post('/logout')
-        .done(() => {
-            Swal.fire('로그아웃 성공', '다시 로그인해주세요.', 'success').then(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/member/login';
-            });
-        })
-        .fail(() => {
-            Swal.fire('오류', '로그아웃 중 오류가 발생했습니다.', 'error');
-        });
-}
-
-function deleteAccount() {
-    setupAjax();
-    $.ajax({
-        type: 'DELETE',
-        url: '/user'
-    }).done(() => {
-        Swal.fire('회원 탈퇴 완료', '이용해 주셔서 감사합니다.', 'success').then(() => {
-            localStorage.removeItem('accessToken');
-            window.location.href = '/member/login';
-        });
-    }).fail(() => {
-        Swal.fire('탈퇴 실패', '회원 탈퇴 중 오류가 발생했습니다.', 'error');
-    });
-}
-
-function requestProfile() {
-    setupAjax();
-    window.location.href = "/member/profile";
 }

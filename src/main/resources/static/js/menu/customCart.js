@@ -10,6 +10,7 @@ $(document).ready(async function () {
         console.log('User Info:', userInfo);
 
         initUserUI(userInfo);
+        receiveAlarm(userInfo.id, userInfo.type);
 
         // 2.user/social 분기 : userUid or socialUid 구분해서 알러지 요청
         let allergyUrl = '';
