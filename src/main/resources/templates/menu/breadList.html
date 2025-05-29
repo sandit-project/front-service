@@ -15,6 +15,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
+<main>
 <div class="container">
     <h1>빵 목록</h1>
 
@@ -41,6 +42,7 @@
     <button onclick="location.href='/breads/admin'">새 빵 등록</button>
     <button onclick="location.href='/admin'" style="margin-left: 10px;">메인으로 가기</button>
 </div>
+</main>
 <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>
