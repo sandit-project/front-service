@@ -54,7 +54,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
-
+<main>
 <form id="menuForm" action="#" method="post" enctype="multipart/form-data">
 <h2>커스텀 샌드위치 주문</h2>
     <div class="section">
@@ -135,6 +135,7 @@
     </div>
 </form>
 <div th:replace="~{modal-chat :: modal-chat}"></div>
+</main>
 <div th:replace="~{footer :: footer}"></div>
 <script>
     window.WEBSOCKET_URL = window.WEBSOCKET_URL || '[[${websocketUrl}]]';

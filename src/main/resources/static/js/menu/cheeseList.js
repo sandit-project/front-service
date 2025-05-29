@@ -15,6 +15,8 @@ $(document).ready(function () {
                 cheeseTableBody.empty();
 
                 data.forEach(cheese => {
+                    if (cheese.cheeseName === "없음") return;
+
                     const row = `<tr>
                       
                         <td>${cheese.cheeseName}</td>
