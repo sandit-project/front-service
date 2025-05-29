@@ -14,7 +14,7 @@
 <body>
 <div th:replace="~{header :: header}"></div>
 <div th:replace="~{navigation :: nav}"></div>
-
+<main>
 <h1>메뉴 수정</h1>
 
 <form id="menuEditForm" onsubmit="return false;">
@@ -145,7 +145,7 @@
         <button type="button" id="goList" class="btn btn-secondary" onclick="location.href='/menus/list'">목록으로</button>
     </div>
 </form>
-
+</main>
 <div th:replace="~{footer :: footer}"></div>
 </body>
 </html>
