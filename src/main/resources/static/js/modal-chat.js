@@ -1,5 +1,5 @@
 $(function () {
-     connectWebSocket();// 최초 1회 WebSocket 연결
+    connectWebSocket(); // 외부 공통 함수 사용
 });
 
 // --- 전역 변수 ---
@@ -10,17 +10,13 @@ let isConnected = false;
 let currentRoomId = null;
 let subscription = null;
 let globalSubscription = null;
-const receivedMessageIds = new Set();
-
-
-// --- WebSocket 연결 ---
-
+const receivedMessageKeys = new Set();
+let pendingRoomInit = null;
+let isModalTransitioning = false;
 
 // --- 공통 메시지 구독 ---
 function subscribeToGlobalMessages() {
-    if (globalSubscription) {
-        globalSubscription.unsubscribe();
-    }
+    if (globalSubscription) globalSubscription.unsubscribe();
 
     globalSubscription = stompClient.subscribe('/topic/messages', function (msg) {
         const message = JSON.parse(msg.body);
@@ -33,12 +29,12 @@ function subscribeToGlobalMessages() {
 
 // --- 채팅방 초기화 ---
 function initChatRoom(roomId) {
-    console.log('[WebSocket] initChatRoom 시작, roomId:', roomId);
+    if (pendingRoomInit) clearTimeout(pendingRoomInit);
 
     if (!isConnected || !stompClient) {
         console.warn('[WebSocket] 연결 안 됨, 재연결 시도');
         connectWebSocket();
-        setTimeout(() => initChatRoom(roomId), 1000);
+        pendingRoomInit = setTimeout(() => initChatRoom(roomId), 1000);
         return;
     }
 
@@ -101,28 +97,28 @@ function handleIncomingMessage(message) {
 }
 
 // --- 메시지 중복 방지 및 출력 ---
-function addMessageIfNotDuplicate(message) {
-    if (!message.id) {
-        $('#chatBox').append(`<div><b>${escapeHtml(message.sender)}:</b> ${escapeHtml(message.message)}</div>`);
-        return;
-    }
+function getMessageKey(message) {
+    return message.id || `${message.sender}_${message.message}_${message.createdAt || ''}`;
+}
 
-    if (!receivedMessageIds.has(message.id)) {
-        $('#chatBox').append(`<div id="msg-${message.id}"><b>${escapeHtml(message.sender)}:</b> ${escapeHtml(message.message)}</div>`);
-        receivedMessageIds.add(message.id);
+function addMessageIfNotDuplicate(message) {
+    const key = getMessageKey(message);
+    if (!receivedMessageKeys.has(key)) {
+        $('#chatBox').append(`<div><b>${escapeHtml(message.sender)}:</b> ${escapeHtml(message.message)}</div>`);
+        receivedMessageKeys.add(key);
     } else {
-        console.log('[WebSocket] 중복 메시지 무시됨:', message.id);
+        console.log('[WebSocket] 중복 메시지 무시됨:', key);
     }
 }
 
 function resetMessageCache() {
-    receivedMessageIds.clear();
+    receivedMessageKeys.clear();
 }
 
 // --- XSS 방지 escape ---
 function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/&/g, "&amp;")
+    return String(text || '')
+        .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
@@ -131,7 +127,8 @@ function escapeHtml(text) {
 
 // --- 현재 로그인 유저 ID 조회 ---
 function getCurrentUserId() {
-    return $('#currentUserId').val() || 'unknownUser';
+    const el = $('#currentUserId');
+    return el.length ? el.val() : 'unknownUser';
 }
 
 // --- WebSocket 및 구독, 메시지 캐시 정리 ---
@@ -146,11 +143,10 @@ function cleanupWebSocket() {
 
 // --- 모달 열기 ---
 function openModalWithContent(url, onLoadCallback) {
-    console.log('[Modal] openModalWithContent 호출:', url);
+    if (isModalTransitioning) return;
+    isModalTransitioning = true;
 
-    // 👉 버튼 숨기기
     $('#oneOnOneChatBtn').hide();
-
     unsubscribeFromCurrentRoom();
     resetMessageCache();
     $('#chatBox').empty();
@@ -162,12 +158,13 @@ function openModalWithContent(url, onLoadCallback) {
     $.get(url)
         .done(function (data) {
             $('#modalContent').html(data);
-            if (typeof onLoadCallback === 'function') {
-                onLoadCallback();
-            }
+            if (typeof onLoadCallback === 'function') onLoadCallback();
         })
         .fail(function () {
             $('#modalContent').html('<p>컨텐츠 불러오기 실패</p>');
+        })
+        .always(() => {
+            isModalTransitioning = false;
         });
 }
 
@@ -177,8 +174,6 @@ function closeModal() {
 
     $('#modalContainer').hide();
     $('#modalContent').html('');
-
-    // 👉 버튼 다시 보이기
     $('#oneOnOneChatBtn').show();
 
     return cleanupWebSocket().then(() => {
@@ -191,8 +186,6 @@ $(document).on('click', '#modalCloseBtn', function () {
     closeModal();
 });
 
-
-// 1:1 채팅 버튼 클릭
 $(document).on('click', '#oneOnOneChatBtn', function () {
     if ($('#modalContainer').is(':visible')) {
         closeModal().then(() => {
@@ -203,7 +196,6 @@ $(document).on('click', '#oneOnOneChatBtn', function () {
     }
 });
 
-// 채팅방 입장 버튼 클릭
 $(document).on('click', '.enter-chat-room', function () {
     const roomId = $(this).data('roomId') || $(this).attr('data-room-id');
     if (!roomId) {
@@ -226,5 +218,7 @@ $(document).on('click', '.enter-chat-room', function () {
 
 // --- 페이지 이탈 시 정리 ---
 $(window).on('beforeunload', function () {
-    cleanupWebSocket();
+    if (stompClient && stompClient.disconnect) {
+        stompClient.disconnect();
+    }
 });

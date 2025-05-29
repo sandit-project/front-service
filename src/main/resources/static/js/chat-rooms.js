@@ -1,12 +1,8 @@
 (function () {
-    // 토큰 체크 및 로그인 리다이렉트
-
-    // JWT 또는 소셜 토큰에서 userId, role, type 추출
     function getUserInfo() {
         const token = localStorage.getItem('accessToken');
         if (!token) return null;
 
-        // 소셜 토큰 접두사: naver:, kakao:, google:
         const socialPrefixes = ['naver:', 'kakao:', 'google:'];
         const socialType = socialPrefixes.find(prefix => token.startsWith(prefix));
 
@@ -16,7 +12,7 @@
                 return {
                     userId: parts[1],
                     role: 'ROLE_USER',
-                    type: socialType.slice(0, -1) // 'naver', 'kakao', 'google'
+                    type: socialType.slice(0, -1)
                 };
             } else {
                 console.warn('소셜 토큰 형식 오류');
@@ -24,7 +20,6 @@
             }
         }
 
-        // 일반 JWT 처리
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             return {
@@ -38,16 +33,12 @@
         }
     }
 
-    // 채팅 권한 확인 (관리자 무조건 허용, 그 외 소셜 또는 일반 가입자 허용)
     function hasChatPermission(role, userType) {
         if (role === 'ROLE_ADMIN') return true;
         const allowedSocialTypes = ['naver', 'kakao', 'google'];
-        if (userType === 'normal') return true;
-        if (allowedSocialTypes.includes(userType)) return true;
-        return false;
+        return userType === 'normal' || allowedSocialTypes.includes(userType);
     }
 
-    // 채팅방 목록 조회 및 렌더링
     function fetchRooms() {
         const userInfo = getUserInfo();
         if (!userInfo) {
@@ -56,9 +47,7 @@
                 title: '로그인이 필요합니다',
                 text: '로그인 후 이용해 주세요.',
                 confirmButtonColor: '#f97316'
-            }).then(() => {
-                window.location.href = '/member/login';
-            });
+            }).then(() => window.location.href = '/member/login');
             return;
         }
 
@@ -79,7 +68,6 @@
                 const roomListDiv = $('#roomList');
                 roomListDiv.empty();
 
-                // 관리자는 모든 방, 일반/소셜은 자신의 방만
                 const roomsToShow = (userInfo.role === 'ROLE_ADMIN')
                     ? data
                     : data.filter(room => room.ownerId === userInfo.userId);
@@ -91,7 +79,6 @@
 
                 roomsToShow.forEach(room => {
                     const roomDiv = $('<div></div>').addClass('room-entry');
-
                     const topLineDiv = $('<div></div>');
 
                     const nameSpan = $('<span></span>')
@@ -99,6 +86,8 @@
                         .text(room.name)
                         .attr('data-room-id', room.id)
                         .css('cursor', 'pointer');
+
+                    const isUnread = localStorage.getItem(`unread_${room.id}`) === 'true';
 
                     const badgeSpan = $('<span></span>')
                         .addClass('unread-badge')
@@ -110,7 +99,7 @@
                             'border-radius': '50%',
                             'margin-left': '6px',
                             'vertical-align': 'middle',
-                            'display': 'none'
+                            'display': isUnread ? 'inline-block' : 'none'
                         });
 
                     const ownerSpan = $('<span></span>')
@@ -128,7 +117,6 @@
                         .click(e => {
                             e.stopPropagation();
 
-
                             const isOwner = userInfo.userId === room.ownerId;
                             const isAdmin = userInfo.role === 'ROLE_ADMIN';
 
@@ -141,7 +129,6 @@
                                 });
                                 return;
                             }
-
 
                             Swal.fire({
                                 icon: 'warning',
@@ -187,7 +174,6 @@
         });
     }
 
-    // 채팅방 생성
     function createRoom() {
         const roomName = $('#roomName').val().trim();
         const userInfo = getUserInfo();
@@ -201,15 +187,14 @@
             });
             return;
         }
+
         if (!userInfo) {
             Swal.fire({
                 icon: 'error',
                 title: '사용자 정보 없음',
                 text: '로그인 후 다시 시도해주세요.',
                 confirmButtonColor: '#f97316'
-            }).then(() => {
-                window.location.href = '/member/login';
-            });
+            }).then(() => window.location.href = '/member/login');
             return;
         }
 
@@ -252,12 +237,12 @@
         });
     }
 
-    // 채팅방 삭제
     function deleteRoom(roomId) {
         $.ajax({
             url: '/chat/rooms/' + roomId,
             method: 'DELETE',
             success: function() {
+                localStorage.removeItem(`unread_${roomId}`);
                 fetchRooms();
             },
             error: function() {
@@ -271,7 +256,6 @@
         });
     }
 
-    // 채팅방 클릭 시 읽음 처리 및 뱃지 숨김, 권한 체크 추가
     $(document).on('click', '.enter-chat-room', function() {
         const userInfo = getUserInfo();
         if (!userInfo || !hasChatPermission(userInfo.role, userInfo.type)) {
@@ -281,20 +265,44 @@
                 text: '채팅방에 입장할 권한이 없습니다.',
                 confirmButtonColor: '#f97316'
             });
-
+            return;
         }
 
-
+        const roomId = $(this).data('room-id');
+        localStorage.removeItem(`unread_${roomId}`);
+        $(this).siblings('.unread-badge').hide();
     });
 
-    // 초기화
+    function connectWebSocketForNotifications() {
+        const userInfo = getUserInfo();
+        if (!userInfo) return;
+
+        const socket = new SockJS(window.WEBSOCKET_URL);
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, () => {
+            console.log('🔔 WebSocket 연결 성공 - 알림 구독 시작');
+
+            stompClient.subscribe('/topic/chat/notify', (msg) => {
+                const data = JSON.parse(msg.body);
+                const roomId = data.roomId;
+
+                localStorage.setItem(`unread_${roomId}`, 'true');
+
+                $(`.enter-chat-room[data-room-id="${roomId}"]`)
+                    .siblings('.unread-badge')
+                    .show();
+            });
+        });
+    }
+
     $(document).ready(function() {
         checkToken();
         setupAjax();
         fetchRooms();
+        connectWebSocketForNotifications();
 
         $('#createRoomBtn').off('click').on('click', createRoom);
-
         $('#roomName').off('keypress').on('keypress', function(e) {
             if (e.which === 13) {
                 createRoom();
