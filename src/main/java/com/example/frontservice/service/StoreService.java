@@ -22,6 +22,10 @@ public class StoreService {
         return response.getBody().getOrDefault("assigned",false);
     }
 
+    public List<ManagerMappingDTO> getManagerMapping (String token) {
+        return storeClient.getManagerMapping(token);
+    }
+
     public StoreListResponseDTO getAllStores (StoreListRequestDTO storeListRequestDTO,String token) {
 
         return storeClient.getStoreList(storeListRequestDTO.getLimit(), storeListRequestDTO.getLastUid(),token);

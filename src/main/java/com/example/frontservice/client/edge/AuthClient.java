@@ -47,6 +47,6 @@ public interface AuthClient {
     boolean updateProfile(@RequestHeader("Authorization") String token, @RequestBody UpdateProfileRequestDTO updateProfileRequestDTO);
 
     @GetMapping("/managers")
-    List<ManagerDTO> getManagers(@RequestHeader("Authorization") String token);
+    List<ManagerResponseDTO> getManagers(@RequestHeader("Authorization") String token);
 
 }
