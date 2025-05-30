@@ -123,7 +123,7 @@ function getStores(limit = 100) {
     setupAjax();
     checkToken();
     return $.ajax({
-        url: `/stores/list?limit=${limit}`,
+        url: `/stores/list?limit=${limit}&status=ACTIVE`,
         dataType: 'json',
         type: 'GET',
     }).then(response => response.storeList);
