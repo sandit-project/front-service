@@ -14,7 +14,8 @@ spec:
     app: front-service
   ports:
     - name: http
-      protocol: TCP
       port: 80
       targetPort: 9000
-      nodePort: 30080
+    - name: https
+      port: 443
+      targetPort: 9000
