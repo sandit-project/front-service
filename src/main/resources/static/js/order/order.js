@@ -219,6 +219,8 @@ $(document).ready(async () => {
     const user = await fetchProfileAndFillForm();
     if (user?.uid) {
         initUserUI(user); // 로그인한 사용자용
+        //이메일, 전화번호 수정 불가능
+        $('#phone, #email').prop('readonly', true);
     } else {
         renderGuestUI(); // 비회원 사용자용
     }
