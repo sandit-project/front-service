@@ -46,6 +46,7 @@ jobs:
             --from-literal=PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }} \
             --from-literal=PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }} \
             --from-literal=AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} \
+            --from-literal=AWS_CERTIFICATE_FRONT=${{ secrets.AWS_CERTIFICATE_FRONT }} \
             --dry-run=client -o yaml | kubectl apply --validate=false -f -
 
       - name: Log in to Amazon ECR
