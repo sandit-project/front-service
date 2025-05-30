@@ -129,13 +129,12 @@ function renderSideItem(side) {
     `;
 }
 
-
 function buildCartRequest(sideId, amount) {
-    const requestData = { sideId, amount };
-    if (globalUserInfo.type === 'user') {
-        requestData.userUid = globalUserInfo.id;
-    } else if (globalUserInfo.type === 'social') {
-        requestData.socialUid = globalUserInfo.id;
-    }
-    return requestData;
+    return {
+        sideId,
+        amount,
+        ...(globalUserInfo.type === 'user'
+            ? { userUid: globalUserInfo.id }
+            : { socialUid: globalUserInfo.id })
+    };
 }
