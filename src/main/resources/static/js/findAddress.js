@@ -84,4 +84,13 @@ $(document).ready(() => {
     $('#store_postcode, #store_address_base').on('click', ()=>{
         execDaumPostcode("store");
     });
+    $('#main_address_base').on('click', () => execDaumPostcode('main'));
+
+    $('#find-address-btn').on('click', () => execDaumPostcode('main'));
+
+    // 주문 페이지 주소 input에도 'click'만 걸기 (focus는 제거)
+    $('#mainAddress').on('click', function(e) {
+        e.preventDefault();            // (선택) 혹시 form 내부라면 기본 동작 막기
+        execDaumPostcode('main');      // 순수하게 클릭 직후 바로 호출
+    });
 });

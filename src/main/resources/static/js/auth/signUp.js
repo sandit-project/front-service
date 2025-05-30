@@ -125,6 +125,8 @@ $(document).ready(() => {
                 title: '전화번호 오류',
                 text: '전화번호는 11자리 이상 입력해야 합니다.',
                 confirmButtonColor: '#f97316'
+            }).then(() => {
+                    btn.prop('disabled', false);
             });
             return;
         }
