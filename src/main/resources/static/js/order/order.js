@@ -138,16 +138,23 @@ function renderStoreDropdown() {
 
             stores.forEach(s => {
                 $select.append(`
-          <option value="${s.storeUid}" data-lat="${s.storeLatitude}" data-lan="${s.storeLongitude}">${s.storeName}
-          </option>
-        `);
+                    <option value="${s.storeUid}" data-lat="${s.storeLatitude}" data-lan="${s.storeLongitude}">
+                        ${s.storeName}
+                    </option>
+                `);
             });
         })
         .catch(err => {
             console.error('스토어 목록 불러오기 실패', err);
-            alert('스토어 정보를 불러오는 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '스토어 로딩 실패',
+                text: '스토어 정보를 불러오는 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         });
 }
+
 
 function fetchProfileAndFillForm() {
     setupAjax();
