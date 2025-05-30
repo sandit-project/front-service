@@ -126,7 +126,14 @@ function getStores(limit = 100) {
         url: `/stores/list?limit=${limit}`,
         dataType: 'json',
         type: 'GET',
-    }).then(response => response.storeList);
+    }).then(response => {
+        const list = response.storeList || [];
+        // storeStatus 필드가 'ACTIVE'인 것만 반환
+        return list.filter(store => {
+            // 혹시 소문자/대문자 섞여 올 수도 있으니 대문자로 통일 비교
+            return String(store.storeStatus || '').toUpperCase() === 'ACTIVE';
+        });
+    });
 }
 
 function renderStoreDropdown() {
@@ -138,16 +145,23 @@ function renderStoreDropdown() {
 
             stores.forEach(s => {
                 $select.append(`
-          <option value="${s.storeUid}" data-lat="${s.storeLatitude}" data-lan="${s.storeLongitude}">${s.storeName}
-          </option>
-        `);
+                    <option value="${s.storeUid}" data-lat="${s.storeLatitude}" data-lan="${s.storeLongitude}">
+                        ${s.storeName}
+                    </option>
+                `);
             });
         })
         .catch(err => {
             console.error('스토어 목록 불러오기 실패', err);
-            alert('스토어 정보를 불러오는 중 오류가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '스토어 로딩 실패',
+                text: '스토어 정보를 불러오는 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
         });
 }
+
 
 function fetchProfileAndFillForm() {
     setupAjax();
@@ -212,6 +226,8 @@ $(document).ready(async () => {
     const user = await fetchProfileAndFillForm();
     if (user?.uid) {
         initUserUI(user); // 로그인한 사용자용
+        //이메일, 전화번호 수정 불가능
+        $('#phone, #email').prop('readonly', true);
     } else {
         renderGuestUI(); // 비회원 사용자용
     }
