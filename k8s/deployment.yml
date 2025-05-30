@@ -30,7 +30,6 @@ spec:
               memory: "1024Mi"
           ports:
             - containerPort: 9000
-            - containerPort: 80
           env:
             - name: EDGE_SERVICE_URL
               value: http://edge-service:80

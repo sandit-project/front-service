@@ -19,16 +19,18 @@ public class RedirectToHttpsFilter implements Filter {
 
         String protoHeader = httpRequest.getHeader("x-forwarded-proto");
 
-        // x-forwarded-proto가 http이면 https로 리디렉션
+        // 클라이언트가 HTTP로 요청하면 HTTPS로 리다이렉션
         if ("http".equalsIgnoreCase(protoHeader)) {
             String url = "https://" + httpRequest.getServerName() + httpRequest.getRequestURI();
             if (httpRequest.getQueryString() != null) {
                 url += "?" + httpRequest.getQueryString();
             }
+
             httpResponse.sendRedirect(url);
             return;
         }
 
+        // 그렇지 않으면 그냥 통과
         chain.doFilter(request, response);
     }
 }
