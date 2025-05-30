@@ -42,7 +42,7 @@ spec:
             - name: TOKEN_REDIRECT_URL
               value:  http://$DOMAIN_NAME/oauth/token/
             - name: WEBSOCKET_URL
-              value:  http://a701eacf86a8e4d5ebed4e6caed8c45d-467001470.ap-northeast-2.elb.amazonaws.com/delivery-location
+              value:  wss://ws.himedia-a.com/delivery-location
             - name: SPRING_PROFILES_ACTIVE
               value: deploy
             - name: KAKAO_REST_API_KEY
