@@ -2,35 +2,51 @@ $(document).ready(() => {
     checkToken();
     setupAjax();
 
-    // 관리자(ROLEE_MANAGER) 목록을 불러와서 드롭다운에 채우기
-    $.ajax({
-        type: "GET",
-        url: "/user/managers",
-        dataType: "json",
-        success: function (managers) {
-            console.log("managers : ",managers);
-            const $select = $('#manager');
-            $select.empty();
-            $select.append('<option value="">지점 관리자를 선택하세요</option>');
-            // 배열이 [{userUid: 1, userId: "...", userName: "..."}] 구조여야 함
-            managers.forEach(manager => {
-                $select.append(
-                    $('<option>')
-                        .val(manager.userUid) // 실제 등록은 uid로!
-                        .text(manager.userId+'('+manager.userName+')')
-                );
-            });
+    // 두 API를 비동기로 받아옴(Promise.all활용)
 
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: '관리자 목록 불러오기 실패',
-                text: '지점 관리자 목록을 불러오지 못했습니다.',
-                confirmButtonColor: '#f97316'
-            });
-        }
+    Promise.all([
+        $.ajax({
+            type: "GET",
+            url: "/user/managers",
+            dataType: "json"
+        }),
+        $.ajax({
+            type: "GET",
+            url: "/stores/manager-mapping",
+            dataType: "json"
+        })
+    ]).then(([managers,managerMappings])=>{
+        // userUid -> storeName 맵 생성
+        const mappingMap = {};
+        managerMappings.forEach(mapping => {
+            mappingMap[mapping.userUid] = mapping.storeName;
+        });
+
+        const $select = $('#manager');
+        $select.empty();
+        $select.append('<option value="">지점 관리자를 선택하세요</option>');
+
+        managers.forEach(manager => {
+            let text = `${manager.userId}(${manager.userName}`;
+            if (mappingMap[manager.userUid]) {
+                text +=`::${mappingMap[manager.userUid]}`;
+            }
+            text += ')';
+            $select.append(
+                $('<option>')
+                    .val(manager.userUid)
+                    .text(text)
+            );
+        });
+    }).catch(()=>{
+        Swal.fire({
+            icon: 'error',
+            title: '관리자 목록 불러오기 실패',
+            text: '지점 관리자 목록을 불러오지 못했습니다.',
+            confirmButtonColor: '#f97316'
+        });
     });
+
 
     getUserInfo().then((userInfo) => {
         initUserUI(userInfo);
@@ -110,12 +126,13 @@ $(document).ready(() => {
             console.log('전송 데이터: ', formData);
 
             // 서버로 데이터 전송
+
             await sendDataToServer(formData);
 
             Swal.fire({
                 icon: 'success',
-                title: '등록 완료',
-                text: '지점 등록이 성공적으로 완료되었습니다.',
+                title: '지점 가입 요청 성공',
+                text: '지점 가입 요청이 정상적으로 접수되었습니다.\n(실제 저장은 잠시 후 반영됩니다)',
                 confirmButtonColor: '#f97316'
             }).then(() => {
                 window.location.href = '/store/list';
@@ -124,8 +141,8 @@ $(document).ready(() => {
             console.error('오류 발생: ', error);
             Swal.fire({
                 icon: 'error',
-                title: '오류 발생',
-                text: '처리 중 문제가 발생했습니다. 다시 시도해주세요.',
+                title: '지점 가입 요청 실패',
+                text: '지점 가입 요청 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
                 confirmButtonColor: '#f97316'
             });
         } finally {
@@ -135,19 +152,21 @@ $(document).ready(() => {
 
 
     // 서버 데이터 전송 함수
-    const sendDataToServer = async (formData) => {
-        return $.ajax({
-            type: 'POST',
-            url: '/stores',
-            data: JSON.stringify(formData),
-            contentType: 'application/json; charset=utf-8',//요청바디는 JSON
-            dataType: 'json',                              // 응답도 JSON으로 기대
-            success: function(res) {
-                console.log('등록 성공:', res);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX 에러:', textStatus, errorThrown);
-            }
+    const sendDataToServer = (formData) => {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: 'POST',
+                url: '/stores',
+                data: JSON.stringify(formData),
+                contentType: 'application/json; charset=utf-8',//요청바디는 JSON
+                dataType: 'json',                              // 응답도 JSON으로 기대
+                success: function (res) {
+                    console.log('등록 성공:', res);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX 에러:', textStatus, errorThrown);
+                }
+            });
         });
     };
 

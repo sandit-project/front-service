@@ -63,6 +63,10 @@ public class StoreApiController {
 
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/manager-mapping")
+    public List<ManagerMappingDTO> getManagerMapping (@RequestHeader("Authorization") String token) {
+        return storeService.getManagerMapping(token);
+    }
 
     @PostMapping
     StoreResponseDTO addStore (@RequestBody StoreRequestDTO storeRequestDTO, HttpServletRequest request) {

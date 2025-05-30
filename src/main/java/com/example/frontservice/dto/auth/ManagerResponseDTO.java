@@ -5,8 +5,9 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ManagerDTO {
+public class ManagerResponseDTO {
     private Long userUid;
     private String userId;
     private String userName;
+
 }

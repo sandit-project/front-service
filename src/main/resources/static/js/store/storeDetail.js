@@ -9,36 +9,52 @@ $(document).ready(function () {
     const params = new URLSearchParams(window.location.search);
     const storeUid = params.get("storeUid");
 
-    // 👇 매니저 목록 먼저 로딩
-    $.ajax({
-        type: "GET",
-        url: "/user/managers",
-        dataType: "json",
-        success: function (managers) {
-            const $select = $('#store_manager');
-            $select.empty();
-            $select.append('<option value="">지점 관리자를 선택하세요</option>');
+    // 매니저 목록과 매니저-지점 매핑 정보를 동시에 받아와야 함
+    Promise.all([
+        $.ajax({
+            type: "GET",
+            url: "/user/managers",
+            dataType: "json"
+        }),
+        $.ajax({
+            type: "GET",
+            url: "/stores/manager-mapping",
+            dataType: "json"
+        })
+    ]).then(([managers, managerMappings]) => {
+        // userUid -> storeName 맵 생성
+        const mappingMap = {};
+        managerMappings.forEach(mapping => {
+            mappingMap[mapping.userUid] = mapping.storeName;
+        });
 
-            managers.forEach(manager => {
-                $select.append(
-                    $('<option>')
-                        .val(manager.userUid)
-                        .text(manager.userId + '(' + manager.userName + ')')
-                );
-            });
+        const $select = $('#store_manager');
+        $select.empty();
+        $select.append('<option value="">지점 관리자를 선택하세요</option>');
 
-            // 👉 그 후 지점 상세 조회
-            loadStoreDetail(storeUid);
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: '관리자 목록 불러오기 실패',
-                text: '지점 관리자 목록을 불러오지 못했습니다.',
-                confirmButtonColor: '#f97316'
-            });
-        }
+        managers.forEach(manager => {
+            let text = `${manager.userId}(${manager.userName}`;
+            if (mappingMap[manager.userUid]) {
+                text += `::${mappingMap[manager.userUid]}`;
+            }
+            text += ')';
+            $select.append(
+                $('<option>')
+                    .val(manager.userUid)
+                    .text(text)
+            );
+        });
+        // 👉 그 후 지점 상세 조회 (옵션 추가 후!)
+        loadStoreDetail(storeUid);
+    }).catch(() => {
+        Swal.fire({
+            icon: 'error',
+            title: '관리자 목록 불러오기 실패',
+            text: '지점 관리자 목록을 불러오지 못했습니다.',
+            confirmButtonColor: '#f97316'
+        });
     });
+
 
     // 지점 상세 정보를 채우는 함수
     function loadStoreDetail(storeUid) {
@@ -67,8 +83,6 @@ $(document).ready(function () {
         });
     }
 
-
-
     // 수정 요청
     $('#storeDetailForm').submit(function (e) {
         e.preventDefault();
@@ -91,8 +105,8 @@ $(document).ready(function () {
             success: function () {
                 Swal.fire({
                     icon: 'success',
-                    title: '수정 완료',
-                    text: '지점 정보가 수정되었습니다.',
+                    title: '지점 정보 수정 요청 성공',
+                    text: '지점 정보 수정 요청이 정상적으로 접수되었습니다.\n(실제 반영까지 시간이 걸릴 수 있습니다)',
                     confirmButtonColor: '#f97316'
                 }).then(() => {
                     window.location.href = '/store/list';
@@ -101,8 +115,8 @@ $(document).ready(function () {
             error: function () {
                 Swal.fire({
                     icon: 'error',
-                    title: '수정 실패',
-                    text: '지점 정보 수정 중 오류가 발생했습니다.',
+                    title: '지점 정보 수정 요청 실패',
+                    text: '지점 정보 수정 요청 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
                     confirmButtonColor: '#f97316'
                 });
             }
@@ -129,8 +143,8 @@ $(document).ready(function () {
                     success: function () {
                         Swal.fire({
                             icon: 'success',
-                            title: '삭제 완료',
-                            text: '지점이 삭제되었습니다.',
+                            title: '지점 삭제 요청 성공',
+                            text: '지점 삭제 요청이 정상적으로 접수되었습니다.\n(실제 삭제까지 시간이 걸릴 수 있습니다)',
                             confirmButtonColor: '#f97316'
                         }).then(() => {
                             window.location.href = '/store/list';
@@ -139,8 +153,8 @@ $(document).ready(function () {
                     error: function () {
                         Swal.fire({
                             icon: 'error',
-                            title: '삭제 실패',
-                            text: '지점 삭제 중 오류가 발생했습니다.',
+                            title: '지점 삭제 요청 실패',
+                            text: '지점 삭제 요청 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
                             confirmButtonColor: '#f97316'
                         });
                     }
