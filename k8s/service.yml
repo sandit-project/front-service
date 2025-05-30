@@ -9,9 +9,11 @@ spec:
   selector:
     app: front-service
   ports:
-    - protocol: TCP
-      port: 80          # 외부 HTTP 요청 → Spring의 80번 포트 (리디렉션 용)
+    - name: http
+      protocol: TCP
+      port: 80
       targetPort: 80
-    - protocol: TCP
-      port: 443         # 외부 HTTPS 요청 → Spring의 9000번 포트 (실서비스)
+    - name: https
+      protocol: TCP
+      port: 443
       targetPort: 9000
