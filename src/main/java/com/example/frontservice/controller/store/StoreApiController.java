@@ -41,12 +41,12 @@ public class StoreApiController {
 //        return storeService.getStores(token);
 //    }
 
-    @GetMapping("/{storeUid}")
-    StoreResponseDTO getStore (@PathVariable Long storeUid, HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-
-        return storeService.getStore(storeUid,token);
-    }
+//    @GetMapping("/{storeUid}")
+//    ResponseEntity<StoreResponseDTO> getStore (@PathVariable Long storeUid, HttpServletRequest request) {
+//        String token = request.getHeader("Authorization");
+//
+//        return storeService.findStoreByUid(storeUid,token);
+//    }
 
     @GetMapping("/storeUid")
     StoreUidResponseDTO getStoreUid (@RequestParam Long userUid, HttpServletRequest request) {
@@ -54,6 +54,7 @@ public class StoreApiController {
 
         return storeService.getStoreUidByManager(userUid,token);
     }
+
     @GetMapping("/check-manager")
     public ResponseEntity<Map<String,Boolean>> checkManagerAssigned (@RequestParam Long userUid, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
@@ -63,9 +64,16 @@ public class StoreApiController {
 
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/manager-mapping")
     public List<ManagerMappingDTO> getManagerMapping (@RequestHeader("Authorization") String token) {
         return storeService.getManagerMapping(token);
+    }
+
+    @GetMapping("/{storeUid}")
+    public ResponseEntity<StoreResponseDTO> findStoreByUid (@PathVariable Long storeUid, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return storeService.findStoreByUid(storeUid,token);
     }
 
     @PostMapping

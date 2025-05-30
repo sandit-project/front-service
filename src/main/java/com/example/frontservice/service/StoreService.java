@@ -36,8 +36,8 @@ public class StoreService {
         return storeClient.getCustomerStoreList(token);
     }
 
-    public StoreResponseDTO getStore (Long storeUid,String token) {
-        return storeClient.getStore(storeUid,token);
+    public ResponseEntity<StoreResponseDTO> findStoreByUid (Long storeUid, String token) {
+        return storeClient.findStoreByUid(storeUid,token);
     }
 
     public StoreUidResponseDTO getStoreUidByManager(Long managerUid,String token){

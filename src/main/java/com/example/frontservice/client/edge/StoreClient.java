@@ -20,6 +20,10 @@ public interface StoreClient {
     @GetMapping("/manager-mapping")
     List<ManagerMappingDTO> getManagerMapping(@RequestHeader("Authorization") String token);
 
+    @GetMapping("/polling/{storeUid}")
+    StoreResponseDTO getStoreByUid(@PathVariable Long storeUid,
+                                                   @RequestHeader("Authorization") String token);
+
     @GetMapping
     List<CustomerStoreListResponseDTO> getCustomerStoreList(@RequestHeader("Authorization") String token);
 
@@ -29,7 +33,7 @@ public interface StoreClient {
                                       @RequestHeader("Authorization") String token);
 
     @GetMapping("/{storeUid}")
-    StoreResponseDTO getStore(@PathVariable(name="storeUid") Long storeUid,
+    ResponseEntity<StoreResponseDTO> findStoreByUid(@PathVariable(name="storeUid") Long storeUid,
                               @RequestHeader("Authorization") String token);
 
     @GetMapping("/storeUid")
