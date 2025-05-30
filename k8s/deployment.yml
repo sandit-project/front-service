@@ -42,7 +42,7 @@ spec:
             - name: TOKEN_REDIRECT_URL
               value:  http://$DOMAIN_NAME/oauth/token/
             - name: WEBSOCKET_URL
-              value:  http://a456d9d74bb014d47ade6fc6f3bee3dd-1269815072.ap-northeast-2.elb.amazonaws.com/delivery-location
+              value:  https://a456d9d74bb014d47ade6fc6f3bee3dd-1269815072.ap-northeast-2.elb.amazonaws.com/delivery-location
             - name: SPRING_PROFILES_ACTIVE
               value: deploy
             - name: KAKAO_REST_API_KEY
