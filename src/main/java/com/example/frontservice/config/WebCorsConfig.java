@@ -10,7 +10,7 @@ public class WebCorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://himedia-a.com", "https://himedia-a.com")
+                .allowedOrigins("http://himedia-a.com", "https://himedia-a.com", "https://ws.himedia-a.com", "http://ws.himedia-a.com" )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(true);
     }
