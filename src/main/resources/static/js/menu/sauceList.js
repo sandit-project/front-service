@@ -60,7 +60,7 @@ $(document).ready(function () {
 
         Swal.fire({
             title: `'${sauceName}' 소스를 삭제하시겠습니까?`,
-            text: '삭제된 소스는 복구할 수 없습니다.',
+            text: '삭제된 소스는 품절 상태로 전환됩니다.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: '삭제',

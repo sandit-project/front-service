@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -141,7 +140,7 @@ public class AuthApiController {
     }
 
     @GetMapping("/user/managers")
-    public List<ManagerDTO> getUserManagers(HttpServletRequest request){
+    public List<ManagerResponseDTO> getUserManagers(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         return authService.getManagers(token);
     }

@@ -45,7 +45,7 @@ public class AuthService {
     public boolean updateProfile(String token, UpdateProfileRequestDTO updateProfileRequestDTO) {
         return authClient.updateProfile(token, updateProfileRequestDTO);
     }
-    public List<ManagerDTO> getManagers(String token) {
+    public List<ManagerResponseDTO> getManagers(String token) {
         return authClient.getManagers(token);
     }
 }

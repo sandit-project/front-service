@@ -108,7 +108,7 @@ $(document).ready(function () {
 
         Swal.fire({
             title: `'${menuName}' 메뉴를 삭제하시겠습니까?`,
-            text: "삭제된 메뉴는 복구할 수 없습니다.",
+            text: "삭제된 메뉴는 품절 상태로 전환됩니다.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
