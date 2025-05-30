@@ -21,10 +21,17 @@
 <h2>SANDIT TALK</h2>
 
 <div>
-    <input type="text" id="roomName" placeholder="채팅방 이름 입력">
-    <button onclick="createRoom()">채팅방 만들기</button>
+    <select id="roomName">
+        <option value="" disabled selected>문의 사항을 선택해 주세요.</option>
+        <option value="제품 문의">제품 문의</option>
+        <option value="결제 문의">결제 문의</option>
+        <option value="배달 문의">배달 문의</option>
+        <option value="서비스 관련 문의">서비스 관련 문의</option>
+        <option value="기타 문의">기타 문의</option>
+        <!-- 필요에 따라 옵션 추가 -->
+    </select>
+    <button onclick="createRoom()">1:1채팅 시작</button>
 </div>
-
 <hr>
 
 <div id="roomList">

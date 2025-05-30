@@ -1,4 +1,6 @@
 (function () {
+    let currentOpenRoomId = null; // 현재 열려있는 채팅방 ID
+
     function getUserInfo() {
         const token = localStorage.getItem('accessToken');
         if (!token) return null;
@@ -73,7 +75,7 @@
                     : data.filter(room => room.ownerId === userInfo.userId);
 
                 if (!roomsToShow.length) {
-                    roomListDiv.append('<div>채팅을 시작하시려면 방을 생성해주세요.</div>');
+                    roomListDiv.append('<div>문의 사항을 선택하고 "1:1 채팅 시작" 버튼을 클릭하세요.</div>');
                     return;
                 }
 
@@ -256,6 +258,7 @@
         });
     }
 
+    // 채팅방 입장 이벤트 핸들러 (현재 열려있는 방 ID 저장 및 알림 제거)
     $(document).on('click', '.enter-chat-room', function() {
         const userInfo = getUserInfo();
         if (!userInfo || !hasChatPermission(userInfo.role, userInfo.type)) {
@@ -269,10 +272,13 @@
         }
 
         const roomId = $(this).data('room-id');
+        currentOpenRoomId = roomId;  // 현재 채팅방 ID 저장
+
         localStorage.removeItem(`unread_${roomId}`);
         $(this).siblings('.unread-badge').hide();
     });
 
+    // WebSocket 연결 및 알림 처리
     function connectWebSocketForNotifications() {
         const userInfo = getUserInfo();
         if (!userInfo) return;
@@ -287,11 +293,15 @@
                 const data = JSON.parse(msg.body);
                 const roomId = data.roomId;
 
-                localStorage.setItem(`unread_${roomId}`, 'true');
-
-                $(`.enter-chat-room[data-room-id="${roomId}"]`)
-                    .siblings('.unread-badge')
-                    .show();
+                if (roomId === currentOpenRoomId) {
+                    // 현재 열려있는 채팅방이면 알림 제거
+                    localStorage.removeItem(`unread_${roomId}`);
+                    $(`.enter-chat-room[data-room-id="${roomId}"]`).siblings('.unread-badge').hide();
+                } else {
+                    // 다른 방이면 알림 표시
+                    localStorage.setItem(`unread_${roomId}`, 'true');
+                    $(`.enter-chat-room[data-room-id="${roomId}"]`).siblings('.unread-badge').show();
+                }
             });
         });
     }
