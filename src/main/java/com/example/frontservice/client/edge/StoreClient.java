@@ -17,6 +17,9 @@ public interface StoreClient {
     ResponseEntity<Map<String,Boolean>> checkManagerAssigned(@RequestParam Long userUid,
                                                         @RequestHeader("Authorization") String token);
 
+    @GetMapping("/manager-mapping")
+    List<ManagerMappingDTO> getManagerMapping(@RequestHeader("Authorization") String token);
+
     @GetMapping
     List<CustomerStoreListResponseDTO> getCustomerStoreList(@RequestHeader("Authorization") String token);
 
