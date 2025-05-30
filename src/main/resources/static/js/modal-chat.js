@@ -141,19 +141,23 @@ function cleanupWebSocket() {
     });
 }
 
-// --- 모달 열기 ---
+// --- 모달 열기 (오버레이 포함) ---
 function openModalWithContent(url, onLoadCallback) {
     if (isModalTransitioning) return;
     isModalTransitioning = true;
 
+    $('body').addClass('modal-open');  // 선택 불가, 스크롤 잠금
+
     $('#oneOnOneChatBtn').hide();
+    $('#modalOverlay').show();
+    $('#modalContainer').show();
+
     unsubscribeFromCurrentRoom();
     resetMessageCache();
     $('#chatBox').empty();
     chatRoomOpenedAt = Date.now();
 
     $('#modalContent').html('<p>로딩 중...</p>');
-    $('#modalContainer').show();
 
     $.get(url)
         .done(function (data) {
@@ -168,13 +172,16 @@ function openModalWithContent(url, onLoadCallback) {
         });
 }
 
-// --- 모달 닫기 ---
+// --- 모달 닫기 (오버레이 포함) ---
 function closeModal() {
     console.log('[Modal] closeModal 호출');
 
+    $('#modalOverlay').hide();
     $('#modalContainer').hide();
     $('#modalContent').html('');
     $('#oneOnOneChatBtn').show();
+
+    $('body').removeClass('modal-open');  // 선택 가능, 스크롤 풀기
 
     return cleanupWebSocket().then(() => {
         console.log('[Modal] closeModal 끝, 방 구독 정리 완료');

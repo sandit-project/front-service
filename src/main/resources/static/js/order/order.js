@@ -574,7 +574,7 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                             //주문 저장이 안되면 결제 취소 처리
                             try {
                                 await cancelOrder(response.merchant_uid, '주문 저장 실패로 인한 자동 취소');
-                                alert('결제가 취소되었습니다.');
+                                // alert('결제가 취소되었습니다.');
                                 Swal.fire({
                                     icon: 'error',
                                     title: '결제 취소',
@@ -633,10 +633,21 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                     })
                 });
 
-                alert(response.error_msg || '결제가 실패했습니다. 다시 시도해주세요.');
+                swal({
+                    title: "결제 실패",
+                    text: response.error_msg || "결제가 실패했습니다. 다시 시도해주세요.",
+                    icon: "error",
+                    button: "확인"
+                });
             } catch (err) {
                 console.error('update-fail 전송 실패', err);
-                alert('결제 실패 처리를 서버에 알리지 못했습니다. 고객센터에 문의해주세요.');
+
+                swal({
+                    title: "서버 통신 오류",
+                    text: "결제 실패 처리를 서버에 알리지 못했습니다. 고객센터에 문의해주세요.",
+                    icon: "warning",
+                    button: "확인"
+                });
             }
         }
     });

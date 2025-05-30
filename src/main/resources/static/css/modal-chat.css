@@ -1,36 +1,46 @@
+
+
 /* Reset */
 body, ul, li {
     margin: 0;
     padding: 0;
     list-style: none;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 모달 오버레이 */
-#modalOverlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    backdrop-filter: blur(2px);
-    animation: fadeIn 0.3s ease;
+body.modal-open {
+    user-select: none;
+    overflow: hidden;
 }
 
-/* 모달 컨테이너 */
+/* 모달 전체 래퍼 */
 #modalContainer {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 998;
-    display: none;
+    z-index: 1000;
+    display: none; /* 기본 숨김 */
 }
 
-/* 모달 콘텐츠 래퍼 */
+/* 오버레이 - 반투명 검정 + 블러 효과 */
+#modalOverlay {
+    position: fixed;  /* 절대 -> fixed 로 수정 */
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.5); /* 흰색 반투명 */
+    backdrop-filter: blur(4px);  /* 좀 더 강한 블러 */
+    -webkit-backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease;
+    z-index: 1001;
+}
+
+/* 모달 본체 - 중앙 정렬, 디자인 */
 #modalContentWrapper {
-    position: fixed;
-    top: calc(50% - 60px);
-    right: 120px;
-    transform: translateY(-50%);
-    background: #6884b3;
-    z-index: 1000;
+    position: fixed;  /* absolute -> fixed 로 수정 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #6884b3;   /* 파란색 배경 */
+    color: white;
+    z-index: 1002;
     width: 90%;
     max-width: 800px;
     max-height: 90vh;
@@ -39,12 +49,6 @@ body, ul, li {
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.3s ease;
-    font-family: 'Noto Sans KR', sans-serif;
-    color: white;
-}
-
-/* 실제 콘텐츠 영역 */
-#modalContent {
     font-size: 16px;
 }
 
@@ -59,7 +63,7 @@ body, ul, li {
     font-weight: bold;
     color: white;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 1003;
     transition: color 0.2s ease;
 }
 
@@ -72,15 +76,14 @@ body, ul, li {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(-40%);
+        transform: translate(-50%, -60%);
     }
     to {
         opacity: 1;
-        transform: translateY(-50%);
+        transform: translate(-50%, -50%);
     }
 }
 
@@ -88,19 +91,17 @@ body, ul, li {
 #modalContentWrapper::-webkit-scrollbar {
     width: 10px;
 }
-
 #modalContentWrapper::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
-
 #modalContentWrapper::-webkit-scrollbar-thumb {
     background: #999;
     border-radius: 6px;
 }
-
 #modalContentWrapper::-webkit-scrollbar-thumb:hover {
     background: #666;
 }
+
 .chat-item {
     position: relative;
     display: inline-block;
@@ -121,4 +122,3 @@ body, ul, li {
     right: 0px;
     z-index: 10;
 }
-
