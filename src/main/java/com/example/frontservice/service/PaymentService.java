@@ -59,23 +59,14 @@ public class PaymentService {
 
         restTemplate.getMessageConverters().forEach(c -> log.info("컨버터: {}", c.getClass()));
 
-        String token = getToken();
+        String token = getToken(); // 반드시 포트원에서 발급받은 access_token
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
+        headers.setBearerAuth(token); // 여기서만 토큰을 붙임
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-//        Map<String,Object> body = new LinkedHashMap<>();
-//        body.put("imp_uid", impUid);
-//        body.put("merchant_uid",   merchantUid);
-//        body.put("amount", amount);
-//        body.put("checksum", checksum);
-//        if (reason != null && !reason.isBlank()) {
-//            body.put("reason", reason);
-//        }
-
         IamportCancelRequest cancelRequest = IamportCancelRequest.builder()
-                .impUid((impUid != null && !impUid.isBlank()) ? impUid : null)
+                .impUid((impUid != null && !impUid.trim().isEmpty()) ? impUid : null)
                 .merchantUid(merchantUid)
                 .amount(amount)
                 .checksum(checksum)
@@ -117,6 +108,7 @@ public class PaymentService {
                 .build();
     }
 
+
     private String getToken() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -136,7 +128,6 @@ public class PaymentService {
         }
 
         HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
-        log.info("[결제 취소 요청 Entity] {}", request);
 
         ResponseEntity<JsonNode> resp = restTemplate.postForEntity(
                 baseUrl + "/users/getToken",
@@ -146,4 +137,5 @@ public class PaymentService {
         JsonNode json = resp.getBody();
         return json.get("response").get("access_token").asText();
     }
+
 }
