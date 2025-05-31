@@ -27,6 +27,7 @@ public class EmailApiController {
             emailService.sendEmailCode(email);
             return ResponseEntity.ok("이메일을 확인하세요.");
         } catch (FeignException e) {
+            e.printStackTrace();
             if (e.status() == 400) {
                 // auth-service가 [{"message":"이미 사용 중인 이메일입니다."}] 로 보냈다고 가정
                 return ResponseEntity
