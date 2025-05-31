@@ -77,6 +77,7 @@ public class OrderController {
     ) {
         String token = request.getHeader("Authorization");
 
+        log.info("요청 merchantUid: {}, reason: {}", req.getMerchantUid(), req.getReason());
         return orderService.cancelPayment(token, req);
     }
 
