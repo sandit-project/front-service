@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CancelPaymentRequestDTO {
+    @JsonProperty("merchant_uid")
     private String merchantUid;
     private String reason;
 }
