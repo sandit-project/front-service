@@ -18,7 +18,6 @@ $(document).ready(async ()=>{
             // 웹소켓에 위치 전달 하는 함수
             sendDeliveryManLocation(userInfo.id, userInfo.type);
         }
-        connectWebSocket("alarm", userInfo.id, userInfo.type);
     }).catch((error)=>{
         console.error('board list user info error : ',error);
     });
