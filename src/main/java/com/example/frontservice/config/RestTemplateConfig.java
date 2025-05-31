@@ -12,12 +12,17 @@ import java.util.Collections;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+
+    @Bean
+    public RestTemplate portoneRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        // 오직 JSON 컨버터만 등록
         restTemplate.setMessageConverters(
                 Collections.singletonList(new MappingJackson2HttpMessageConverter())
         );
         return restTemplate;
     }
+
 }
