@@ -13,7 +13,7 @@ $(document).ready(async () => {
         if (userInfo) {
             initUserUI(userInfo);
             hideUnauthorizedNav(userInfo);
-            receiveAlarm(userInfo.id, userInfo.type);
+            connectWebSocket("alarm", userInfo.id, userInfo.type);
         } else {
             renderGuestUI();
         }

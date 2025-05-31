@@ -1,4 +1,4 @@
-function connectWebSocket() {
+function connectWebSocket(location, uid, type) {
     if (isConnected) {
         console.log('[WebSocket] 이미 연결된 상태');
         return;
@@ -10,7 +10,11 @@ function connectWebSocket() {
     stompClient.connect({}, function (frame) {
         console.log('[WebSocket] 연결 성공:', frame);
         isConnected = true;
-        subscribeToGlobalMessages();
+        if(location === "chat"){
+            subscribeToGlobalMessages();
+        }else if(location === "alarm"){
+            receiveAlarm(uid, type);
+        }
     }, function (error) {
         console.error('[WebSocket] 연결 실패:', error);
         isConnected = false;

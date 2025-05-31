@@ -5,6 +5,8 @@ $(document).ready(async ()=>{
     const profile = await fetchProfile();
     const convertType = profile.type === "USER" ? "user":"social";
 
+    connectWebSocket("alarm", profile.uid, convertType);
+
     const allergyList = await fetchUserAllergies(convertType, profile.uid);
     $('#allergy').text(allergyList);
 
@@ -78,13 +80,6 @@ function fetchProfile() {
             $('#sub_address2').text(response.subAddress2);
 
             initUserUI(response);
-            let type;
-            if(response.type === "USER"){
-                type = "user";
-            }else{
-                type = "social";
-            }
-            receiveAlarm(response.uid, response.type);
             console.log(response);
         },
         error : (error) => {
