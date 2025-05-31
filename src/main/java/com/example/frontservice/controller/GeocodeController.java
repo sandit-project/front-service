@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-//@CrossOrigin(origins="*")
 @RequiredArgsConstructor
 public class GeocodeController {
     private final KakaoAddressService kakaoAddressService;
