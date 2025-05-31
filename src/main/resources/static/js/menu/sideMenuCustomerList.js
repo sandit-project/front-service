@@ -1,4 +1,3 @@
-let globalUserInfo = null;
 let sideList = [];
 
 $(document).ready(async () => {
