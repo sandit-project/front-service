@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private final RestTemplate restTemplate;
+    private final RestTemplate portoneRestTemplate;
     private final ObjectMapper objectMapper;
 
 
@@ -40,7 +40,7 @@ public class PaymentService {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        ResponseEntity<JsonNode> response = restTemplate.exchange(
+        ResponseEntity<JsonNode> response = portoneRestTemplate.exchange(
                 baseUrl + "/payments/find/{merchant_uid}",
                 HttpMethod.GET,
                 request,
@@ -57,7 +57,7 @@ public class PaymentService {
                                                   String reason,
                                                   int checksum) {
 
-        restTemplate.getMessageConverters().forEach(c -> log.info("컨버터: {}", c.getClass()));
+        portoneRestTemplate.getMessageConverters().forEach(c -> log.info("컨버터: {}", c.getClass()));
 
         String token = getToken(); // 반드시 포트원에서 발급받은 access_token
 
@@ -84,7 +84,7 @@ public class PaymentService {
         HttpEntity<IamportCancelRequest> request = new HttpEntity<>(cancelRequest, headers);
         JsonNode json;
         try {
-            ResponseEntity<JsonNode> resp = restTemplate.postForEntity(
+            ResponseEntity<JsonNode> resp = portoneRestTemplate.postForEntity(
                     baseUrl + "/payments/cancel",
                     request,
                     JsonNode.class
@@ -129,7 +129,7 @@ public class PaymentService {
 
         HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
 
-        ResponseEntity<JsonNode> resp = restTemplate.postForEntity(
+        ResponseEntity<JsonNode> resp = portoneRestTemplate.postForEntity(
                 baseUrl + "/users/getToken",
                 request,
                 JsonNode.class
