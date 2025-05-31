@@ -122,6 +122,7 @@ public class AuthApiController {
         try{
             responseDTO = authService.getUserProfile(token);
         }catch(FeignException e){
+            e.printStackTrace();
             if (e.status() == 419) {
                 response.setStatus(HttpStatus.SC_UNAUTHORIZED);
             } else {
