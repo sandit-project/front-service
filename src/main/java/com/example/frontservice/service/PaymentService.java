@@ -22,6 +22,7 @@ public class PaymentService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
+
     @Value("${iamport.base-url:https://api.iamport.kr}")
     private String baseUrl;
 
@@ -54,6 +55,9 @@ public class PaymentService {
                                                   int amount,
                                                   String reason,
                                                   int checksum) {
+
+        restTemplate.getMessageConverters().forEach(c -> log.info("컨버터: {}", c.getClass()));
+
         String token = getToken();
 
         HttpHeaders headers = new HttpHeaders();
@@ -123,6 +127,7 @@ public class PaymentService {
         }
 
         HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
+        log.info("[결제 취소 요청 Entity] {}", request);
 
         ResponseEntity<JsonNode> resp = restTemplate.postForEntity(
                 baseUrl + "/users/getToken",
