@@ -53,7 +53,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/menus/cheeses/" + encodeURIComponent(cheeseData.cheeseName),  // cheeseName을 경로에 사용
+            url: "/menus/cheeses/" + encodeURIComponent(cheeseName),  // cheeseName을 경로에 사용
             type: "PUT",
             data: formData,
             enctype: "multipart/form-data",

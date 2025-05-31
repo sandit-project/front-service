@@ -1,5 +1,3 @@
-let globalUserInfo = null;
-
 $(document).ready(function () {
     checkToken();
     setupAjax();

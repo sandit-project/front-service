@@ -51,7 +51,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/menus/vegetables/" + encodeURIComponent(vegetableData.vegetableName),
+            url: "/menus/vegetables/" + encodeURIComponent(vegetableName),
             type: "PUT",
             data: formData,
             enctype: "multipart/form-data",
