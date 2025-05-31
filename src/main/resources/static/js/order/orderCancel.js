@@ -5,7 +5,7 @@ let cancelOrder = (merchantUid, reason) => {
         url: '/orders/payments/cancel',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ merchantUid:merchantUid, reason:reason })
+        data: JSON.stringify({ merchant_uid:merchantUid, reason:reason })
     }).then(resp => {
         console.log(resp);
         console.log(resp.isSuccess)
