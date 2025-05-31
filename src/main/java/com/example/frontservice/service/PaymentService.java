@@ -80,7 +80,9 @@ public class PaymentService {
                     JsonNode.class
             );
             json = resp.getBody();
+            log.info("[결제 취소 응답] {}", json.toPrettyString());
         } catch (HttpClientErrorException ex) {
+            log.error("[결제 취소 실패] HTTP 상태: {}, 응답: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
             return CancelPaymentResponseDTO.builder()
                     .isSuccess(false)
                     .message("결제 취소 연동 실패: " + ex.getStatusText())
@@ -89,6 +91,7 @@ public class PaymentService {
 
         boolean ok = json.get("code").asInt() == 0;
         String msg = ok ? "결제 취소 성공" : json.get("message").asText();
+        log.info("[취소 결과] 성공 여부: {}, 메시지: {}", ok, msg);
         return CancelPaymentResponseDTO.builder()
                 .isSuccess(ok)
                 .message(msg)
