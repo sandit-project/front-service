@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CancelPaymentRequestDTO {
+    @JsonProperty("merchant_uid")
     private String merchantUid;
     private String reason;
 }
