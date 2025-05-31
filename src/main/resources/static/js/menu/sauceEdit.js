@@ -51,7 +51,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/menus/sauces/" + encodeURIComponent(sauceData.sauceName),
+            url: "/menus/sauces/" + encodeURIComponent(sauceName),
             type: "PUT",
             data: formData,
             enctype: "multipart/form-data",

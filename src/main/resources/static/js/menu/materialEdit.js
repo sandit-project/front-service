@@ -54,7 +54,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/menus/materials/" + encodeURIComponent(materialData.materialName),
+            url: "/menus/materials/" + encodeURIComponent(materialName),
             type: "PUT",
             data: formData,
             enctype: "multipart/form-data",
