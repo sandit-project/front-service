@@ -3,8 +3,6 @@ $(document).ready(async () => {
     const profile = await requestProfileApi();
     const convertType = profile.type === "USER" ? "user":"social";
 
-    connectWebSocket("alarm", profile.uid, convertType);
-
     const allergyList = await fetchUserAllergies(convertType, profile.uid);
     if(allergyList){
         allergyList.forEach((allergy) => {

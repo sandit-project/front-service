@@ -5,7 +5,6 @@ $(document).ready(() => {
     getUserInfo().then((userInfo) => {
         if (userInfo) {
             initUserUI(userInfo);
-            connectWebSocket("alarm", userInfo.id, userInfo.type);
         } else {
             renderGuestUI();
         }

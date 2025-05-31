@@ -5,8 +5,6 @@ $(document).ready(async ()=>{
     const profile = await fetchProfile();
     const convertType = profile.type === "USER" ? "user":"social";
 
-    connectWebSocket("alarm", profile.uid, convertType);
-
     const allergyList = await fetchUserAllergies(convertType, profile.uid);
     $('#allergy').text(allergyList);
 
