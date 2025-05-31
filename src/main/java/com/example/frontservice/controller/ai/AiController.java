@@ -19,9 +19,16 @@ public class AiController {
     @GetMapping("/users/{userUid}/allergies")
     public ResponseEntity<AllergyListResponseDTO> getUserAllergies(@PathVariable Long userUid,
                                                                    HttpServletRequest request){
-
         String token = request.getHeader("Authorization");
         AllergyListResponseDTO results = aiService.getUserAllergies(userUid,token);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/socials/{socialUid}/allergies")
+    public ResponseEntity<AllergyListResponseDTO> getSocialAllergies(@PathVariable Long socialUid,
+                                                                   HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        AllergyListResponseDTO results = aiService.getSocialAllergies(socialUid,token);
         return ResponseEntity.ok(results);
     }
 

@@ -14,6 +14,12 @@ public interface AiClient {
     @GetMapping("/api/ai/users/{userUid}/allergies")
     AllergyListResponseDTO getUserAllergies(@PathVariable("userUid") Long userUid,
                                             @RequestHeader("Authorization")String token);
+
+    // 소셜 알러지 목록 조회
+    @GetMapping("/api/ai/socials/{socialUid}/allergies")
+    AllergyListResponseDTO getSocialAllergies(@PathVariable("socialUid") Long socialUid,
+                                            @RequestHeader("Authorization")String token);
+
     // 알러지 체크
     @PostMapping(value = "/api/ai/check-allergy",
                  consumes= MediaType.APPLICATION_JSON_VALUE)
