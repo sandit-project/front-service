@@ -3,9 +3,6 @@ $(function () {
 });
 
 // --- 전역 변수 ---
-let stompClient = null;
-let sock = null;
-let isConnected = false;
 let alarmSubscription = null;
 
 let receiveAlarm = (uid, type) => {

@@ -1,4 +1,7 @@
 let globalUserInfo;
+let stompClient = null;
+let sock = null;
+let isConnected = false;
 
 async function connectWebSocket() {
     checkToken();

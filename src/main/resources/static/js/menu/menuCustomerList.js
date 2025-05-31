@@ -1,4 +1,3 @@
-let globalUserInfo = null;
 let menuList = [];
 
 $(document).ready(async () => {
