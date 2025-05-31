@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IamportCancelRequest {
+    @JsonProperty("imp_uid")
+    private String impUid;
     @JsonProperty("merchant_uid")
     private String merchantUid;
     private String reason;
