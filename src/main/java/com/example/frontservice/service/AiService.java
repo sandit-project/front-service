@@ -20,6 +20,11 @@ public class AiService {
         return aiClient.getUserAllergies(userUid,token);
 
     }
+    public AllergyListResponseDTO getSocialAllergies(Long socialUid, String token) {
+
+        return aiClient.getSocialAllergies(socialUid,token);
+
+    }
     public AllgergyCheckResponseDTO checkAllergy(AllergyCheckRequestDTO requestDTO,
                                                  String token) {
 
