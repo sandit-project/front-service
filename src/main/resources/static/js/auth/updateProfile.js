@@ -3,6 +3,8 @@ $(document).ready(async () => {
     const profile = await requestProfileApi();
     const convertType = profile.type === "USER" ? "user":"social";
 
+    connectWebSocket("alarm", profile.uid, convertType);
+
     const allergyList = await fetchUserAllergies(convertType, profile.uid);
     if(allergyList){
         allergyList.forEach((allergy) => {
@@ -61,13 +63,6 @@ let requestProfileApi = () => {
 
             console.log(response);
             initUserUI(response);
-            let type;
-            if(response.type === "USER"){
-                type = "user";
-            }else{
-                type = "social";
-            }
-            receiveAlarm(response.uid, type);
         },
         error : (error) => {
             console.error('profile in error :: ',error);

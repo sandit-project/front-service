@@ -12,7 +12,7 @@ $(document).ready(async () => {
 
         if (globalUserInfo) {
             initUserUI(globalUserInfo);
-            receiveAlarm(globalUserInfo.id, globalUserInfo.type);
+            connectWebSocket("alarm", globalUserInfo.id, globalUserInfo.type);
         } else {
             renderGuestUI();
         }

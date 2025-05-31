@@ -28,7 +28,7 @@ async function initPage() {
             }else{
                 type = "social";
             }
-            receiveAlarm(profile.uid, type);
+            connectWebSocket("alarm", profile.uid, type);
         }
 
         console.log('[DEBUG] profile:', profile);

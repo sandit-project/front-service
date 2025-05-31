@@ -1,22 +1,26 @@
+// --- 전역 변수 ---
+let stompClient = null;
+let sock = null;
+let isConnected = false;
+let alarmSubscription = null;
+
 let receiveAlarm = (uid, type) => {
-    if (!isConnected || !stompClient) {
-        console.warn('[WebSocket] 연결 안 됨, 재연결 시도');
-        connectWebSocket(() => {
-            // 연결 완료된 후 알람 구독 실행
-            subscribeAlarm(uid, type);
-        });
+    if (!stompClient || !isConnected) {
+        console.warn('[WebSocket] 연결 안 됨 → 구독 실패');
         return;
     }
 
-    // 이미 연결된 상태라면 바로 구독
-    subscribeAlarm(uid, type);
-};
+    if (alarmSubscription) {
+        alarmSubscription.unsubscribe();
+        console.log('[WebSocket] 기존 알림 구독 해제');
+    }
 
-let subscribeAlarm = (uid, type) => {
-    const subscribePath = `/topic/alarm/${type}/${uid}`;
-    stompClient.subscribe(subscribePath, (message) => {
+    const topic = `/topic/alarm/${type}/${uid}`;
+    alarmSubscription = stompClient.subscribe(topic, function (msg) {
         try {
-            const alarm = JSON.parse(message.body);
+            const alarm = JSON.parse(msg.body);
+            console.log('[WebSocket] 알림 수신:', alarm);
+
             Swal.fire({
                 icon: 'info',
                 title: '알림',
@@ -24,8 +28,18 @@ let subscribeAlarm = (uid, type) => {
                 confirmButtonColor: '#f97316'
             });
         } catch (e) {
-            console.error("메시지 파싱 에러:", e);
+            console.error('[WebSocket] 메시지 파싱 실패:', e);
         }
     });
-    console.log("[WebSocket] 알림 구독 완료:", subscribePath);
-}
+
+    console.log('[WebSocket] 알림 구독 시작:', topic);
+};
+
+// --- 페이지 이탈 시 연결 종료 ---
+$(window).on('beforeunload', function () {
+    if (stompClient && stompClient.disconnect) {
+        stompClient.disconnect();
+        console.log('[WebSocket] 연결 종료');
+    }
+});
+
