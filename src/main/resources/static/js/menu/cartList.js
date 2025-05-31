@@ -15,7 +15,7 @@ $(document).ready(function () {
         }
 
         initUserUI(userInfo);
-        receiveAlarm(userInfo.id, userInfo.type);
+        connectWebSocket("alarm", userInfo.id, userInfo.type);
         loadCartItems();
     });
 

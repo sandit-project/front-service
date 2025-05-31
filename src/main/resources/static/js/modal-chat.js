@@ -1,5 +1,5 @@
 $(function () {
-    connectWebSocket(); // 외부 공통 함수 사용
+    connectWebSocket("chat", null, null); // 외부 공통 함수 사용
 });
 
 // --- 전역 변수 ---

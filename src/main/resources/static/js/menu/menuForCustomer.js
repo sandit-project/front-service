@@ -5,7 +5,7 @@ $(document).ready(function () {
     getUserInfo().then((userInfo) => {
         if (userInfo) {
             initUserUI(userInfo); // 로그인한 사용자용 헤더
-            receiveAlarm(userInfo.id, userInfo.type);
+            connectWebSocket("alarm", userInfo.id, userInfo.type);
         } else {
             renderGuestUI(); // 비회원용 헤더
         }
