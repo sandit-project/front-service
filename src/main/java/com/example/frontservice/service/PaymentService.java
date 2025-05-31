@@ -71,6 +71,12 @@ public class PaymentService {
 
         log.info("imp_uid={}, merchant_uid={}, amount={}, reason={}", impUid, merchantUid, amount, reason);
 
+        try {
+            log.info("[결제 취소 요청 바디] {}", objectMapper.writeValueAsString(body));
+        } catch (JsonProcessingException e) {
+            log.warn("[결제 취소 요청 바디 직렬화 실패]", e);
+        }
+
         HttpEntity<Map<String,Object>> request = new HttpEntity<>(body, headers);
         JsonNode json;
         try {
