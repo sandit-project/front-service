@@ -1,5 +1,3 @@
-let globalUserInfo;
-
 $(document).ready(async function () {
     checkToken();
     setupAjax();
