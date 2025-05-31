@@ -1,6 +1,7 @@
 package com.example.frontservice.service;
 
 import com.example.frontservice.dto.order.CancelPaymentResponseDTO;
+import com.example.frontservice.dto.order.IamportCancelRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,24 +65,31 @@ public class PaymentService {
         headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String,Object> body = new LinkedHashMap<>();
-        body.put("imp_uid", impUid);
-        body.put("merchant_uid",   merchantUid);
-        body.put("amount", amount);
-        body.put("checksum", checksum);
-        if (reason != null && !reason.isBlank()) {
-            body.put("reason", reason);
-        }
+//        Map<String,Object> body = new LinkedHashMap<>();
+//        body.put("imp_uid", impUid);
+//        body.put("merchant_uid",   merchantUid);
+//        body.put("amount", amount);
+//        body.put("checksum", checksum);
+//        if (reason != null && !reason.isBlank()) {
+//            body.put("reason", reason);
+//        }
+
+        IamportCancelRequest cancelRequest = IamportCancelRequest.builder()
+                .merchantUid(merchantUid)
+                .amount(amount)
+                .checksum(checksum)
+                .reason(reason)
+                .build();
 
         log.info("imp_uid={}, merchant_uid={}, amount={}, reason={}", impUid, merchantUid, amount, reason);
 
         try {
-            log.info("[결제 취소 요청 바디] {}", objectMapper.writeValueAsString(body));
+            log.info("[결제 취소 요청 바디] {}", objectMapper.writeValueAsString(cancelRequest));
         } catch (JsonProcessingException e) {
             log.warn("[결제 취소 요청 바디 직렬화 실패]", e);
         }
 
-        HttpEntity<Map<String,Object>> request = new HttpEntity<>(body, headers);
+        HttpEntity<IamportCancelRequest> request = new HttpEntity<>(cancelRequest, headers);
         JsonNode json;
         try {
             ResponseEntity<JsonNode> resp = restTemplate.postForEntity(
