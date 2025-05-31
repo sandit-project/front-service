@@ -119,15 +119,9 @@ public class PaymentService {
         );
 
         log.info("[getToken] baseUrl={}, imp_key='{}', imp_secret='{}'", baseUrl, apiKey, apiSecret);
+        log.info("[getToken 바디] {}", creds);
 
-        String jsonBody;
-        try {
-            jsonBody = objectMapper.writeValueAsString(creds);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("토큰 요청 바디 직렬화 실패", e);
-        }
-
-        HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
+        HttpEntity<Map<String,String>> request = new HttpEntity<>(creds, headers);
 
         ResponseEntity<JsonNode> resp = portoneRestTemplate.postForEntity(
                 baseUrl + "/users/getToken",
