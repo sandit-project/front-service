@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 모든 경로에 대해
-                        .allowedOrigins("https://himedia-a.com", "http://himedia-a.com", "https://ws.himedia-a.com","http://ws.himedia-a.com")
+                        .allowedOriginPatterns("https://himedia-a.com", "http://himedia-a.com", "https://ws.himedia-a.com","http://ws.himedia-a.com")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
