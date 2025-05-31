@@ -75,7 +75,7 @@ public class PaymentService {
 //        }
 
         IamportCancelRequest cancelRequest = IamportCancelRequest.builder()
-                .impUid(impUid == null || impUid.isBlank() ? null : impUid)
+                .impUid((impUid != null && !impUid.isBlank()) ? impUid : null)
                 .merchantUid(merchantUid)
                 .amount(amount)
                 .checksum(checksum)
