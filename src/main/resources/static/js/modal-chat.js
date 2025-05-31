@@ -1,12 +1,5 @@
-$(function () {
-    connectWebSocket(); // 외부 공통 함수 사용
-});
-
 // --- 전역 변수 ---
 let chatRoomOpenedAt = null;
-let stompClient = null;
-let sock = null;
-let isConnected = false;
 let currentRoomId = null;
 let subscription = null;
 let globalSubscription = null;
