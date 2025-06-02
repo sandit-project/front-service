@@ -1,5 +1,3 @@
-/* 🌿 메뉴 페이지 리디자인 - 카드 정렬 맞춤 + 밑줄 제거 */
-
 :root {
     --theme-orange: #F38B20;
     --theme-orange-dark: #d7730f;
@@ -35,46 +33,53 @@ body {
     box-sizing: border-box;
 }
 
-.menu-item {
+.menu-item,
+.custom-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     position: relative;
     width: 100%;
+    height: 380px; /* ✅ 카드 높이 통일 */
     box-sizing: border-box;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-
-}
-
-.menu-item img {
-    width: 100%;
-    max-height: 160px;
-    object-fit: contain;
-    display: block;
+    background: var(--bg-card);
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .menu-item:hover {
     transform: scale(1.03);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.14);
-    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
     z-index: 2;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.menu-info {
+.menu-item img,
+.custom-item a img {
+    width: 100%;
+    height: 160px;            /* ✅ 높이 동일 */
+    object-fit: contain;      /* ✅ 비율 유지 */
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-info,
+.custom-item .menu-info {
     background: #fff;
     border-radius: 16px;
     padding: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     width: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     transition: box-shadow 0.2s;
-    min-height: 210px;
+    justify-content: space-between;
     box-sizing: border-box;
 }
 
@@ -92,7 +97,8 @@ body {
     text-decoration: none;
 }
 
-.add-to-cart-btn, .order-btn {
+.add-to-cart-btn,
+.order-btn {
     background: whitesmoke;
     border: none;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
@@ -107,7 +113,8 @@ body {
     text-decoration: none;
 }
 
-.add-to-cart-btn:hover, .order-btn:hover {
+.add-to-cart-btn:hover,
+.order-btn:hover {
     background: var(--theme-orange);
     color: white !important;
     border-color: var(--theme-orange);
@@ -121,26 +128,10 @@ body {
     justify-content: center;
 }
 
-.custom-item {
-    order: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    box-sizing: border-box;
-    margin-top: 20px;
-}
-
-.custom-item .menu-info {
-    align-items: center;
-    text-align: center;
-    min-height: 210px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-}
 
 .custom-item a {
+    max-height: 160px;
     text-decoration: none;
     color: inherit;
 }
+

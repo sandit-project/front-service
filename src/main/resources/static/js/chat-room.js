@@ -4,7 +4,7 @@
     let globalUserInfo = null;
     const displayedMessages = new Set();
     checkToken();
-   setupAjax();
+    setupAjax();
 
     function getUserInfo() {
         return new Promise((resolve, reject) => {
@@ -41,18 +41,23 @@
     }
 
     function hasChatPermission(role, userType) {
-        if (role === 'ROLE_ADMIN') return true;
+        if (role === 'ROLE_ADMIN' || role === 'ROLE_MANAGER') return true;
         const allowedSocialTypes = ['naver', 'kakao', 'google'];
         if (userType === 'normal') return true;
         return allowedSocialTypes.includes(userType);
     }
 
+    function getRoleLabel(role) {
+        switch (role) {
+            case 'ROLE_ADMIN': return '관리자';
+            case 'ROLE_MANAGER': return '매니저';
+            default: return '고객';
+        }
+    }
 
-    // ✅ 채팅방 초기화 - 모달 열 때 호출
     window.initChatRoom = async function (roomId) {
         try {
-            cleanupWebSocket();  // 🔑 기존 WebSocket 및 이벤트 정리
-
+            cleanupWebSocket();
             await checkToken();
             setupAjax();
             globalUserInfo = await getUserInfo();
@@ -68,7 +73,7 @@
             }
 
             const { userId, role, type: userType } = globalUserInfo;
-            const roleLabel = role === 'ROLE_ADMIN' ? '관리자' : '고객';
+            const roleLabel = getRoleLabel(role);
             $('#userInfo').text(` 로그인: ${userId} (${userType === 'normal' ? '일반' : userType}, ${roleLabel})`);
 
             if (!hasChatPermission(role, userType)) {
@@ -123,11 +128,17 @@
         const createdAtStr = message.createdAt || message.created_at || new Date().toISOString();
         const formattedTime = formatDate(createdAtStr);
         const isMine = message.sender === userId;
-        const senderLabel = (message.senderRole?.toLowerCase() === 'role_admin')
-            ? '👨‍💼 관리자'
-            : `🙋‍♂️ 고객 (${message.senderType === 'normal' ? '일반' : message.senderType})`;
-        const messageClass = isMine ? "my-message" : "other-message";
 
+        let senderLabel = '🙋‍♂️ 고객';
+        if (message.senderRole?.toLowerCase() === 'role_admin') senderLabel = '👨‍💼 관리자';
+        else if (message.senderRole?.toLowerCase() === 'role_manager') senderLabel = '👩‍💼 매니저';
+
+        if (!['ROLE_ADMIN', 'ROLE_MANAGER'].includes(message.senderRole)) {
+            const typeLabel = message.senderType === 'normal' ? '일반' : message.senderType;
+            senderLabel += ` (${typeLabel})`;
+        }
+
+        const messageClass = isMine ? "my-message" : "other-message";
         const messageHtml = `
             <div class="${messageClass}">
                 <div><b>${senderLabel} - ${message.sender}</b></div>
@@ -141,16 +152,10 @@
 
     function connectWebSocket(roomId, userId, role, userType) {
         const token = localStorage.getItem("accessToken");
-        if (!token) {
-            console.error("WebSocket 연결 실패: 토큰 없음");
-            return Promise.reject("토큰 없음");
-        }
+        if (!token) return Promise.reject("토큰 없음");
 
         return new Promise((resolve, reject) => {
-            if (subscription) {
-                subscription.unsubscribe();
-                subscription = null;
-            }
+            if (subscription) subscription.unsubscribe();
             if (stompClient && stompClient.connected) {
                 stompClient.disconnect(() => {
                     console.log("기존 WebSocket 연결 종료 완료");
@@ -174,7 +179,6 @@
                         addMessageIfNotDuplicate(message, userId);
                     });
 
-                    // 🔄 이벤트 핸들러 중복 방지
                     $("#sendBtn").off("click").on("click", () => sendMessage(roomId, userId, role, userType));
                     $("#messageInput").off("keypress").on("keypress", (e) => {
                         if (e.which === 13) {
@@ -186,6 +190,7 @@
                     res();
                 }, (error) => {
                     console.error("WebSocket 연결 실패", error);
+                    Swal.fire("WebSocket 연결 실패", "잠시 후 다시 시도해주세요.", "error");
                     rej(error);
                 });
             });
@@ -216,7 +221,19 @@
         };
 
         addMessageIfNotDuplicate(message, userId);
-        stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+
+        try {
+            stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+        } catch (err) {
+            console.error("메시지 전송 실패", err);
+            Swal.fire({
+                icon: 'error',
+                title: '전송 실패',
+                text: '메시지를 전송하지 못했습니다. 네트워크 상태를 확인해주세요.',
+                confirmButtonColor: '#f44336'
+            });
+        }
+
         $("#messageInput").val("");
     }
 
@@ -249,7 +266,6 @@
         if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    // ✅ WebSocket 및 이벤트 해제 (모달 닫기 시 호출)
     function cleanupWebSocket() {
         if (subscription) {
             subscription.unsubscribe();
@@ -269,14 +285,12 @@
         $("#chatBox").empty();
     }
 
-    // 모달 닫기 버튼
     $(document).on('click', '#modalCloseBtn', function () {
         cleanupWebSocket();
         $('#modalContainer').hide();
         $('#modalContent').empty();
     });
 
-    // 목록으로 돌아가기
     $(document).on('click', '#backToChatListBtn', function () {
         cleanupWebSocket();
         openModalWithContent('/chat');

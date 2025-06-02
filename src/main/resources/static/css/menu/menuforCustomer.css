@@ -10,7 +10,7 @@ body {
 
 /* 🔶 메뉴 디테일 컨테이너 */
 .menu-detail-container {
-    max-width: 1000px;
+    max-width: 500px;
     margin: 40px auto;
     background-color: #ffffff;
     padding: 32px;
@@ -35,7 +35,8 @@ body {
     object-fit: cover;
     border-radius: 14px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
+    margin: 0 auto 24px auto; /* 좌우 자동 마진으로 중앙 정렬 */
+    display: block;           /* 블록 요소로 변경 */
 }
 
 /* 🔶 설명 */

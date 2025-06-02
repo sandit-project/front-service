@@ -16,7 +16,7 @@ $(document).ready(function () {
         loadCartItems();
     });
 
-    // 선택/해제 처리
+    // 전체 선택/해제 처리
     $("#selectAll").on("change", function () {
         $(".item-checkbox").prop("checked", this.checked);
     });
@@ -64,7 +64,6 @@ $(document).ready(function () {
                 deleteCartItem(id, row);
             }
         });
-
     });
 
     // 선택 삭제
@@ -167,37 +166,6 @@ function loadCartItems() {
     });
 }
 
-function renderCartItems(cartItems) {
-    const $tbody = $("#cartTableBody").empty();
-    let totalQuantity = 0;
-    let totalPrice = 0;
-
-    cartItems.forEach(item => {
-        const rowHtml = `
-    <tr data-id="${item.uid}">
-        <td><input type="checkbox" class="item-checkbox" value="${item.uid}" checked></td>
-        <td class="menu-name" style="display: flex; align-items: center; gap: 10px;">
-            <img src="${item.img}" alt="${item.menuName}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-            <span>${item.menuName}</span>
-        </td>
-        <td>
-            <input type="number" min="1" value="${item.amount}" class="amount-input">
-            <button type="button" class="update-btn">변경</button>
-        </td>
-        <td class="item-price">${item.unitPrice.toLocaleString()}</td>
-        <td class="total-cell">${(item.unitPrice * item.amount).toLocaleString()}</td>
-        <td><button type="button" class="delete-btn">삭제</button></td>
-    </tr>
-    `;
-        $tbody.append(rowHtml);
-        totalQuantity += item.amount;
-        totalPrice += item.unitPrice * item.amount;
-    });
-
-    $("#totalQuantity").text(totalQuantity);
-    $("#totalPrice").text(totalPrice.toLocaleString());
-}
-
 function updateCartItemAmount(id, newAmount) {
     const data = {
         amount: newAmount,
@@ -220,6 +188,57 @@ function updateCartItemAmount(id, newAmount) {
             });
         }
     });
+}
+
+function renderCartItems(cartItems) {
+    const $tbody = $("#cartTableBody").empty();
+    let totalQuantity = 0;
+    let totalPrice = 0;
+
+    cartItems.forEach(item => {
+        const isCustom = item.menuName === "커스텀 샌드위치";
+        const imgSrc = isCustom
+            ? "https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png"
+            : item.img;
+        const altText = isCustom ? "sandit-chat" : item.menuName;
+
+        // 이미지 크기 고정 100x100, object-fit: cover 적용
+        const imgStyle = "width: 120px; height: 120px; object-fit: contain; border-radius: 6px;";
+
+        const rowHtml = `
+        <tr data-id="${item.uid}">
+            <td><input type="checkbox" class="item-checkbox" value="${item.uid}" checked></td>
+            <td class="menu-name" style="display: flex; align-items: center; gap: 10px;">
+                <img src="${imgSrc}" alt="${escapeHtml(altText)}" style="${imgStyle}">
+                <span>${escapeHtml(item.menuName)}</span>
+            </td>
+            <td>
+                <input type="number" min="1" value="${item.amount}" class="amount-input">
+                <button type="button" class="update-btn">변경</button>
+            </td>
+            <td class="item-price">${item.unitPrice.toLocaleString()}</td>
+            <td class="total-cell">${(item.unitPrice * item.amount).toLocaleString()}</td>
+            <td><button type="button" class="delete-btn">삭제</button></td>
+        </tr>
+        `;
+
+        $tbody.append(rowHtml);
+        totalQuantity += item.amount;
+        totalPrice += item.unitPrice * item.amount;
+    });
+
+    $("#totalQuantity").text(totalQuantity);
+    $("#totalPrice").text(totalPrice.toLocaleString());
+}
+
+// HTML escape 처리 함수 (XSS 방지)
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function deleteCartItem(id, row) {

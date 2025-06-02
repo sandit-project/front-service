@@ -62,7 +62,24 @@ function fetchProfile() {
         url: '/profile',
         type: 'GET',
         success: (response) => {
-            $('#welcome-message').text(response.userName + '님 환영합니다!');
+            const roleMap = {
+                admin: '관리자',
+                manager: '매니저',
+                user: '회원'
+            };
+
+            const typeMap = {
+                user: '일반 가입자',
+                naver:'네이버 가입자',
+                kakao:'카카오 가입자',
+                google:'구글 가입자'
+            };
+
+            const cleanRole = response.role.replace(/^ROLE_/, '').toLowerCase();
+            const displayRole = roleMap[cleanRole] || cleanRole;
+            const displayType = typeMap[response.type.toLowerCase()] || response.type;
+
+            $('#welcome-message').text(`${response.userName} (${displayRole})님 환영합니다!`);
             $('#hiddenUserName').val(response.userName);
             $('#hiddenUserUId').val(response.uid);
             $('#hiddenUserType').val(response.type);
@@ -72,7 +89,7 @@ function fetchProfile() {
             $('#user_email').text(response.email);
             $('#user_phone').text(response.phone);
             $('#created_date').text(formatJoinDate(response.createdDate));
-            $('#user_type').text(response.type);
+            $('#user_type').text(displayType); // ✅ 여기 변경
             $('#main_address').text(response.mainAddress);
             $('#sub_address1').text(response.subAddress1);
             $('#sub_address2').text(response.subAddress2);
