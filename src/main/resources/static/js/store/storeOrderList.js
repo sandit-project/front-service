@@ -246,7 +246,7 @@ let remoteOrder = (action,merchantUid,status,addressStart,addressDestination) =>
                 text: response.message || '요청이 성공적으로 처리되었습니다.',
                 confirmButtonColor: '#f97316'
             }).then(() => {
-                loadOrders();
+                location.reload();
             });
         },
         error: (error) => {
