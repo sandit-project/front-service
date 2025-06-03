@@ -36,7 +36,7 @@
     }
 
     function hasChatPermission(role, userType) {
-        if (role === 'ROLE_ADMIN') return true;
+        if (role === 'ROLE_ADMIN' || role === 'ROLE_MANAGER') return true;
         const allowedSocialTypes = ['naver', 'kakao', 'google'];
         return userType === 'normal' || allowedSocialTypes.includes(userType);
     }
@@ -70,7 +70,7 @@
                 const roomListDiv = $('#roomList');
                 roomListDiv.empty();
 
-                const roomsToShow = (userInfo.role === 'ROLE_ADMIN')
+                const roomsToShow = (userInfo.role === 'ROLE_ADMIN' || userInfo.role === 'ROLE_MANAGER')
                     ? data
                     : data.filter(room => room.ownerId === userInfo.userId);
 
@@ -120,7 +120,7 @@
                             e.stopPropagation();
 
                             const isOwner = userInfo.userId === room.ownerId;
-                            const isAdmin = userInfo.role === 'ROLE_ADMIN';
+                            const isAdmin = userInfo.role === 'ROLE_ADMIN' || userInfo.role === 'ROLE_MANAGER';
 
                             if (!isAdmin && !isOwner) {
                                 Swal.fire({
@@ -258,7 +258,6 @@
         });
     }
 
-    // 채팅방 입장 이벤트 핸들러 (현재 열려있는 방 ID 저장 및 알림 제거)
     $(document).on('click', '.enter-chat-room', function() {
         const userInfo = getUserInfo();
         if (!userInfo || !hasChatPermission(userInfo.role, userInfo.type)) {
@@ -272,13 +271,11 @@
         }
 
         const roomId = $(this).data('room-id');
-        currentOpenRoomId = roomId;  // 현재 채팅방 ID 저장
-
+        currentOpenRoomId = roomId;
         localStorage.removeItem(`unread_${roomId}`);
         $(this).siblings('.unread-badge').hide();
     });
 
-    // WebSocket 연결 및 알림 처리
     function connectWebSocketForNotifications() {
         const userInfo = getUserInfo();
         if (!userInfo) return;
@@ -294,11 +291,9 @@
                 const roomId = data.roomId;
 
                 if (roomId === currentOpenRoomId) {
-                    // 현재 열려있는 채팅방이면 알림 제거
                     localStorage.removeItem(`unread_${roomId}`);
                     $(`.enter-chat-room[data-room-id="${roomId}"]`).siblings('.unread-badge').hide();
                 } else {
-                    // 다른 방이면 알림 표시
                     localStorage.setItem(`unread_${roomId}`, 'true');
                     $(`.enter-chat-room[data-room-id="${roomId}"]`).siblings('.unread-badge').show();
                 }

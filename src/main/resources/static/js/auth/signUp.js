@@ -7,19 +7,21 @@ $(document).ready(() => {
         const $other = $('#other-allergy-options');
 
         if ($other.hasClass('open')) {
+            // 닫기: class 제거 -> 트랜지션(0.4s) 후 display:none
             $other.removeClass('open');
-            $(this).text('기타 알레르기'); // ← 닫힐 예정이므로 텍스트 미리 설정
-            setTimeout(() => $other.css('display', 'none'), 10);
+            $(this).text('기타 알레르기');
+            setTimeout(() => {
+                $other.css('display', 'hidden');
+            }, 400); // CSS transition duration과 동일하게 맞춤
         } else {
-            $other.css('display', 'flex'); // 보여주는 동시에 flex로 설정
-            $(this).text('접기'); // ← 열릴 예정이므로 텍스트 미리 설정
-            setTimeout(() => $other.addClass('open'), 10);
+            // 열기: display:flex 후 짧은 지연 뒤 class 추가
+            $other.css('display', 'flex');
+            $(this).text('접기');
+            setTimeout(() => {
+                $other.addClass('open');
+            }, 10);
         }
     });
-
-
-
-
 
     // 권한 선택 변경 시마다 show/hide
     $('#role').on('change', function() {
@@ -29,13 +31,24 @@ $(document).ready(() => {
     function toggleAllergyGroup() {
         const role = $('#role').val();
         if (role === 'ROLE_USER') {
-            $('#allergy-group').show();
+            $('#allergy-group').css({
+                'opacity': '1',
+                'pointer-events': 'auto',
+                'height': '',
+                'padding': '',
+            });
         } else {
-            $('#allergy-group').hide();
-            // 선택된 알러지도 모두 해제
+            $('#allergy-group').css({
+                'opacity': '0',
+                'pointer-events': 'none',  // 클릭 막기
+                'height': '',
+                'padding': '',
+            });
             $('input[name="allergy"]').prop('checked', false);
         }
     }
+
+
 
     $('#id_validation').on('click', async () => {
         const userId = $('#user_id').val().trim();
@@ -83,23 +96,20 @@ $(document).ready(() => {
         }
     });
 
-    // 이벤트 바인딩
+    // 전화번호 자동 하이픈 적용
     $('#phone').on('input', function() {
         this.value = autoHyphenPhone(this.value);
     });
 
-    // 전화번호 자동 하이픈 (010/011/02 등 모두 지원)
     function autoHyphenPhone(str) {
-        str = str.replace(/[^0-9]/g, ''); // 숫자만 남김
+        str = str.replace(/[^0-9]/g, '');
 
         if (str.startsWith('02')) {
-            // 02-xxxx-xxxx
             if (str.length < 3) return str;
             if (str.length < 6) return str.substr(0, 2) + '-' + str.substr(2);
             if (str.length < 10) return str.substr(0, 2) + '-' + str.substr(2, 3) + '-' + str.substr(5);
             return str.substr(0, 2) + '-' + str.substr(2, 4) + '-' + str.substr(6, 4);
         } else {
-            // 010-xxxx-xxxx, 011-xxx-xxxx 등
             if (str.length < 4) return str;
             if (str.length < 8) return str.substr(0, 3) + '-' + str.substr(3);
             if (str.length < 12) return str.substr(0, 3) + '-' + str.substr(3, 4) + '-' + str.substr(7);
@@ -111,7 +121,6 @@ $(document).ready(() => {
         e.preventDefault();
         const btn = $(this).prop('disabled', true);
 
-        // 1) 폼 값 수집
         const userId     = $('#user_id').val().trim();
         const password   = $('#password').val().trim();
         const userName   = $('#user_name').val().trim();
@@ -126,7 +135,7 @@ $(document).ready(() => {
                 text: '전화번호는 11자리 이상 입력해야 합니다.',
                 confirmButtonColor: '#f97316'
             }).then(() => {
-                    btn.prop('disabled', false);
+                btn.prop('disabled', false);
             });
             return;
         }
@@ -146,12 +155,11 @@ $(document).ready(() => {
                 text: '아이디, 비밀번호, 이름, 주소를 모두 입력해주세요.',
                 confirmButtonColor: '#f97316'
             }).then(() => {
-                btn.prop('disabled', false);  // ❗ 알림 닫힌 뒤 버튼 활성화
+                btn.prop('disabled', false);
             });
             return;
         }
 
-        // 2) hidden에서 세팅된 좌표 읽기
         const mainLat = parseFloat($('#main_latitude').val());
         const mainLan = parseFloat($('#main_longitude').val());
         if (isNaN(mainLat) || isNaN(mainLan)) {
@@ -166,14 +174,13 @@ $(document).ready(() => {
             return;
         }
 
-        // 3) payload 구성
         const payload = {
             userId,
             password,
             userName,
             email,
             phone,
-            mainAddress: `${$('#main_address_base').val().trim()} ${$('#main_address_detail').val().trim()}`.trim(),
+            mainAddress: mainAddress.trim(),
             role: role,
             mainLat: mainLat,
             mainLan: mainLan,
@@ -185,7 +192,6 @@ $(document).ready(() => {
         console.log('회원가입 payload:', payload);
 
         try {
-            // 4) 실제 가입 요청
             const res = await $.ajax({
                 type: 'POST',
                 url: '/join',
@@ -193,8 +199,6 @@ $(document).ready(() => {
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json'
             });
-
-            console.log(res);
 
             if (res.success) {
                 Swal.fire({

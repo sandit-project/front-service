@@ -1,24 +1,23 @@
-$(document).ready(()=>{
+$(document).ready(() => {
 
     renderGuestUI();
 
     $('.dropdown-admin, .dropdown-manager, .dropdown-delivery').hide();
 
-    $('#signin').on('click',()=>{
-
+    $('#signin').on('click', () => {
         let userId = $('#user_id').val();
         let password = $('#password').val();
 
         let signInData = {
-            userId : userId,
-            password : password
-        }
+            userId: userId,
+            password: password
+        };
 
         $.ajax({
-           type: 'POST',
-           url: '/login',
-           data: JSON.stringify(signInData),
-           contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            url: '/login',
+            data: JSON.stringify(signInData),
+            contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             success: (response) => {
                 Swal.fire({
@@ -32,8 +31,8 @@ $(document).ready(()=>{
                     window.location.href = '/';
                 });
             },
-            error : (error) => {
-                console.error('log in error :: ',error);
+            error: (error) => {
+                console.error('log in error :: ', error);
                 Swal.fire({
                     icon: 'error',
                     title: '로그인 실패',
@@ -44,4 +43,11 @@ $(document).ready(()=>{
         });
     });
 
+    // 엔터키 이벤트 바인딩
+    $('#user_id, #password').on('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            $('#signin').click();
+        }
+    });
 });
