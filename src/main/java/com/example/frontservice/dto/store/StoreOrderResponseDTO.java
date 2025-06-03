@@ -13,6 +13,7 @@ public class StoreOrderResponseDTO {
 
     private String merchantUid;
     private Long userUid;
+    private Long socialUid;
     private LocalDateTime createdDate;
     private LocalDateTime reservationDate;
     private String status;

@@ -12,6 +12,7 @@ import java.util.List;
 public class OrderDetailResponseDTO {
     private Integer uid;
     private Integer userUid;
+    private Integer socialUid;
     private Integer storeUid;
     private String merchantUid;
     private List<CartItemsDTO> items;

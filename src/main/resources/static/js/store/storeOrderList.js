@@ -98,7 +98,7 @@ $(document).ready(async ()=>{
                 $('#storeContent').append(`
                     <tr>
                         <td>${o.merchantUid}</td>
-                        <td>${o.userUid}</td>
+                        <td>${o.userUid ? `일반(${o.userUid})` : (o.socialUid ? `소셜(${o.socialUid})` : '-')}</td>
                         <td>${created}</td>
                         <td>${reserve}</td>
                         <td>${itemDetails}</td>
@@ -193,7 +193,9 @@ let mergeOrderList = (input) => {
                 acc[merchantUid] = {
                     merchantUid,
                     ...rest,
-                    items: []
+                    items: [],
+                    userUid: rest.userUid || null,
+                    socialUid: rest.socialUid || null
                 };
             }
 

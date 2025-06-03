@@ -24,26 +24,53 @@ $(document).ready(function () {
     $(document).on("change", ".item-checkbox", function () {
         const allChecked = $(".item-checkbox").length === $(".item-checkbox:checked").length;
         $("#selectAll").prop("checked", allChecked);
+        updateSummary();
     });
 
     // 수량 변경
-    $(document).on("click", ".update-btn", function () {
-        const row = $(this).closest("tr");
-        const id = row.data("id");
-        const newAmount = parseInt(row.find(".amount-input").val());
+    $(document).on("click", ".update-btn", async function () {
+        const updates = [];
 
-        if (!newAmount || newAmount < 1) {
+        $(".amount-input").each(function () {
+            const row = $(this).closest("tr");
+            const id = row.data("id");
+            const amount = parseInt($(this).val(), 10);
+
+            if (!amount || amount < 1) {
+                return; // skip invalid rows
+            }
+
+            updates.push({ id, amount });
+        });
+
+        try {
+            await Promise.all(updates.map(item =>
+                $.ajax({
+                    url: `/menus/cart/update/${item.id}`,
+                    type: "POST",
+                    data: { amount: item.amount, ...getUserParams() }
+                })
+            ));
+
             Swal.fire({
-                icon: 'warning',
-                title: '수량 오류',
-                text: '수량은 1 이상이어야 합니다.',
+                icon: 'success',
+                title: '수량 변경 완료',
+                text: '선택한 항목들의 수량이 변경되었습니다.',
                 confirmButtonColor: '#f97316'
             });
-            return;
-        }
 
-        updateCartItemAmount(id, newAmount);
+            // 성공 후 리렌더링
+            loadCartItems();
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: '수량 변경 실패',
+                text: '수량 변경 중 오류가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
+        }
     });
+
 
     // 개별 삭제
     $(document).on("click", ".delete-btn", function () {
@@ -166,28 +193,22 @@ function loadCartItems() {
     });
 }
 
-function updateCartItemAmount(id, newAmount) {
-    const data = {
-        amount: newAmount,
-        ...getUserParams()
-    };
+function updateSummary() {
+    let totalQuantity = 0;
+    let totalPrice = 0;
 
-    $.ajax({
-        url: `/menus/cart/update/${id}`,
-        type: "POST",
-        data,
-        success: function (response) {
-            renderCartItems(response.cartItems);
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: '수량 변경 실패',
-                text: '수량 변경 중 오류가 발생했습니다.',
-                confirmButtonColor: '#f97316'
-            });
-        }
+    $(".item-checkbox:checked").each(function () {
+        const $row = $(this).closest("tr");
+        const amount = parseInt($row.find(".amount-input").val(), 10) || 0;
+        const unitPriceText = $row.find(".item-price").text().replace(/,/g, "");
+        const unitPrice = parseInt(unitPriceText, 10) || 0;
+
+        totalQuantity += amount;
+        totalPrice += unitPrice * amount;
     });
+
+    $("#totalQuantity").text(totalQuantity);
+    $("#totalPrice").text(totalPrice.toLocaleString());
 }
 
 function renderCartItems(cartItems) {
@@ -229,6 +250,7 @@ function renderCartItems(cartItems) {
 
     $("#totalQuantity").text(totalQuantity);
     $("#totalPrice").text(totalPrice.toLocaleString());
+    updateSummary();
 }
 
 // HTML escape 처리 함수 (XSS 방지)

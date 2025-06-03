@@ -20,6 +20,15 @@ $(document).ready(() => {
                 clearInterval(timerInterval);
                 $('#timer').text('만료');
                 $('#email-verify').prop('disabled', true);
+                $('#email-submit').prop('disabled', false);
+                emailSent = false;
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '인증 시간 만료',
+                    text: '인증 시간이 만료되었습니다. 다시 인증해주세요.',
+                    confirmButtonColor: '#f97316'
+                });
             } else {
                 $('#timer').text(formatTime(timeLeft));
             }
