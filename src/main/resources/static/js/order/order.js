@@ -299,11 +299,7 @@ $(document).ready(async () => {
                     title: '주소 입력 필요',
                     text: '주소를 먼저 입력해야 주문할 수 있습니다.',
                     confirmButtonColor: '#f97316'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "/member/profile/update";
-                    }
-                });
+                })
                 return;
             }
         } catch (error) {

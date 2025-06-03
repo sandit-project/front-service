@@ -81,6 +81,9 @@ $(document).ready(() => {
     $('#sub2_postcode, #subAddress2-kakao').on('click', ()=>{
         execDaumPostcode("sub2");
     });
+    $('#sub1_address_base').on('click', () => execDaumPostcode('sub1'));
+    $('#sub2_address_base').on('click', () => execDaumPostcode('sub2'));
+
     $('#store_postcode, #store_address_base').on('click', ()=>{
         execDaumPostcode("store");
     });
