@@ -260,8 +260,12 @@ $(document).ready(async () => {
             Swal.fire({
                 icon: 'warning',
                 title: '전화번호 필요',
-                text: '주문을 진행하려면 전화번호를 입력해주세요.',
+                text: '전화번호가 없습니다. 프로필에서 먼저 입력해주세요.',
                 confirmButtonColor: '#f97316'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/member/profile/update";
+                }
             });
             return;
         }
@@ -295,6 +299,10 @@ $(document).ready(async () => {
                     title: '주소 입력 필요',
                     text: '주소를 먼저 입력해야 주문할 수 있습니다.',
                     confirmButtonColor: '#f97316'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/member/profile/update";
+                    }
                 });
                 return;
             }
@@ -642,20 +650,20 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                     })
                 });
 
-                swal({
-                    title: "결제 실패",
-                    text: response.error_msg || "결제가 실패했습니다. 다시 시도해주세요.",
-                    icon: "error",
-                    button: "확인"
+                Swal.fire({
+                    icon: 'error',
+                    title: '결제 실패',
+                    text: response.error_msg || '결제가 실패했습니다. 다시 시도해주세요.',
+                    confirmButtonColor: '#f97316'
                 });
             } catch (err) {
                 console.error('update-fail 전송 실패', err);
 
-                swal({
-                    title: "서버 통신 오류",
-                    text: "결제 실패 처리를 서버에 알리지 못했습니다. 고객센터에 문의해주세요.",
-                    icon: "warning",
-                    button: "확인"
+                Swal.fire({
+                    icon: 'warning',
+                    title: '서버 통신 오류',
+                    text: '결제 실패 처리를 서버에 알리지 못했습니다. 고객센터에 문의해주세요.',
+                    confirmButtonColor: '#f97316'
                 });
             }
         }
