@@ -17,6 +17,10 @@ async function initPage() {
         window.location.href = '/member/login';
     });
 
+    $('#refresh-btn').click(async ()=>{
+        await fetchOrders();
+    });
+
     try {
         const profile = await fetchProfile();
 
