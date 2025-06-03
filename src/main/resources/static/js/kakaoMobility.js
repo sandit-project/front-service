@@ -27,6 +27,8 @@ let renderKakaomap = (info) => {
             content: `<div style="padding:5px;font-size:13px;">${title}</div>`
         });
         infowindow.open(map, marker);
+
+        return marker;
     }
 
     // 점포와 배달지 마커 표시
@@ -61,14 +63,14 @@ let renderKakaomap = (info) => {
             // 배달원 이동 시작
             // moveIndex = 0;
             // moveDeliveryMan();
-            receiveDeliveryManLocation(info.merchantUid);
+            receiveDeliveryManLocation(info.merchantUid, info.addressStart);
         },
         error: (error)=>{
             console.log("error :: ",error);
         }
     })
 
-    // 배달원 위치 갱신
+    // 배달원 위치 갱신 -> 로컬 시연용
     // function moveDeliveryMan() {
     //     setInterval(function() {
     //         if (moveIndex < pathCoords.length) {
@@ -78,9 +80,12 @@ let renderKakaomap = (info) => {
     //     }, 1000); // 1초마다 이동
     // }
 
-    let receiveDeliveryManLocation = (merchantUid) => {
+    let receiveDeliveryManLocation = (merchantUid, storeName) => {
         const socket = new SockJS(window.WEBSOCKET_URL);
         const stompClient = Stomp.over(socket);
+
+        // 매장별 마커 저장
+        const riderMarkers = new Map();
 
         stompClient.connect({}, (frame) => {
             console.log("STOMP 연결됨 (수신)");
@@ -94,8 +99,17 @@ let renderKakaomap = (info) => {
                 console.log("배달원 위치 수신:", location);
 
                 // 위치 데이터 처리 예시
-                let rider = { lat: location.lat, lng: location.lng };
-                placeMarker(rider, '실시간 배달원');
+                let position = { lat: location.lat, lng: location.lng };
+
+                if (riderMarkers.has(merchantUid)) {
+                    // 기존 마커가 있으면 위치 업데이트
+                    const marker = riderMarkers.get(merchantUid);
+                    marker.setPosition(new kakao.maps.LatLng(position.lat, position.lng));
+                } else {
+                    // 새로운 매장에 대해 마커 생성
+                    const marker = placeMarker(position, `${storeName} 배달원`);
+                    riderMarkers.set(merchantUid, marker);
+                }
             });
         });
 
