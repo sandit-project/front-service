@@ -14,9 +14,18 @@ function execDaumPostcode(addressType) {
             }else if(addressType === "sub1"){
                 $('#sub1_postcode').val(data.zonecode);
                 $('#sub1_address_base').val(data.address);
+
+                if ($('#subAddress1').length) {
+                    $('#subAddress1').val(data.address);
+                }
+
             }else if(addressType === "sub2"){
                 $('#sub2_postcode').val(data.zonecode);
                 $('#sub2_address_base').val(data.address);
+
+                if ($('#subAddress2').length) {
+                    $('#subAddress2').val(data.address);
+                }
             }else if(addressType === "store"){
                 $('#store_postcode').val(data.zonecode);
                 $('#store_address_base').val(data.address);
@@ -44,12 +53,30 @@ function execDaumPostcode(addressType) {
                             $('#deliveryDestinationLan').val(coords.lng);
                         }
 
+                        addressData.main.address = data.address;
+                        addressData.main.detail  = $('#mainAddress1Detail').val();  // 추가로 꼭 넣어야 함
+                        addressData.main.lat = coords.lat;
+                        addressData.main.lan = coords.lng;
+
                     }else if(addressType === "sub1"){
+                        console.log('[DEBUG] execDaumPostcode - sub1 좌표 설정:', coords.lat, coords.lng);
                         $('#sub1_latitude').val(coords.lat);
                         $('#sub1_longitude').val(coords.lng);
+
+                        addressData.sub1.address = data.address;
+                        addressData.sub1.detail  = $('#subAddress1Detail').val();  // 추가로 꼭 넣어야 함
+                        addressData.sub1.lat     = coords.lat;
+                        addressData.sub1.lan     = coords.lng;
+
                     }else if(addressType === "sub2"){
+                        console.log('[DEBUG] execDaumPostcode - sub2 좌표 설정:', coords.lat, coords.lng);
                         $('#sub2_latitude').val(coords.lat);
                         $('#sub2_longitude').val(coords.lng);
+
+                        addressData.sub2.address = data.address;
+                        addressData.sub2.detail  = $('#subAddress2Detail').val();  // 추가로 꼭 넣어야 함
+                        addressData.sub2.lat     = coords.lat;
+                        addressData.sub2.lan     = coords.lng;
                     }else if(addressType === "store"){
                         $('#store_latitude').val(coords.lat);
                         $('#store_longitude').val(coords.lng);

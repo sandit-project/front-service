@@ -234,24 +234,16 @@ $(document).ready(async () => {
                     cancelButtonText: '취소',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        const userParams = (globalUserInfo.type === 'user')
-                            ? { userUid: globalUserInfo.id }
-                            : (globalUserInfo.type === 'social')
-                                ? { socialUid: globalUserInfo.id }
-                                : null;
+                        const checkoutData = {
+                            userInfo: {
+                                userUid: requestData.userUid || null,
+                                socialUid: requestData.socialUid || null,
+                            },
+                            selectedIds: [] // 서버에서 uid 응답 받으면 그거 넣어야 함
+                        };
+                        sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
 
-                        if (!userParams) {
-                            Swal.fire('로그인 정보를 확인할 수 없습니다.', '', 'error');
-                            return;
-                        }
-
-                        const queryParams = new URLSearchParams({
-                            menuId,
-                            amount,
-                            ...userParams
-                        }).toString();
-
-                        window.location.href = `/order?${queryParams}`;
+                        window.location.href = `/order`;
                     }
                 });
             },

@@ -48,4 +48,8 @@ public class AuthService {
     public List<ManagerResponseDTO> getManagers(String token) {
         return authClient.getManagers(token);
     }
+
+    public UpdateAddressResponseDTO updateAddress(String token, UpdateAddressRequestDTO updateAddressRequestDTO) {
+        return authClient.updateUserAddress(token, updateAddressRequestDTO);
+    }
 }

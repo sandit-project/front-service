@@ -49,4 +49,8 @@ public interface AuthClient {
     @GetMapping("/managers")
     List<ManagerResponseDTO> getManagers(@RequestHeader("Authorization") String token);
 
+    @PutMapping("/address")
+    UpdateAddressResponseDTO updateUserAddress(@RequestHeader("Authorization") String token,
+                                               @RequestBody UpdateAddressRequestDTO dto);
+
 }

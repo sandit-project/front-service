@@ -339,7 +339,17 @@ hr {
     outline: none;
 }
 
+.address-group input[type="text"] {
+    flex-grow: 1;
+}
 
-
+input[type="text"] {
+    pointer-events: auto;
+    position: relative;
+    z-index: 0;
+}
+.btn-primary {
+    z-index: 1;
+}
 
 
