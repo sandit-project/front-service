@@ -340,6 +340,12 @@ hr {
 }
 
 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    opacity: 1 !important;     /* 투명도 유지 */
+    pointer-events: auto !important;  /* 마우스 이벤트 허용 */
+    display: block !important;  /* 숨김 방지 */
+}
 
 
 

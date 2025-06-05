@@ -190,7 +190,8 @@ $(document).ready(async function () {
 
                     data.forEach(item => {
                         const $btn = $('<div class="option-button"></div>');
-                        $btn.text(item[nameField]);
+                        $btn.html(`<strong>${item[nameField]}</strong><br>(+${item.price}원)`);
+
                         $btn.attr({
                             'data-value': item.uid,
                             'data-name': groupName,
