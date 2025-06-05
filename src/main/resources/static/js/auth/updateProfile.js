@@ -40,6 +40,27 @@ $(document).ready(async () => {
             setTimeout(() => $other.addClass('open'), 10);
         }
     });
+
+    // 전화번호 자동 하이픈 적용
+    $('#phone').on('input', function() {
+        this.value = autoHyphenPhone(this.value);
+    });
+
+    function autoHyphenPhone(str) {
+        str = str.replace(/[^0-9]/g, '');
+
+        if (str.startsWith('02')) {
+            if (str.length < 3) return str;
+            if (str.length < 6) return str.substr(0, 2) + '-' + str.substr(2);
+            if (str.length < 10) return str.substr(0, 2) + '-' + str.substr(2, 3) + '-' + str.substr(5);
+            return str.substr(0, 2) + '-' + str.substr(2, 4) + '-' + str.substr(6, 4);
+        } else {
+            if (str.length < 4) return str;
+            if (str.length < 8) return str.substr(0, 3) + '-' + str.substr(3);
+            if (str.length < 12) return str.substr(0, 3) + '-' + str.substr(3, 4) + '-' + str.substr(7);
+            return str.substr(0, 3) + '-' + str.substr(3, 4) + '-' + str.substr(7, 4);
+        }
+    }
 });
 
 let requestProfileApi = () => {
@@ -57,9 +78,9 @@ let requestProfileApi = () => {
             document.getElementById("emailyn").checked = response.emailyn === "Y" ? true : false;
             $('#phone').val(response.phone);
             document.getElementById("phoneyn").checked = response.phoneyn === "Y" ? true : false;
-            const mainAddressArr = response.mainAddress.split("/");
-            const sub1AddressArr = response.subAddress1.split("/");
-            const sub2AddressArr = response.subAddress2.split("/");
+            const mainAddressArr = response.mainAddress == null ? "" : response.mainAddress.split("/");
+            const sub1AddressArr = response.subAddress1 == null ? "" : response.subAddress1.split("/");
+            const sub2AddressArr = response.subAddress2 == null ? "" : response.subAddress2.split("/");
             $('#main_address_base').val(mainAddressArr[0]);
             $('#main_address_detail').val(mainAddressArr[1]);
             $('#sub1_address_base').val(sub1AddressArr[0]);
@@ -87,14 +108,27 @@ let requestProfileApi = () => {
 }
 
 let requestProfileUpdate = (existCoordinate) => {
+    //const btn = $(document).prop('disabled', true);
+
     checkToken();
     setupAjax();
 
     const uid = $('#hiddenUserUId').val();
-    const userName = $('#user_name').val();
-    const email = $('#email').val();
+    const userName = $('#user_name').val().trim();
+    const email = $('#email').val().trim();
     const emailyn = $('#emailyn').val() === "on";
-    const phone = $('#phone').val();
+    const phone      = $('#phone').val().trim();
+    if (phone.length < 11) {
+        Swal.fire({
+            icon: 'warning',
+            title: '전화번호 오류',
+            text: '전화번호는 11자리 이상 입력해야 합니다.',
+            confirmButtonColor: '#f97316'
+        }).then(() => {
+            btn.prop('disabled', false);
+        });
+        return;
+    }
     const phoneyn = $('#phoneyn').val() === "on";
     const baseMainAddress   = $('#main_address_base').val().trim();
     const detailMainAddress = $('#main_address_detail').val().trim();
@@ -109,9 +143,11 @@ let requestProfileUpdate = (existCoordinate) => {
     if (!userName || !mainAddress) {
         Swal.fire({
             icon: 'warning',
-            title: '입력 누락',
-            text: '필수 입력 항목을 모두 채워주세요.',
+            title: '필수 항목 미입력',
+            text: '이름, 현재 주소를 입력해주세요.',
             confirmButtonColor: '#f97316'
+        }).then(() => {
+            btn.prop('disabled', false);
         });
         return;
     }
@@ -126,9 +162,9 @@ let requestProfileUpdate = (existCoordinate) => {
         uid : uid,
         userName : userName,
         email : email,
-        emailyn : emailyn? "y" : "n" ,
+        emailyn : emailyn? "Y" : "N" ,
         phone : phone,
-        phoneyn : phoneyn? "y" : "n" ,
+        phoneyn : phoneyn? "Y" : "N" ,
         mainAddress : mainAddress,
         subAddress1 : subAddress1,
         subAddress2 : subAddress2,
