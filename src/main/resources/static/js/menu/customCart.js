@@ -305,7 +305,7 @@ function showWarning() {
     Swal.fire({
         icon: 'warning',
         title: '선택 오류',
-        text: '빵과 재료를 선택해주세요.',
+        text: '필수 재료를 모두 확인해주세요.',
         confirmButtonColor: '#f97316',
         confirmButtonText: '확인'
     });

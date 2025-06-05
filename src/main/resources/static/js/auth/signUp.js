@@ -141,7 +141,7 @@ $(document).ready(() => {
         }
         const baseAddress   = $('#main_address_base').val().trim();
         const detailAddress = $('#main_address_detail').val().trim();
-        const mainAddress   = detailAddress ? `${baseAddress} ${detailAddress}` : baseAddress;
+        const mainAddress   = detailAddress ? `${baseAddress}/${detailAddress}` : baseAddress;
         const role       = $('#role').val();
         const allergies = [];
         $('input[name="allergy"]:checked').each(function() {

@@ -90,9 +90,9 @@ function fetchProfile() {
             $('#user_phone').text(response.phone);
             $('#created_date').text(formatJoinDate(response.createdDate));
             $('#user_type').text(displayType); // ✅ 여기 변경
-            $('#main_address').text(response.mainAddress);
-            $('#sub_address1').text(response.subAddress1);
-            $('#sub_address2').text(response.subAddress2);
+            $('#main_address').text((response.mainAddress || '').replace('/', ' '));
+            $('#sub_address1').text((response.subAddress1 || '').replace('/', ' '));
+            $('#sub_address2').text((response.subAddress2 || '').replace('/', ' '));
 
             initUserUI(response);
             console.log(response);

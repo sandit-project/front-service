@@ -7,6 +7,7 @@ body {
 }
 
 main {
+    position: relative;
     width: 90%;
     margin: 40px auto;
     background-color: rgba(255, 255, 255, 0.7);
@@ -18,6 +19,31 @@ main {
 
 h1 {
     text-align: center;
+}
+
+.btn {
+    position: absolute;
+    right: 40px;
+    top: 60px;
+    color: #333;
+    padding: 10px 22px;
+    min-width: 90px;
+    min-height: 42px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.12s, box-shadow 0.2s;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: whitesmoke;
+    user-select: none;
+}
+
+.btn:hover {
+    background: #F38B20;
+    color: white;
+    box-shadow: 0 6px 16px rgba(243,139,32,0.13);
 }
 
 /* 🔶 테이블 스타일 */

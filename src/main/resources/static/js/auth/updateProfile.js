@@ -54,10 +54,18 @@ let requestProfileApi = () => {
             $('#hiddenUserUId').val(response.uid);
             $('#user_name').val(response.userName);
             $('#email').val(response.email);
+            document.getElementById("emailyn").checked = response.emailyn === "Y" ? true : false;
             $('#phone').val(response.phone);
-            $('#main_address_base').val(response.mainAddress);
-            $('#sub1_address_base').val(response.subAddress1);
-            $('#sub2_address_base').val(response.subAddress2);
+            document.getElementById("phoneyn").checked = response.phoneyn === "Y" ? true : false;
+            const mainAddressArr = response.mainAddress.split("/");
+            const sub1AddressArr = response.subAddress1.split("/");
+            const sub2AddressArr = response.subAddress2.split("/");
+            $('#main_address_base').val(mainAddressArr[0]);
+            $('#main_address_detail').val(mainAddressArr[1]);
+            $('#sub1_address_base').val(sub1AddressArr[0]);
+            $('#sub1_address_detail').val(sub1AddressArr[1]);
+            $('#sub2_address_base').val(sub2AddressArr[0]);
+            $('#sub2_address_detail').val(sub2AddressArr[1]);
 
             console.log(response);
             initUserUI(response);
@@ -90,13 +98,13 @@ let requestProfileUpdate = (existCoordinate) => {
     const phoneyn = $('#phoneyn').val() === "on";
     const baseMainAddress   = $('#main_address_base').val().trim();
     const detailMainAddress = $('#main_address_detail').val().trim();
-    const mainAddress   = detailMainAddress ? `${baseMainAddress} ${detailMainAddress}` : baseMainAddress;
+    const mainAddress   = detailMainAddress ? `${baseMainAddress}/${detailMainAddress}` : baseMainAddress;
     const baseSub1Address   = $('#sub1_address_base').val().trim();
     const detailSub1Address = $('#sub1_address_detail').val().trim();
-    const subAddress1   = detailSub1Address ? `${baseSub1Address} ${detailSub1Address}` : baseSub1Address;
+    const subAddress1   = detailSub1Address ? `${baseSub1Address}/${detailSub1Address}` : baseSub1Address;
     const baseSub2Address   = $('#sub2_address_base').val().trim();
     const detailSub2Address = $('#sub2_address_detail').val().trim();
-    const subAddress2   = detailSub2Address ? `${baseSub2Address} ${detailSub2Address}` : baseSub2Address;
+    const subAddress2   = detailSub2Address ? `${baseSub2Address}/${detailSub2Address}` : baseSub2Address;
 
     if (!userName || !mainAddress) {
         Swal.fire({

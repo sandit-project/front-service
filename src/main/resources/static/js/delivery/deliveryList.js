@@ -14,7 +14,7 @@ $(document).ready(async ()=>{
 
         initUserUI(userInfo);
 
-        if(userInfo.role === "ROLE_DELIVERY" || userInfo.role === "ROLE_ADMIN"){
+        if(userInfo.role === "ROLE_DELIVERY"){
             // 웹소켓에 위치 전달 하는 함수
             sendDeliveryManLocation(userInfo.id, userInfo.type);
         }
@@ -28,6 +28,7 @@ $(document).ready(async ()=>{
     $('#refresh-btn').click(async ()=>{
         hasMore = true;
         $('#deliveryContent').empty();
+        changeStatus(statusFilter);
     });
 
     // 상태 탭 클릭 핸들러
@@ -37,7 +38,7 @@ $(document).ready(async ()=>{
         statusFilter = $(this).data('status');
         hasMore = true;
         console.log(statusFilter);
-        $('#storeContent').empty();
+        $('#deliveryContent').empty();
         changeStatus(statusFilter);
     })
 
@@ -252,6 +253,8 @@ let startDelivery = (info) => {
                 title: '배달 시작됨',
                 text: response.message || '배달이 시작되었습니다.',
                 confirmButtonColor: '#f97316'
+            }).then(() => {
+                location.reload();
             });
         },
         error: (error) => {
@@ -301,6 +304,8 @@ let endDelivery = (info) => {
                 title: '배달 완료됨',
                 text: response.message || '배달이 완료되었습니다.',
                 confirmButtonColor: '#f97316'
+            }).then(() => {
+                location.reload();
             });
         },
         error: (error) => {
