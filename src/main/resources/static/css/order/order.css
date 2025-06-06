@@ -352,4 +352,35 @@ input[type="text"] {
     z-index: 1;
 }
 
+.address-group input.address-base {
+    margin-bottom: 10px;
+    display: block;
+}
+.address-group input + input {
+    display: block;
+}
+
+.address-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.address-base-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.address-base-group input[type="text"] {
+    flex: 1;
+}
+
+.address-base-group button {
+    flex-shrink: 0; /* 버튼 크기 고정 */
+    height: 100%;   /* 입력창과 높이 맞춤 */
+}
+
+
+
 

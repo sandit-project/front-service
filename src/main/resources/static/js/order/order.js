@@ -87,10 +87,14 @@ function fillUserInfoForm(user) {
     $('#deliveryDestinationLat').val(user.mainLat);
     $('#deliveryDestinationLan').val(user.mainLan);
 
-    addressData.sub1.lat = user.subLat1 || 0.0;
-    addressData.sub1.lan = user.subLan1 || 0.0;
-    addressData.sub2.lat = user.subLat2 || 0.0;
-    addressData.sub2.lan = user.subLan2 || 0.0;
+    if (user.mainLat != null) addressData.main.lat = user.mainLat;
+    if (user.mainLan != null) addressData.main.lan = user.mainLan;
+
+    if (user.subLat1 != null) addressData.sub1.lat = user.subLat1;
+    if (user.subLan1 != null) addressData.sub1.lan = user.subLan1;
+
+    if (user.subLat2 != null) addressData.sub2.lat = user.subLat2;
+    if (user.subLan2 != null) addressData.sub2.lan = user.subLan2;
 
 
     // $('#mainAddress').val(user.mainAddress);
@@ -364,12 +368,16 @@ $(document).ready(async () => {
         execDaumPostcode(selected);
     });
 
-    $('.address-group .address-base').on('click', function (e) {
+    $('#subAddress1').on('click', function (e) {
         e.preventDefault();
-        const $group = $(this).closest('.address-group');
-        const selected = $group.data('type'); // main, sub1, sub2
-        execDaumPostcode(selected);
+        execDaumPostcode('sub1');
     });
+
+    $('#subAddress2').on('click', function (e) {
+        e.preventDefault();
+        execDaumPostcode('sub2');
+    });
+
 
     $('#payButton').click(async () => {
         console.log('pay button clicked');
@@ -678,7 +686,7 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                     merchantUid: response.merchant_uid,
                 }),
                 success: function(updateRes) {
-                    const selectedAddressType = $('#addressTypeSelect').val(); // 셀렉트 박스 선택값
+                    const selectedAddressType = $('#addressSelect').val();
 
                     let address, addressDetail, lat, lan;
                     if (selectedAddressType === 'main') {
@@ -698,47 +706,66 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                         lan = parseFloat($('#sub2_longitude').val());
                     }
 
-                    // addressData 먼저 업데이트 (UI상 데이터 동기화)
-                    if (selectedAddressType === 'main') {
-                        addressData.main.address = currentAddress;
-                        addressData.main.lat = currentLat;
-                        addressData.main.lan = currentLan;
-                        addressData.main.detail = detail;
-                    } else if (selectedAddressType === 'sub1') {
-                        addressData.sub1.address = currentAddress;
-                        addressData.sub1.lat = currentLat;
-                        addressData.sub1.lan = currentLan;
-                        addressData.sub1.detail = detail;
-                    } else if (selectedAddressType === 'sub2') {
-                        addressData.sub2.address = currentAddress;
-                        addressData.sub2.lat = currentLat;
-                        addressData.sub2.lan = currentLan;
-                        addressData.sub2.detail = detail;
+                    const prev = addressData[selectedAddressType];
+                    const normalize = (v) => (v ?? '').toString().trim();
+
+                    console.log('address 비교:', normalize(prev.address), normalize(address));
+                    console.log('detail 비교:', normalize(prev.detail), normalize(addressDetail));
+                    console.log('lat 비교:', Number(prev.lat), Number(lat));
+                    console.log('lan 비교:', Number(prev.lan), Number(lan));
+
+                    const hasChanged =
+                        !!normalize(address) &&
+                        (
+                            normalize(prev.address) !== normalize(address) ||
+                            normalize(prev.detail) !== normalize(addressDetail) ||
+                            Number(prev.lat) !== Number(lat) ||
+                            Number(prev.lan) !== Number(lan)
+                        );
+
+                    console.log("주소 변경 여부 → hasChanged:", hasChanged);
+
+                    // 업데이트가 필요하면 addressData 갱신
+                    if (hasChanged) {
+                        prev.address = address;
+                        prev.detail = addressDetail;
+                        prev.lat = lat;
+                        prev.lan = lan;
                     }
 
-                    // 그 다음, 최신 addressData로 전체 구성
-                    let updatedAddress = {
+                    const updatedAddress = {
                         userUid: buyer.userUid,
                         socialUid: buyer.socialUid,
                         mainAddress: addressData.main.address,
+                        mainAddressDetail: addressData.main.detail,
                         mainLat: addressData.main.lat,
                         mainLan: addressData.main.lan,
                         subAddress1: addressData.sub1.address,
+                        subAddress1Detail: addressData.sub1.detail,
                         subLat1: addressData.sub1.lat,
                         subLan1: addressData.sub1.lan,
                         subAddress2: addressData.sub2.address,
+                        subAddress2Detail: addressData.sub2.detail,
                         subLat2: addressData.sub2.lat,
-                        subLan2: addressData.sub2.lan,
+                        subLan2: addressData.sub2.lan
                     };
+
                     console.log('[DEBUG] submit 직전 addressData:', JSON.stringify(addressData, null, 2));
-                    submitOrders(buyer, response, reservationDate)
+
+                    return submitOrders(buyer, response, reservationDate, selectedAddressType)
                         .then(() => {
-                            return $.ajax({
-                                url: '/address',
-                                type: 'PUT',
-                                contentType: 'application/json',
-                                data: JSON.stringify(updatedAddress)
-                            });
+                            if (hasChanged) {
+                                console.log('[DEBUG] address 변경 감지됨 → updatedAddress:', updatedAddress);
+
+                                return $.ajax({
+                                    url: '/address',
+                                    type: 'PUT',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(updatedAddress)
+                                });
+                            } else {
+                                return Promise.resolve();
+                            }
                         })
                         .then(() => {
                             const allCartUids   = getSelectedCartUids();
@@ -848,8 +875,35 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         }
     });
 }
+function getAddressInfoByType(type) {
+    if (type === 'main') {
+        return {
+            address: $('#mainAddress').val(),
+            detail: $('#mainAddressDetail').val(),
+            lat: parseFloat($('#mainLat').val()) || 0.0,
+            lan: parseFloat($('#mainLan').val()) || 0.0
+        };
+    } else if (type === 'sub1') {
+        return {
+            address: $('#subAddress1').val(),
+            detail: $('#subAddress1Detail').val(),
+            lat: parseFloat($('#sub1_latitude').val()) || 0.0,
+            lan: parseFloat($('#sub1_longitude').val()) || 0.0
+        };
+    } else if (type === 'sub2') {
+        return {
+            address: $('#subAddress2').val(),
+            detail: $('#subAddress2Detail').val(),
+            lat: parseFloat($('#sub2_latitude').val()) || 0.0,
+            lan: parseFloat($('#sub2_longitude').val()) || 0.0
+        };
+    } else {
+        console.warn('[WARN] 유효하지 않은 주소 타입:', type);
+        return { address: '', detail: '', lat: 0.0, lan: 0.0 };
+    }
+}
 
-async function submitOrders(buyer, paymentResponse, reservationDate) {
+async function submitOrders(buyer, paymentResponse, reservationDate, selectedAddressType) {
     setupAjax();
     checkToken();
     console.log("Authorization 헤더", localStorage.getItem('accessToken'));
@@ -861,17 +915,14 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
 
     // 주소 타입 선택
     const selectedType = $('#addressSelect').val();
-    const selectedAddress = $(`#${selectedType === 'main' ? 'main' : 'subAddress' + selectedType.slice(3)}`).val();
-    const selectedAddressDetail = $(`#${selectedType === 'main' ? 'mainAddressDetail' : 'subAddress' + selectedType.slice(3) + 'Detail'}`).val();
-    let selectedLat, selectedLan;
-
-    if (selectedType === 'main') {
-        selectedLat = parseFloat($('#mainLat').val());
-        selectedLan = parseFloat($('#mainLan').val());
-    } else {
-        selectedLat = parseFloat($(`#${selectedType}_latitude`).val());
-        selectedLan = parseFloat($(`#${selectedType}_longitude`).val());
+    // 예외처리: 유효한 키인지 먼저 확인
+    if (!addressData[selectedAddressType]) {
+        console.error('⚠️ 유효하지 않은 주소 타입입니다:', selectedAddressType);
+        return;
     }
+
+    const { address: selectedAddress, detail: selectedAddressDetail, lat: selectedLat, lan: selectedLan } = getAddressInfoByType(selectedType);
+
 
 
     const deliveryAddress = {
@@ -890,6 +941,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
         selectedLat,
         selectedLan
     });
+    console.log('[DEBUG] addressData:', addressData);
 
     // 1) 일반 주문 먼저 저장
     let generalOrderUids = [];
@@ -1003,6 +1055,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate) {
             })
         });
     }
+    return Promise.resolve();
 }
 
 

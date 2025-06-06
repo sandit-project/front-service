@@ -52,8 +52,15 @@ let handleTokenExpiration = () => {
         },
         error : (error) => {
            console.error('token error :: ',error);
-           alert('로그인이 필요합니다.\n다시 로그인해주세요.');
-           window.location.href = '/member/login';
+            Swal.fire({
+                icon: 'warning',
+                title: '로그인이 필요합니다',
+                text: '세션이 만료되었습니다. 다시 로그인해주세요.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#3085d6'
+            }).then(() => {
+                window.location.href = '/member/login';
+            });
         }
     });
 }

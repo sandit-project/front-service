@@ -54,31 +54,37 @@
 
     <div class="form-group address-group" data-type="main">
         <label>기본 주소</label>
+        <div class ="address-base-group">
         <input type="text" class="address-base" id="mainAddress" placeholder="주소를 입력하세요">
+        <button type="button" class="btn-primary" onclick="execDaumPostcode('main')">주소 검색</button>
+        </div>
         <input type="text" id="mainAddressDetail" placeholder="상세 주소를 입력하세요">
         <input type="hidden" id="mainLat">
         <input type="hidden" id="mainLan">
-        <button type="button" class="btn-primary" onclick="execDaumPostcode('main')">주소 검색</button>
     </div>
 
     <!-- 추가 주소 1 -->
     <div class="form-group address-group" data-type="sub1" style="display: none;">
         <label>추가 주소 1</label>
+        <div class ="address-base-group">
         <input type="text" class="address-base" id="subAddress1" placeholder="주소를 입력하세요">
+        <button type="button" class="btn-primary" id="subAddress1-kakao">주소 검색</button>
+        </div>
         <input type="text" id="subAddress1Detail" placeholder="상세 주소를 입력하세요">
         <input type="hidden" id="sub1_latitude">
         <input type="hidden" id="sub1_longitude">
-        <button type="button" class="btn-primary" id="subAddress1-kakao">주소 검색</button>
     </div>
 
     <!-- 추가 주소 2 -->
     <div class="form-group address-group" data-type="sub2" style="display: none;">
         <label>추가 주소 2</label>
+        <div class ="address-base-group">
         <input type="text" class="address-base" id="subAddress2" placeholder="주소를 입력하세요">
+        <button type="button" class="btn-primary" id="subAddress2-kakao">주소 검색</button>
+        </div>
         <input type="text" id="subAddress2Detail" placeholder="상세 주소를 입력하세요">
         <input type="hidden" id="sub2_latitude">
         <input type="hidden" id="sub2_longitude">
-        <button type="button" class="btn-primary" id="subAddress2-kakao">주소 검색</button>
     </div>
 
 
