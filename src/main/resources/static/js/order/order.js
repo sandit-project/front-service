@@ -54,6 +54,18 @@ async function fetchCustomCart(customCartId) {
     });
 }
 
+//기본주소/상세주소 나뉘어서 인풋창에 들어가는 함수
+function splitAddress(addressWithDetail) {
+    if (!addressWithDetail || typeof addressWithDetail !== 'string') {
+        return ['', ''];
+    }
+
+    const parts = addressWithDetail.split('/');
+    const address = parts[0]?.trim() || '';
+    const detail = parts.slice(1).join('/').trim();
+
+    return [address, detail];
+}
 
 //fillUserInfoForm 헬퍼 (폼에 값 채워넣기)
 function fillUserInfoForm(user) {
@@ -62,20 +74,23 @@ function fillUserInfoForm(user) {
     $('#email').val(user.email);
 
     // 프로필에서 내려온 '기본 주소'와 '추가 주소1/2'를 addressData에 저장
-    addressData.main.address   = user.mainAddress      || '';
-    addressData.main.detail    = user.mainAddressDetail || '';
-    addressData.sub1.address   = user.subAddress1      || '';
-    addressData.sub1.detail    = user.subAddress1Detail || '';
-    addressData.sub2.address   = user.subAddress2      || '';
-    addressData.sub2.detail    = user.subAddress2Detail || '';
+    const [mainAddr, mainDetail] = splitAddress(user.mainAddress);
+    const [sub1Addr, sub1Detail] = splitAddress(user.subAddress1);
+    const [sub2Addr, sub2Detail] = splitAddress(user.subAddress2);
 
-    // 초기 화면 로드시 무조건 '기본 주소'를 입력창에 넣어준다
-    $('#mainAddress').val(addressData.main.address);
-    $('#mainAddressDetail').val(addressData.main.detail);
-    $('#subAddress1').val(addressData.sub1.address);
-    $('#subAddress1Detail').val(addressData.sub1.detail);
-    $('#subAddress2').val(addressData.sub2.address);
-    $('#subAddress2Detail').val(addressData.sub2.detail);
+    addressData.main.address   = mainAddr;
+    addressData.main.detail    = mainDetail;
+    addressData.sub1.address   = sub1Addr;
+    addressData.sub1.detail    = sub1Detail;
+    addressData.sub2.address   = sub2Addr;
+    addressData.sub2.detail    = sub2Detail;
+
+    $('#mainAddress').val(mainAddr);
+    $('#mainAddressDetail').val(mainDetail);
+    $('#subAddress1').val(sub1Addr);
+    $('#subAddress1Detail').val(sub1Detail);
+    $('#subAddress2').val(sub2Addr);
+    $('#subAddress2Detail').val(sub2Detail);
 
     $('#mainLat').val(user.mainLat || 0.0);
     $('#mainLan').val(user.mainLan || 0.0);
@@ -95,12 +110,6 @@ function fillUserInfoForm(user) {
 
     if (user.subLat2 != null) addressData.sub2.lat = user.subLat2;
     if (user.subLan2 != null) addressData.sub2.lan = user.subLan2;
-
-
-    // $('#mainAddress').val(user.mainAddress);
-    // $('#subAddress1').val(user.subAddress1 || '');
-    // $('#deliveryDestinationLat').val(user.mainLat);
-    // $('#deliveryDestinationLan').val(user.mainLan);
 
     userUid = user.uid;
     socialUid = user.socialUid;
@@ -261,20 +270,6 @@ function bindAddressSelectListener() {
 
     });
 }
-
-function updateAddressFields(type, address, detail, lat, lan) {
-    $(`#${type}Address`).val(address);
-    $(`#${type}AddressDetail`).val(detail);
-    $(`#${type}Lat`).val(lat);
-    $(`#${type}Lan`).val(lan);
-
-    // 선택된 항목이면 destination에도 반영
-    if ($('#addressSelect').val() === type) {
-        $('#deliveryDestinationLat').val(lat);
-        $('#deliveryDestinationLan').val(lan);
-    }
-}
-
 
 let merchantUid = null;
 
@@ -635,6 +630,17 @@ function preparePayment(merchantUid, menuName, totalPrice, storeUid, userUid, re
     });
 }
 
+function splitSlash(addressWithDetail) {
+    if (!addressWithDetail.includes("/")) {
+        return { address: addressWithDetail.trim(), detail: '' };
+    }
+    const parts = addressWithDetail.split("/");
+    return {
+        address: parts[0].trim(),
+        detail: parts.slice(1).join("/").trim()
+    };
+}
+
 // 실제 결제 요청
 async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservationDate,selectedAddressType) {
     console.log('requestPayment 진입')
@@ -729,26 +735,48 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                     if (hasChanged) {
                         prev.address = address;
                         prev.detail = addressDetail;
-                        prev.lat = lat;
-                        prev.lan = lan;
+                        if (lat !== 0) prev.lat = lat;
+                        if (lan !== 0) prev.lan = lan;
                     }
+
+                    const fullAddressMap = {
+                        main: {
+                            address: [addressData.main.address, addressData.main.detail].filter(Boolean).join(' / '),
+                            lat: addressData.main.lat,
+                            lan: addressData.main.lan
+                        },
+                        sub1: {
+                            address: [addressData.sub1.address, addressData.sub1.detail].filter(Boolean).join(' / '),
+                            lat: addressData.sub1.lat,
+                            lan: addressData.sub1.lan
+                        },
+                        sub2: {
+                            address: [addressData.sub2.address, addressData.sub2.detail].filter(Boolean).join(' / '),
+                            lat: addressData.sub2.lat,
+                            lan: addressData.sub2.lan
+                        }
+                    };
 
                     const updatedAddress = {
                         userUid: buyer.userUid,
                         socialUid: buyer.socialUid,
-                        mainAddress: addressData.main.address,
-                        mainAddressDetail: addressData.main.detail,
-                        mainLat: addressData.main.lat,
-                        mainLan: addressData.main.lan,
-                        subAddress1: addressData.sub1.address,
-                        subAddress1Detail: addressData.sub1.detail,
-                        subLat1: addressData.sub1.lat,
-                        subLan1: addressData.sub1.lan,
-                        subAddress2: addressData.sub2.address,
-                        subAddress2Detail: addressData.sub2.detail,
-                        subLat2: addressData.sub2.lat,
-                        subLan2: addressData.sub2.lan
                     };
+
+                    if (selectedAddressType === 'main') {
+                        updatedAddress.mainAddress = fullAddressMap.main.address;
+                        updatedAddress.mainLat = fullAddressMap.main.lat;
+                        updatedAddress.mainLan = fullAddressMap.main.lan;
+                    }
+                    if (selectedAddressType === 'sub1') {
+                        updatedAddress.subAddress1 = fullAddressMap.sub1.address;
+                        updatedAddress.subLat1 = fullAddressMap.sub1.lat;
+                        updatedAddress.subLan1 = fullAddressMap.sub1.lan;
+                    }
+                    if (selectedAddressType === 'sub2') {
+                        updatedAddress.subAddress2 = fullAddressMap.sub2.address;
+                        updatedAddress.subLat2 = fullAddressMap.sub2.lat;
+                        updatedAddress.subLan2 = fullAddressMap.sub2.lan;
+                    }
 
                     console.log('[DEBUG] submit 직전 addressData:', JSON.stringify(addressData, null, 2));
 
@@ -875,31 +903,37 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
         }
     });
 }
+
 function getAddressInfoByType(type) {
+    const parseFloatOrNull = (v) => {
+        const parsed = parseFloat(v);
+        return isNaN(parsed) ? null : parsed;
+    };
+
     if (type === 'main') {
         return {
             address: $('#mainAddress').val(),
             detail: $('#mainAddressDetail').val(),
-            lat: parseFloat($('#mainLat').val()) || 0.0,
-            lan: parseFloat($('#mainLan').val()) || 0.0
+            lat: parseFloatOrNull($('#mainLat').val()),
+            lan: parseFloatOrNull($('#mainLan').val())
         };
     } else if (type === 'sub1') {
         return {
             address: $('#subAddress1').val(),
             detail: $('#subAddress1Detail').val(),
-            lat: parseFloat($('#sub1_latitude').val()) || 0.0,
-            lan: parseFloat($('#sub1_longitude').val()) || 0.0
+            lat: parseFloatOrNull($('#sub1_latitude').val()),
+            lan: parseFloatOrNull($('#sub1_longitude').val())
         };
     } else if (type === 'sub2') {
         return {
             address: $('#subAddress2').val(),
             detail: $('#subAddress2Detail').val(),
-            lat: parseFloat($('#sub2_latitude').val()) || 0.0,
-            lan: parseFloat($('#sub2_longitude').val()) || 0.0
+            lat: parseFloatOrNull($('#sub2_latitude').val()),
+            lan: parseFloatOrNull($('#sub2_longitude').val())
         };
     } else {
         console.warn('[WARN] 유효하지 않은 주소 타입:', type);
-        return { address: '', detail: '', lat: 0.0, lan: 0.0 };
+        return { address: '', detail: '', lat: null, lan: null };
     }
 }
 
@@ -921,9 +955,19 @@ async function submitOrders(buyer, paymentResponse, reservationDate, selectedAdd
         return;
     }
 
-    const { address: selectedAddress, detail: selectedAddressDetail, lat: selectedLat, lan: selectedLan } = getAddressInfoByType(selectedType);
+    let { address, detail, lat: selectedLat, lan: selectedLan } = getAddressInfoByType(selectedType);
 
+    // 혹시 address에 슬래시로 detail이 붙은 상태면 → split 해줘야 함
+    if (address.includes("/")) {
+        const parts = address.split("/");
+        address = parts[0].trim();
+        detail = parts.slice(1).join("/").trim();
+    }
 
+    addressData[selectedType].address = address;
+    addressData[selectedType].detail = detail;
+    addressData[selectedType].lat = selectedLat;
+    addressData[selectedType].lan = selectedLan;
 
     const deliveryAddress = {
         // 출발지는 가게 정보
@@ -931,7 +975,7 @@ async function submitOrders(buyer, paymentResponse, reservationDate, selectedAdd
         addressStartLat:    parseFloat($('#storeLatitude').val()),
         addressStartLan:    parseFloat($('#storeLongitude').val()),
         // 도착지는 사용자 입력 주소
-        addressDestination: `${selectedAddress} ${selectedAddressDetail}`.trim(),
+        addressDestination: [address, detail].filter(Boolean).join(' / '),
         addressDestinationLat: selectedLat,
         addressDestinationLan: selectedLan
     };
