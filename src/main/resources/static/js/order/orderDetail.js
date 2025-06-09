@@ -179,9 +179,13 @@ function renderOrders() {
 // 4) showModal 은 ordersGroup 배열만 받고, merchantUid는 내부 JS에서 필요 시 꺼내 쓰되 UI엔 노출 안 함
 function showModal(ordersGroup) {
     const first = ordersGroup[0];
+    console.log('[DEBUG] 주문 객체 first →', first);
     const merchantUid = first.merchantUid;
     $('#modal-status').text(mapOrderStatus(first.status));
     $('#modal-store-name').text(storeMap[first.storeUid]||'-');
+    const dest = first.deliveryAddress?.addressDestination || '—';
+    $('#modal-address').text(dest);
+
     const $list = $('#modal-items-list').empty();
     ordersGroup.forEach(o =>
         o.items.forEach(it => {

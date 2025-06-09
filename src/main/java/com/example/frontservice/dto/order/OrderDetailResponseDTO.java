@@ -18,6 +18,7 @@ public class OrderDetailResponseDTO {
     private List<CartItemsDTO> items;
     private String payment;
     private String status;
+    private DeliveryAddressDTO deliveryAddress;
     private LocalDateTime createdDate;
     private LocalDateTime reservationDate;
 }

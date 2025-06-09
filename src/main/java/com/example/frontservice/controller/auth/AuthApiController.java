@@ -8,6 +8,7 @@ import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthApiController {
@@ -144,5 +146,12 @@ public class AuthApiController {
     public List<ManagerResponseDTO> getUserManagers(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         return authService.getManagers(token);
+    }
+
+    @PutMapping("/address")
+    public UpdateAddressResponseDTO updateUserAddress(HttpServletRequest request, @RequestBody UpdateAddressRequestDTO updateAddressRequestDTO){
+        String token = request.getHeader("Authorization");
+        log.info("updateUserAddress: " + updateAddressRequestDTO);
+        return authService.updateAddress(token, updateAddressRequestDTO);
     }
 }

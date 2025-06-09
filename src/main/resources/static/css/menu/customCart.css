@@ -174,3 +174,10 @@ h2 {
     color: #F38B20;
     font-weight: bold;
 }
+
+.option-alert {
+    color: #F38B20;
+    font-size: 12px;
+    margin-left: 12px;
+    font-weight: bold;
+}
