@@ -74,6 +74,9 @@
                     ? data
                     : data.filter(room => room.ownerId === userInfo.userId);
 
+                // ✅ 최신순 정렬 추가
+                roomsToShow.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
                 if (!roomsToShow.length) {
                     roomListDiv.append('<div>문의 사항을 선택하고 "1:1 채팅 시작" 버튼을 클릭하세요.</div>');
                     return;
