@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>토큰 수신</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <script th:inline="javascript">
@@ -17,14 +18,32 @@
     console.log(type);
 
     if(message === "ForbiddenToken"){
-        alert("허용하지 않는 로그인 방식입니다.\n다른 방식으로 로그인 해주세요.");
-        window.location.href = '/member/login';
+        Swal.fire({
+            icon: 'error',
+            title: '허용되지 않음',
+            text: '허용하지 않는 로그인 방식입니다.\n다른 방식으로 로그인 해주세요.',
+            confirmButtonColor: '#f97316'
+        }).then(() => {
+            window.location.href = '/member/login';
+        });
     }else if(message === "Forbidden"){
-        alert("서버에서 요청이 거부되었습니다.\n다시 로그인 해주세요.");
-        window.location.href = '/member/login';
+        Swal.fire({
+            icon: 'error',
+            title: '요청 거부',
+            text: '서버에서 요청이 거부되었습니다.\n다시 로그인 해주세요.',
+            confirmButtonColor: '#f97316'
+        }).then(() => {
+            window.location.href = '/member/login';
+        });
     }else if(message === "AlreadyExists"){
-        alert(type + "로 회원가입 되어있습니다.\n" + type + "로 다시 로그인해주세요.");
-        window.location.href = '/member/login';
+        Swal.fire({
+            icon: 'warning',
+            title: '이미 존재',
+            text: `${type}로 회원가입 되어있습니다.\n${type}로 다시 로그인해주세요.`,
+            confirmButtonColor: '#f97316'
+        }).then(() => {
+            window.location.href = '/member/login';
+        });
     }else{
         // Thymeleaf가 accessToken 값을 주입합니다.
         var token = /*[[${accessToken}]]*/ "";
@@ -37,6 +56,12 @@
 
             window.location.href = '/';
         } else {
+            Swal.fire({
+                icon: 'error',
+                title: '토큰 오류',
+                text: 'access token이 전달되지 않았습니다.',
+                confirmButtonColor: '#f97316'
+            });
             console.error("access token이 전달되지 않았습니다.");
         }
     }

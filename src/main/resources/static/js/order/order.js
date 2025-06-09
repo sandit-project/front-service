@@ -427,7 +427,12 @@ $(document).ready(async () => {
             }
         } catch (error) {
             console.error('주소 체크 실패', error);
-            alert('주소 확인 중 문제가 발생했습니다.');
+            Swal.fire({
+                icon: 'error',
+                title: '주소 확인 실패',
+                text: '주소 확인 중 문제가 발생했습니다.',
+                confirmButtonColor: '#f97316'
+            });
             return;
         }
 
@@ -858,7 +863,6 @@ async function requestPayment(cartUids, buyer, totalPrice, merchantUid, reservat
                                     text: '결제 취소에도 실패했습니다. 고객센터에 문의해주세요.',
                                     confirmButtonColor: '#f97316'
                                 });
-                                // alert('결제 취소에도 실패했습니다. 고객센터에 문의해주세요.');
                             }
                         });
                 },
