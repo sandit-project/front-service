@@ -1,5 +1,6 @@
 let pathCoords = [];  // 경로 좌표 배열
 let deliveryMarker;   // 배달원 마커
+let deliveryInfoWindow;
 let moveIndex = 0;    // 현재 위치 인덱스
 
 let renderKakaomap = (info) => {
@@ -60,10 +61,25 @@ let renderKakaomap = (info) => {
             });
             polyline.setMap(map);
 
+            // 배달원 마커 초기화
+            deliveryMarker = new kakao.maps.Marker({
+                position: pathCoords[0],
+                map: map,
+                title: info.addressStart + ' 배달원'
+            });
+
+            // 이름 표시를 위한 InfoWindow 추가
+            deliveryInfoWindow = new kakao.maps.InfoWindow({
+                content: `<div style="padding:5px;font-size:13px;">${info.addressStart} 배달원</div>`
+            });
+            deliveryInfoWindow.open(map, deliveryMarker);
+
             // 배달원 이동 시작
-            // moveIndex = 0;
-            // moveDeliveryMan();
-            receiveDeliveryManLocation(info.merchantUid, info.addressStart);
+            moveIndex = 0;
+            moveDeliveryMan();
+            
+            // 실 서비스용 함수
+            // receiveDeliveryManLocation(info.merchantUid, info.addressStart);
         },
         error: (error)=>{
             console.log("error :: ",error);
@@ -71,14 +87,16 @@ let renderKakaomap = (info) => {
     })
 
     // 배달원 위치 갱신 -> 로컬 시연용
-    // function moveDeliveryMan() {
-    //     setInterval(function() {
-    //         if (moveIndex < pathCoords.length) {
-    //             deliveryMarker.setPosition(pathCoords[moveIndex]);
-    //             moveIndex++;
-    //         }
-    //     }, 1000); // 1초마다 이동
-    // }
+    function moveDeliveryMan() {
+        setInterval(function() {
+            if (moveIndex < pathCoords.length) {
+                const newPos = pathCoords[moveIndex];
+                deliveryMarker.setPosition(newPos);
+                deliveryInfoWindow.setPosition(newPos); // InfoWindow도 같이 이동
+                moveIndex++;
+            }
+        }, 1000);
+    }
 
     let receiveDeliveryManLocation = (merchantUid, storeName) => {
         const socket = new SockJS(window.WEBSOCKET_URL);
