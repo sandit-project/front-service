@@ -16,12 +16,18 @@ $(document).ready(function () {
                 breadTableBody.empty();
 
                 data.forEach(bread => {
+                    // ✅ fallback 이미지 지정 (uid가 5일 때만)
+                    const fallbackImg = "/images/product-image/bread_white.png";
+                    const imgTag = bread.uid === 5
+                        ? `<img src="${bread.img}" alt="빵 이미지" width="50" onerror="this.onerror=null; this.src='${fallbackImg}'">`
+                        : `<img src="${bread.img}" alt="빵 이미지" width="50">`;
+
                     const row = `<tr>
                        
                         <td>${bread.breadName}</td>
                         <td>${bread.calorie}</td>
                         <td>${bread.price}</td>
-                        <td><img src="${bread.img}" alt="빵 이미지" width="50"></td>
+                        <td>${imgTag}</td>
                         <td>${bread.status}</td>
                         <td>
                             <a href="/breads/edit/${encodeURIComponent(bread.breadName)}" class="edit-btn">수정</a>

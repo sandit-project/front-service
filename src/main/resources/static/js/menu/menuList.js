@@ -34,9 +34,20 @@ $(document).ready(function () {
         menuTableBody.empty(); // 기존 내용을 비웁니다.
 
         menus.forEach(menu => {
+            // ★ 메뉴 UID별 fallback 이미지 설정
+            let fallbackImg = "https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png";
+            if (menu.uid === 4) {
+                fallbackImg = "/images/product-image/shrimp.png";
+            } else if (menu.uid === 5) {
+                fallbackImg = "/images/product-image/chicken_bacon.png";
+            }
+
             const imgTag = menu.img
-                ? `<img src="${menu.img}" alt="메뉴 이미지" width="50">`
-                : `<span>이미지 없음</span>`;
+                ? `<img src="${menu.img}" alt="메뉴 이미지" width="50" onerror="this.onerror=null; this.src='${fallbackImg}'">`
+                : `<img src="${fallbackImg}" alt="대체 이미지" width="50">`;
+
+                // ? `<img src="${menu.img}" alt="메뉴 이미지" width="50">`
+                // : `<span>이미지 없음</span>`;
 
             const rowHtml = `
                 <tr>

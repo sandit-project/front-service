@@ -26,6 +26,19 @@ $(document).ready(function () {
             $("#breadName").text(data.breadName);
             $("#cheeseName").text(data.cheeseName);
 
+            // ✅ uid에 따라 fallback 이미지 지정
+            let fallbackImg = "https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png";
+            if (data.uid === 4) {
+                fallbackImg = "/images/product-image/shrimp.png";
+            } else if (data.uid === 5) {
+                fallbackImg = "/images/product-image/chicken_bacon.png";
+            }
+
+            // ✅ 이미지 태그에 onerror 추가
+            $("#menuImage")
+                .attr("src", data.img)
+                .attr("onerror", `this.onerror=null; this.src='${fallbackImg}'`);
+
             // 재료 목록 배열 정의
             const materials = [
                 { name: data.material1Name, img: data.material1Img },

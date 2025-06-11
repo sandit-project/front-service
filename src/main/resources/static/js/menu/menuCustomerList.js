@@ -32,10 +32,18 @@ $(document).ready(async () => {
                 // status가 "ACTIVE"가 아니면 무시 (대소문자 구분 없이 처리)
                 if ((menu.status || '').toUpperCase() !== 'ACTIVE') return;
 
+                // ✅ uid에 따라 fallback 이미지 경로 설정
+                let fallbackImg = "https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png";
+                if (menu.uid === 4) {
+                    fallbackImg = "/images/product-image/shrimp.png";
+                } else if (menu.uid === 5) {
+                    fallbackImg = "/images/product-image/chicken_bacon.png";
+                }
+
                 const html = `
                     <div class="menu-item" data-menu-id="${menu.uid}">
                         <a href="/menus/name/${menu.menuName}">
-                            <img src="${menu.img}" alt="메뉴 이미지" onerror="this.onerror=null; this.src='https://himedia-sandis-20205.s3.ap-northeast-2.amazonaws.com/uploads/sandit.png';">
+                            <img src="${menu.img}" alt="메뉴 이미지" onerror="this.onerror=null; this.src='${fallbackImg}'">
                         </a>
                         <div class="menu-info">
                             <h2>${menu.menuName}</h2>
